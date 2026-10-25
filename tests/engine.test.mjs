@@ -75,7 +75,10 @@ test('闭关推进真实岁月，亲友变老，世况改变；要事会打断',
   const father = state.people.find(person => ['father', 'guardian'].includes(person.relation)), age = personAge(state, father);
   const worldBefore = clone(state.world);
   state = act(state, { type: 'retreat', years: 3 }); assert.throws(() => setFocus(state, 'craft'), /闭关/u);
-  const result = advance(state, 36); validateState(result);
+  const targetMonth = state.month + 36;
+  let result = advance(state, 36);
+  while (result.month < targetMonth || result.pending) result = result.pending ? choose(result, policyChoice(result, 'cultivate')) : advance(result, targetMonth - result.month);
+  validateState(result);
   assert.equal(result.month, state.month + 36); assert.equal(personAge(result, result.people.find(person => person.id === father.id)), age + 3);
   assert.notDeepEqual(result.world.regions, worldBefore.regions); assert.equal(result.player.retreat, null);
   let interrupted = act(result, { type: 'retreat', years: 10 }); interrupted = advance(interrupted, 120);
@@ -87,7 +90,8 @@ test('闭关推进真实岁月，亲友变老，世况改变；要事会打断',
 });
 
 test('旅行按月份抵达，路资真实扣除，地点和足迹同步', () => {
-  const state = toAge('travel-clock', 18, 'family', { root: 'none' }), preview = travelPreview(state, 'wenxue');
+  const state = toAge('travel-clock', 18, 'family', { root: 'none' }); state.player.money = 200;
+  const preview = travelPreview(state, 'wenxue');
   const travelling = act(state, { type: 'travel', to: 'wenxue' }); assert.equal(travelling.player.money, state.player.money - preview.money);
   assert.equal(travelling.player.location, state.player.location); assert.throws(() => act(travelling, { type: 'travel', to: 'landu' }));
   const arrived = advance(travelling, preview.months); assert.equal(arrived.player.location, 'wenxue'); assert.ok(arrived.player.visited.includes('wenxue'));
@@ -183,7 +187,7 @@ test('损坏的事件计数、人物计数、年度记录和负责人被拒绝',
 
 test('损坏存档不能在最高境界再递增，也不能与离世人物建立关系', () => {
   const state = advance(beginLife(newLife({ seed: 'wrong-boundary', root: 'dual' })), 72);
-  state.player.realm = 5; state.player.progress = 620; state.player.lifespan = 900;
+  state.player.realm = 5; state.player.progress = 620; state.player.lifespan = 900; state.player.training.learned = true; state.player.training.progress = 12;
   state.pending = decisionView(state, { id: state.pending.id, event: 'breakthrough', payload: {} });
   assert.throws(() => validateState(state), /境界条件/u); assert.throws(() => choose(state, 'attempt'), /不适用/u);
   const family = toAge('ghost-partner', 24, 'family'), actor = family.people.find(person => person.id === family.player.partnerId);

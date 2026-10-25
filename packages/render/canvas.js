@@ -1,6 +1,7 @@
 import { visualNoise } from '../core/random.js';
 import { ageOf, apparentAge, calendar, lifeTitle, personAge } from '../core/state.js';
 import { REGIONS, REALMS, regionById } from '../../content/world.js';
+import { localWorldEvents } from '../core/world-events.js';
 
 const W = 480, H = 196;
 const cache = new Map();
@@ -130,7 +131,13 @@ export function renderScene(canvas, state, { time = 0, dark = false, reduced = f
   }
   const p = state.player, seated = !!p.retreat || p.focus === 'cultivate';
   const posX = (p.travel ? 180 + (state.month - p.travel.departure) * 13 : seated ? 237 : p.focus === 'craft' ? 253 : 226) + shift;
-  character(ctx, posX, 180, { age: apparentAge(state), realm: p.realm, seed: state.seed, sword: p.inventory.sword, seated, halo: p.realm >= 2 && seated, walk: p.focus === 'explore' || !!p.travel, time: phase });
+  const mourning = p.mourning.some(item => item.stage !== 'complete' && item.mode !== 'entrust');
+  character(ctx, posX, 180, { age: apparentAge(state), realm: p.realm, seed: state.seed, robe: mourning ? '#e6e1d2' : undefined, sword: p.inventory.sword, seated, halo: p.realm >= 2 && seated, walk: p.focus === 'explore' || !!p.travel, time: phase });
+  if (mourning) { rect(ctx, posX - 3, 151, 8, 2, '#e6e1d2'); rect(ctx, posX - 4, 168, 9, 2, '#a99b80'); }
+  const events = localWorldEvents(state);
+  if (events.some(item => item.type === 'flood')) { ctx.fillStyle = dark ? '#426d6c55' : '#8eb9b266'; ctx.fillRect(0, 183, width, 13); }
+  if (events.some(item => ['drought', 'famine'].includes(item.type))) for (let i = 0; i < 9; i++) rect(ctx, 10 + i * 31, 186 + i % 3, 16, 1, '#9d8559');
+  if (events.some(item => ['war', 'demonwar'].includes(item.type))) { rect(ctx, 106, 110, 2, 30, '#81705a'); rect(ctx, 108, 111, 15, 9, '#9c6254'); for (let i = 0; i < 4; i++) rect(ctx, 112 + i * 4, 105 - i * 4, 7, 3, '#927b6440'); }
   if (p.focus === 'craft') { rect(ctx, 239 + shift, 169, 30, 3, '#8c7c58'); rect(ctx, 242 + shift, 172, 3, 8, '#8c7c58'); rect(ctx, 264 + shift, 172, 3, 8, '#8c7c58'); rect(ctx, 254 + shift, 164, 7, 5, '#a9af82'); }
   const local = state.people.filter(person => person.alive && person.location === p.location && ['mother', 'father', 'guardian', 'partner', 'child', 'friend'].includes(person.relation)).slice(0, 3);
   local.forEach((person, i) => character(ctx, 296 + shift + i * 15, 179 + i % 2 * 3, { age: personAge(state, person), realm: person.realm, seed: person.id }));
@@ -148,7 +155,8 @@ export function renderScene(canvas, state, { time = 0, dark = false, reduced = f
 export function renderPortrait(canvas, state, person = null) {
   const ctx = canvasContext(canvas, 48, 48); ctx.clearRect(0, 0, 48, 48); rect(ctx, 0, 0, 48, 48, '#dfe4d1');
   rect(ctx, 0, 35, 48, 13, '#bdcbb2'); ctx.save(); ctx.translate(24, 42); ctx.scale(1.2, 1.2);
-  character(ctx, 0, 0, { seed: person?.id || state.seed, age: person ? personAge(state, person) : apparentAge(state), realm: person?.realm ?? state.player.realm }); ctx.restore();
+  const mourning = !person && state.player.mourning.some(item => item.stage !== 'complete' && item.mode !== 'entrust');
+  character(ctx, 0, 0, { seed: person?.id || state.seed, age: person ? personAge(state, person) : apparentAge(state), realm: person?.realm ?? state.player.realm, robe: mourning ? '#e6e1d2' : undefined }); ctx.restore();
 }
 
 export function renderMap(canvas, state, dark = false) {
@@ -166,6 +174,7 @@ export function renderMap(canvas, state, dark = false) {
   for (const region of REGIONS) {
     const x = region.x * 6.4, y = region.y * 3.98, current = state.player.location === region.id;
     circle(ctx, x, y, current ? 14 : 9, current ? '#6d967e' : '#b5ba98'); circle(ctx, x, y, 4, '#f2edd4');
+    if (localWorldEvents(state, region.id).some(item => ['war', 'demonwar', 'famine', 'quake', 'flood'].includes(item.type))) { circle(ctx, x + 17, y - 11, 5, '#ad7462'); }
     ctx.fillStyle = dark ? '#e5e6ce' : '#466557'; ctx.font = '600 18px "Songti SC", "SimSun", serif'; ctx.textAlign = 'center'; ctx.fillText(region.name, x, y + 33);
     ctx.fillStyle = dark ? '#a8bba3' : '#78846a'; ctx.font = '11px sans-serif'; ctx.fillText(current ? '你在此处' : state.player.visited.includes(region.id) ? '曾经走过' : '尚未到访', x, y + 49);
   }
@@ -190,7 +199,12 @@ export function renderHome(canvas, state) {
   if (state.player.inventory.lamp) { rect(ctx, 164, 96, 3, 13, '#8b815f'); rect(ctx, 160, 92, 11, 8, '#e2bb75'); circle(ctx, 165, 96, 13, '#efd78a22'); }
   if (state.player.inventory.book) { rect(ctx, 143, 104, 13, 5, '#758f7b'); rect(ctx, 145, 104, 9, 1, '#d9d6b5'); }
   if (state.player.inventory.sword) { rect(ctx, 229, 67, 3, 61, '#7f9790'); rect(ctx, 223, 84, 15, 4, '#b8a16c'); }
-  character(ctx, 114, 142, { age: apparentAge(state), realm: state.player.realm, seed: state.seed, seated: !!state.player.retreat });
+  const mourning = state.player.mourning.some(item => item.stage !== 'complete' && item.mode !== 'entrust');
+  if (state.player.mourning.length || state.player.keepsakes.length) {
+    rect(ctx, 176, 82, 14, 27, '#766d5f'); rect(ctx, 178, 85, 10, 20, '#e5dfca');
+    ctx.fillStyle = '#686153'; ctx.font = '8px "SimSun", serif'; ctx.fillText('念', 179, 98);
+  }
+  character(ctx, 114, 142, { age: apparentAge(state), realm: state.player.realm, seed: state.seed, seated: !!state.player.retreat, robe: mourning ? '#e6e1d2' : undefined });
   const local = state.people.filter(person => person.alive && person.location === state.player.location && ['partner', 'child', 'mother', 'father', 'guardian'].includes(person.relation)).slice(0, 2);
   local.forEach((person, i) => character(ctx, 218 + i * 27, 146, { age: personAge(state, person), realm: person.realm, seed: person.id }));
 }

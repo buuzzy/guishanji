@@ -1,6 +1,8 @@
-import { SAVE_VERSION, GAME_VERSION, RULES_VERSION, CONTENT_VERSION, REGIONS, FACTIONS, ORIGINS, ROOTS, REALMS, TECHNIQUES, FOCUS, ENDINGS } from '../../content/world.js';
+import { SAVE_VERSION, GAME_VERSION, RULES_VERSION, CONTENT_VERSION, REGIONS, FACTIONS, ORIGINS, ROOTS, REALMS, TECHNIQUES, FOCUS, ENDINGS, ENTRY_PRACTICE } from '../../content/world.js';
 import { STORIES } from '../../content/stories.js';
+import { SMALL_STORIES, WORLD_EVENTS, STORY_VARIANTS } from '../../content/expansion.js';
 import { decisionView, decisionEligible } from './engine.js';
+import { isLegacyState, LEGACY_OPTIONS, legacyEligible, legacyOptionsValid } from './legacy-v1.js';
 
 export class ValidationError extends Error {
   constructor(message) { super('存档校验未通过：' + message); this.name = 'ValidationError'; this.code = 'invalid'; }
@@ -33,9 +35,9 @@ function safeTree(value, path = 'root', depth = 0) {
 }
 
 /** Validation is read-only; saved options must match the current rules exactly. */
-export function validateState(state) {
+export function validateState(state, { legacy = false } = {}) {
   object(state, '人生');
-  if (state.format !== SAVE_VERSION || state.version !== GAME_VERSION || state.rulesVersion !== RULES_VERSION || state.contentVersion !== CONTENT_VERSION) fail('此文件的游戏、规则或内容版本尚不支持，请保留原文件。');
+  if (legacy ? !isLegacyState(state) : state.format !== SAVE_VERSION || state.version !== GAME_VERSION || state.rulesVersion !== RULES_VERSION || state.contentVersion !== CONTENT_VERSION) fail('此文件的游戏、规则或内容版本尚不支持，请保留原文件。');
   safeTree(state);
   string(state.id, '人生 ID', 96); string(state.seed, '种子', 160);
   if (!/^life-[a-z0-9]+-[a-z0-9]+$/u.test(state.id)) fail('人生 ID 格式无效。');
@@ -70,13 +72,20 @@ export function validateState(state) {
   for (const key of ['talent', 'constitution', 'health', 'mind', 'insight', 'bond', 'craft']) number(p[key], key, 0, 100);
   number(p.realm, '境界', 0, REALMS.length - 1, true); number(p.progress, '修为', 0, REALMS[p.realm].threshold * 1.12 + 0.000001);
   const focus = FOCUS.find(item => item.id === p.focus);
-  if (Math.floor(state.month / 12) < focus.minAge || (focus.cultivation && !p.realm)) fail('生活重心不适用于当前年龄或境界。');
+  if (!legacy) {
+    object(p.training, '入道练习');
+    for (const key of ['learned', 'awakened']) if (typeof p.training[key] !== 'boolean') fail('入道练习标记无效。');
+    number(p.training.progress, '引气练习', 0, ENTRY_PRACTICE);
+    if ((!p.training.learned && p.training.progress) || (p.realm && (!p.training.learned || p.training.progress !== ENTRY_PRACTICE)) || (p.training.awakened && p.root !== 'none')) fail('入道准备与境界不一致。');
+  }
+  if (Math.floor(state.month / 12) < focus.minAge || (focus.cultivation && !p.realm && (legacy || !p.training.learned))) fail('生活重心不适用于当前年龄或境界。');
   number(p.lifespan, '寿元', 1, 2000, true);
   if (state.phase === 'life' && (p.health <= 0 || Math.floor(state.month / 12) >= p.lifespan)) fail('人物已到终章条件，人生阶段不一致。');
   for (const key of ['money', 'stones', 'herbs', 'debt']) number(p[key], key, 0, 1e9, true);
-  if (p.root === 'none' && p.realm > 0) fail('未见灵根的路线与当前规则不一致。');
+  if (p.root === 'none' && p.realm > 0 && (legacy || !p.training.awakened)) fail('未见灵根的路线与当前规则不一致。');
   object(p.inventory, '行囊');
   for (const key of ['charm', 'sword', 'book', 'lamp']) number(p.inventory[key], key, 0, key === 'charm' ? 10000 : 1, true);
+  if (!legacy) number(p.inventory.pill, '养元丹', 0, 10000, true);
   array(p.visited, '足迹', 5); if (!p.visited.length || new Set(p.visited).size !== p.visited.length) fail('足迹重复或为空。');
   p.visited.forEach(value => oneOf(value, regionIds, '足迹'));
   if (!p.visited.includes(p.location) || !p.visited.includes(p.birthRegion)) fail('足迹缺少当前或出生地域。');
@@ -114,9 +123,55 @@ export function validateState(state) {
   }
   const reference = (id, path, nullable = true) => { if (nullable && id === null) return; if (typeof id !== 'string' || !people.has(id)) fail(path + ' 引用了不存在的人物。'); };
   reference(p.mentorId, '师长'); reference(p.partnerId, '伴侣');
+  if (p.travel?.task) {
+    object(p.travel.task, '行程中的安排'); oneOf(p.travel.task.kind, ['care', 'repair'], '行程安排');
+    if (p.travel.task.kind === 'care') {
+      reference(p.travel.task.actorId, '探望的长辈', false);
+      if (!['mother', 'father', 'guardian'].includes(people.get(p.travel.task.actorId).relation)) fail('探望对象的身份不一致。');
+    } else {
+      oneOf(p.travel.task.region, regionIds, '修屋地域');
+      if (p.travel.task.region !== p.travel.to) fail('修屋地点与行程目的地不一致。');
+    }
+  }
+  if (!legacy) {
+    array(p.mourning, '丧亲安排', 20);
+    const mourned = new Set();
+    for (const item of p.mourning) {
+      object(item, '守丧'); reference(item.actorId, '守丧人物', false);
+      const actor = people.get(item.actorId);
+      if (actor.alive || !['mother', 'father', 'guardian'].includes(actor.relation) || mourned.has(item.actorId)) fail('守丧人物的身份、生死或重复安排不一致。');
+      mourned.add(item.actorId); oneOf(item.region, regionIds, '治丧地域');
+      if (item.region !== actor.location) fail('治丧地域与故人不一致。');
+      oneOf(item.mode, ['full', 'simple', 'entrust'], '治丧方式'); oneOf(item.stage, ['returning', 'rites', 'observance', 'complete'], '守丧阶段');
+      number(item.start, '守丧开始', actor.deathMonth, state.month, true);
+      number(item.ritesAt, '治丧月份', item.start, item.start + 12, true);
+      if (item.until !== item.ritesAt + (item.mode === 'full' ? 24 : 6)) fail('守丧期限不一致。');
+      if (item.stage === 'complete' && item.until > state.month) fail('守丧尚未期满。');
+      if (item.mode !== 'entrust' && p.retreat && item.stage !== 'complete') fail('返乡守丧与长期闭关矛盾。');
+    }
+    array(state.storyDeck, '故事抽选池', SMALL_STORIES.length);
+    if (new Set(state.storyDeck).size !== state.storyDeck.length) fail('故事抽选池重复。');
+    state.storyDeck.forEach(event => oneOf(event, SMALL_STORIES, '抽选故事'));
+  }
   if (p.partnerId && people.get(p.partnerId).relation !== 'partner') fail('伴侣关系不一致。');
   object(state.world, '世界'); number(state.world.startYear, '起始纪年', 1, 5000, true); number(state.world.birthMonth, '出生月', 1, 12, true);
   oneOf(state.world.era, ['丰和', '待雨', '通商', '风雨'], '世局'); oneOf(state.world.weather, ['晴', '细雨', '长风', '云起'], '天气');
+  if (!legacy) {
+    oneOf(state.world.regime, ['澄川朝', '景澜朝', '延禾朝', '玄昭朝'], '架空王朝');
+    array(state.world.eventDeck, '世局抽选池', WORLD_EVENTS.length);
+    if (new Set(state.world.eventDeck).size !== state.world.eventDeck.length) fail('世局抽选池重复。');
+    state.world.eventDeck.forEach(event => oneOf(event, ids(WORLD_EVENTS), '抽选世局'));
+    array(state.world.activeEvents, '持续世事', 12);
+    const active = new Set();
+    for (const item of state.world.activeEvents) {
+      object(item, '持续世事'); string(item.id, '世事 ID', 160);
+      if (active.has(item.id) || item.id !== state.id + ':world:' + item.start) fail('世事 ID 重复或无效。'); active.add(item.id);
+      oneOf(item.type, ids(WORLD_EVENTS), '持续世事类型');
+      if (item.region !== null) oneOf(item.region, regionIds, '世事地域');
+      number(item.start, '世事开始', 0, state.month, true); number(item.end, '世事结束', item.start + 1, item.start + 36, true);
+      number(item.income, '世事收入影响', 0.35, 1.5); number(item.living, '世事家用影响', -30, 100, true); number(item.spirit, '世事修炼影响', 0.4, 1.5);
+    }
+  }
   array(state.world.regions, '地域状态', 5); array(state.world.factions, '势力状态', 3);
   if (state.world.regions.length !== 5 || new Set(state.world.regions.map(item => item.id)).size !== 5) fail('地域表不完整。');
   for (const region of state.world.regions) { oneOf(region.id, regionIds, '地域'); number(region.prosperity, '繁荣', 0, 100); number(region.danger, '风险', 0, 100); }
@@ -136,20 +191,25 @@ export function validateState(state) {
   for (const key of ['decisions', 'breakthroughs', 'failures', 'help', 'family', 'craft', 'journeys', 'students', 'earnings', 'retreats']) number(state.stats[key], '统计 ' + key, 0, 1e9, true);
   array(state.queue, '故事队列', 2000);
   const eventIds = new Set();
-  const payload = value => { object(value, '故事关联'); if (value.actorId !== undefined) reference(value.actorId, '故事人物', false); };
+  const payload = (value, event) => {
+    object(value, '故事关联'); if (value.actorId !== undefined) reference(value.actorId, '故事人物', false);
+    if (value.region !== undefined && value.region !== null) oneOf(value.region, regionIds, '故事地域');
+    if (value.variant !== undefined) number(value.variant, '故事场景', 0, (STORY_VARIANTS[event]?.length || 0) - 1, true);
+    if (value.worldEventId !== undefined) { string(value.worldEventId, '世事关联 ID', 160); if (!value.worldEventId.startsWith(state.id + ':world:')) fail('世事关联不属于这段人生。'); }
+  };
   for (const item of state.queue) {
     string(item.id, '故事 ID', 160); if (eventIds.has(item.id)) fail('故事 ID 重复。'); eventIds.add(item.id);
     serialId(item.id, 'event');
-    oneOf(item.event, events, '故事'); number(item.due, '故事日期', 0, 25000, true); number(item.order, '故事顺序', 1, 1e8, true); payload(item.payload);
+    oneOf(item.event, legacy ? Object.keys(LEGACY_OPTIONS) : events, '故事'); number(item.due, '故事日期', 0, 25000, true); number(item.order, '故事顺序', 1, 1e8, true); payload(item.payload, item.event);
   }
   if (state.pending !== null) {
-    object(state.pending, '待选故事'); string(state.pending.id, '待选 ID', 160); oneOf(state.pending.event, events, '待选故事'); payload(state.pending.payload);
+    object(state.pending, '待选故事'); string(state.pending.id, '待选 ID', 160); oneOf(state.pending.event, legacy ? Object.keys(LEGACY_OPTIONS) : events, '待选故事'); payload(state.pending.payload, state.pending.event);
     serialId(state.pending.id, 'event');
-    if (!decisionEligible(state, state.pending.event, state.pending.payload)) fail('待选故事的年龄、人物或境界条件已经不适用。');
+    if (!(legacy ? legacyEligible : decisionEligible)(state, state.pending.event, state.pending.payload)) fail('待选故事的年龄、人物或境界条件已经不适用。');
     if (state.phase !== 'life' || state.pending.month !== state.month || eventIds.has(state.pending.id)) fail('待选故事日期或阶段矛盾。');
     try {
-      const fresh = decisionView(state, state.pending);
-      if (JSON.stringify(fresh) !== JSON.stringify(state.pending)) fail('待选故事与当前规则不一致。');
+      if (legacy) { if (!legacyOptionsValid(state)) fail('旧待选故事的选项和资源条件不一致。'); }
+      else { const fresh = decisionView(state, state.pending); if (JSON.stringify(fresh) !== JSON.stringify(state.pending)) fail('待选故事与当前规则不一致。'); }
     } catch (error) { if (error instanceof ValidationError) throw error; fail('待选故事无法读取。'); }
   }
   array(state.log, '经历', 20000); array(state.years, '年度记录', 2000); array(state.ledger, '账册', 20000); array(state.choices, '抉择记录', 10000);

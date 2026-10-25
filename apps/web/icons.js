@@ -1,0 +1,20 @@
+const paths = {
+  arrow: '<path d="M4 12h16m-6-6 6 6-6 6"/>',
+  chevron: '<path d="m9 5 7 7-7 7"/>',
+  play: '<path d="m8 5 11 7-11 7z"/>',
+  pause: '<path d="M8 5v14M16 5v14"/>',
+  skip: '<path d="m4 5 9 7-9 7zM19 5v14"/>',
+  step: '<path d="m7 5 10 7-10 7zM3 5v14"/>',
+  map: '<path d="m3 6 6-3 6 3 6-3v15l-6 3-6-3-6 3zM9 3v15M15 6v15"/>',
+  people: '<circle cx="9" cy="8" r="3"/><path d="M3 20v-2a6 6 0 0 1 12 0v2M16 5a3 3 0 0 1 0 6M18 14a5 5 0 0 1 3 5"/>',
+  bag: '<path d="M7 8V6a5 5 0 0 1 10 0v2M5 8h14l1 13H4zM8 12v2M16 12v2"/>',
+  home: '<path d="m3 10 9-7 9 7M5 9v12h14V9M9 21v-8h6v8"/>',
+  book: '<path d="M12 5c-3-2-6-2-9-1v15c3-1 6-1 9 1 3-2 6-2 9-1V4c-3-1-6-1-9 1zM12 5v15"/>',
+  leaf: '<path d="M5 19c-5-9 4-14 14-14 0 10-5 19-14 14ZM5 19 15 9"/>',
+  sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2"/>',
+  check: '<path d="m5 12 4 4L19 6"/>',
+  download: '<path d="M12 3v12m-5-5 5 5 5-5M4 16v5h16v-5"/>',
+  spark: '<path d="m12 3 2 6 7 3-7 3-2 6-2-6-7-3 7-3z"/>',
+  return: '<path d="M8 5 3 10l5 5M3 10h12a6 6 0 0 1 0 12"/>',
+};
+export const icon = name => '<svg viewBox="0 0 24 24" aria-hidden="true">' + (paths[name] || paths.spark) + '</svg>';

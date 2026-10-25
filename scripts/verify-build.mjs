@@ -3,6 +3,7 @@ import { readFile, writeFile, mkdir, readdir, realpath } from 'node:fs/promises'
 import { createHash } from 'node:crypto';
 import { join, resolve, relative, sep, isAbsolute } from 'node:path';
 import { startServer, projectRoot } from './serve.mjs';
+import { GAME_VERSION } from '../content/world.js';
 import { launchBrowser } from './lib/browser.mjs';
 import { STORAGE_KEY } from '../packages/storage/store.js';
 import { validateState } from '../packages/core/validate.js';
@@ -22,7 +23,7 @@ const saved = () => page.waitFor('document.querySelector("#save-status").textCon
 try {
   const manifestBytes = await readFile(join(output, 'xianxia-build.json'));
   const manifest = JSON.parse(manifestBytes);
-  assert.equal(manifest.product, 'shanhai-life'); assert.equal(manifest.version, '0.1.0');
+  assert.equal(manifest.product, 'shanhai-life'); assert.equal(manifest.version, GAME_VERSION);
   assert.ok(Array.isArray(manifest.files) && manifest.files.length > 0);
   report.manifest = { sha256: hash(manifestBytes), builtAt: manifest.builtAt, files: manifest.files.length, bytes: manifest.files.reduce((sum, file) => sum + file.bytes, 0) };
   await check('构建清单的全部路径、字节与 SHA-256 一致，源码没有漏入旧版本', async () => {

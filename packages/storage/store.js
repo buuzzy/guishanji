@@ -2,6 +2,8 @@ import { validateState, ValidationError } from '../core/validate.js';
 import { clone } from '../core/state.js';
 import { hashText } from '../core/random.js';
 import { forkState } from './fork.js';
+import { migrateState } from '../core/migrate.js';
+import { isLegacyState } from '../core/legacy-v1.js';
 
 export const STORAGE_KEY = 'shanhai.life.v1';
 export const MAX_FILE_BYTES = 12 * 1024 * 1024;
@@ -30,6 +32,13 @@ export function validateDocument(doc) {
 function empty() { return { format: 1, revision: 0, updatedAt: '', activeId: null, lives: [] }; }
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 
+export function readDocument(source) {
+  if (!source || !Array.isArray(source.lives) || source.lives.length > 512) return validateDocument(source);
+  const doc = clone(source);
+  doc.lives = doc.lives.map(migrateState);
+  return validateDocument(doc);
+}
+
 /** One atomic document retains every life. Never deletes history to fit a quota. */
 export class SaveStore {
   constructor(storage, key = STORAGE_KEY) { this.storage = storage; this.key = key; this.snapshotRaw = undefined; this.document = null; }
@@ -41,7 +50,7 @@ export class SaveStore {
 
   load() {
     const raw = this.raw(); this.snapshotRaw = raw;
-    try { this.document = raw === null ? empty() : validateDocument(parse(raw)); }
+    try { this.document = raw === null ? empty() : readDocument(parse(raw)); }
     catch (error) { this.document = null; throw error; }
     return this.active();
   }
@@ -67,7 +76,10 @@ export class SaveStore {
     const next = clone(doc); next.revision = this.document.revision + 1; next.updatedAt = new Date().toISOString();
     const raw = JSON.stringify(next);
     if (raw.length > MAX_FILE_BYTES) throw new StorageError('档案已经超过本版本的导入上限，请先导出保存。', 'quota');
-    if (this.snapshotRaw !== null) this.put(this.key + '.backup', this.snapshotRaw);
+    if (this.snapshotRaw !== null) {
+      if (parse(this.snapshotRaw).lives.some(isLegacyState)) this.put(this.key + '.preserved.' + hashText(this.snapshotRaw).toString(36), this.snapshotRaw);
+      this.put(this.key + '.backup', this.snapshotRaw);
+    }
     this.assertBaseline();
     this.put(this.key, raw);
     this.snapshotRaw = raw; this.document = next;
@@ -95,7 +107,7 @@ export class SaveStore {
   backup() {
     const raw = this.raw(true);
     if (raw === null) throw new StorageError('当前浏览器还没有备份。', 'missing');
-    return clone(validateDocument(parse(raw)));
+    return clone(readDocument(parse(raw)));
   }
 
   recoverBackup() {
@@ -116,7 +128,7 @@ export class SaveStore {
         if (!key?.startsWith(prefix)) continue;
         const raw = this.storage.getItem(key);
         let document = null;
-        try { document = validateDocument(parse(raw)); } catch { /* Raw damaged text remains downloadable. */ }
+        try { document = readDocument(parse(raw)); } catch { /* Raw damaged text remains downloadable. */ }
         result.push({ id: key.slice(prefix.length), characters: raw?.length || 0, lives: document?.lives.length ?? null, updatedAt: document?.updatedAt || '' });
       }
       return result;
@@ -146,11 +158,11 @@ export class SaveStore {
   import(raw, { conflicts = 'reject' } = {}) {
     const file = parse(raw);
     let incoming, activeId;
-    if (file?.format === 1 && Array.isArray(file.lives) && file.product === undefined) { validateDocument(file); incoming = file.lives; activeId = file.activeId; }
+    if (file?.format === 1 && Array.isArray(file.lives) && file.product === undefined) { const doc = readDocument(file); incoming = doc.lives; activeId = doc.activeId; }
     else {
       if (!file || file.product !== 'shanhai-life' || file.exportVersion !== 1) throw new StorageError('这不是本游戏支持的档案文件。', 'invalid');
-      if (file.type === 'life') { validateState(file.state); incoming = [file.state]; activeId = file.state.id; }
-      else if (file.type === 'archive') { validateDocument(file.document); incoming = file.document.lives; activeId = file.document.activeId; }
+      if (file.type === 'life') { const state = migrateState(file.state); incoming = [state]; activeId = state.id; }
+      else if (file.type === 'archive') { const doc = readDocument(file.document); incoming = doc.lives; activeId = doc.activeId; }
       else throw new StorageError('未知的导出类型。', 'invalid');
     }
     this.assertBaseline();

@@ -54,9 +54,17 @@ export async function launchBrowser() {
     const waitFor = async (expression, timeout = 12000) => { const started = Date.now(); while (Date.now() - started < timeout) { if (await evaluate(expression)) return; await delay(70); } throw new Error('浏览器等待超时：' + expression.slice(0, 200)); };
     const navigate = async destination => { await command('Page.navigate', { url: destination }); await waitFor('document.readyState === "complete"'); };
     const click = async (selector, touch = false) => {
-      const point = await evaluate('(() => { const dialog = document.querySelector("dialog[open]"); const el = dialog?.querySelector(' + JSON.stringify(selector) + ') || document.querySelector(' + JSON.stringify(selector) + '); if (!el) throw new Error("未找到操作: " + ' + JSON.stringify(selector) + '); if (el.disabled) throw new Error("操作不可用"); el.scrollIntoView({block:"center",behavior:"instant"}); const r = el.getBoundingClientRect(); return {x:r.x+r.width/2,y:r.y+r.height/2}; })()');
+      await command('Page.bringToFront');
+      // Pages, modal transitions and Canvas resizing can change the layout.
+      // Resolve a visible, enabled control and measure after the next paint.
+      const locate = '(() => { const scope = document.querySelector("dialog[open]") || document; const candidates = [...scope.querySelectorAll(' + JSON.stringify(selector) + ')].filter(el=>el.getClientRects().length); if (!candidates.length) throw new Error("未找到可见操作: " + ' + JSON.stringify(selector) + '); const el = candidates.find(el=>!el.disabled); if (!el) throw new Error("操作不可用: " + ' + JSON.stringify(selector) + '); el.scrollIntoView({block:"center",behavior:"instant"}); const r = el.getBoundingClientRect(); const x=r.x+r.width/2,y=r.y+r.height/2; return {x,y,hit:el.contains(document.elementFromPoint(x,y))}; })()';
+      await evaluate(locate);
+      await evaluate('new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)))');
+      const point = await evaluate(locate);
+      if (!point.hit) throw new Error('操作被遮挡：' + selector);
+      delete point.hit;
       if (touch) { await command('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: point.x, y: point.y }] }); await command('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] }); }
-      else { await command('Input.dispatchMouseEvent', { type: 'mousePressed', button: 'left', clickCount: 1, ...point }); await command('Input.dispatchMouseEvent', { type: 'mouseReleased', button: 'left', clickCount: 1, ...point }); }
+      else { await command('Input.dispatchMouseEvent', { type: 'mouseMoved', ...point }); await command('Input.dispatchMouseEvent', { type: 'mousePressed', button: 'left', clickCount: 1, ...point }); await command('Input.dispatchMouseEvent', { type: 'mouseReleased', button: 'left', clickCount: 1, ...point }); }
     };
     const screenshot = async path => { const { data } = await command('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false }); await writeFile(path, Buffer.from(data, 'base64')); };
     return { targetId, sessionId, send: command, eval: evaluate, waitFor, navigate, click, screenshot, errors, requests, responses, close: () => send('Target.closeTarget', { targetId }) };

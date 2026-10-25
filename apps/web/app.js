@@ -100,7 +100,7 @@ function render({ focusDecision = false } = {}) {
     document.querySelector('#decision').scrollIntoView({ block: 'nearest', behavior: preferences.reduced ? 'instant' : 'smooth' });
   } else if (focus?.id) document.getElementById(focus.id)?.focus({ preventScroll: true });
   else if (focus?.action) {
-    const candidate = [...screen.querySelectorAll('button')].find(button => button.dataset.action === focus.action && button.dataset.choice === focus.choice && button.dataset.focus === focus.focus);
+    const candidate = [...screen.querySelectorAll('button')].find(button => !button.disabled && button.dataset.action === focus.action && button.dataset.choice === focus.choice && button.dataset.focus === focus.focus);
     candidate?.focus({ preventScroll: true });
   }
 }
@@ -221,8 +221,9 @@ async function performStore(operation) {
 }
 
 // The handlers below only translate browser intent into core commands.
-const mutations = new Set(['begin-life', 'choose', 'choose-auto', 'focus', 'play', 'step-year', 'step-choice', 'heal', 'sell', 'buy', 'travel', 'retreat', 'retreat-until', 'leave-retreat', 'home-style', 'initiate', 'activate-life', 'recover-backup', 'reload-save', 'prepare-new']);
+const mutations = new Set(['begin-life', 'choose', 'choose-auto', 'focus', 'play', 'step-year', 'step-choice', 'heal', 'sell', 'buy', 'travel', 'retreat', 'retreat-until', 'leave-retreat', 'home-style', 'initiate', 'learn-breath', 'practice-month', 'attune', 'exchange-stones', 'exchange-money', 'brew', 'use-pill', 'local-activity', 'activate-life', 'recover-backup', 'reload-save', 'prepare-new']);
 mutations.add('import-fork');
+mutations.add('step-month'); mutations.add('step-arrival');
 
 async function handleAction(action, element) {
   if (saving && mutations.has(action)) { toast('正在留档，请稍等片刻。'); return; }
@@ -254,11 +255,15 @@ async function handleAction(action, element) {
   if (action === 'focus') { await commit(setFocus(state, element.dataset.focus), { announce: false }); return; }
   if (action === 'play') { autoplay = !autoplay && state?.phase === 'life' && !state.pending && !saveError; resumeAfterChoice = false; render(); return; }
   if (action === 'step-year') { await progress(12); return; }
+  if (action === 'step-month') { await progress(1); return; }
+  if (action === 'step-arrival') { if (!state.player.travel) throw new Error('眼下没有行程。'); await progress(state.player.travel.arrival - state.month); return; }
   if (action === 'step-choice') { autoplay = false; resumeAfterChoice = false; await commit(advanceToDecision(state)); return; }
   if (action === 'retreat-until') { if (!state.player.retreat) throw new Error('眼下没有闭关安排。'); closeDialog(false); await progress(state.player.retreat.until - state.month); return; }
-  if (['heal', 'sell', 'buy', 'home-style', 'leave-retreat', 'initiate'].includes(action)) {
-    const command = action === 'home-style' ? { type: 'home', style: element.dataset.style } : action === 'leave-retreat' ? { type: 'leaveRetreat' } : { type: action, item: element.dataset.item };
-    await commit(act(state, command), { announce: false }); if (modal.open) refreshDialog(); return;
+  if (['heal', 'sell', 'buy', 'home-style', 'leave-retreat', 'initiate', 'learn-breath', 'practice-month', 'attune', 'exchange-stones', 'exchange-money', 'brew', 'use-pill', 'local-activity'].includes(action)) {
+    const commands = { 'learn-breath': { type: 'learnBreath' }, 'practice-month': { type: 'practiceMonth' }, 'exchange-stones': { type: 'exchange', direction: 'stones' }, 'exchange-money': { type: 'exchange', direction: 'money' }, 'use-pill': { type: 'usePill' }, 'local-activity': { type: 'localActivity' }, 'home-style': { type: 'home', style: element.dataset.style }, 'leave-retreat': { type: 'leaveRetreat' } };
+    const next = act(state, commands[action] || { type: action, item: element.dataset.item });
+    if (next.pending && modal.open) closeDialog(false);
+    await commit(next); if (modal.open) refreshDialog(); return;
   }
   if (action === 'travel' || action === 'retreat') {
     const command = action === 'travel' ? { type: 'travel', to: element.dataset.to } : { type: 'retreat', years: Number(element.dataset.years) };

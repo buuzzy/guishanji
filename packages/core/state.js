@@ -8,6 +8,9 @@ export const personAge = (state, person) => Math.floor(((person.alive ? state.mo
 export const currentRealm = state => REALMS[state.player.realm];
 export const personById = (state, id) => state.people.find(person => person.id === id);
 export const aliveFamily = state => state.people.filter(person => person.alive && ['mother', 'father', 'guardian', 'partner', 'child'].includes(person.relation));
+export const familyAt = (state, region = state.player.birthRegion) => aliveFamily(state).filter(person => person.location === region);
+export const activeMourning = state => state.player.mourning.filter(item => item.stage !== 'complete');
+export const homeMourning = state => activeMourning(state).filter(item => item.mode !== 'entrust');
 
 export function calendar(state, month = state.month) {
   const total = state.world.birthMonth - 1 + month;
@@ -43,9 +46,9 @@ export function newLife(options = {}) {
     id: 'life-' + hashText(seed).toString(36) + '-' + hashText(seed + ':id:' + (options.runId || '')).toString(36), seed,
     phase: 'birth', month: 0, sequence: 1, nextPerson: 1, revision: 0,
     random: createStreams(seed), player: {}, people: [], queue: [], pending: null, ending: null,
-    flags: {}, log: [], years: [], ledger: [], choices: [],
+    flags: {}, storyDeck: [], log: [], years: [], ledger: [], choices: [],
     stats: { decisions: 0, breakthroughs: 0, failures: 0, help: 0, family: 0, craft: 0, journeys: 0, students: 0, earnings: 0, retreats: 0 },
-    world: { startYear: 0, birthMonth: 1, era: '丰和', weather: '晴', regions: [], factions: [], history: [] },
+    world: { startYear: 0, birthMonth: 1, era: '丰和', weather: '晴', regime: '澄川朝', eventDeck: [], activeEvents: [], regions: [], factions: [], history: [] },
   };
   const origin = options.origin ? ORIGINS.find(item => item.id === options.origin) : weighted(state, ORIGINS);
   const root = options.root ? ROOTS.find(item => item.id === options.root) : weighted(state, ROOTS);
@@ -66,8 +69,8 @@ export function newLife(options = {}) {
     lifespan: 78 + Math.round(constitution / 10), technique: 'breath', focus: 'family', role: 'child',
     faction: null, mentorId: null, partnerId: null, home: 'hut',
     money: origin.money, stones: origin.stones, herbs: origin.herbs, craft: origin.craft, debt: 0,
-    inventory: { charm: 0, sword: 0, book: 0, lamp: 0 }, visited: [region], travel: null, retreat: null,
-    homeStyle: 'plain', keepsakes: [],
+    inventory: { charm: 0, sword: 0, book: 0, lamp: 0, pill: 0 }, visited: [region], travel: null, retreat: null,
+    homeStyle: 'plain', keepsakes: [], training: { learned: false, progress: 0, awakened: false }, mourning: [],
   };
   if (origin.id === 'ward') {
     state.people.push(makePerson(state, { id: state.id + ':guardian', relation: 'guardian', age: 42, bond: 82, realm: 1, lifespan: 126, goal: 'live' }));

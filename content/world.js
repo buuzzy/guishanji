@@ -1,8 +1,23 @@
 /** Original setting. All quantities below are authored game parameters. */
-export const GAME_VERSION = '0.1.0';
-export const RULES_VERSION = 'shanhai-rules-1';
-export const CONTENT_VERSION = 'shanhai-world-1';
+export const GAME_VERSION = '0.2.0';
+export const RULES_VERSION = 'shanhai-rules-2';
+export const CONTENT_VERSION = 'shanhai-world-2';
 export const SAVE_VERSION = 1;
+export const ENTRY_PRACTICE = 12;
+export const ENTRY_COST = Object.freeze({ stones: 12, herbs: 3 });
+export const ATTUNE_COST = Object.freeze({ stones: 6, herbs: 8 });
+export const HOME_STYLES = Object.freeze({
+  plain: { name: '草庐', stones: 0, practice: 1 },
+  bamboo: { name: '竹舍', stones: 8, practice: 1.04 },
+  stone: { name: '石室', stones: 24, practice: 1.1 },
+  cloud: { name: '云台', stones: 48, practice: 1.16 },
+});
+export const ATTRIBUTES = Object.freeze([
+  { id: 'health', name: '体魄', meaning: '当前健康与伤势；归零会身故，疗伤与休养可恢复。也影响突破机会。' },
+  { id: 'mind', name: '心境', meaning: '情绪与专注的稳定程度；影响修炼效率和突破机会，丧亲与受伤会降低。' },
+  { id: 'insight', name: '悟性', meaning: '读书与理解功法的能力；加快引气练习和修为积累。入道还需要学功法、练习和材料。' },
+  { id: 'craft', name: '技艺', meaning: '谋生与制作的熟练程度；提高收入，20 点可炼丹、交换心得，30 点可授徒。' },
+]);
 
 export const REGIONS = Object.freeze([
   { id: 'hegu', name: '青禾谷', short: '青禾', x: 27, y: 67, biome: 'valley', color: '#719b76', description: '水田沿着溪流延伸，药农与凡人家族在此安居。', activity: '药圃、山路与炊烟', living: 58, herbs: 1.3, spirit: 0.9 },
@@ -30,7 +45,7 @@ export const ROOTS = Object.freeze([
   { id: 'single', name: '清灵根', weight: 12, affinity: 1.2, description: '灵息较易汇聚，仍须功法、资源与心境相合。' },
   { id: 'dual', name: '双灵根', weight: 30, affinity: 1.06, description: '两种灵息相伴，适合在长期练习中寻找自己的节奏。' },
   { id: 'mixed', name: '杂灵根', weight: 43, affinity: 0.89, description: '凝聚灵息需要更多耐心，技艺与机缘也能打开道路。' },
-  { id: 'none', name: '未见灵根', weight: 15, affinity: 0, description: '暂未感知灵息。谋生、亲缘与传承同样能构成完整的一生。' },
+  { id: 'none', name: '未见灵根', weight: 15, affinity: 0, description: '天生难以留住灵息。18 岁后悟性达到 40，可用 6 灵石、8 灵草尝试通窍，再按入门步骤修行；也可继续凡人的生活。通窍是本作的架空设定。' },
 ]);
 
 export const REALMS = Object.freeze([
@@ -53,12 +68,13 @@ export const FOCUS = Object.freeze([
   { id: 'learn', name: '识字求知', glyph: '书', description: '读书、请教，积累悟性与见识。', minAge: 0 },
   { id: 'family', name: '照顾牵挂', glyph: '缘', description: '与亲友相处，守住身边人的生活。', minAge: 0 },
   { id: 'craft', name: '磨炼技艺', glyph: '艺', description: '练习手艺，获得收入与修行材料。', minAge: 6 },
-  { id: 'cultivate', name: '静心修炼', glyph: '修', description: '依照功法调息，让修为缓慢积累。', minAge: 12, cultivation: true },
+  { id: 'cultivate', name: '调息修炼', glyph: '修', description: '先学习调息，再按月练习引气；进入炼气后积累修为。', minAge: 12, cultivation: true },
   { id: 'explore', name: '行路历练', glyph: '行', description: '走入山野，遇见资源、机会与风险。', minAge: 12 },
 ]);
 
 export const ITEMS = Object.freeze([
-  { id: 'herbs', name: '灵草', glyph: '草', description: '可用于疗伤、突破与炼制。', price: 2 },
+  { id: 'herbs', name: '灵草', glyph: '草', description: '2 株疗伤；3 株入道；3 株炼一枚养元丹；还用于通窍和突破。', price: 2 },
+  { id: 'pill', name: '养元丹', glyph: '丹', description: '服一枚恢复 30 体魄、5 心境；技艺 20 可用 3 灵草、1 灵石自行炼制。', price: 8 },
   { id: 'charm', name: '护身符', glyph: '符', description: '遇险时减轻一次伤势。', price: 12 },
   { id: 'sword', name: '青锋剑', glyph: '剑', description: '行路时的一份依靠，增加历练的收获。', price: 28 },
   { id: 'book', name: '手抄丹书', glyph: '卷', description: '记载药材与火候，加快技艺积累。', price: 22 },
@@ -83,3 +99,12 @@ export function regionById(id) { return REGIONS.find(item => item.id === id); }
 export function factionById(id) { return FACTIONS.find(item => item.id === id); }
 export function realmById(id) { return REALMS.find(item => item.id === id); }
 export function focusById(id) { return FOCUS.find(item => item.id === id); }
+
+/** Activities and numerical rules belong to this fictional world, not historical claims. */
+export const LOCAL_ACTIVITIES = Object.freeze({
+  hegu: { name: '在药圃采收', description: '花 1 个月，获得 5 灵草、1 技艺；每 3 个月可做一次。', costs: {}, herbs: 5, craft: 1 },
+  landu: { name: '向山门请教调息', description: '花 1 个月，学习调息并增加 3 点引气练习；修士获得 5 修为、2 心境。', costs: {} },
+  zhaoshi: { name: '接一单器坊修缮', description: '花 1 个月、20 铜钱买材料，获得 8 灵石、3 技艺。', costs: { money: 20 }, stones: 8, craft: 3 },
+  mulan: { name: '随商队做一趟买卖', description: '花 1 个月、60 铜钱进货，获得 5 灵石、2 悟性。', costs: { money: 60 }, stones: 5, insight: 2 },
+  wenxue: { name: '在雪岭药谷寻药', description: '花 1 个月；约 80% 减去当地风险影响后获得 9 灵草、4 灵石；失败损失 12 体魄。', costs: {} },
+});

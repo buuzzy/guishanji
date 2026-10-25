@@ -1,11 +1,11 @@
 {
   "product": "shanhai-life",
-  "version": "0.1.0",
-  "rulesVersion": "shanhai-rules-1",
-  "contentVersion": "shanhai-world-1",
+  "version": "0.2.0",
+  "rulesVersion": "shanhai-rules-2",
+  "contentVersion": "shanhai-world-2",
   "saveFormat": 1,
   "storageKey": "shanhai.life.v1",
-  "verifiedAt": "2026-10-25T06:05:33.883Z",
+  "verifiedAt": "2026-10-25T12:53:58.721Z",
   "environment": {
     "platform": "win32",
     "node": "v22.22.2",
@@ -13,231 +13,212 @@
   },
   "result": "passed",
   "regression": {
-    "startedAt": "2026-10-25T06:04:55.710Z",
-    "finishedAt": "2026-10-25T06:05:33.883Z",
+    "startedAt": "2026-10-25T12:49:29.014Z",
+    "node": "v22.22.2",
+    "platform": "win32",
     "results": [
       {
         "name": "check",
         "code": 0,
-        "durationMs": 3414
+        "durationMs": 4123
       },
       {
         "name": "engine-storage",
         "code": 0,
-        "durationMs": 2172
+        "durationMs": 5670
       },
       {
         "name": "build",
         "code": 0,
-        "durationMs": 250
+        "durationMs": 275
       },
       {
         "name": "browser",
         "code": 0,
-        "durationMs": 27507
+        "durationMs": 67307
+      },
+      {
+        "name": "feedback-browser",
+        "code": 0,
+        "durationMs": 21893
       },
       {
         "name": "static-build",
         "code": 0,
-        "durationMs": 4819
+        "durationMs": 5375
       }
-    ]
+    ],
+    "finishedAt": "2026-10-25T12:51:13.674Z",
+    "passed": true
+  },
+  "staticCheck": {
+    "modules": 33,
+    "stories": 43,
+    "result": "passed",
+    "log": "artifacts/regression-check.log"
   },
   "engineStorage": {
-    "tests": 31,
-    "passed": 31,
+    "tests": 49,
+    "passed": 49,
     "failed": 0,
     "skipped": 0,
     "engineTests": 19,
-    "storageTests": 12
+    "storageTests": 12,
+    "feedbackTests": 18
   },
   "lifeSample": {
     "count": 56,
     "distribution": {
       "ascension": 8,
-      "guardian": 12,
-      "family": 8,
-      "artisan": 6,
-      "teacher": 6,
+      "family": 9,
+      "guardian": 13,
+      "artisan": 2,
+      "teacher": 8,
       "wanderer": 8,
       "quiet": 8
     },
     "failures": 1,
     "breakthroughs": 40,
     "method": "seven explicit policies, eight seeds per policy; cultivate uses single root, other policies use none root; remaining birth fields follow the seed",
-    "interpretation": "reachable trajectories for the stated strategies, not unbiased population probabilities",
+    "interpretation": "reachable trajectories for stated strategies, not unbiased population probabilities",
     "injuryEnding": "separate controlled injury and actual seeded random failure test"
   },
   "browser": {
     "tests": 26,
     "passed": 26,
+    "startedAt": "2026-10-25T12:49:39.264Z",
+    "finishedAt": "2026-10-25T12:50:43.933Z",
     "results": [
       {
         "name": "Web 资源可读取，私有配置与 Git 路径不可读取",
         "passed": true,
-        "durationMs": 39
+        "durationMs": 34
       },
       {
         "name": "桌面首页与原创像素场景真实渲染",
         "passed": true,
-        "durationMs": 377
+        "durationMs": 367
       },
       {
         "name": "出生重抽、改名与入世在普通入口完成",
         "passed": true,
-        "durationMs": 346
+        "durationMs": 687
       },
       {
         "name": "抉择自动进入人生，等待回应时不能快转",
         "passed": true,
-        "durationMs": 1342
+        "durationMs": 1416
       },
       {
         "name": "刷新完整恢复人物、随机流与待选抉择",
         "passed": true,
-        "durationMs": 220
+        "durationMs": 388
       },
       {
         "name": "十二岁问道接入同一人物、地域、功法和修为",
         "passed": true,
-        "durationMs": 59
+        "durationMs": 392
       },
       {
         "name": "地图、亲友与人物道路只读，不改变人生或随机数",
         "passed": true,
-        "durationMs": 363
+        "durationMs": 823
       },
       {
         "name": "日色、夜色与减少动画可切换，不影响人生",
         "passed": true,
-        "durationMs": 215
+        "durationMs": 860
       },
       {
         "name": "原创合成山音通过用户操作开启和关闭",
         "passed": true,
-        "durationMs": 169
+        "durationMs": 467
       },
       {
         "name": "自动流转、速度与暂停不跳过人物月份",
         "passed": true,
-        "durationMs": 1944
+        "durationMs": 1937
       },
       {
         "name": "成年抉择与坊市物品沿原人生生效",
         "passed": true,
-        "durationMs": 338
+        "durationMs": 1502
       },
       {
         "name": "洞府外观写入人物，闭关中的要事中断真实年月",
         "passed": true,
-        "durationMs": 1738
+        "durationMs": 4371
       },
       {
         "name": "PNG、HTML、CSV 与 JSON 生成真实文件且与当前人生一致",
         "passed": true,
-        "durationMs": 809
+        "durationMs": 1099
       },
       {
         "name": "导出的传记可离线阅读并实际打印为 PDF",
         "passed": true,
-        "durationMs": 1606
+        "durationMs": 1907
       },
       {
         "name": "文件导入恢复另一段人生，原本的修士仍完整保留",
         "passed": true,
-        "durationMs": 163
+        "durationMs": 362
       },
       {
         "name": "同一人生的不同进度经预览后可并存，文件副本保持人物与机缘",
         "passed": true,
-        "durationMs": 216
+        "durationMs": 450
       },
       {
         "name": "凡人通过浏览器的真实抉择走到终章，前世录可回看完整经历",
         "passed": true,
-        "durationMs": 3487
+        "durationMs": 13374
       },
       {
         "name": "另启一世会保留已结束和未结束的人生",
         "passed": true,
-        "durationMs": 122
+        "durationMs": 292
       },
       {
         "name": "真实第二个页面触发存档冲突，读回最新档案完成对齐",
         "passed": true,
-        "durationMs": 519
+        "durationMs": 1112
       },
       {
         "name": "普通入口生成的人生在浏览器中实际走完出生至终章",
         "passed": true,
-        "durationMs": 6430
+        "durationMs": 26168
       },
       {
         "name": "损坏存档提示恢复，有效备份采用前保留原始文字",
         "passed": true,
-        "durationMs": 256
+        "durationMs": 608
       },
       {
         "name": "不支持的导入版本明确拒绝，原档没有覆盖",
         "passed": true,
-        "durationMs": 193
+        "durationMs": 435
       },
       {
         "name": "浏览器配额故障注入保留已有档案，仍可导出本页进度",
         "passed": true,
-        "durationMs": 368
+        "durationMs": 773
       },
       {
         "name": "手机 Web 的触控、抉择与主要详情没有横向溢出",
         "passed": true,
-        "durationMs": 1808
+        "durationMs": 2980
       },
       {
         "name": "键盘焦点、按钮名称与媒体能力可用",
         "passed": true,
-        "durationMs": 15
+        "durationMs": 105
       },
       {
         "name": "应用页面无 JavaScript 错误、失败资源或外部网络依赖",
         "passed": true,
         "durationMs": 0
       }
-    ],
-    "ordinaryBirthToEnding": {
-      "seed": "1n7j6b5-2mtxnb-1fjlkbs",
-      "id": "life-8vxh4w-36v7mh",
-      "age": 84,
-      "decisions": 38,
-      "fromOrdinaryBirth": true,
-      "externalStateInjection": false
-    },
-    "fileTransferLife": {
-      "seed": "browser-mortal-transfer",
-      "age": 84,
-      "ending": "family",
-      "decisions": 39
-    },
-    "exports": {
-      "png": {
-        "bytes": 89147
-      },
-      "html": {
-        "bytes": 126110
-      },
-      "csv": {
-        "bytes": 1855
-      },
-      "json": {
-        "bytes": 32599
-      }
-    },
-    "offlineBiographyPDF": true,
-    "viewports": [
-      360,
-      390,
-      768,
-      1280,
-      1440
     ],
     "screenshots": [
       {
@@ -247,74 +228,259 @@
       },
       {
         "path": "artifacts/screenshots/02-birth-desktop.png",
-        "bytes": 31465,
-        "sha256": "74a8505dfbb80956966aa092691e5a9725c6a8f67863a326931a8257a393612e"
+        "bytes": 31612,
+        "sha256": "ffd9307e406d6a88c93ad895a092c3dbb0c891e331c817864ea050f238204939"
       },
       {
         "path": "artifacts/screenshots/03-choice-desktop.png",
-        "bytes": 59419,
-        "sha256": "c210495c646337c9c29f9690017fd5e0fff2675132725b11d0f00442f877dd69"
+        "bytes": 65765,
+        "sha256": "ef2bf63c8f7b6b54a4bb20e9d09297c45f12a4b1a1ba5776102df73b657a19c4"
       },
       {
         "path": "artifacts/screenshots/04-life-night-desktop.png",
-        "bytes": 61597,
-        "sha256": "9e2976b3282c5a6a9ff183e433d2425b8a3d5e5780806db3f17ccf2685c9935d"
+        "bytes": 64294,
+        "sha256": "cf1943702de25903deb460afd0715d2be65f37f8504ad199d5bf8b9c30d4f0fa"
       },
       {
         "path": "artifacts/screenshots/05-retreat-choice-desktop.png",
-        "bytes": 64220,
-        "sha256": "f68b46432bb7d576d31f234daf870555d5d1943dc7d40c5ed999b1406f42533e"
+        "bytes": 64599,
+        "sha256": "3410d023accecc9e3ba438466eec24a647e28479716b150ab009889058342d9f"
       },
       {
         "path": "artifacts/screenshots/06-ending-desktop.png",
-        "bytes": 45078,
-        "sha256": "0295de73b819df024e8e0564fafc55da414c06bb1fc6bf02362fd1b4a155832a"
+        "bytes": 45065,
+        "sha256": "669f9b15be59e90747fb116bc7854cb0ec3cca131ad5754076bd92afcf5aa349"
       },
       {
         "path": "artifacts/screenshots/07-choice-mobile.png",
-        "bytes": 62652,
-        "sha256": "157e468cdcf86fc37550e900a18844185328c8919add5917f2b47211a41ce1ac"
+        "bytes": 68266,
+        "sha256": "7065916490797481610c246aef47c762008cdf975aab0b0421d89d433473a252"
       }
     ],
+    "exports": {
+      "png": {
+        "path": ".local/browser-jSGHqV/downloads/山海一生-沈知微-28岁.png",
+        "bytes": 88723,
+        "sha256": "2b221de9db5f1dd392354fc04d7a17a0a9ce673fcf17f4d26316f3b21e8c101e"
+      },
+      "html": {
+        "path": ".local/browser-jSGHqV/downloads/山海一生-沈知微-28岁.html",
+        "bytes": 133933,
+        "sha256": "906df7200dc201c10bd2ab3d15fdf9e239bfa05541a355613abfed641150c34f"
+      },
+      "csv": {
+        "path": ".local/browser-jSGHqV/downloads/山海一生-沈知微-28岁.csv",
+        "bytes": 1875,
+        "sha256": "ba1e45a074bf1526fdba755bfc14ed283fe60f55677d0d0c6fd3498c7b23c401"
+      },
+      "json": {
+        "path": ".local/browser-jSGHqV/downloads/山海一生-沈知微-28岁.json",
+        "bytes": 59083,
+        "sha256": "346785b32fea3ad5f4999fa3fbf3892eb4a1342e3c31b20346d8870744b4a60b"
+      }
+    },
+    "completedBrowserLife": {
+      "seed": "browser-mortal-transfer",
+      "age": 84,
+      "ending": "family",
+      "decisions": 76
+    },
+    "completeNaturalBrowserLife": {
+      "seed": "onjgpn-1vkz8dv-1deqkmr",
+      "id": "life-j6322u-5ixzub",
+      "age": 87,
+      "decisions": 80,
+      "fromOrdinaryBirth": true,
+      "externalStateInjection": false
+    },
+    "consoleErrors": []
+  },
+  "feedbackBrowser": {
+    "tests": 11,
+    "passed": 11,
+    "startedAt": "2026-10-25T12:50:46.565Z",
+    "finishedAt": "2026-10-25T12:51:05.604Z",
+    "results": [
+      {
+        "name": "旧人生按新规则读取，继续操作后仍保留升级前原文与完整往事",
+        "passed": true,
+        "durationMs": 757
+      },
+      {
+        "name": "悟性 100、未见灵根者能在主界面通窍、按月练习并进入炼气",
+        "passed": true,
+        "durationMs": 2719
+      },
+      {
+        "name": "兑换、炼丹与服丹实际扣除资源、经过月份并恢复体魄",
+        "passed": true,
+        "durationMs": 866
+      },
+      {
+        "name": "十六岁自然询问迁居，说明去处、用途、路资与月份，真实抵达后可做当地活动",
+        "passed": true,
+        "durationMs": 1687
+      },
+      {
+        "name": "改造洞府显示费用和余额，年表与账册有同一笔实际扣费",
+        "passed": true,
+        "durationMs": 842
+      },
+      {
+        "name": "父母讣告在闭关中出现，显示具名身份、享年与返乡治丧安排",
+        "passed": true,
+        "durationMs": 1907
+      },
+      {
+        "name": "守丧仍按月生活，周年追思和期满重新安排接入同一人生",
+        "passed": true,
+        "durationMs": 1657
+      },
+      {
+        "name": "各类灾乱与王朝更替有具体年表，当前影响有地点与持续期",
+        "passed": true,
+        "durationMs": 687
+      },
+      {
+        "name": "家中已无人时，主界面与年度叙述说明独自生活",
+        "passed": true,
+        "durationMs": 650
+      },
+      {
+        "name": "手机宽度下四属性、修行指引和关键详情可见，触控学习与资源操作可用",
+        "passed": true,
+        "durationMs": 5755
+      },
+      {
+        "name": "新增流程无脚本错误、失败资源或外部网络依赖",
+        "passed": true,
+        "durationMs": 0
+      }
+    ],
+    "screenshots": [
+      {
+        "path": "artifacts/feedback-20261025125046563/01-entry-guide.png",
+        "bytes": 60813,
+        "sha256": "bf47805cc9a99bd0912df9bd32d9ff135d991da78fec2f28c31bf68211816502"
+      },
+      {
+        "path": "artifacts/feedback-20261025125046563/02-resource-loop.png",
+        "bytes": 160757,
+        "sha256": "e012c3e7ced33a8376e9719dd501d0e782237b97d1d4c979888fc1b4b21de197"
+      },
+      {
+        "path": "artifacts/feedback-20261025125046563/03-journey-choice.png",
+        "bytes": 63090,
+        "sha256": "6fe8a1c49517124d55b35a49c795cc66438c6c97b2b029a7fb4025fd7a0087dd"
+      },
+      {
+        "path": "artifacts/feedback-20261025125046563/04-regional-activities.png",
+        "bytes": 199356,
+        "sha256": "e590faaffc127391c2349efb976f2b553d13489a06361748b0beec7810985c8c"
+      },
+      {
+        "path": "artifacts/feedback-20261025125046563/05-home-cost.png",
+        "bytes": 154883,
+        "sha256": "b8303bf821c1ea81fdb13715bd016934bd938c5cc36e2947da5e323e8db550d8"
+      },
+      {
+        "path": "artifacts/feedback-20261025125046563/06-parent-obituary.png",
+        "bytes": 66748,
+        "sha256": "1539a72421e9c4ebb224f51e8a39732730c413f2aea76420089f2d92e7acf846"
+      },
+      {
+        "path": "artifacts/feedback-20261025125046563/07-mourning-home.png",
+        "bytes": 156408,
+        "sha256": "dfd9c7c2b341d39f471caa4e77a9c29a2a3e867c1092fb26b5b3888ddbf9c01b"
+      },
+      {
+        "path": "artifacts/feedback-20261025125046563/08-mourning-complete.png",
+        "bytes": 61161,
+        "sha256": "933d13f46ee1c004f4624e15a974ad0e65c0da0241ba658e4b8f7f395440ec33"
+      },
+      {
+        "path": "artifacts/feedback-20261025125046563/09-world-history.png",
+        "bytes": 204120,
+        "sha256": "1a7931899356f227ca58477b01a0e6267bf2bec632afcc0b4fb31f92d92ac81c"
+      },
+      {
+        "path": "artifacts/feedback-20261025125046563/10-empty-home.png",
+        "bytes": 65376,
+        "sha256": "1cb6705771d0779e5a5167a4942310c9e30fe799f2972d9487a63a78b676be62"
+      },
+      {
+        "path": "artifacts/feedback-20261025125046563/11-guide-360.png",
+        "bytes": 25661,
+        "sha256": "3d4e2fbd3728530aa24bbd291079bbb20e0c54f244aa8c2b5a3b23536719cd9b"
+      },
+      {
+        "path": "artifacts/feedback-20261025125046563/12-inventory-360.png",
+        "bytes": 30161,
+        "sha256": "3fbf6d5411e9be259aab1e765b4815c430575460ffa2c92fe7723c84734074fb"
+      },
+      {
+        "path": "artifacts/feedback-20261025125046563/11-guide-390.png",
+        "bytes": 26444,
+        "sha256": "308d7a736ce3160a83c427b7da308edd38dd84bbf86cc94a0745f78e23f8f53a"
+      },
+      {
+        "path": "artifacts/feedback-20261025125046563/12-inventory-390.png",
+        "bytes": 36778,
+        "sha256": "9cde4eb6301258511df39240c33792b9d208e8902a060de8ca83752e48736f9b"
+      },
+      {
+        "path": "artifacts/feedback-20261025125046563/11-guide-768.png",
+        "bytes": 43200,
+        "sha256": "6bddb5d45314546475958feaa2898033be2025d3a39abda0f6e500947911200c"
+      },
+      {
+        "path": "artifacts/feedback-20261025125046563/12-inventory-768.png",
+        "bytes": 51876,
+        "sha256": "084267ed6845f1d4566701ce32f6e7b93ccbd17b0a495fc43f360c226cbba1dd"
+      }
+    ],
+    "legacyMigration": {
+      "sourceVersion": "0.1.0",
+      "preservedOriginal": true,
+      "lives": 3,
+      "unchangedMonthAndRNG": true
+    },
+    "entry": {
+      "startingInsight": 100,
+      "root": "none",
+      "awakened": true,
+      "ageInMonths": 226,
+      "realm": "炼气",
+      "realUIClicks": true
+    },
+    "mourning": {
+      "deathMonth": 372,
+      "completedMonth": 402,
+      "actorId": "life-3jcjfs-19ftkcj:mother",
+      "returnBurialAndAnniversary": true
+    },
     "consoleErrors": [],
-    "errorPageConsoleErrors": []
+    "scope": "Real clicks on isolated Chromium; controlled authored saves + published 0.1.0 fixture. Mobile viewport emulation, not physical devices."
   },
   "staticBuild": {
     "tests": 3,
     "passed": 3,
-    "results": [
-      {
-        "name": "构建清单的全部路径、字节与 SHA-256 一致，源码没有漏入旧版本",
-        "passed": true,
-        "durationMs": 17
-      },
-      {
-        "name": "构建的全部 Web 文件经 HTTP 响应逐字一致，首页与私有路径正确",
-        "passed": true,
-        "durationMs": 57
-      },
-      {
-        "name": "真实构建在浏览器完成出生、入世、自动抉择、回应与刷新恢复",
-        "passed": true,
-        "durationMs": 665
-      }
-    ],
-    "manifest": {
-      "sha256": "889f1ae8743bb1aaf19c501953489ac5fd2ef549621635ab85b4765f5dabe33f",
-      "builtAt": "2026-10-25T06:05:01.536Z",
-      "files": 21,
-      "bytes": 231042
-    },
-    "files": [
+    "startedAt": "2026-10-25T12:53:56.134Z",
+    "finishedAt": "2026-10-25T12:53:58.721Z",
+    "manifestSHA256": "036d896859184f45fec13320369b22a3033a04754d27d8401f760a91627c66e5",
+    "builtAt": "2026-10-25T12:53:37.473Z",
+    "files": 25,
+    "bytes": 319436,
+    "fileManifest": [
       {
         "path": "apps/web/app.js",
-        "bytes": 23269,
-        "sha256": "c280c3626413b0052fad7e3b2103b462b1a27930d37f91fb10ec99df6bbfa5fb"
+        "bytes": 24155,
+        "sha256": "11497d735389ede33ab7704749e9711b657110684eddc981f9207fdf955128e6"
       },
       {
         "path": "apps/web/dialogs.js",
-        "bytes": 26097,
-        "sha256": "552c4520c4663d486b96ae1e936648f7e7551e9fdd0adbbc7f52a731da1d810f"
+        "bytes": 29832,
+        "sha256": "4e3b59a7e0edebea867b67030dc0dda3b661c072811a2620516842b4548d20fd"
       },
       {
         "path": "apps/web/favicon.svg",
@@ -334,32 +500,37 @@
       {
         "path": "apps/web/index.html",
         "bytes": 2602,
-        "sha256": "ae03a4b8f086ec912c0ad82985b39519bbc0e56b86bccff0cf954c8133f61b87"
+        "sha256": "b510354c02fda8b5c0ca9eb7fa82960d9d2cd8ece93d98fd288a83de0112eb79"
       },
       {
         "path": "apps/web/style.css",
-        "bytes": 31926,
-        "sha256": "9f5dcf4e1ac62648321777fa143de25a3477669c9a5cff33e89d70a0f00fa989"
+        "bytes": 33300,
+        "sha256": "f7434c5936488a69c4cc5eb30937fa1075db5a396847d243fa00ea522adc05a4"
       },
       {
         "path": "apps/web/views.js",
-        "bytes": 16015,
-        "sha256": "3f9d48fdf91f68f02c056ef1b3666a8f1e47c0508a370e44079fa0807b9c1920"
+        "bytes": 19512,
+        "sha256": "a653572c1ceffe13315a444d6a593118cb2afb6f747d1830c6bb4b84fa2f0bef"
+      },
+      {
+        "path": "content/expansion.js",
+        "bytes": 16556,
+        "sha256": "f5fe7d7256ffeb8cf5705ed364a4581201e700b77ca8e304937db8aee04b4f6b"
       },
       {
         "path": "content/stories.js",
-        "bytes": 12111,
-        "sha256": "dcd66078456d46462a2c8365ebf47dfe993a1cc7910665f89bc4f41dfb8b17f4"
+        "bytes": 13688,
+        "sha256": "e0ff18424b3c7e8c8e63c2c71d0c399c8b9a0761e9ab5bc0636b5e298107c99e"
       },
       {
         "path": "content/world.js",
-        "bytes": 8862,
-        "sha256": "dc6820d5cd14f286726da4dc54a6ee855699e923260b56c79d99b425725a1ddd"
+        "bytes": 11274,
+        "sha256": "48c55afa7e3cfe3850128ae41b35b9ece7f4136c564b3ea4282856ace48b278f"
       },
       {
         "path": "index.html",
         "bytes": 2602,
-        "sha256": "ae03a4b8f086ec912c0ad82985b39519bbc0e56b86bccff0cf954c8133f61b87"
+        "sha256": "b510354c02fda8b5c0ca9eb7fa82960d9d2cd8ece93d98fd288a83de0112eb79"
       },
       {
         "path": "package.json",
@@ -368,8 +539,18 @@
       },
       {
         "path": "packages/core/engine.js",
-        "bytes": 43986,
-        "sha256": "6d36cc9f1c3107bd93974d86331dcefaa4657f3e16aecf38ef6f3d9385c5f04d"
+        "bytes": 82419,
+        "sha256": "5e5bd4d229d6885c0fe26514e8e67d23ddfff2bd320502e618fb64f023b1f007"
+      },
+      {
+        "path": "packages/core/legacy-v1.js",
+        "bytes": 4812,
+        "sha256": "4723b08fcfd85879161f1e261bb446bc6ebe86673593abf3a7a1dafdd1f35328"
+      },
+      {
+        "path": "packages/core/migrate.js",
+        "bytes": 2311,
+        "sha256": "d6df93cb5704519d64e0f04d572df6dc6578e1e6cc7309e3a0f578c72eaf6599"
       },
       {
         "path": "packages/core/random.js",
@@ -378,13 +559,18 @@
       },
       {
         "path": "packages/core/state.js",
-        "bytes": 7933,
-        "sha256": "c58d082cbb706a9b46d94c576bae901299340920faf03f1d187fba5965159ac4"
+        "bytes": 8424,
+        "sha256": "ec17a323460775dae373c5d684f7ba1067ede02f73b07b4a8a0cd04d6c8e5ae6"
       },
       {
         "path": "packages/core/validate.js",
-        "bytes": 15579,
-        "sha256": "99c6c9e8700369a9c30d32ee9be775b090e25c09e58f8798caa0ea0327ba3bcd"
+        "bytes": 20449,
+        "sha256": "a1642289cd089af4a2f3dcbc5035fe9709931e849bef8f05247d50124db8d4ca"
+      },
+      {
+        "path": "packages/core/world-events.js",
+        "bytes": 4484,
+        "sha256": "a5e5dc54a310f4abbe3603e1d337da48c7cf24cded570f38ef57d829a628e130"
       },
       {
         "path": "packages/media/audio.js",
@@ -398,57 +584,98 @@
       },
       {
         "path": "packages/render/canvas.js",
-        "bytes": 18632,
-        "sha256": "5c5e498912483ec05fc39ca184f8350d0485bca6473a4c79a22e8aa8da08e625"
+        "bytes": 20236,
+        "sha256": "b719c895fa6712c50a997a9b5f4e2595c34b9a5b867ed225ffb4ea63fdff1100"
       },
       {
         "path": "packages/storage/fork.js",
-        "bytes": 1701,
-        "sha256": "189b6cf22d55c142ad214afb2ac95ffe93de7f4ee53001bc250b330921d3ff45"
+        "bytes": 2537,
+        "sha256": "ee26cead1c961464e95964dfe9545507653a392f6c0e2d86c09bcfaada8f891d"
       },
       {
         "path": "packages/storage/store.js",
-        "bytes": 10138,
-        "sha256": "df0cd0cff70eee9d48e28e8b556c58e6e81dc5cb61aca3afeccf50ae8f9206cf"
+        "bytes": 10654,
+        "sha256": "4fea3dd3148205afefdbf8c24b03ecdb18d1f46a650d6674a361fcb98f36b74d"
       }
     ],
     "http": {
-      "publicFileResponses": 20,
+      "publicFileResponses": 24,
       "root": true,
       "privatePaths": 4
     },
     "birthToDecisionAndReload": {
-      "seed": "1dyrjb5-1tq5kwj-13n0m04",
+      "seed": "w11a8c-1kzyymd-1m4mlgk",
       "month": 72,
       "decisions": 1,
       "fromOrdinaryBirth": true
     }
   },
+  "postRegressionChange": {
+    "reason": "Only footer version text changed from v0.1.0 to v0.2.0; runtime modules stayed byte-identical. Rebuilt and reran the three static-build checks.",
+    "sourceFile": "apps/web/index.html",
+    "affectedBuildFiles": [
+      "apps/web/index.html",
+      "index.html"
+    ],
+    "comparedWith": ".local/previous-dist-20261025125337392/xianxia-build.json",
+    "previousManifestSHA256": "d0ea7686a079836a2ea7da944499cabdbec7dedbb5bdb87a8355d2986d443b9e",
+    "rerun": [
+      "node scripts/build.mjs",
+      "node scripts/verify-build.mjs"
+    ]
+  },
+  "migration": {
+    "sourceVersion": "0.1.0",
+    "targetVersion": "0.2.0",
+    "fixture": "tests/fixtures/v0.1.0-archive.json",
+    "fixtureSHA256": "523ab7e1f16f06ee9f1bb5eac6c65240b5bf3eb12a72266f4fa091766bed91d8",
+    "preserves": [
+      "month and RNG",
+      "people and lived history",
+      "choices and ledger",
+      "original raw text through preserved backup"
+    ],
+    "oldPending": "eligible parent farewell becomes bereavement; invalid family pending is withdrawn with original text preserved",
+    "futureTrajectory": "continues under new rules"
+  },
+  "research": {
+    "sourceCount": 6,
+    "index": "docs/feedback-sources.json",
+    "indexSHA256": "dd50b058b6abf00270354bb262846ded25af3051f559a72793ee66022979aa67",
+    "method": "Web search REST + contents extraction; source descriptions, not competitor gameplay/source-code verification",
+    "rawPDFBytesVerified": false,
+    "competitorGameplayVerified": false
+  },
   "rawEvidence": [
     {
       "path": "artifacts/regression.json",
-      "bytes": 580,
-      "sha256": "7221b9521e4718d6331f54e1e1f9ae13b4431edfd2352bfa777bc87fbb30a8da"
+      "bytes": 670,
+      "sha256": "2ca8768e1fdae7b4c6686f5b040bb4e2d76bb08b68bb66857356a593227466df"
     },
     {
       "path": "artifacts/regression-check.log",
       "bytes": 107,
-      "sha256": "1851ada328cb54c6b0bcee0b4fdedb29d93a81433c43331a54f4e586db311627"
+      "sha256": "7ce17a9ac9f57dfe279e90a9154353d2021cdbe17a01d1970c7e66319d814608"
     },
     {
       "path": "artifacts/regression-engine-storage.log",
-      "bytes": 7044,
-      "sha256": "3fa0f263c52c21ed2a625cd1194b2bb2311c7d1b2cec09cc428bb536c55627ab"
+      "bytes": 11154,
+      "sha256": "e78760ce3e73f7eb014d722eef8e3ea904e9a468f8ba8dc334a00cd5f2904212"
     },
     {
       "path": "artifacts/regression-build.log",
       "bytes": 48,
-      "sha256": "fbb0ec4f872eccecf9fb88c735f517372921e6980db509ac70bdd8d4f97291da"
+      "sha256": "e99a3f77b6ecb762cee47fbf85dbf799907849d8796f6fa5fe769f928b5e2d5d"
     },
     {
       "path": "artifacts/regression-browser.log",
       "bytes": 2035,
       "sha256": "321486a70c766f7421d54af90d2b7364ceb382b1436f2eced955bed572e01e5e"
+    },
+    {
+      "path": "artifacts/regression-feedback-browser.log",
+      "bytes": 1188,
+      "sha256": "269fb5747726a35df9c8d77ba4b593cb752298e3e8604cff9144245c2a7620ac"
     },
     {
       "path": "artifacts/regression-static-build.log",
@@ -457,37 +684,81 @@
     },
     {
       "path": "artifacts/browser-verification.json",
-      "bytes": 6795,
-      "sha256": "f81800203a971ad25c9faa41ebf2b6d6efdb157dd4105e7e898c4bf88095b697"
+      "bytes": 6802,
+      "sha256": "33515b1f8b702b46bd87e70d377b354f27f647f7eea33864431052996cd7cc73"
+    },
+    {
+      "path": "artifacts/feedback-browser-verification.json",
+      "bytes": 6022,
+      "sha256": "437a013b63e7e60bcb5bc0622a3e7eb515e5856c84481b3e408ddcf8429ad056"
     },
     {
       "path": "artifacts/static-verification.json",
       "bytes": 1434,
-      "sha256": "78a0ca153cfee40d0e10d215a4d378fca05957d7ba418c8e31dbcfd7671b7e62"
+      "sha256": "7ff25281be3e7bf0a3f7c326c49c5a10fe0f208e4a44baf525810ba805e26a53"
     },
     {
       "path": "artifacts/biography-print.pdf",
-      "bytes": 249976,
-      "sha256": "970c93b5380b639784ab2ef202586aaf92d45e634b34817d0e0d8c4bcc04d4a5"
+      "bytes": 370090,
+      "sha256": "37c9653bd242f9f3e89534ead1c84df4f8eb2d195bfe6a442ae9f9a90b5ed3fa"
+    },
+    {
+      "path": "dist/xianxia-build.json",
+      "bytes": 4009,
+      "sha256": "036d896859184f45fec13320369b22a3033a04754d27d8401f760a91627c66e5"
+    },
+    {
+      "path": ".local/previous-dist-20261025125337392/xianxia-build.json",
+      "bytes": 4009,
+      "sha256": "d0ea7686a079836a2ea7da944499cabdbec7dedbb5bdb87a8355d2986d443b9e"
+    },
+    {
+      "path": "docs/feedback-sources.json",
+      "bytes": 4750,
+      "sha256": "dd50b058b6abf00270354bb262846ded25af3051f559a72793ee66022979aa67"
+    },
+    {
+      "path": ".local/feedback/game-contents.json",
+      "bytes": 25595,
+      "sha256": "7237f02d5102a02961253a3a6579c3a625323f05eb2c8c90d84b1dc95e931535"
+    },
+    {
+      "path": ".local/feedback/source-contents.json",
+      "bytes": 68849,
+      "sha256": "0ffa470806b38f7cf723fd125f72e7a1bc77cfa3fc4bb69e54ff394f26c86ffa"
     }
   ],
   "scope": {
     "windowsChrome": "passed",
-    "emulatedMobileChrome": "passed",
+    "emulatedMobileChrome": "passed at 360/390/768/1280 widths",
     "realIOSAndroid": "not tested",
     "safariFirefox": "not tested",
     "macOSLinux": "not tested",
-    "githubWrite": "not performed",
+    "actualPlayerSaves": "not touched; isolated test storage",
+    "localPreview": {
+      "url": "http://127.0.0.1:8866/",
+      "status": 200,
+      "footerVersion": "0.2.0"
+    },
+    "githubRead": "not rechecked this task; cached origin is not proof of current remote state",
+    "githubWrite": "not performed this task",
+    "merge": "not performed",
     "deployment": "not performed",
-    "referenceRepository": {
-      "path": "C:/Users/CaiYiyang/Downloads/one8b-mp/one8b-mp",
-      "head": "1984cee21c639729f6885e21e7ba89b325ef824d",
-      "worktree": "clean, unchanged during this task"
-    }
+    "wechat": "outside Web-only scope",
+    "referenceRepository": "1in8b project not modified in this task"
+  },
+  "localDelivery": {
+    "branch": "fix/life-feedback",
+    "baseline": "574a9265c6060a9528b1c189eb89468c1e0c14d0",
+    "commitEvidence": ".local/feedback/delivery-verification.json",
+    "remote": "https://github.com/buuzzy/xianxia-life"
   },
   "remaining": [
-    "full alchemy and forging recipes",
-    "sect competition and secret realms",
+    "multiple recipes and independent profession skill chains",
+    "sect contributions and techniques",
+    "staged explorable secret realms",
+    "dynamic local prices and extended faction world",
+    "longer relationship and group stories",
     "free home layout and industries",
     "cloud archive and accounts",
     "public biographies and community",

@@ -13,7 +13,10 @@ const priorities = {
 
 export function policyChoice(state, policy = 'family') {
   const event = state.pending.event, available = state.pending.options.filter(item => !item.disabled);
-  let order = priorities[policy]?.[event] || [];
+  const safe = { initiation: ['later'], entry: ['wait'], journey: ['stay'], bereavement: policy === 'family' ? ['full', 'simple', 'entrust'] : ['simple', 'entrust'], memorial: ['keep'], mourningEnd: policy === 'cultivate' ? ['practice', 'work'] : policy === 'family' ? ['family'] : ['work'], famine: ['save'], flood: ['stay'], quake: ['rest'], tax: ['save'], levy: ['stay'], regime: ['wait'], demonwar: ['stay'], harvest: ['save'], trade: ['pass'], treasure: ['expert', 'report'], immortal: ['pass'], alchemy: ['pass'], workshop: ['pass'], caravan: ['pass'], relic: ['copy'] };
+  if (policy === 'guardian') Object.assign(safe, { famine: ['aid', 'work'], flood: ['repair', 'rescue', 'stay'], quake: ['medicine', 'build'], tax: ['petition'], regime: ['shelter', 'wait'], demonwar: ['shelter', 'stay'], harvest: ['help'], trade: ['work'], immortal: ['medicine', 'pass'] });
+  if (policy === 'artisan' || policy === 'teacher') Object.assign(safe, { alchemy: ['learn', 'brew'], workshop: ['study'], caravan: ['work'] });
+  let order = priorities[policy]?.[event] || safe[event] || [];
   if (['breakthrough', 'ascension'].includes(event)) order = ['prepare', 'attempt', 'delay'];
   return [...order, ...available.map(item => item.id)].find(id => available.some(item => item.id === id));
 }

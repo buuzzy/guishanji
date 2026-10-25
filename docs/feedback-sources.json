@@ -1,0 +1,89 @@
+{
+  "researchedOn": "2026-10-25",
+  "method": "Web search REST + contents extraction; source descriptions, not competitor gameplay/source-code verification",
+  "boundaries": [
+    "No competitor code, assets, proprietary names, plots or numerical formulas imported.",
+    "Extracted text hashes are not original HTML or PDF byte hashes.",
+    "Mourning durations, resource costs, cultivation and success probabilities are original fictional game rules."
+  ],
+  "sources": [
+    {
+      "id": "michangsheng",
+      "url": "https://store.steampowered.com/app/1189490/_/?l=schinese",
+      "title": "Steam 上的 觅长生",
+      "publisher": "官方 Steam 商店介绍",
+      "retrievedOn": "2026-10-25",
+      "capturedAt": "2026-10-25T12:23:38.241Z",
+      "localEvidence": ".local/feedback/game-contents.json",
+      "responseSHA256": "7237f02d5102a02961253a3a6579c3a625323f05eb2c8c90d84b1dc95e931535",
+      "extractedTextSHA256": "9e6c9e6e46cbb1e5f5d55e8167429a6727a7561e3bc1a276e6805f03b74d16c4",
+      "quote": "所有的这些修炼行为都会消耗大量的时间。",
+      "usedFor": "时间与修行准备、丹方和地域交易"
+    },
+    {
+      "id": "guigubahuang",
+      "url": "https://store.steampowered.com/app/1468810/_/?l=schinese",
+      "title": "Steam 上的 鬼谷八荒",
+      "publisher": "官方 Steam 商店介绍",
+      "retrievedOn": "2026-10-25",
+      "capturedAt": "2026-10-25T12:23:38.241Z",
+      "localEvidence": ".local/feedback/game-contents.json",
+      "responseSHA256": "7237f02d5102a02961253a3a6579c3a625323f05eb2c8c90d84b1dc95e931535",
+      "extractedTextSHA256": "8e261483c7f9dd31d7b880adb6fd064fbf264de10fbf5b31cb90f69a7e91e940",
+      "quote": "自己的人生轨迹，不受玩家的进度限制",
+      "usedFor": "亲友与 NPC 独立人生、奇遇、师徒"
+    },
+    {
+      "id": "cultivation-simulator",
+      "url": "https://store.steampowered.com/app/955900/Amazing_Cultivation_Simulator/?l=schinese",
+      "title": "Steam 上的 了不起的修仙模拟器",
+      "publisher": "官方 Steam 商店介绍",
+      "retrievedOn": "2026-10-25",
+      "capturedAt": "2026-10-25T12:23:38.241Z",
+      "localEvidence": ".local/feedback/game-contents.json",
+      "responseSHA256": "7237f02d5102a02961253a3a6579c3a625323f05eb2c8c90d84b1dc95e931535",
+      "extractedTextSHA256": "6aaf5e24dbe0a93cd9bc30153c9f0521e51f519bebe27f68d6589a63bed8f3d0",
+      "quote": "搭建修行宝地，让门下弟子逐步修行突破。",
+      "usedFor": "修行环境、生产与门派经营"
+    },
+    {
+      "id": "ningxian-rites",
+      "url": "http://www.ningxian.gov.cn/yxnx/wmnx/mswh/content_15817",
+      "title": "农村丧葬礼俗_民俗文化_历史文化_走进宁县_宁县人民政府",
+      "publisher": "宁县人民政府地方礼俗资料",
+      "retrievedOn": "2026-10-25",
+      "capturedAt": "2026-10-25T12:04:33.932Z",
+      "localEvidence": ".local/feedback/source-contents.json",
+      "responseSHA256": "0ffa470806b38f7cf723fd125f72e7a1bc77cfa3fc4bb69e54ff394f26c86ffa",
+      "extractedTextSHA256": "22f9349f69572eea20e9c7a2cbfa8c0272ad201c6bd9ec9f91ec2de209331060",
+      "quote": "亲属穿丧服叫“成服”",
+      "usedFor": "奔丧、成服、安葬与周年的地方描述"
+    },
+    {
+      "id": "pku-rites",
+      "url": "http://www.shehui.pku.edu.cn/upload/editor/file/20201104/20201104135737_4036.pdf",
+      "title": "“禮各有主”與差序格局",
+      "publisher": "付驥瀟，社会理论学报 22(2)，2019，425–466；北京大学托管",
+      "retrievedOn": "2026-10-25",
+      "capturedAt": "2026-10-25T12:04:33.932Z",
+      "localEvidence": ".local/feedback/source-contents.json",
+      "responseSHA256": "0ffa470806b38f7cf723fd125f72e7a1bc77cfa3fc4bb69e54ff394f26c86ffa",
+      "extractedTextSHA256": "a7caeb961b1854543f54c1c7a0b0fa2abdbf32fb9df88f3826362818d1944141",
+      "quote": "喪禮“禮各有主”的特點",
+      "usedFor": "传统经典礼制的角色与仪程，非现代行为调查"
+    },
+    {
+      "id": "hunan-tujia-rites",
+      "url": "https://www.hunan.gov.cn/hnszf/jxxx/hxwh/gms/201711/t20171111_4685324.html",
+      "title": "土家族殡葬习俗-湖南省人民政府门户网站",
+      "publisher": "湖南省人民政府地方民族礼俗资料",
+      "retrievedOn": "2026-10-25",
+      "capturedAt": "2026-10-25T12:04:33.932Z",
+      "localEvidence": ".local/feedback/source-contents.json",
+      "responseSHA256": "0ffa470806b38f7cf723fd125f72e7a1bc77cfa3fc4bb69e54ff394f26c86ffa",
+      "extractedTextSHA256": "d100f4b84f0772c7a8f5d2525fdb0bdf89b00519a967e263f5ec59510ffb6aa8",
+      "quote": "相邻数寨齐来奔丧",
+      "usedFor": "丧礼形式、气氛与亲邻参与存在差异"
+    }
+  ]
+}

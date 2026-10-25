@@ -3,7 +3,7 @@ import { writeFile, mkdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import { projectRoot } from './serve.mjs';
 
-const commands = [['check', ['scripts/check.mjs']], ['engine-storage', ['--test', 'tests/engine.test.mjs', 'tests/storage.test.mjs']], ['build', ['scripts/build.mjs']], ['browser', ['scripts/verify-browser.mjs']], ['static-build', ['scripts/verify-build.mjs']]];
+const commands = [['check', ['scripts/check.mjs']], ['engine-storage', ['--test', 'tests/engine.test.mjs', 'tests/storage.test.mjs', 'tests/feedback.test.mjs']], ['build', ['scripts/build.mjs']], ['browser', ['scripts/verify-browser.mjs']], ['feedback-browser', ['scripts/verify-feedback-browser.mjs']], ['static-build', ['scripts/verify-build.mjs']]];
 const report = { startedAt: new Date().toISOString(), node: process.version, platform: process.platform, results: [] };
 await mkdir(join(projectRoot, 'artifacts'), { recursive: true });
 for (const [name, args] of commands) {

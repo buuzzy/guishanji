@@ -27,7 +27,14 @@ async function changed(page, revision) { await page.waitFor('(() => { const doc 
 async function respond(page, policy = 'cultivate') { const before = await life(page); await page.click('[data-action="choose"][data-choice="' + policyChoice(before, policy) + '"]'); await changed(page, before.revision); }
 async function nextDecision(page) { const before = await life(page); await page.click('[data-action="step-choice"]'); await changed(page, before.revision); }
 async function screenshot(name, target = page) { await target.eval('window.scrollTo({top:0,behavior:"instant"})'); const path = join(shots, name + '.png'); await target.screenshot(path); const data = await readFile(path); report.screenshots.push({ path: 'artifacts/screenshots/' + name + '.png', bytes: data.length, sha256: createHash('sha256').update(data).digest('hex') }); }
-async function importFile(page, path) { const { root } = await page.send('DOM.getDocument'); const { nodeId } = await page.send('DOM.querySelector', { nodeId: root.nodeId, selector: '#import-file' }); await page.send('DOM.setFileInputFiles', { nodeId, files: [path] }); }
+async function importFile(page, path) {
+  const previous = await raw(page);
+  const { root } = await page.send('DOM.getDocument'); const { nodeId } = await page.send('DOM.querySelector', { nodeId: root.nodeId, selector: '#import-file' });
+  await page.send('DOM.setFileInputFiles', { nodeId, files: [path] });
+  // File.text() resolves asynchronously; the previous save indicator can still
+  // say "saved" until the import actually starts.
+  await page.waitFor('localStorage.getItem(' + JSON.stringify(STORAGE_KEY) + ') !== ' + JSON.stringify(previous) + ' || !document.querySelector("#save-warning").hidden || document.querySelector("#modal-title").textContent.includes("两份进度")');
+}
 const exportFile = state => JSON.stringify({ product: 'shanhai-life', exportVersion: 1, type: 'life', state }, null, 2);
 
 try {
@@ -96,6 +103,11 @@ try {
     await page.click('[data-action="close-modal"]');
   });
   await check('自动流转、速度与暂停不跳过人物月份', async () => {
+    // A world decision can follow the apprenticeship at the same age.
+    // Autoplay remains unavailable until every current decision is answered.
+    for (let count = 0; (await life(page)).pending; count++) {
+      assert.ok(count < 20); await respond(page);
+    }
     await page.eval('const speedSelect = document.querySelector("#speed"); speedSelect.value="8"; speedSelect.dispatchEvent(new Event("change",{bubbles:true}));');
     const before = await life(page); await page.click('[data-action="play"]');
     await page.waitFor('(() => { const doc=JSON.parse(localStorage.getItem(' + JSON.stringify(STORAGE_KEY) + ')); return doc.lives.find(state=>state.id===doc.activeId).month > ' + before.month + '; })()');
@@ -267,6 +279,11 @@ try {
   });
 } catch (error) {
   report.error = error.stack || error.message; console.error(report.error); process.exitCode = 1;
+  const failedPage = errorPage || page;
+  if (failedPage) {
+    report.failureContext = { state: await life(failedPage), ui: await failedPage.eval('({modalOpen:document.querySelector("#modal").open,saveStatus:document.querySelector("#save-status").textContent,warning:document.querySelector("#save-warning").textContent,toast:document.querySelector("#toast").textContent,scrollY,visibility:document.visibilityState,focused:document.hasFocus()})') };
+    await screenshot('failure-' + report.startedAt.replace(/[^0-9]/gu, ''), failedPage);
+  }
 } finally {
   if (page) report.consoleErrors = page.errors; if (errorPage) report.errorPageConsoleErrors = errorPage.errors;
   if (browser) await browser.close();

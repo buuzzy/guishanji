@@ -172,6 +172,24 @@ body[data-theme="dark"] .button.primary { color: #253a2c; }
 .now-card { padding: 21px 25px; }
 .now-card h2 { font-size: 21px; font-weight: 500; margin: 10px 0 10px; }
 .now-card p { font-size: 12px; line-height: 1.9; }
+.guide-card, .location-card { padding: 20px 25px; }
+.guide-card { border-left: 3px solid var(--gold); }
+.guide-card h3, .location-card h3 { margin: 10px 0; font-size: 18px; font-weight: 500; }
+.guide-card p, .location-card p { font-size: 12px; line-height: 1.9; }
+.guide-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 15px; }
+.guide-actions > div { flex: 1 1 180px; min-width: 0; }
+.guide-actions small { display: block; font-size: 10px; line-height: 1.8; margin-top: 5px; color: var(--muted); }
+.guide-actions .reason, .reason { color: var(--rust); }
+.location-card .card-heading > .button { font-size: 11px; padding: 6px 10px; }
+.location-card .actions { margin-top: 14px; flex-wrap: wrap; }
+.world-note, .mourning-note { margin-top: 12px; padding: 10px 12px; background: var(--soft); border-radius: 6px; font-size: 12px; line-height: 1.8; }
+.mourning-note { border-left: 2px solid var(--muted); }
+.resource-hint { margin-top: 12px; color: var(--muted); font-size: 10px; line-height: 1.8; }
+.attribute-help { margin: 12px 0; font-size: 11px; color: var(--muted); }
+.attribute-help summary { cursor: pointer; }
+.attribute-help dt { margin-top: 10px; color: var(--ink); }
+.attribute-help dd { margin: 3px 0 0; line-height: 1.8; }
+@media (max-width: 760px) { .guide-card, .location-card { padding: 18px 20px; } .guide-actions > div { flex-basis: 145px; } }
 .now-card .actions { margin-top: 16px; }
 .journal-card { padding: 21px 25px; }
 .journal-card .card-heading { margin-bottom: 18px; }

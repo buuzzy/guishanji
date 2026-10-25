@@ -1,0 +1,4442 @@
+{
+  "format": 1,
+  "revision": 3,
+  "updatedAt": "2026-10-25T06:00:00.000Z",
+  "activeId": "life-zy09mt-f8fecm",
+  "lives": [
+    {
+      "format": 1,
+      "version": "0.1.0",
+      "rulesVersion": "shanhai-rules-1",
+      "contentVersion": "shanhai-world-1",
+      "id": "life-1snu7l7-17egisc",
+      "seed": "legacy-birth-decision",
+      "phase": "life",
+      "month": 72,
+      "sequence": 10,
+      "nextPerson": 1,
+      "revision": 3,
+      "random": {
+        "birth": {
+          "value": 1108096968,
+          "draws": 8
+        },
+        "life": {
+          "value": 1462156050,
+          "draws": 0
+        },
+        "people": {
+          "value": 977949445,
+          "draws": 40
+        },
+        "world": {
+          "value": 279925629,
+          "draws": 97
+        },
+        "story": {
+          "value": 389317793,
+          "draws": 6
+        }
+      },
+      "player": {
+        "id": "life-1snu7l7-17egisc:me",
+        "name": "林望舒",
+        "gender": "M",
+        "origin": "herbal",
+        "birthRegion": "hegu",
+        "location": "hegu",
+        "root": "dual",
+        "talent": 84,
+        "constitution": 63,
+        "health": 98.08000000000004,
+        "mind": 80.64000000000033,
+        "insight": 8,
+        "bond": 63.75999999999988,
+        "realm": 0,
+        "progress": 0,
+        "lifespan": 84,
+        "technique": "breath",
+        "focus": "family",
+        "role": "child",
+        "faction": null,
+        "mentorId": null,
+        "partnerId": null,
+        "home": "hut",
+        "money": 140,
+        "stones": 2,
+        "herbs": 5,
+        "craft": 8,
+        "debt": 0,
+        "inventory": {
+          "charm": 0,
+          "sword": 0,
+          "book": 0,
+          "lamp": 0
+        },
+        "visited": [
+          "hegu"
+        ],
+        "travel": null,
+        "retreat": null,
+        "homeStyle": "plain",
+        "keepsakes": []
+      },
+      "people": [
+        {
+          "id": "life-1snu7l7-17egisc:mother",
+          "name": "林闻溪",
+          "gender": "F",
+          "bornMonth": -408,
+          "realm": 0,
+          "lifespan": 88,
+          "health": 89,
+          "talent": 73,
+          "relation": "mother",
+          "bond": 94.64000000000033,
+          "alive": true,
+          "location": "hegu",
+          "faction": null,
+          "goal": "live",
+          "deathMonth": null,
+          "memories": [],
+          "history": [
+            {
+              "month": 0,
+              "realm": 0,
+              "location": "hegu",
+              "kind": "meet"
+            }
+          ]
+        },
+        {
+          "id": "life-1snu7l7-17egisc:father",
+          "name": "林时雨",
+          "gender": "M",
+          "bornMonth": -348,
+          "realm": 0,
+          "lifespan": 93,
+          "health": 79,
+          "talent": 51,
+          "relation": "father",
+          "bond": 90.64000000000033,
+          "alive": true,
+          "location": "hegu",
+          "faction": null,
+          "goal": "live",
+          "deathMonth": null,
+          "memories": [],
+          "history": [
+            {
+              "month": 0,
+              "realm": 0,
+              "location": "hegu",
+              "kind": "meet"
+            }
+          ]
+        },
+        {
+          "id": "life-1snu7l7-17egisc:companion",
+          "name": "许松月",
+          "gender": "M",
+          "bornMonth": -12,
+          "realm": 0,
+          "lifespan": 79,
+          "health": 92,
+          "talent": 47,
+          "relation": "friend",
+          "bond": 65,
+          "alive": true,
+          "location": "hegu",
+          "faction": null,
+          "goal": "live",
+          "deathMonth": null,
+          "memories": [],
+          "history": [
+            {
+              "month": 0,
+              "realm": 0,
+              "location": "hegu",
+              "kind": "meet"
+            }
+          ]
+        },
+        {
+          "id": "life-1snu7l7-17egisc:elder:songyin",
+          "name": "顾闻溪",
+          "gender": "M",
+          "bornMonth": -576,
+          "realm": 2,
+          "lifespan": 200,
+          "health": 80,
+          "talent": 33,
+          "relation": "elder",
+          "bond": 35,
+          "alive": true,
+          "location": "landu",
+          "faction": "songyin",
+          "goal": "cultivate",
+          "deathMonth": null,
+          "memories": [],
+          "history": [
+            {
+              "month": 0,
+              "realm": 2,
+              "location": "landu",
+              "kind": "meet"
+            }
+          ]
+        },
+        {
+          "id": "life-1snu7l7-17egisc:elder:zhaochuan",
+          "name": "许望舒",
+          "gender": "M",
+          "bornMonth": -576,
+          "realm": 2,
+          "lifespan": 192,
+          "health": 95,
+          "talent": 63,
+          "relation": "elder",
+          "bond": 35,
+          "alive": true,
+          "location": "zhaoshi",
+          "faction": "zhaochuan",
+          "goal": "cultivate",
+          "deathMonth": null,
+          "memories": [],
+          "history": [
+            {
+              "month": 0,
+              "realm": 2,
+              "location": "zhaoshi",
+              "kind": "meet"
+            }
+          ]
+        },
+        {
+          "id": "life-1snu7l7-17egisc:elder:yaohui",
+          "name": "温长宁",
+          "gender": "M",
+          "bornMonth": -456,
+          "realm": 1,
+          "lifespan": 122,
+          "health": 88,
+          "talent": 40,
+          "relation": "elder",
+          "bond": 35,
+          "alive": true,
+          "location": "hegu",
+          "faction": "yaohui",
+          "goal": "cultivate",
+          "deathMonth": null,
+          "memories": [],
+          "history": [
+            {
+              "month": 0,
+              "realm": 1,
+              "location": "hegu",
+              "kind": "meet"
+            }
+          ]
+        }
+      ],
+      "queue": [],
+      "pending": {
+        "id": "life-1snu7l7-17egisc:event:9",
+        "event": "primer",
+        "month": 72,
+        "title": "第一本旧书",
+        "text": "一位过路先生在村中停了几日，愿意教孩子识字。家里仍有许多事要做，你想把时间留在哪里？",
+        "kind": "growth",
+        "payload": {},
+        "options": [
+          {
+            "id": "read",
+            "label": "跟着先生识字",
+            "description": "多一点见识，也多一条将来的路。",
+            "costs": {},
+            "disabled": false,
+            "reason": ""
+          },
+          {
+            "id": "hands",
+            "label": "留在家中学手艺",
+            "description": "跟随照料你的人，认药草、学火候。",
+            "costs": {},
+            "disabled": false,
+            "reason": ""
+          },
+          {
+            "id": "company",
+            "label": "多陪陪家里的人",
+            "description": "记住相处的声音与日常。",
+            "costs": {},
+            "disabled": false,
+            "reason": ""
+          }
+        ]
+      },
+      "ending": null,
+      "flags": {
+        "queued:age:6": true
+      },
+      "log": [
+        {
+          "id": "life-1snu7l7-17egisc:log:1",
+          "month": 0,
+          "kind": "birth",
+          "text": "林望舒出生在青禾谷。家中经营一小片药田。父母教你辨认叶脉，也教你记住四时。"
+        },
+        {
+          "id": "life-1snu7l7-17egisc:log:2",
+          "month": 0,
+          "kind": "growth",
+          "text": "你开始了这一生。山外的路很长，眼前也有人为你留灯。"
+        },
+        {
+          "id": "life-1snu7l7-17egisc:log:3",
+          "month": 12,
+          "kind": "year",
+          "text": "你重新安排日常，为牵挂的人留出位置。"
+        },
+        {
+          "id": "life-1snu7l7-17egisc:log:4",
+          "month": 24,
+          "kind": "year",
+          "text": "这一年，有人与你坐下来说了许多话。"
+        },
+        {
+          "id": "life-1snu7l7-17egisc:log:5",
+          "month": 36,
+          "kind": "year",
+          "text": "你把时间留给相处，小事也慢慢成为记忆。"
+        },
+        {
+          "id": "life-1snu7l7-17egisc:log:6",
+          "month": 48,
+          "kind": "year",
+          "text": "你重新安排日常，为牵挂的人留出位置。"
+        },
+        {
+          "id": "life-1snu7l7-17egisc:log:7",
+          "month": 60,
+          "kind": "year",
+          "text": "这一年，有人与你坐下来说了许多话。"
+        },
+        {
+          "id": "life-1snu7l7-17egisc:log:8",
+          "month": 72,
+          "kind": "year",
+          "text": "你把时间留给相处，小事也慢慢成为记忆。"
+        }
+      ],
+      "years": [
+        {
+          "month": 12,
+          "age": 1,
+          "realm": 0,
+          "health": 90,
+          "mind": 73,
+          "stones": 2,
+          "money": 140,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 24,
+          "age": 2,
+          "realm": 0,
+          "health": 91,
+          "mind": 75,
+          "stones": 2,
+          "money": 140,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 36,
+          "age": 3,
+          "realm": 0,
+          "health": 93,
+          "mind": 76,
+          "stones": 2,
+          "money": 140,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 48,
+          "age": 4,
+          "realm": 0,
+          "health": 95,
+          "mind": 78,
+          "stones": 2,
+          "money": 140,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 60,
+          "age": 5,
+          "realm": 0,
+          "health": 96,
+          "mind": 79,
+          "stones": 2,
+          "money": 140,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 72,
+          "age": 6,
+          "realm": 0,
+          "health": 98,
+          "mind": 81,
+          "stones": 2,
+          "money": 140,
+          "location": "hegu",
+          "craft": 8
+        }
+      ],
+      "ledger": [],
+      "choices": [],
+      "stats": {
+        "decisions": 0,
+        "breakthroughs": 0,
+        "failures": 0,
+        "help": 0,
+        "family": 6,
+        "craft": 0,
+        "journeys": 0,
+        "students": 0,
+        "earnings": 0,
+        "retreats": 0
+      },
+      "world": {
+        "startYear": 186,
+        "birthMonth": 5,
+        "era": "丰和",
+        "weather": "长风",
+        "regions": [
+          {
+            "id": "hegu",
+            "prosperity": 47,
+            "danger": 11
+          },
+          {
+            "id": "landu",
+            "prosperity": 62,
+            "danger": 14
+          },
+          {
+            "id": "zhaoshi",
+            "prosperity": 34,
+            "danger": 10
+          },
+          {
+            "id": "mulan",
+            "prosperity": 39,
+            "danger": 6
+          },
+          {
+            "id": "wenxue",
+            "prosperity": 45,
+            "danger": 7
+          }
+        ],
+        "factions": [
+          {
+            "id": "songyin",
+            "influence": 46,
+            "leaderId": "life-1snu7l7-17egisc:elder:songyin",
+            "relations": {}
+          },
+          {
+            "id": "zhaochuan",
+            "influence": 79,
+            "leaderId": "life-1snu7l7-17egisc:elder:zhaochuan",
+            "relations": {}
+          },
+          {
+            "id": "yaohui",
+            "influence": 47,
+            "leaderId": "life-1snu7l7-17egisc:elder:yaohui",
+            "relations": {}
+          }
+        ],
+        "history": []
+      },
+      "birth": {
+        "origin": "药农之家",
+        "region": "青禾谷",
+        "story": "家中经营一小片药田。父母教你辨认叶脉，也教你记住四时。",
+        "root": "双灵根",
+        "rootDescription": "两种灵息相伴，适合在长期练习中寻找自己的节奏。"
+      }
+    },
+    {
+      "format": 1,
+      "version": "0.1.0",
+      "rulesVersion": "shanhai-rules-1",
+      "contentVersion": "shanhai-world-1",
+      "id": "life-zy09mt-f8fecm",
+      "seed": "legacy-adult-mortal",
+      "phase": "life",
+      "month": 216,
+      "sequence": 32,
+      "nextPerson": 1,
+      "revision": 24,
+      "random": {
+        "birth": {
+          "value": 1866997307,
+          "draws": 8
+        },
+        "life": {
+          "value": 297517162,
+          "draws": 0
+        },
+        "people": {
+          "value": 1154863267,
+          "draws": 43
+        },
+        "world": {
+          "value": 1781608185,
+          "draws": 269
+        },
+        "story": {
+          "value": 1782652244,
+          "draws": 19
+        }
+      },
+      "player": {
+        "id": "life-zy09mt-f8fecm:me",
+        "name": "温归尘",
+        "gender": "M",
+        "origin": "merchant",
+        "birthRegion": "mulan",
+        "location": "mulan",
+        "root": "none",
+        "talent": 75,
+        "constitution": 81,
+        "health": 100,
+        "mind": 100,
+        "insight": 16,
+        "bond": 100,
+        "realm": 0,
+        "progress": 0,
+        "lifespan": 86,
+        "technique": "breath",
+        "focus": "family",
+        "role": "farmer",
+        "faction": null,
+        "mentorId": null,
+        "partnerId": null,
+        "home": "wood",
+        "money": 225,
+        "stones": 9,
+        "herbs": 5,
+        "craft": 5,
+        "debt": 0,
+        "inventory": {
+          "charm": 0,
+          "sword": 0,
+          "book": 0,
+          "lamp": 0
+        },
+        "visited": [
+          "mulan"
+        ],
+        "travel": null,
+        "retreat": null,
+        "homeStyle": "plain",
+        "keepsakes": []
+      },
+      "people": [
+        {
+          "id": "life-zy09mt-f8fecm:mother",
+          "name": "温听澜",
+          "gender": "F",
+          "bornMonth": -324,
+          "realm": 0,
+          "lifespan": 85,
+          "health": 95,
+          "talent": 44,
+          "relation": "mother",
+          "bond": 100,
+          "alive": true,
+          "location": "mulan",
+          "faction": null,
+          "goal": "live",
+          "deathMonth": null,
+          "memories": [],
+          "history": [
+            {
+              "month": 0,
+              "realm": 0,
+              "location": "mulan",
+              "kind": "meet"
+            }
+          ]
+        },
+        {
+          "id": "life-zy09mt-f8fecm:father",
+          "name": "温予安",
+          "gender": "M",
+          "bornMonth": -372,
+          "realm": 0,
+          "lifespan": 94,
+          "health": 82,
+          "talent": 35,
+          "relation": "father",
+          "bond": 100,
+          "alive": true,
+          "location": "mulan",
+          "faction": null,
+          "goal": "live",
+          "deathMonth": null,
+          "memories": [],
+          "history": [
+            {
+              "month": 0,
+              "realm": 0,
+              "location": "mulan",
+              "kind": "meet"
+            }
+          ]
+        },
+        {
+          "id": "life-zy09mt-f8fecm:companion",
+          "name": "陆照宁",
+          "gender": "M",
+          "bornMonth": -12,
+          "realm": 0,
+          "lifespan": 90,
+          "health": 84,
+          "talent": 73,
+          "relation": "friend",
+          "bond": 65,
+          "alive": true,
+          "location": "zhaoshi",
+          "faction": null,
+          "goal": "live",
+          "deathMonth": null,
+          "memories": [],
+          "history": [
+            {
+              "month": 0,
+              "realm": 0,
+              "location": "mulan",
+              "kind": "meet"
+            },
+            {
+              "month": 204,
+              "realm": 0,
+              "location": "zhaoshi",
+              "kind": "path"
+            }
+          ]
+        },
+        {
+          "id": "life-zy09mt-f8fecm:elder:songyin",
+          "name": "沈云舟",
+          "gender": "F",
+          "bornMonth": -576,
+          "realm": 3,
+          "lifespan": 340,
+          "health": 83,
+          "talent": 50,
+          "relation": "elder",
+          "bond": 35,
+          "alive": true,
+          "location": "landu",
+          "faction": "songyin",
+          "goal": "cultivate",
+          "deathMonth": null,
+          "memories": [],
+          "history": [
+            {
+              "month": 0,
+              "realm": 2,
+              "location": "landu",
+              "kind": "meet"
+            },
+            {
+              "month": 84,
+              "realm": 3,
+              "location": "landu",
+              "kind": "realm"
+            }
+          ]
+        },
+        {
+          "id": "life-zy09mt-f8fecm:elder:zhaochuan",
+          "name": "程云舟",
+          "gender": "M",
+          "bornMonth": -576,
+          "realm": 2,
+          "lifespan": 192,
+          "health": 88,
+          "talent": 27,
+          "relation": "elder",
+          "bond": 35,
+          "alive": true,
+          "location": "zhaoshi",
+          "faction": "zhaochuan",
+          "goal": "cultivate",
+          "deathMonth": null,
+          "memories": [],
+          "history": [
+            {
+              "month": 0,
+              "realm": 2,
+              "location": "zhaoshi",
+              "kind": "meet"
+            }
+          ]
+        },
+        {
+          "id": "life-zy09mt-f8fecm:elder:yaohui",
+          "name": "顾知微",
+          "gender": "F",
+          "bornMonth": -456,
+          "realm": 1,
+          "lifespan": 116,
+          "health": 87,
+          "talent": 38,
+          "relation": "elder",
+          "bond": 35,
+          "alive": true,
+          "location": "hegu",
+          "faction": "yaohui",
+          "goal": "cultivate",
+          "deathMonth": null,
+          "memories": [],
+          "history": [
+            {
+              "month": 0,
+              "realm": 1,
+              "location": "hegu",
+              "kind": "meet"
+            }
+          ]
+        }
+      ],
+      "queue": [],
+      "pending": null,
+      "ending": null,
+      "flags": {
+        "queued:age:6": true,
+        "queued:age:12": true,
+        "ownpath:life-zy09mt-f8fecm:companion": true,
+        "queued:age:18": true,
+        "nextSmallStory": 264
+      },
+      "log": [
+        {
+          "id": "life-zy09mt-f8fecm:log:1",
+          "month": 0,
+          "kind": "birth",
+          "text": "温归尘出生在暮澜港。家中铺面迎来送往。你很早就听过远山、坊市和不同的人生。"
+        },
+        {
+          "id": "life-zy09mt-f8fecm:log:2",
+          "month": 0,
+          "kind": "growth",
+          "text": "你开始了这一生。山外的路很长，眼前也有人为你留灯。"
+        },
+        {
+          "id": "life-zy09mt-f8fecm:log:3",
+          "month": 12,
+          "kind": "year",
+          "text": "这一年，有人与你坐下来说了许多话。"
+        },
+        {
+          "id": "life-zy09mt-f8fecm:log:4",
+          "month": 24,
+          "kind": "year",
+          "text": "你重新安排日常，为牵挂的人留出位置。"
+        },
+        {
+          "id": "life-zy09mt-f8fecm:log:5",
+          "month": 36,
+          "kind": "year",
+          "text": "你把时间留给相处，小事也慢慢成为记忆。"
+        },
+        {
+          "id": "life-zy09mt-f8fecm:log:6",
+          "month": 48,
+          "kind": "year",
+          "text": "你把时间留给相处，小事也慢慢成为记忆。"
+        },
+        {
+          "id": "life-zy09mt-f8fecm:log:7",
+          "month": 60,
+          "kind": "year",
+          "text": "你重新安排日常，为牵挂的人留出位置。"
+        },
+        {
+          "id": "life-zy09mt-f8fecm:log:8",
+          "month": 72,
+          "kind": "year",
+          "text": "这一年，有人与你坐下来说了许多话。"
+        },
+        {
+          "id": "life-zy09mt-f8fecm:log:10",
+          "month": 72,
+          "kind": "choice",
+          "text": "面对“第一本旧书”，你选择了：多陪陪家里的人。"
+        },
+        {
+          "id": "life-zy09mt-f8fecm:log:11",
+          "month": 84,
+          "kind": "year",
+          "text": "你把时间留给相处，小事也慢慢成为记忆。"
+        },
+        {
+          "id": "life-zy09mt-f8fecm:log:12",
+          "month": 96,
+          "kind": "year",
+          "text": "你把时间留给相处，小事也慢慢成为记忆。"
+        },
+        {
+          "id": "life-zy09mt-f8fecm:log:13",
+          "month": 96,
+          "kind": "world",
+          "text": "问雪岭这一年收成较好，坊市渐渐热闹。"
+        },
+        {
+          "id": "life-zy09mt-f8fecm:log:14",
+          "month": 108,
+          "kind": "year",
+          "text": "你把时间留给相处，小事也慢慢成为记忆。"
+        },
+        {
+          "id": "life-zy09mt-f8fecm:log:15",
+          "month": 120,
+          "kind": "year",
+          "text": "这一年，有人与你坐下来说了许多话。"
+        },
+        {
+          "id": "life-zy09mt-f8fecm:log:16",
+          "month": 132,
+          "kind": "year",
+          "text": "你重新安排日常，为牵挂的人留出位置。"
+        },
+        {
+          "id": "life-zy09mt-f8fecm:log:17",
+          "month": 144,
+          "kind": "year",
+          "text": "你重新安排日常，为牵挂的人留出位置。"
+        },
+        {
+          "id": "life-zy09mt-f8fecm:log:19",
+          "month": 144,
+          "kind": "choice",
+          "text": "面对“山门之外，也有人生”，你选择了：先留在故乡。"
+        },
+        {
+          "id": "life-zy09mt-f8fecm:log:20",
+          "month": 156,
+          "kind": "year",
+          "text": "你把时间留给相处，小事也慢慢成为记忆。"
+        },
+        {
+          "id": "life-zy09mt-f8fecm:log:21",
+          "month": 168,
+          "kind": "year",
+          "text": "你把时间留给相处，小事也慢慢成为记忆。"
+        },
+        {
+          "id": "life-zy09mt-f8fecm:log:22",
+          "month": 180,
+          "kind": "year",
+          "text": "这一年，有人与你坐下来说了许多话。"
+        },
+        {
+          "id": "life-zy09mt-f8fecm:log:23",
+          "month": 192,
+          "kind": "year",
+          "text": "你重新安排日常，为牵挂的人留出位置。"
+        },
+        {
+          "id": "life-zy09mt-f8fecm:log:24",
+          "month": 192,
+          "kind": "world",
+          "text": "青禾谷开通了新的商路，物资与消息往来更频繁。"
+        },
+        {
+          "id": "life-zy09mt-f8fecm:log:25",
+          "month": 204,
+          "kind": "year",
+          "text": "你把时间留给相处，小事也慢慢成为记忆。"
+        },
+        {
+          "id": "life-zy09mt-f8fecm:log:26",
+          "month": 204,
+          "kind": "relationship",
+          "text": "陆照宁开始了自己的道路，在照石关安排生计。",
+          "actorId": "life-zy09mt-f8fecm:companion"
+        },
+        {
+          "id": "life-zy09mt-f8fecm:log:27",
+          "month": 216,
+          "kind": "year",
+          "text": "你把时间留给相处，小事也慢慢成为记忆。"
+        },
+        {
+          "id": "life-zy09mt-f8fecm:log:30",
+          "month": 216,
+          "kind": "choice",
+          "text": "面对“给日子找一份依靠”，你选择了：守住一片田地。"
+        },
+        {
+          "id": "life-zy09mt-f8fecm:log:31",
+          "month": 216,
+          "kind": "choice",
+          "text": "面对“故乡的一次修缮”，你选择了：出钱一起修缮。"
+        }
+      ],
+      "years": [
+        {
+          "month": 12,
+          "age": 1,
+          "realm": 0,
+          "health": 90,
+          "mind": 73,
+          "stones": 6,
+          "money": 260,
+          "location": "mulan",
+          "craft": 5
+        },
+        {
+          "month": 24,
+          "age": 2,
+          "realm": 0,
+          "health": 91,
+          "mind": 75,
+          "stones": 6,
+          "money": 260,
+          "location": "mulan",
+          "craft": 5
+        },
+        {
+          "month": 36,
+          "age": 3,
+          "realm": 0,
+          "health": 93,
+          "mind": 76,
+          "stones": 6,
+          "money": 260,
+          "location": "mulan",
+          "craft": 5
+        },
+        {
+          "month": 48,
+          "age": 4,
+          "realm": 0,
+          "health": 95,
+          "mind": 78,
+          "stones": 6,
+          "money": 260,
+          "location": "mulan",
+          "craft": 5
+        },
+        {
+          "month": 60,
+          "age": 5,
+          "realm": 0,
+          "health": 96,
+          "mind": 79,
+          "stones": 6,
+          "money": 260,
+          "location": "mulan",
+          "craft": 5
+        },
+        {
+          "month": 72,
+          "age": 6,
+          "realm": 0,
+          "health": 98,
+          "mind": 81,
+          "stones": 6,
+          "money": 260,
+          "location": "mulan",
+          "craft": 5
+        },
+        {
+          "month": 84,
+          "age": 7,
+          "realm": 0,
+          "health": 100,
+          "mind": 87,
+          "stones": 6,
+          "money": 260,
+          "location": "mulan",
+          "craft": 5
+        },
+        {
+          "month": 96,
+          "age": 8,
+          "realm": 0,
+          "health": 100,
+          "mind": 89,
+          "stones": 6,
+          "money": 260,
+          "location": "mulan",
+          "craft": 5
+        },
+        {
+          "month": 108,
+          "age": 9,
+          "realm": 0,
+          "health": 100,
+          "mind": 90,
+          "stones": 6,
+          "money": 260,
+          "location": "mulan",
+          "craft": 5
+        },
+        {
+          "month": 120,
+          "age": 10,
+          "realm": 0,
+          "health": 100,
+          "mind": 91,
+          "stones": 6,
+          "money": 260,
+          "location": "mulan",
+          "craft": 5
+        },
+        {
+          "month": 132,
+          "age": 11,
+          "realm": 0,
+          "health": 100,
+          "mind": 93,
+          "stones": 6,
+          "money": 260,
+          "location": "mulan",
+          "craft": 5
+        },
+        {
+          "month": 144,
+          "age": 12,
+          "realm": 0,
+          "health": 100,
+          "mind": 94,
+          "stones": 6,
+          "money": 260,
+          "location": "mulan",
+          "craft": 5
+        },
+        {
+          "month": 156,
+          "age": 13,
+          "realm": 0,
+          "health": 100,
+          "mind": 96,
+          "stones": 6,
+          "money": 260,
+          "location": "mulan",
+          "craft": 5
+        },
+        {
+          "month": 168,
+          "age": 14,
+          "realm": 0,
+          "health": 100,
+          "mind": 97,
+          "stones": 6,
+          "money": 260,
+          "location": "mulan",
+          "craft": 5
+        },
+        {
+          "month": 180,
+          "age": 15,
+          "realm": 0,
+          "health": 100,
+          "mind": 99,
+          "stones": 6,
+          "money": 260,
+          "location": "mulan",
+          "craft": 5
+        },
+        {
+          "month": 192,
+          "age": 16,
+          "realm": 0,
+          "health": 100,
+          "mind": 100,
+          "stones": 7,
+          "money": 281,
+          "location": "mulan",
+          "craft": 5
+        },
+        {
+          "month": 204,
+          "age": 17,
+          "realm": 0,
+          "health": 100,
+          "mind": 100,
+          "stones": 8,
+          "money": 303,
+          "location": "mulan",
+          "craft": 5
+        },
+        {
+          "month": 216,
+          "age": 18,
+          "realm": 0,
+          "health": 100,
+          "mind": 100,
+          "stones": 9,
+          "money": 325,
+          "location": "mulan",
+          "craft": 5
+        }
+      ],
+      "ledger": [
+        {
+          "month": 192,
+          "label": "一年生计与家用",
+          "money": 21,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 204,
+          "label": "一年生计与家用",
+          "money": 22,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 216,
+          "label": "一年生计与家用",
+          "money": 22,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 216,
+          "label": "故乡的一次修缮",
+          "money": -100,
+          "stones": 0,
+          "herbs": 0
+        }
+      ],
+      "choices": [
+        {
+          "month": 72,
+          "event": "primer",
+          "title": "第一本旧书",
+          "choice": "company",
+          "label": "多陪陪家里的人",
+          "actorId": null
+        },
+        {
+          "month": 144,
+          "event": "path",
+          "title": "山门之外，也有人生",
+          "choice": "home",
+          "label": "先留在故乡",
+          "actorId": null
+        },
+        {
+          "month": 216,
+          "event": "profession",
+          "title": "给日子找一份依靠",
+          "choice": "farmer",
+          "label": "守住一片田地",
+          "actorId": null
+        },
+        {
+          "month": 216,
+          "event": "homecoming",
+          "title": "故乡的一次修缮",
+          "choice": "repair",
+          "label": "出钱一起修缮",
+          "actorId": null
+        }
+      ],
+      "stats": {
+        "decisions": 4,
+        "breakthroughs": 0,
+        "failures": 0,
+        "help": 0,
+        "family": 24,
+        "craft": 0,
+        "journeys": 0,
+        "students": 0,
+        "earnings": 317,
+        "retreats": 0
+      },
+      "world": {
+        "startYear": 179,
+        "birthMonth": 11,
+        "era": "通商",
+        "weather": "长风",
+        "regions": [
+          {
+            "id": "hegu",
+            "prosperity": 62,
+            "danger": 5
+          },
+          {
+            "id": "landu",
+            "prosperity": 49,
+            "danger": 12
+          },
+          {
+            "id": "zhaoshi",
+            "prosperity": 72,
+            "danger": 22
+          },
+          {
+            "id": "mulan",
+            "prosperity": 51,
+            "danger": 14
+          },
+          {
+            "id": "wenxue",
+            "prosperity": 85,
+            "danger": 17
+          }
+        ],
+        "factions": [
+          {
+            "id": "songyin",
+            "influence": 62,
+            "leaderId": "life-zy09mt-f8fecm:elder:songyin",
+            "relations": {}
+          },
+          {
+            "id": "zhaochuan",
+            "influence": 54,
+            "leaderId": "life-zy09mt-f8fecm:elder:zhaochuan",
+            "relations": {}
+          },
+          {
+            "id": "yaohui",
+            "influence": 52,
+            "leaderId": "life-zy09mt-f8fecm:elder:yaohui",
+            "relations": {}
+          }
+        ],
+        "history": [
+          {
+            "month": 96,
+            "text": "问雪岭这一年收成较好，坊市渐渐热闹。",
+            "type": "harvest",
+            "region": "wenxue"
+          },
+          {
+            "month": 192,
+            "text": "青禾谷开通了新的商路，物资与消息往来更频繁。",
+            "type": "trade",
+            "region": "hegu"
+          }
+        ]
+      },
+      "birth": {
+        "origin": "渡口商户",
+        "region": "暮澜港",
+        "story": "家中铺面迎来送往。你很早就听过远山、坊市和不同的人生。",
+        "root": "未见灵根",
+        "rootDescription": "暂未感知灵息。谋生、亲缘与传承同样能构成完整的一生。"
+      }
+    },
+    {
+      "format": 1,
+      "version": "0.1.0",
+      "rulesVersion": "shanhai-rules-1",
+      "contentVersion": "shanhai-world-1",
+      "id": "life-13s68jz-wozw94",
+      "seed": "legacy-ended",
+      "phase": "ended",
+      "month": 1008,
+      "sequence": 185,
+      "nextPerson": 6,
+      "revision": 79,
+      "random": {
+        "birth": {
+          "value": 2052817408,
+          "draws": 8
+        },
+        "life": {
+          "value": 913032584,
+          "draws": 0
+        },
+        "people": {
+          "value": 1446893474,
+          "draws": 76
+        },
+        "world": {
+          "value": 351397590,
+          "draws": 1209
+        },
+        "story": {
+          "value": 994783521,
+          "draws": 101
+        }
+      },
+      "player": {
+        "id": "life-13s68jz-wozw94:me",
+        "name": "方长宁",
+        "gender": "M",
+        "origin": "herbal",
+        "birthRegion": "hegu",
+        "location": "hegu",
+        "root": "none",
+        "talent": 72,
+        "constitution": 61,
+        "health": 95.47999999999871,
+        "mind": 100,
+        "insight": 100,
+        "bond": 91.51999999999975,
+        "realm": 0,
+        "progress": 0,
+        "lifespan": 84,
+        "technique": "breath",
+        "focus": "learn",
+        "role": "farmer",
+        "faction": null,
+        "mentorId": null,
+        "partnerId": null,
+        "home": "hut",
+        "money": 5313,
+        "stones": 71,
+        "herbs": 82,
+        "craft": 8,
+        "debt": 0,
+        "inventory": {
+          "charm": 0,
+          "sword": 0,
+          "book": 0,
+          "lamp": 1
+        },
+        "visited": [
+          "hegu"
+        ],
+        "travel": null,
+        "retreat": null,
+        "homeStyle": "plain",
+        "keepsakes": [
+          "方松月的旧物",
+          "方照宁的旧物",
+          "陆时雨的旧物"
+        ]
+      },
+      "people": [
+        {
+          "id": "life-13s68jz-wozw94:mother",
+          "name": "方照宁",
+          "gender": "F",
+          "bornMonth": -324,
+          "realm": 0,
+          "lifespan": 91,
+          "health": 70.60000000000007,
+          "talent": 29,
+          "relation": "mother",
+          "bond": 100,
+          "alive": false,
+          "location": "hegu",
+          "faction": null,
+          "goal": "live",
+          "deathMonth": 768,
+          "memories": [
+            {
+              "month": 348,
+              "type": "care",
+              "detail": "letter"
+            }
+          ],
+          "history": [
+            {
+              "month": 0,
+              "realm": 0,
+              "location": "hegu",
+              "kind": "meet"
+            },
+            {
+              "month": 768,
+              "realm": 0,
+              "location": "hegu",
+              "kind": "death"
+            }
+          ]
+        },
+        {
+          "id": "life-13s68jz-wozw94:father",
+          "name": "方松月",
+          "gender": "M",
+          "bornMonth": -360,
+          "realm": 0,
+          "lifespan": 84,
+          "health": 57.20000000000006,
+          "talent": 44,
+          "relation": "father",
+          "bond": 99.28000000000065,
+          "alive": false,
+          "location": "hegu",
+          "faction": null,
+          "goal": "live",
+          "deathMonth": 648,
+          "memories": [],
+          "history": [
+            {
+              "month": 0,
+              "realm": 0,
+              "location": "hegu",
+              "kind": "meet"
+            },
+            {
+              "month": 648,
+              "realm": 0,
+              "location": "hegu",
+              "kind": "death"
+            }
+          ]
+        },
+        {
+          "id": "life-13s68jz-wozw94:companion",
+          "name": "陆时雨",
+          "gender": "F",
+          "bornMonth": -12,
+          "realm": 0,
+          "lifespan": 80,
+          "health": 79.00000000000006,
+          "talent": 37,
+          "relation": "friend",
+          "bond": 73,
+          "alive": false,
+          "location": "hegu",
+          "faction": null,
+          "goal": "live",
+          "deathMonth": 948,
+          "memories": [],
+          "history": [
+            {
+              "month": 0,
+              "realm": 0,
+              "location": "hegu",
+              "kind": "meet"
+            },
+            {
+              "month": 204,
+              "realm": 0,
+              "location": "hegu",
+              "kind": "path"
+            },
+            {
+              "month": 948,
+              "realm": 0,
+              "location": "hegu",
+              "kind": "death"
+            }
+          ]
+        },
+        {
+          "id": "life-13s68jz-wozw94:elder:songyin",
+          "name": "陆归尘",
+          "gender": "F",
+          "bornMonth": -576,
+          "realm": 2,
+          "lifespan": 195,
+          "health": 78,
+          "talent": 31,
+          "relation": "elder",
+          "bond": 35,
+          "alive": true,
+          "location": "landu",
+          "faction": "songyin",
+          "goal": "cultivate",
+          "deathMonth": null,
+          "memories": [],
+          "history": [
+            {
+              "month": 0,
+              "realm": 2,
+              "location": "landu",
+              "kind": "meet"
+            }
+          ]
+        },
+        {
+          "id": "life-13s68jz-wozw94:elder:zhaochuan",
+          "name": "许闻溪",
+          "gender": "M",
+          "bornMonth": -576,
+          "realm": 2,
+          "lifespan": 203,
+          "health": 80,
+          "talent": 34,
+          "relation": "elder",
+          "bond": 35,
+          "alive": true,
+          "location": "zhaoshi",
+          "faction": "zhaochuan",
+          "goal": "cultivate",
+          "deathMonth": null,
+          "memories": [],
+          "history": [
+            {
+              "month": 0,
+              "realm": 2,
+              "location": "zhaoshi",
+              "kind": "meet"
+            }
+          ]
+        },
+        {
+          "id": "life-13s68jz-wozw94:elder:yaohui",
+          "name": "许听澜",
+          "gender": "M",
+          "bornMonth": -456,
+          "realm": 1,
+          "lifespan": 115,
+          "health": 66.80000000000008,
+          "talent": 37,
+          "relation": "elder",
+          "bond": 35,
+          "alive": false,
+          "location": "hegu",
+          "faction": "yaohui",
+          "goal": "cultivate",
+          "deathMonth": 924,
+          "memories": [],
+          "history": [
+            {
+              "month": 0,
+              "realm": 1,
+              "location": "hegu",
+              "kind": "meet"
+            },
+            {
+              "month": 924,
+              "realm": 1,
+              "location": "hegu",
+              "kind": "death"
+            }
+          ]
+        },
+        {
+          "id": "life-13s68jz-wozw94:person:1",
+          "name": "孟怀川",
+          "gender": "M",
+          "bornMonth": -36,
+          "realm": 0,
+          "lifespan": 80,
+          "health": 70.00000000000006,
+          "talent": 69,
+          "relation": "acquaintance",
+          "bond": 45,
+          "alive": false,
+          "location": "hegu",
+          "faction": null,
+          "goal": "live",
+          "deathMonth": 924,
+          "memories": [],
+          "history": [
+            {
+              "month": 312,
+              "realm": 0,
+              "location": "hegu",
+              "kind": "meet"
+            },
+            {
+              "month": 924,
+              "realm": 0,
+              "location": "hegu",
+              "kind": "death"
+            }
+          ]
+        },
+        {
+          "id": "life-13s68jz-wozw94:person:2",
+          "name": "程归尘",
+          "gender": "M",
+          "bornMonth": 324,
+          "realm": 0,
+          "lifespan": 88,
+          "health": 90,
+          "talent": 25,
+          "relation": "acquaintance",
+          "bond": 45,
+          "alive": true,
+          "location": "hegu",
+          "faction": null,
+          "goal": "live",
+          "deathMonth": null,
+          "memories": [],
+          "history": [
+            {
+              "month": 600,
+              "realm": 0,
+              "location": "hegu",
+              "kind": "meet"
+            }
+          ]
+        },
+        {
+          "id": "life-13s68jz-wozw94:person:3",
+          "name": "方长宁",
+          "gender": "M",
+          "bornMonth": 540,
+          "realm": 0,
+          "lifespan": 80,
+          "health": 94,
+          "talent": 64,
+          "relation": "acquaintance",
+          "bond": 45,
+          "alive": true,
+          "location": "hegu",
+          "faction": null,
+          "goal": "live",
+          "deathMonth": null,
+          "memories": [],
+          "history": [
+            {
+              "month": 840,
+              "realm": 0,
+              "location": "hegu",
+              "kind": "meet"
+            }
+          ]
+        },
+        {
+          "id": "life-13s68jz-wozw94:person:4",
+          "name": "程听澜",
+          "gender": "M",
+          "bornMonth": 504,
+          "realm": 2,
+          "lifespan": 201,
+          "health": 84,
+          "talent": 61,
+          "relation": "elder",
+          "bond": 45,
+          "alive": true,
+          "location": "hegu",
+          "faction": "yaohui",
+          "goal": "cultivate",
+          "deathMonth": null,
+          "memories": [],
+          "history": [
+            {
+              "month": 924,
+              "realm": 2,
+              "location": "hegu",
+              "kind": "meet"
+            }
+          ]
+        },
+        {
+          "id": "life-13s68jz-wozw94:person:5",
+          "name": "孟闻溪",
+          "gender": "F",
+          "bornMonth": 516,
+          "realm": 0,
+          "lifespan": 81,
+          "health": 92,
+          "talent": 80,
+          "relation": "acquaintance",
+          "bond": 45,
+          "alive": true,
+          "location": "hegu",
+          "faction": null,
+          "goal": "live",
+          "deathMonth": null,
+          "memories": [],
+          "history": [
+            {
+              "month": 936,
+              "realm": 0,
+              "location": "hegu",
+              "kind": "meet"
+            }
+          ]
+        }
+      ],
+      "queue": [],
+      "pending": null,
+      "ending": {
+        "type": "quiet",
+        "title": "人间一盏茶",
+        "subtitle": "此生有平常的清晨，也有独属于你的相遇。岁月至此，仍值得记下。",
+        "seal": "安然",
+        "cause": "寿元已尽",
+        "month": 1008,
+        "age": 84,
+        "realm": "凡身",
+        "location": "青禾谷"
+      },
+      "flags": {
+        "queued:age:6": true,
+        "queued:age:12": true,
+        "queued:world:197": true,
+        "ownpath:life-13s68jz-wozw94:companion": true,
+        "queued:age:18": true,
+        "nextSmallStory": 1032,
+        "queued:age:22": true,
+        "queued:world:205": true,
+        "queued:age:24": true,
+        "queued:age:29": true,
+        "queued:world:213": true,
+        "queued:age:32": true,
+        "queued:world:221": true,
+        "queued:age:40": true,
+        "queued:world:229": true,
+        "queued:age:48": true,
+        "queued:farewell:life-13s68jz-wozw94:father": true,
+        "queued:inheritance:life-13s68jz-wozw94:father": true,
+        "queued:farewell:life-13s68jz-wozw94:mother": true,
+        "queued:world:245": true,
+        "queued:inheritance:life-13s68jz-wozw94:mother": true,
+        "queued:age:66": true,
+        "queued:world:253": true,
+        "queued:farewell:life-13s68jz-wozw94:companion": true,
+        "queued:inheritance:life-13s68jz-wozw94:companion": true,
+        "queued:world:261": true
+      },
+      "log": [
+        {
+          "id": "life-13s68jz-wozw94:log:1",
+          "month": 0,
+          "kind": "birth",
+          "text": "方长宁出生在青禾谷。家中经营一小片药田。父母教你辨认叶脉，也教你记住四时。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:2",
+          "month": 0,
+          "kind": "growth",
+          "text": "你开始了这一生。山外的路很长，眼前也有人为你留灯。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:3",
+          "month": 12,
+          "kind": "year",
+          "text": "这一年，有人与你坐下来说了许多话。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:4",
+          "month": 24,
+          "kind": "year",
+          "text": "这一年，有人与你坐下来说了许多话。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:5",
+          "month": 36,
+          "kind": "year",
+          "text": "这一年，有人与你坐下来说了许多话。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:6",
+          "month": 48,
+          "kind": "year",
+          "text": "你重新安排日常，为牵挂的人留出位置。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:7",
+          "month": 60,
+          "kind": "year",
+          "text": "这一年，有人与你坐下来说了许多话。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:8",
+          "month": 72,
+          "kind": "year",
+          "text": "这一年，有人与你坐下来说了许多话。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:10",
+          "month": 72,
+          "kind": "choice",
+          "text": "面对“第一本旧书”，你选择了：跟着先生识字。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:11",
+          "month": 84,
+          "kind": "year",
+          "text": "你读到一段新的心得，旧问题也有了另一种解释。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:12",
+          "month": 96,
+          "kind": "year",
+          "text": "你读到一段新的心得，旧问题也有了另一种解释。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:13",
+          "month": 96,
+          "kind": "world",
+          "text": "岚渡山雨水偏少，人们开始互相安排生计。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:14",
+          "month": 108,
+          "kind": "year",
+          "text": "一本旧书陪你度过许多安静的时刻。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:15",
+          "month": 120,
+          "kind": "year",
+          "text": "你向不同的人请教，渐渐看见自己的局限与积累。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:16",
+          "month": 132,
+          "kind": "year",
+          "text": "你向不同的人请教，渐渐看见自己的局限与积累。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:17",
+          "month": 144,
+          "kind": "year",
+          "text": "一本旧书陪你度过许多安静的时刻。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:19",
+          "month": 144,
+          "kind": "choice",
+          "text": "面对“山门之外，也有人生”，你选择了：先留在故乡。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:20",
+          "month": 156,
+          "kind": "year",
+          "text": "你把时间留给相处，小事也慢慢成为记忆。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:21",
+          "month": 168,
+          "kind": "year",
+          "text": "你把时间留给相处，小事也慢慢成为记忆。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:22",
+          "month": 180,
+          "kind": "year",
+          "text": "这一年，有人与你坐下来说了许多话。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:23",
+          "month": 192,
+          "kind": "year",
+          "text": "你重新安排日常，为牵挂的人留出位置。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:24",
+          "month": 192,
+          "kind": "world",
+          "text": "照石关雨水偏少，人们开始互相安排生计。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:26",
+          "month": 192,
+          "kind": "choice",
+          "text": "面对“雨迟迟没有来”，你选择了：先守住自己的储备。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:27",
+          "month": 204,
+          "kind": "year",
+          "text": "你把时间留给相处，小事也慢慢成为记忆。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:28",
+          "month": 204,
+          "kind": "relationship",
+          "text": "陆时雨开始了自己的道路，在青禾谷安排生计。",
+          "actorId": "life-13s68jz-wozw94:companion"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:29",
+          "month": 216,
+          "kind": "year",
+          "text": "你把时间留给相处，小事也慢慢成为记忆。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:32",
+          "month": 216,
+          "kind": "choice",
+          "text": "面对“给日子找一份依靠”，你选择了：守住一片田地。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:33",
+          "month": 216,
+          "kind": "choice",
+          "text": "面对“故乡的一次修缮”，你选择了：商量一个稍后的安排。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:34",
+          "month": 216,
+          "kind": "focus",
+          "text": "你把接下来的重心放在“识字求知”。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:35",
+          "month": 228,
+          "kind": "year",
+          "text": "你向不同的人请教，渐渐看见自己的局限与积累。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:36",
+          "month": 240,
+          "kind": "year",
+          "text": "一本旧书陪你度过许多安静的时刻。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:37",
+          "month": 252,
+          "kind": "year",
+          "text": "你读到一段新的心得，旧问题也有了另一种解释。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:38",
+          "month": 264,
+          "kind": "year",
+          "text": "你向不同的人请教，渐渐看见自己的局限与积累。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:40",
+          "month": 264,
+          "kind": "choice",
+          "text": "面对“故乡的一次修缮”，你选择了：商量一个稍后的安排。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:41",
+          "month": 276,
+          "kind": "year",
+          "text": "你读到一段新的心得，旧问题也有了另一种解释。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:42",
+          "month": 288,
+          "kind": "year",
+          "text": "一本旧书陪你度过许多安静的时刻。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:43",
+          "month": 288,
+          "kind": "world",
+          "text": "问雪岭附近势力发生冲突，行路与生活多了风险。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:46",
+          "month": 288,
+          "kind": "choice",
+          "text": "面对“关隘传来的消息”，你选择了：暂停远行，照顾身边的人。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:47",
+          "month": 288,
+          "kind": "choice",
+          "text": "面对“并肩走过一段路”，你选择了：保留长久的友谊。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:48",
+          "month": 288,
+          "kind": "focus",
+          "text": "你把接下来的重心放在“识字求知”。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:49",
+          "month": 300,
+          "kind": "year",
+          "text": "你读到一段新的心得，旧问题也有了另一种解释。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:50",
+          "month": 312,
+          "kind": "year",
+          "text": "你读到一段新的心得，旧问题也有了另一种解释。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:52",
+          "month": 312,
+          "kind": "choice",
+          "text": "面对“山路上的陌生人”，你选择了：说明自己无法停留。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:53",
+          "month": 324,
+          "kind": "year",
+          "text": "你读到一段新的心得，旧问题也有了另一种解释。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:54",
+          "month": 336,
+          "kind": "year",
+          "text": "你向不同的人请教，渐渐看见自己的局限与积累。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:55",
+          "month": 348,
+          "kind": "year",
+          "text": "一本旧书陪你度过许多安静的时刻。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:57",
+          "month": 348,
+          "kind": "choice",
+          "text": "面对“家中来信”，你选择了：写信，说明自己的近况。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:58",
+          "month": 360,
+          "kind": "year",
+          "text": "一本旧书陪你度过许多安静的时刻。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:60",
+          "month": 360,
+          "kind": "choice",
+          "text": "面对“一页尚未写完的心得”，你选择了：先停下来休息。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:61",
+          "month": 372,
+          "kind": "year",
+          "text": "你向不同的人请教，渐渐看见自己的局限与积累。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:62",
+          "month": 384,
+          "kind": "year",
+          "text": "你向不同的人请教，渐渐看见自己的局限与积累。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:63",
+          "month": 384,
+          "kind": "world",
+          "text": "青禾谷雨水偏少，人们开始互相安排生计。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:65",
+          "month": 384,
+          "kind": "choice",
+          "text": "面对“雨迟迟没有来”，你选择了：先守住自己的储备。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:66",
+          "month": 396,
+          "kind": "year",
+          "text": "你读到一段新的心得，旧问题也有了另一种解释。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:67",
+          "month": 408,
+          "kind": "year",
+          "text": "一本旧书陪你度过许多安静的时刻。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:69",
+          "month": 408,
+          "kind": "choice",
+          "text": "面对“故乡的一次修缮”，你选择了：商量一个稍后的安排。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:70",
+          "month": 420,
+          "kind": "year",
+          "text": "你读到一段新的心得，旧问题也有了另一种解释。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:71",
+          "month": 432,
+          "kind": "year",
+          "text": "你读到一段新的心得，旧问题也有了另一种解释。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:72",
+          "month": 444,
+          "kind": "year",
+          "text": "你向不同的人请教，渐渐看见自己的局限与积累。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:73",
+          "month": 456,
+          "kind": "year",
+          "text": "一本旧书陪你度过许多安静的时刻。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:75",
+          "month": 456,
+          "kind": "choice",
+          "text": "面对“故乡的一次修缮”，你选择了：商量一个稍后的安排。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:76",
+          "month": 468,
+          "kind": "year",
+          "text": "你向不同的人请教，渐渐看见自己的局限与积累。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:77",
+          "month": 480,
+          "kind": "year",
+          "text": "一本旧书陪你度过许多安静的时刻。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:78",
+          "month": 480,
+          "kind": "world",
+          "text": "岚渡山雨水偏少，人们开始互相安排生计。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:81",
+          "month": 480,
+          "kind": "choice",
+          "text": "面对“雨迟迟没有来”，你选择了：先守住自己的储备。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:82",
+          "month": 480,
+          "kind": "choice",
+          "text": "面对“故乡的一次修缮”，你选择了：商量一个稍后的安排。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:83",
+          "month": 492,
+          "kind": "year",
+          "text": "你读到一段新的心得，旧问题也有了另一种解释。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:84",
+          "month": 504,
+          "kind": "year",
+          "text": "你向不同的人请教，渐渐看见自己的局限与积累。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:86",
+          "month": 504,
+          "kind": "choice",
+          "text": "面对“雨后的药坡”，你选择了：在熟悉的坡上采集。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:87",
+          "month": 516,
+          "kind": "year",
+          "text": "你读到一段新的心得，旧问题也有了另一种解释。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:88",
+          "month": 528,
+          "kind": "year",
+          "text": "一本旧书陪你度过许多安静的时刻。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:89",
+          "month": 540,
+          "kind": "year",
+          "text": "一本旧书陪你度过许多安静的时刻。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:90",
+          "month": 552,
+          "kind": "year",
+          "text": "你读到一段新的心得，旧问题也有了另一种解释。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:92",
+          "month": 552,
+          "kind": "choice",
+          "text": "面对“坊市里的手抄本”，你选择了：道谢后继续行路。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:93",
+          "month": 564,
+          "kind": "year",
+          "text": "一本旧书陪你度过许多安静的时刻。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:94",
+          "month": 576,
+          "kind": "year",
+          "text": "你读到一段新的心得，旧问题也有了另一种解释。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:95",
+          "month": 576,
+          "kind": "world",
+          "text": "青禾谷附近势力发生冲突，行路与生活多了风险。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:98",
+          "month": 576,
+          "kind": "choice",
+          "text": "面对“关隘传来的消息”，你选择了：暂停远行，照顾身边的人。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:99",
+          "month": 576,
+          "kind": "choice",
+          "text": "面对“一页尚未写完的心得”，你选择了：先停下来休息。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:100",
+          "month": 576,
+          "kind": "focus",
+          "text": "你把接下来的重心放在“识字求知”。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:101",
+          "month": 588,
+          "kind": "year",
+          "text": "一本旧书陪你度过许多安静的时刻。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:102",
+          "month": 600,
+          "kind": "year",
+          "text": "你向不同的人请教，渐渐看见自己的局限与积累。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:104",
+          "month": 600,
+          "kind": "choice",
+          "text": "面对“山路上的陌生人”，你选择了：说明自己无法停留。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:105",
+          "month": 612,
+          "kind": "year",
+          "text": "你读到一段新的心得，旧问题也有了另一种解释。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:106",
+          "month": 624,
+          "kind": "year",
+          "text": "一本旧书陪你度过许多安静的时刻。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:107",
+          "month": 636,
+          "kind": "year",
+          "text": "一本旧书陪你度过许多安静的时刻。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:108",
+          "month": 648,
+          "kind": "year",
+          "text": "你读到一段新的心得，旧问题也有了另一种解释。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:109",
+          "month": 648,
+          "kind": "memory",
+          "text": "方松月在84岁时离开了。你记得彼此相处的那些日常。",
+          "actorId": "life-13s68jz-wozw94:father"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:112",
+          "month": 648,
+          "kind": "choice",
+          "text": "面对“把未说完的话留下”，你选择了：留下对方的一件旧物。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:114",
+          "month": 648,
+          "kind": "choice",
+          "text": "面对“故乡的一次修缮”，你选择了：商量一个稍后的安排。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:115",
+          "month": 654,
+          "kind": "choice",
+          "text": "面对“交到你手中的旧物”，你选择了：把经验交给后来者。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:116",
+          "month": 660,
+          "kind": "year",
+          "text": "一本旧书陪你度过许多安静的时刻。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:117",
+          "month": 672,
+          "kind": "year",
+          "text": "一本旧书陪你度过许多安静的时刻。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:118",
+          "month": 672,
+          "kind": "world",
+          "text": "暮澜港这一年收成较好，坊市渐渐热闹。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:119",
+          "month": 684,
+          "kind": "year",
+          "text": "你向不同的人请教，渐渐看见自己的局限与积累。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:120",
+          "month": 696,
+          "kind": "year",
+          "text": "你向不同的人请教，渐渐看见自己的局限与积累。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:122",
+          "month": 696,
+          "kind": "choice",
+          "text": "面对“雨后的药坡”，你选择了：在熟悉的坡上采集。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:123",
+          "month": 708,
+          "kind": "year",
+          "text": "你向不同的人请教，渐渐看见自己的局限与积累。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:124",
+          "month": 720,
+          "kind": "year",
+          "text": "一本旧书陪你度过许多安静的时刻。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:125",
+          "month": 732,
+          "kind": "year",
+          "text": "你读到一段新的心得，旧问题也有了另一种解释。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:126",
+          "month": 744,
+          "kind": "year",
+          "text": "一本旧书陪你度过许多安静的时刻。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:128",
+          "month": 744,
+          "kind": "choice",
+          "text": "面对“故乡的一次修缮”，你选择了：商量一个稍后的安排。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:129",
+          "month": 756,
+          "kind": "year",
+          "text": "一本旧书陪你度过许多安静的时刻。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:130",
+          "month": 768,
+          "kind": "year",
+          "text": "你向不同的人请教，渐渐看见自己的局限与积累。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:131",
+          "month": 768,
+          "kind": "memory",
+          "text": "方照宁在91岁时离开了。你记得彼此相处的那些日常。",
+          "actorId": "life-13s68jz-wozw94:mother"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:133",
+          "month": 768,
+          "kind": "world",
+          "text": "暮澜港雨水偏少，人们开始互相安排生计。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:135",
+          "month": 768,
+          "kind": "choice",
+          "text": "面对“把未说完的话留下”，你选择了：留下对方的一件旧物。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:137",
+          "month": 768,
+          "kind": "choice",
+          "text": "面对“雨迟迟没有来”，你选择了：先守住自己的储备。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:138",
+          "month": 774,
+          "kind": "choice",
+          "text": "面对“交到你手中的旧物”，你选择了：把经验交给后来者。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:139",
+          "month": 780,
+          "kind": "year",
+          "text": "你向不同的人请教，渐渐看见自己的局限与积累。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:140",
+          "month": 792,
+          "kind": "year",
+          "text": "一本旧书陪你度过许多安静的时刻。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:143",
+          "month": 792,
+          "kind": "choice",
+          "text": "面对“岁月渐深，仍有想做的事”，你选择了：再看一段山河。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:144",
+          "month": 792,
+          "kind": "choice",
+          "text": "面对“一页尚未写完的心得”，你选择了：先停下来休息。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:145",
+          "month": 792,
+          "kind": "focus",
+          "text": "你把接下来的重心放在“识字求知”。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:146",
+          "month": 804,
+          "kind": "year",
+          "text": "你读到一段新的心得，旧问题也有了另一种解释。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:147",
+          "month": 816,
+          "kind": "year",
+          "text": "一本旧书陪你度过许多安静的时刻。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:148",
+          "month": 828,
+          "kind": "year",
+          "text": "你读到一段新的心得，旧问题也有了另一种解释。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:149",
+          "month": 840,
+          "kind": "year",
+          "text": "你向不同的人请教，渐渐看见自己的局限与积累。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:151",
+          "month": 840,
+          "kind": "choice",
+          "text": "面对“山路上的陌生人”，你选择了：说明自己无法停留。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:152",
+          "month": 852,
+          "kind": "year",
+          "text": "你读到一段新的心得，旧问题也有了另一种解释。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:153",
+          "month": 864,
+          "kind": "year",
+          "text": "你读到一段新的心得，旧问题也有了另一种解释。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:154",
+          "month": 864,
+          "kind": "world",
+          "text": "照石关附近势力发生冲突，行路与生活多了风险。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:156",
+          "month": 864,
+          "kind": "choice",
+          "text": "面对“关隘传来的消息”，你选择了：暂停远行，照顾身边的人。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:157",
+          "month": 864,
+          "kind": "focus",
+          "text": "你把接下来的重心放在“识字求知”。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:158",
+          "month": 876,
+          "kind": "year",
+          "text": "你向不同的人请教，渐渐看见自己的局限与积累。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:159",
+          "month": 888,
+          "kind": "year",
+          "text": "一本旧书陪你度过许多安静的时刻。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:161",
+          "month": 888,
+          "kind": "choice",
+          "text": "面对“坊市里的手抄本”，你选择了：道谢后继续行路。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:162",
+          "month": 900,
+          "kind": "year",
+          "text": "你读到一段新的心得，旧问题也有了另一种解释。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:163",
+          "month": 912,
+          "kind": "year",
+          "text": "一本旧书陪你度过许多安静的时刻。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:164",
+          "month": 924,
+          "kind": "year",
+          "text": "一本旧书陪你度过许多安静的时刻。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:165",
+          "month": 936,
+          "kind": "year",
+          "text": "一本旧书陪你度过许多安静的时刻。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:167",
+          "month": 936,
+          "kind": "choice",
+          "text": "面对“山路上的陌生人”，你选择了：说明自己无法停留。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:168",
+          "month": 948,
+          "kind": "year",
+          "text": "你向不同的人请教，渐渐看见自己的局限与积累。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:169",
+          "month": 948,
+          "kind": "memory",
+          "text": "陆时雨在80岁时离开了。你记得彼此相处的那些日常。",
+          "actorId": "life-13s68jz-wozw94:companion"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:171",
+          "month": 948,
+          "kind": "choice",
+          "text": "面对“把未说完的话留下”，你选择了：留下对方的一件旧物。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:173",
+          "month": 954,
+          "kind": "choice",
+          "text": "面对“交到你手中的旧物”，你选择了：把经验交给后来者。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:174",
+          "month": 960,
+          "kind": "year",
+          "text": "一本旧书陪你度过许多安静的时刻。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:175",
+          "month": 960,
+          "kind": "world",
+          "text": "照石关雨水偏少，人们开始互相安排生计。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:177",
+          "month": 960,
+          "kind": "choice",
+          "text": "面对“雨迟迟没有来”，你选择了：先守住自己的储备。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:178",
+          "month": 972,
+          "kind": "year",
+          "text": "你向不同的人请教，渐渐看见自己的局限与积累。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:179",
+          "month": 984,
+          "kind": "year",
+          "text": "你向不同的人请教，渐渐看见自己的局限与积累。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:181",
+          "month": 984,
+          "kind": "choice",
+          "text": "面对“一页尚未写完的心得”，你选择了：先停下来休息。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:182",
+          "month": 996,
+          "kind": "year",
+          "text": "一本旧书陪你度过许多安静的时刻。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:183",
+          "month": 1008,
+          "kind": "year",
+          "text": "一本旧书陪你度过许多安静的时刻。"
+        },
+        {
+          "id": "life-13s68jz-wozw94:log:184",
+          "month": 1008,
+          "kind": "ending",
+          "text": "此生在青禾谷告一段落：寿元已尽。此生有平常的清晨，也有独属于你的相遇。岁月至此，仍值得记下。"
+        }
+      ],
+      "years": [
+        {
+          "month": 12,
+          "age": 1,
+          "realm": 0,
+          "health": 90,
+          "mind": 73,
+          "stones": 2,
+          "money": 140,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 24,
+          "age": 2,
+          "realm": 0,
+          "health": 91,
+          "mind": 75,
+          "stones": 2,
+          "money": 140,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 36,
+          "age": 3,
+          "realm": 0,
+          "health": 93,
+          "mind": 76,
+          "stones": 2,
+          "money": 140,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 48,
+          "age": 4,
+          "realm": 0,
+          "health": 95,
+          "mind": 78,
+          "stones": 2,
+          "money": 140,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 60,
+          "age": 5,
+          "realm": 0,
+          "health": 96,
+          "mind": 79,
+          "stones": 2,
+          "money": 140,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 72,
+          "age": 6,
+          "realm": 0,
+          "health": 98,
+          "mind": 81,
+          "stones": 2,
+          "money": 140,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 84,
+          "age": 7,
+          "realm": 0,
+          "health": 99,
+          "mind": 81,
+          "stones": 2,
+          "money": 140,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 96,
+          "age": 8,
+          "realm": 0,
+          "health": 100,
+          "mind": 82,
+          "stones": 2,
+          "money": 140,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 108,
+          "age": 9,
+          "realm": 0,
+          "health": 100,
+          "mind": 82,
+          "stones": 2,
+          "money": 140,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 120,
+          "age": 10,
+          "realm": 0,
+          "health": 100,
+          "mind": 83,
+          "stones": 2,
+          "money": 140,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 132,
+          "age": 11,
+          "realm": 0,
+          "health": 100,
+          "mind": 83,
+          "stones": 2,
+          "money": 140,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 144,
+          "age": 12,
+          "realm": 0,
+          "health": 100,
+          "mind": 84,
+          "stones": 2,
+          "money": 140,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 156,
+          "age": 13,
+          "realm": 0,
+          "health": 100,
+          "mind": 85,
+          "stones": 2,
+          "money": 140,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 168,
+          "age": 14,
+          "realm": 0,
+          "health": 100,
+          "mind": 86,
+          "stones": 2,
+          "money": 140,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 180,
+          "age": 15,
+          "realm": 0,
+          "health": 100,
+          "mind": 88,
+          "stones": 2,
+          "money": 140,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 192,
+          "age": 16,
+          "realm": 0,
+          "health": 100,
+          "mind": 89,
+          "stones": 3,
+          "money": 197,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 204,
+          "age": 17,
+          "realm": 0,
+          "health": 100,
+          "mind": 94,
+          "stones": 4,
+          "money": 256,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 216,
+          "age": 18,
+          "realm": 0,
+          "health": 100,
+          "mind": 95,
+          "stones": 5,
+          "money": 316,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 228,
+          "age": 19,
+          "realm": 0,
+          "health": 100,
+          "mind": 100,
+          "stones": 6,
+          "money": 399,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 240,
+          "age": 20,
+          "realm": 0,
+          "health": 100,
+          "mind": 100,
+          "stones": 7,
+          "money": 482,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 252,
+          "age": 21,
+          "realm": 0,
+          "health": 100,
+          "mind": 100,
+          "stones": 8,
+          "money": 566,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 264,
+          "age": 22,
+          "realm": 0,
+          "health": 100,
+          "mind": 100,
+          "stones": 9,
+          "money": 648,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 276,
+          "age": 23,
+          "realm": 0,
+          "health": 100,
+          "mind": 100,
+          "stones": 10,
+          "money": 732,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 288,
+          "age": 24,
+          "realm": 0,
+          "health": 100,
+          "mind": 100,
+          "stones": 11,
+          "money": 815,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 300,
+          "age": 25,
+          "realm": 0,
+          "health": 100,
+          "mind": 100,
+          "stones": 12,
+          "money": 898,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 312,
+          "age": 26,
+          "realm": 0,
+          "health": 100,
+          "mind": 100,
+          "stones": 13,
+          "money": 980,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 324,
+          "age": 27,
+          "realm": 0,
+          "health": 100,
+          "mind": 100,
+          "stones": 14,
+          "money": 1061,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 336,
+          "age": 28,
+          "realm": 0,
+          "health": 100,
+          "mind": 100,
+          "stones": 15,
+          "money": 1142,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 348,
+          "age": 29,
+          "realm": 0,
+          "health": 100,
+          "mind": 100,
+          "stones": 16,
+          "money": 1223,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 360,
+          "age": 30,
+          "realm": 0,
+          "health": 100,
+          "mind": 100,
+          "stones": 17,
+          "money": 1303,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 372,
+          "age": 31,
+          "realm": 0,
+          "health": 100,
+          "mind": 100,
+          "stones": 18,
+          "money": 1382,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 384,
+          "age": 32,
+          "realm": 0,
+          "health": 100,
+          "mind": 100,
+          "stones": 19,
+          "money": 1463,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 396,
+          "age": 33,
+          "realm": 0,
+          "health": 100,
+          "mind": 100,
+          "stones": 20,
+          "money": 1542,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 408,
+          "age": 34,
+          "realm": 0,
+          "health": 100,
+          "mind": 100,
+          "stones": 21,
+          "money": 1622,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 420,
+          "age": 35,
+          "realm": 0,
+          "health": 100,
+          "mind": 100,
+          "stones": 22,
+          "money": 1700,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 432,
+          "age": 36,
+          "realm": 0,
+          "health": 100,
+          "mind": 100,
+          "stones": 23,
+          "money": 1777,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 444,
+          "age": 37,
+          "realm": 0,
+          "health": 100,
+          "mind": 100,
+          "stones": 24,
+          "money": 1852,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 456,
+          "age": 38,
+          "realm": 0,
+          "health": 100,
+          "mind": 100,
+          "stones": 25,
+          "money": 1926,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 468,
+          "age": 39,
+          "realm": 0,
+          "health": 100,
+          "mind": 100,
+          "stones": 26,
+          "money": 2000,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 480,
+          "age": 40,
+          "realm": 0,
+          "health": 100,
+          "mind": 100,
+          "stones": 27,
+          "money": 2074,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 492,
+          "age": 41,
+          "realm": 0,
+          "health": 100,
+          "mind": 100,
+          "stones": 28,
+          "money": 2148,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 504,
+          "age": 42,
+          "realm": 0,
+          "health": 100,
+          "mind": 100,
+          "stones": 29,
+          "money": 2223,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 516,
+          "age": 43,
+          "realm": 0,
+          "health": 100,
+          "mind": 100,
+          "stones": 30,
+          "money": 2300,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 528,
+          "age": 44,
+          "realm": 0,
+          "health": 100,
+          "mind": 100,
+          "stones": 31,
+          "money": 2377,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 540,
+          "age": 45,
+          "realm": 0,
+          "health": 100,
+          "mind": 100,
+          "stones": 32,
+          "money": 2453,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 552,
+          "age": 46,
+          "realm": 0,
+          "health": 100,
+          "mind": 100,
+          "stones": 33,
+          "money": 2529,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 564,
+          "age": 47,
+          "realm": 0,
+          "health": 100,
+          "mind": 100,
+          "stones": 34,
+          "money": 2606,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 576,
+          "age": 48,
+          "realm": 0,
+          "health": 100,
+          "mind": 100,
+          "stones": 35,
+          "money": 2681,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 588,
+          "age": 49,
+          "realm": 0,
+          "health": 100,
+          "mind": 100,
+          "stones": 36,
+          "money": 2752,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 600,
+          "age": 50,
+          "realm": 0,
+          "health": 100,
+          "mind": 100,
+          "stones": 37,
+          "money": 2821,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 612,
+          "age": 51,
+          "realm": 0,
+          "health": 100,
+          "mind": 100,
+          "stones": 38,
+          "money": 2892,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 624,
+          "age": 52,
+          "realm": 0,
+          "health": 100,
+          "mind": 100,
+          "stones": 39,
+          "money": 2962,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 636,
+          "age": 53,
+          "realm": 0,
+          "health": 100,
+          "mind": 100,
+          "stones": 40,
+          "money": 3034,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 648,
+          "age": 54,
+          "realm": 0,
+          "health": 100,
+          "mind": 93,
+          "stones": 41,
+          "money": 3104,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 660,
+          "age": 55,
+          "realm": 0,
+          "health": 100,
+          "mind": 99,
+          "stones": 42,
+          "money": 3174,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 672,
+          "age": 56,
+          "realm": 0,
+          "health": 100,
+          "mind": 100,
+          "stones": 43,
+          "money": 3244,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 684,
+          "age": 57,
+          "realm": 0,
+          "health": 100,
+          "mind": 100,
+          "stones": 44,
+          "money": 3315,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 696,
+          "age": 58,
+          "realm": 0,
+          "health": 100,
+          "mind": 100,
+          "stones": 45,
+          "money": 3387,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 708,
+          "age": 59,
+          "realm": 0,
+          "health": 100,
+          "mind": 100,
+          "stones": 46,
+          "money": 3459,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 720,
+          "age": 60,
+          "realm": 0,
+          "health": 100,
+          "mind": 100,
+          "stones": 47,
+          "money": 3531,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 732,
+          "age": 61,
+          "realm": 0,
+          "health": 100,
+          "mind": 100,
+          "stones": 48,
+          "money": 3605,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 744,
+          "age": 62,
+          "realm": 0,
+          "health": 100,
+          "mind": 100,
+          "stones": 49,
+          "money": 3679,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 756,
+          "age": 63,
+          "realm": 0,
+          "health": 100,
+          "mind": 100,
+          "stones": 50,
+          "money": 3754,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 768,
+          "age": 64,
+          "realm": 0,
+          "health": 98,
+          "mind": 93,
+          "stones": 51,
+          "money": 3830,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 780,
+          "age": 65,
+          "realm": 0,
+          "health": 98,
+          "mind": 100,
+          "stones": 52,
+          "money": 3906,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 792,
+          "age": 66,
+          "realm": 0,
+          "health": 97,
+          "mind": 100,
+          "stones": 53,
+          "money": 3983,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 804,
+          "age": 67,
+          "realm": 0,
+          "health": 98,
+          "mind": 100,
+          "stones": 54,
+          "money": 4059,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 816,
+          "age": 68,
+          "realm": 0,
+          "health": 98,
+          "mind": 100,
+          "stones": 55,
+          "money": 4134,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 828,
+          "age": 69,
+          "realm": 0,
+          "health": 97,
+          "mind": 100,
+          "stones": 56,
+          "money": 4209,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 840,
+          "age": 70,
+          "realm": 0,
+          "health": 96,
+          "mind": 100,
+          "stones": 57,
+          "money": 4284,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 852,
+          "age": 71,
+          "realm": 0,
+          "health": 95,
+          "mind": 100,
+          "stones": 58,
+          "money": 4359,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 864,
+          "age": 72,
+          "realm": 0,
+          "health": 95,
+          "mind": 100,
+          "stones": 59,
+          "money": 4432,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 876,
+          "age": 73,
+          "realm": 0,
+          "health": 94,
+          "mind": 100,
+          "stones": 60,
+          "money": 4504,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 888,
+          "age": 74,
+          "realm": 0,
+          "health": 93,
+          "mind": 100,
+          "stones": 61,
+          "money": 4578,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 900,
+          "age": 75,
+          "realm": 0,
+          "health": 92,
+          "mind": 100,
+          "stones": 62,
+          "money": 4650,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 912,
+          "age": 76,
+          "realm": 0,
+          "health": 92,
+          "mind": 100,
+          "stones": 63,
+          "money": 4723,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 924,
+          "age": 77,
+          "realm": 0,
+          "health": 91,
+          "mind": 100,
+          "stones": 64,
+          "money": 4797,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 936,
+          "age": 78,
+          "realm": 0,
+          "health": 90,
+          "mind": 100,
+          "stones": 65,
+          "money": 4870,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 948,
+          "age": 79,
+          "realm": 0,
+          "health": 89,
+          "mind": 93,
+          "stones": 66,
+          "money": 4944,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 960,
+          "age": 80,
+          "realm": 0,
+          "health": 89,
+          "mind": 98,
+          "stones": 67,
+          "money": 5018,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 972,
+          "age": 81,
+          "realm": 0,
+          "health": 88,
+          "mind": 100,
+          "stones": 68,
+          "money": 5092,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 984,
+          "age": 82,
+          "realm": 0,
+          "health": 87,
+          "mind": 100,
+          "stones": 69,
+          "money": 5166,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 996,
+          "age": 83,
+          "realm": 0,
+          "health": 96,
+          "mind": 100,
+          "stones": 70,
+          "money": 5240,
+          "location": "hegu",
+          "craft": 8
+        },
+        {
+          "month": 1008,
+          "age": 84,
+          "realm": 0,
+          "health": 95,
+          "mind": 100,
+          "stones": 71,
+          "money": 5313,
+          "location": "hegu",
+          "craft": 8
+        }
+      ],
+      "ledger": [
+        {
+          "month": 192,
+          "label": "一年生计与家用",
+          "money": 57,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 204,
+          "label": "一年生计与家用",
+          "money": 59,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 216,
+          "label": "一年生计与家用",
+          "money": 60,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 228,
+          "label": "一年生计与家用",
+          "money": 83,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 240,
+          "label": "一年生计与家用",
+          "money": 83,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 252,
+          "label": "一年生计与家用",
+          "money": 84,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 264,
+          "label": "一年生计与家用",
+          "money": 82,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 276,
+          "label": "一年生计与家用",
+          "money": 84,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 288,
+          "label": "一年生计与家用",
+          "money": 83,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 300,
+          "label": "一年生计与家用",
+          "money": 83,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 312,
+          "label": "一年生计与家用",
+          "money": 82,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 324,
+          "label": "一年生计与家用",
+          "money": 81,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 336,
+          "label": "一年生计与家用",
+          "money": 81,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 348,
+          "label": "一年生计与家用",
+          "money": 81,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 360,
+          "label": "一年生计与家用",
+          "money": 80,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 372,
+          "label": "一年生计与家用",
+          "money": 79,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 384,
+          "label": "一年生计与家用",
+          "money": 81,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 396,
+          "label": "一年生计与家用",
+          "money": 79,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 408,
+          "label": "一年生计与家用",
+          "money": 80,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 420,
+          "label": "一年生计与家用",
+          "money": 78,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 432,
+          "label": "一年生计与家用",
+          "money": 77,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 444,
+          "label": "一年生计与家用",
+          "money": 75,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 456,
+          "label": "一年生计与家用",
+          "money": 74,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 468,
+          "label": "一年生计与家用",
+          "money": 74,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 480,
+          "label": "一年生计与家用",
+          "money": 74,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 492,
+          "label": "一年生计与家用",
+          "money": 74,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 504,
+          "label": "一年生计与家用",
+          "money": 75,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 516,
+          "label": "一年生计与家用",
+          "money": 77,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 528,
+          "label": "一年生计与家用",
+          "money": 77,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 540,
+          "label": "一年生计与家用",
+          "money": 76,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 552,
+          "label": "一年生计与家用",
+          "money": 76,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 564,
+          "label": "一年生计与家用",
+          "money": 77,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 576,
+          "label": "一年生计与家用",
+          "money": 75,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 588,
+          "label": "一年生计与家用",
+          "money": 71,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 600,
+          "label": "一年生计与家用",
+          "money": 69,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 612,
+          "label": "一年生计与家用",
+          "money": 71,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 624,
+          "label": "一年生计与家用",
+          "money": 70,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 636,
+          "label": "一年生计与家用",
+          "money": 72,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 648,
+          "label": "一年生计与家用",
+          "money": 70,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 660,
+          "label": "一年生计与家用",
+          "money": 70,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 672,
+          "label": "一年生计与家用",
+          "money": 70,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 684,
+          "label": "一年生计与家用",
+          "money": 71,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 696,
+          "label": "一年生计与家用",
+          "money": 72,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 708,
+          "label": "一年生计与家用",
+          "money": 72,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 720,
+          "label": "一年生计与家用",
+          "money": 72,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 732,
+          "label": "一年生计与家用",
+          "money": 74,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 744,
+          "label": "一年生计与家用",
+          "money": 74,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 756,
+          "label": "一年生计与家用",
+          "money": 75,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 768,
+          "label": "一年生计与家用",
+          "money": 76,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 780,
+          "label": "一年生计与家用",
+          "money": 76,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 792,
+          "label": "一年生计与家用",
+          "money": 77,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 804,
+          "label": "一年生计与家用",
+          "money": 76,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 816,
+          "label": "一年生计与家用",
+          "money": 75,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 828,
+          "label": "一年生计与家用",
+          "money": 75,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 840,
+          "label": "一年生计与家用",
+          "money": 75,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 852,
+          "label": "一年生计与家用",
+          "money": 75,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 864,
+          "label": "一年生计与家用",
+          "money": 73,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 876,
+          "label": "一年生计与家用",
+          "money": 72,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 888,
+          "label": "一年生计与家用",
+          "money": 74,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 900,
+          "label": "一年生计与家用",
+          "money": 72,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 912,
+          "label": "一年生计与家用",
+          "money": 73,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 924,
+          "label": "一年生计与家用",
+          "money": 74,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 936,
+          "label": "一年生计与家用",
+          "money": 73,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 948,
+          "label": "一年生计与家用",
+          "money": 74,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 960,
+          "label": "一年生计与家用",
+          "money": 74,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 972,
+          "label": "一年生计与家用",
+          "money": 74,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 984,
+          "label": "一年生计与家用",
+          "money": 74,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 996,
+          "label": "一年生计与家用",
+          "money": 74,
+          "stones": 1,
+          "herbs": 1
+        },
+        {
+          "month": 1008,
+          "label": "一年生计与家用",
+          "money": 73,
+          "stones": 1,
+          "herbs": 1
+        }
+      ],
+      "choices": [
+        {
+          "month": 72,
+          "event": "primer",
+          "title": "第一本旧书",
+          "choice": "read",
+          "label": "跟着先生识字",
+          "actorId": null
+        },
+        {
+          "month": 144,
+          "event": "path",
+          "title": "山门之外，也有人生",
+          "choice": "home",
+          "label": "先留在故乡",
+          "actorId": null
+        },
+        {
+          "month": 192,
+          "event": "drought",
+          "title": "雨迟迟没有来",
+          "choice": "save",
+          "label": "先守住自己的储备",
+          "actorId": null
+        },
+        {
+          "month": 216,
+          "event": "profession",
+          "title": "给日子找一份依靠",
+          "choice": "farmer",
+          "label": "守住一片田地",
+          "actorId": null
+        },
+        {
+          "month": 216,
+          "event": "homecoming",
+          "title": "故乡的一次修缮",
+          "choice": "later",
+          "label": "商量一个稍后的安排",
+          "actorId": null
+        },
+        {
+          "month": 264,
+          "event": "homecoming",
+          "title": "故乡的一次修缮",
+          "choice": "later",
+          "label": "商量一个稍后的安排",
+          "actorId": null
+        },
+        {
+          "month": 288,
+          "event": "war",
+          "title": "关隘传来的消息",
+          "choice": "stay",
+          "label": "暂停远行，照顾身边的人",
+          "actorId": null
+        },
+        {
+          "month": 288,
+          "event": "bond",
+          "title": "并肩走过一段路",
+          "choice": "friends",
+          "label": "保留长久的友谊",
+          "actorId": "life-13s68jz-wozw94:companion"
+        },
+        {
+          "month": 312,
+          "event": "encounter",
+          "title": "山路上的陌生人",
+          "choice": "pass",
+          "label": "说明自己无法停留",
+          "actorId": "life-13s68jz-wozw94:person:1"
+        },
+        {
+          "month": 348,
+          "event": "care",
+          "title": "家中来信",
+          "choice": "letter",
+          "label": "写信，说明自己的近况",
+          "actorId": "life-13s68jz-wozw94:mother"
+        },
+        {
+          "month": 360,
+          "event": "research",
+          "title": "一页尚未写完的心得",
+          "choice": "rest",
+          "label": "先停下来休息",
+          "actorId": null
+        },
+        {
+          "month": 384,
+          "event": "drought",
+          "title": "雨迟迟没有来",
+          "choice": "save",
+          "label": "先守住自己的储备",
+          "actorId": null
+        },
+        {
+          "month": 408,
+          "event": "homecoming",
+          "title": "故乡的一次修缮",
+          "choice": "later",
+          "label": "商量一个稍后的安排",
+          "actorId": null
+        },
+        {
+          "month": 456,
+          "event": "homecoming",
+          "title": "故乡的一次修缮",
+          "choice": "later",
+          "label": "商量一个稍后的安排",
+          "actorId": null
+        },
+        {
+          "month": 480,
+          "event": "drought",
+          "title": "雨迟迟没有来",
+          "choice": "save",
+          "label": "先守住自己的储备",
+          "actorId": null
+        },
+        {
+          "month": 480,
+          "event": "homecoming",
+          "title": "故乡的一次修缮",
+          "choice": "later",
+          "label": "商量一个稍后的安排",
+          "actorId": null
+        },
+        {
+          "month": 504,
+          "event": "gathering",
+          "title": "雨后的药坡",
+          "choice": "near",
+          "label": "在熟悉的坡上采集",
+          "actorId": null
+        },
+        {
+          "month": 552,
+          "event": "market",
+          "title": "坊市里的手抄本",
+          "choice": "pass",
+          "label": "道谢后继续行路",
+          "actorId": null
+        },
+        {
+          "month": 576,
+          "event": "war",
+          "title": "关隘传来的消息",
+          "choice": "stay",
+          "label": "暂停远行，照顾身边的人",
+          "actorId": null
+        },
+        {
+          "month": 576,
+          "event": "research",
+          "title": "一页尚未写完的心得",
+          "choice": "rest",
+          "label": "先停下来休息",
+          "actorId": null
+        },
+        {
+          "month": 600,
+          "event": "encounter",
+          "title": "山路上的陌生人",
+          "choice": "pass",
+          "label": "说明自己无法停留",
+          "actorId": "life-13s68jz-wozw94:person:2"
+        },
+        {
+          "month": 648,
+          "event": "farewell",
+          "title": "把未说完的话留下",
+          "choice": "remember",
+          "label": "留下对方的一件旧物",
+          "actorId": "life-13s68jz-wozw94:father"
+        },
+        {
+          "month": 648,
+          "event": "homecoming",
+          "title": "故乡的一次修缮",
+          "choice": "later",
+          "label": "商量一个稍后的安排",
+          "actorId": null
+        },
+        {
+          "month": 654,
+          "event": "inheritance",
+          "title": "交到你手中的旧物",
+          "choice": "share",
+          "label": "把经验交给后来者",
+          "actorId": "life-13s68jz-wozw94:father"
+        },
+        {
+          "month": 696,
+          "event": "gathering",
+          "title": "雨后的药坡",
+          "choice": "near",
+          "label": "在熟悉的坡上采集",
+          "actorId": null
+        },
+        {
+          "month": 744,
+          "event": "homecoming",
+          "title": "故乡的一次修缮",
+          "choice": "later",
+          "label": "商量一个稍后的安排",
+          "actorId": null
+        },
+        {
+          "month": 768,
+          "event": "farewell",
+          "title": "把未说完的话留下",
+          "choice": "remember",
+          "label": "留下对方的一件旧物",
+          "actorId": "life-13s68jz-wozw94:mother"
+        },
+        {
+          "month": 768,
+          "event": "drought",
+          "title": "雨迟迟没有来",
+          "choice": "save",
+          "label": "先守住自己的储备",
+          "actorId": null
+        },
+        {
+          "month": 774,
+          "event": "inheritance",
+          "title": "交到你手中的旧物",
+          "choice": "share",
+          "label": "把经验交给后来者",
+          "actorId": "life-13s68jz-wozw94:mother"
+        },
+        {
+          "month": 792,
+          "event": "latewish",
+          "title": "岁月渐深，仍有想做的事",
+          "choice": "road",
+          "label": "再看一段山河",
+          "actorId": null
+        },
+        {
+          "month": 792,
+          "event": "research",
+          "title": "一页尚未写完的心得",
+          "choice": "rest",
+          "label": "先停下来休息",
+          "actorId": null
+        },
+        {
+          "month": 840,
+          "event": "encounter",
+          "title": "山路上的陌生人",
+          "choice": "pass",
+          "label": "说明自己无法停留",
+          "actorId": "life-13s68jz-wozw94:person:3"
+        },
+        {
+          "month": 864,
+          "event": "war",
+          "title": "关隘传来的消息",
+          "choice": "stay",
+          "label": "暂停远行，照顾身边的人",
+          "actorId": null
+        },
+        {
+          "month": 888,
+          "event": "market",
+          "title": "坊市里的手抄本",
+          "choice": "pass",
+          "label": "道谢后继续行路",
+          "actorId": null
+        },
+        {
+          "month": 936,
+          "event": "encounter",
+          "title": "山路上的陌生人",
+          "choice": "pass",
+          "label": "说明自己无法停留",
+          "actorId": "life-13s68jz-wozw94:person:5"
+        },
+        {
+          "month": 948,
+          "event": "farewell",
+          "title": "把未说完的话留下",
+          "choice": "remember",
+          "label": "留下对方的一件旧物",
+          "actorId": "life-13s68jz-wozw94:companion"
+        },
+        {
+          "month": 954,
+          "event": "inheritance",
+          "title": "交到你手中的旧物",
+          "choice": "share",
+          "label": "把经验交给后来者",
+          "actorId": "life-13s68jz-wozw94:companion"
+        },
+        {
+          "month": 960,
+          "event": "drought",
+          "title": "雨迟迟没有来",
+          "choice": "save",
+          "label": "先守住自己的储备",
+          "actorId": null
+        },
+        {
+          "month": 984,
+          "event": "research",
+          "title": "一页尚未写完的心得",
+          "choice": "rest",
+          "label": "先停下来休息",
+          "actorId": null
+        }
+      ],
+      "stats": {
+        "decisions": 39,
+        "breakthroughs": 0,
+        "failures": 0,
+        "help": 3,
+        "family": 12,
+        "craft": 0,
+        "journeys": 0,
+        "students": 0,
+        "earnings": 9177,
+        "retreats": 0
+      },
+      "world": {
+        "startYear": 181,
+        "birthMonth": 2,
+        "era": "待雨",
+        "weather": "长风",
+        "regions": [
+          {
+            "id": "hegu",
+            "prosperity": 59,
+            "danger": 23
+          },
+          {
+            "id": "landu",
+            "prosperity": 44,
+            "danger": 5
+          },
+          {
+            "id": "zhaoshi",
+            "prosperity": 23,
+            "danger": 28
+          },
+          {
+            "id": "mulan",
+            "prosperity": 49,
+            "danger": 14
+          },
+          {
+            "id": "wenxue",
+            "prosperity": 31,
+            "danger": 30
+          }
+        ],
+        "factions": [
+          {
+            "id": "songyin",
+            "influence": 33,
+            "leaderId": "life-13s68jz-wozw94:elder:songyin",
+            "relations": {}
+          },
+          {
+            "id": "zhaochuan",
+            "influence": 88,
+            "leaderId": "life-13s68jz-wozw94:elder:zhaochuan",
+            "relations": {}
+          },
+          {
+            "id": "yaohui",
+            "influence": 65,
+            "leaderId": "life-13s68jz-wozw94:person:4",
+            "relations": {}
+          }
+        ],
+        "history": [
+          {
+            "month": 96,
+            "text": "岚渡山雨水偏少，人们开始互相安排生计。",
+            "type": "drought",
+            "region": "landu"
+          },
+          {
+            "month": 192,
+            "text": "照石关雨水偏少，人们开始互相安排生计。",
+            "type": "drought",
+            "region": "zhaoshi"
+          },
+          {
+            "month": 288,
+            "text": "问雪岭附近势力发生冲突，行路与生活多了风险。",
+            "type": "war",
+            "region": "wenxue"
+          },
+          {
+            "month": 384,
+            "text": "青禾谷雨水偏少，人们开始互相安排生计。",
+            "type": "drought",
+            "region": "hegu"
+          },
+          {
+            "month": 480,
+            "text": "岚渡山雨水偏少，人们开始互相安排生计。",
+            "type": "drought",
+            "region": "landu"
+          },
+          {
+            "month": 576,
+            "text": "青禾谷附近势力发生冲突，行路与生活多了风险。",
+            "type": "war",
+            "region": "hegu"
+          },
+          {
+            "month": 672,
+            "text": "暮澜港这一年收成较好，坊市渐渐热闹。",
+            "type": "harvest",
+            "region": "mulan"
+          },
+          {
+            "month": 768,
+            "text": "暮澜港雨水偏少，人们开始互相安排生计。",
+            "type": "drought",
+            "region": "mulan"
+          },
+          {
+            "month": 864,
+            "text": "照石关附近势力发生冲突，行路与生活多了风险。",
+            "type": "war",
+            "region": "zhaoshi"
+          },
+          {
+            "month": 924,
+            "text": "青禾药会由程听澜接过这一轮职责。"
+          },
+          {
+            "month": 960,
+            "text": "照石关雨水偏少，人们开始互相安排生计。",
+            "type": "drought",
+            "region": "zhaoshi"
+          }
+        ]
+      },
+      "birth": {
+        "origin": "药农之家",
+        "region": "青禾谷",
+        "story": "家中经营一小片药田。父母教你辨认叶脉，也教你记住四时。",
+        "root": "未见灵根",
+        "rootDescription": "暂未感知灵息。谋生、亲缘与传承同样能构成完整的一生。"
+      }
+    }
+  ]
+}

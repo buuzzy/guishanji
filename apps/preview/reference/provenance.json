@@ -1,0 +1,60 @@
+{
+  "project": "1in8b",
+  "purpose": "User requested reuse of the existing frontend in the isolated HTML prototype",
+  "files": [
+    {
+      "file": "art.cjs",
+      "source": "miniprogram/art/art.js",
+      "sourceSha256": "cab55cc3b294fa2284947cdf9ab9d198eb9e4f71f4c32f23ec7e451fe4ee4984",
+      "normalizedSha256": "cab55cc3b294fa2284947cdf9ab9d198eb9e4f71f4c32f23ec7e451fe4ee4984"
+    },
+    {
+      "file": "pixel.cjs",
+      "source": "miniprogram/art/pixel.js",
+      "sourceSha256": "a1f3c35d797588ab7f1a4868ef492745df053556fecf76b33d4b2c10b2c13259",
+      "normalizedSha256": "a1f3c35d797588ab7f1a4868ef492745df053556fecf76b33d4b2c10b2c13259"
+    },
+    {
+      "file": "room.cjs",
+      "source": "miniprogram/subpkg/engine/art/room.js",
+      "sourceSha256": "e61d53eb0c59212adc757740304df8e9ccadd7f7096b8780258ca00252571972",
+      "normalizedSha256": "e61d53eb0c59212adc757740304df8e9ccadd7f7096b8780258ca00252571972"
+    },
+    {
+      "file": "shelf.cjs",
+      "source": "miniprogram/subpkg/engine/art/shelf.js",
+      "sourceSha256": "a1b27658caa01a7404cdc9f00ed1685852435eaef4d207a3461c44266bfc8d3a",
+      "normalizedSha256": "a1b27658caa01a7404cdc9f00ed1685852435eaef4d207a3461c44266bfc8d3a"
+    },
+    {
+      "file": "scene.cjs",
+      "source": "miniprogram/subpkg/engine/art/room-art.js",
+      "sourceSha256": "dd712aaaa901060ef386fa9c87f22c717e94002890d8035b0be41ddaa87dc364",
+      "normalizedSha256": "dd712aaaa901060ef386fa9c87f22c717e94002890d8035b0be41ddaa87dc364"
+    },
+    {
+      "file": "theme.wxss",
+      "source": "miniprogram/app.wxss",
+      "sourceSha256": "af1f372fb3cac1296ec6c5ea985dafa8942a89ccc7843d622cbddab0dffe75d5",
+      "normalizedSha256": "af1f372fb3cac1296ec6c5ea985dafa8942a89ccc7843d622cbddab0dffe75d5"
+    },
+    {
+      "file": "life.wxss",
+      "source": "miniprogram/subpkg/engine/styles/life.wxss",
+      "sourceSha256": "e769666977f94492e9ec5d526ae10971748d4735f7edd8c69b888d61a072446b",
+      "normalizedSha256": "e769666977f94492e9ec5d526ae10971748d4735f7edd8c69b888d61a072446b"
+    },
+    {
+      "file": "sheet.wxss",
+      "source": "miniprogram/subpkg/engine/styles/sheet.wxss",
+      "sourceSha256": "c950ada37f8858bd8758ba17e8d7ce8cb680b3137ed5b77fe5bdcf99c716f994",
+      "normalizedSha256": "c950ada37f8858bd8758ba17e8d7ce8cb680b3137ed5b77fe5bdcf99c716f994"
+    },
+    {
+      "file": "roll.wxss",
+      "source": "miniprogram/subpkg/engine/styles/roll.wxss",
+      "sourceSha256": "04243b6593fb5060ca364edfdcaf1f3b1387084009e3d6907f6ef90841d974e6",
+      "normalizedSha256": "04243b6593fb5060ca364edfdcaf1f3b1387084009e3d6907f6ef90841d974e6"
+    }
+  ]
+}

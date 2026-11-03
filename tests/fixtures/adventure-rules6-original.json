@@ -1,0 +1,715 @@
+{
+  "state": {
+    "product": "gui-shan-preview",
+    "format": 1,
+    "version": "0.1.0-preview.4",
+    "contentRevision": "many-roads-through-a-life-04",
+    "id": "life-a9ns6o",
+    "seed": "规则6冻结原档",
+    "revision": 193,
+    "phase": "life",
+    "month": 192,
+    "act": 0,
+    "random": {
+      "birth": {
+        "value": 721534438,
+        "draws": 7
+      },
+      "life": {
+        "value": 1635727519,
+        "draws": 0
+      },
+      "people": {
+        "value": 1886217774,
+        "draws": 0
+      },
+      "world": {
+        "value": 307730016,
+        "draws": 1
+      },
+      "story": {
+        "value": 273134956,
+        "draws": 0
+      },
+      "events": {
+        "value": 1644655161,
+        "draws": 25
+      },
+      "daily": {
+        "value": 1441339986,
+        "draws": 22
+      }
+    },
+    "birth": {
+      "era": "fracture",
+      "continent": "tide",
+      "family": "clan",
+      "address": "听潮港",
+      "startAge": 0,
+      "year": 906,
+      "goal": "free",
+      "upbringing": "demonic"
+    },
+    "player": {
+      "name": "扑哧君",
+      "origin": "clan",
+      "sex": "M",
+      "root": "未显灵根",
+      "realm": 0,
+      "focus": "array",
+      "skills": {
+        "sword": 6,
+        "array": 6.5,
+        "alchemy": 6
+      },
+      "health": 90,
+      "mind": 65,
+      "insight": 35.35,
+      "courage": 40,
+      "empathy": 30,
+      "stones": 4,
+      "location": "home",
+      "home": "幽灯堂弟子院",
+      "homeBeforeWar": null,
+      "practice": 192
+    },
+    "inventory": [
+      "ward",
+      "herb_kit"
+    ],
+    "flags": {},
+    "world": {
+      "threat": "beast",
+      "survivors": 18,
+      "masterDeadline": null
+    },
+    "people": {
+      "master": {
+        "id": "master",
+        "name": "闻竹",
+        "role": "师父",
+        "born": -1152,
+        "realm": 3,
+        "sex": "F",
+        "known": false,
+        "alive": true,
+        "status": "alive",
+        "deathMonth": null,
+        "location": "home",
+        "bond": 35
+      },
+      "sister": {
+        "id": "sister",
+        "name": "程照雪",
+        "role": "师姐",
+        "born": -84,
+        "realm": 2,
+        "sex": "F",
+        "known": false,
+        "alive": true,
+        "status": "alive",
+        "deathMonth": null,
+        "location": "home",
+        "bond": 25
+      },
+      "friend": {
+        "id": "friend",
+        "name": "沈砚",
+        "role": "同门",
+        "born": -12,
+        "realm": 1,
+        "sex": "M",
+        "known": false,
+        "alive": true,
+        "status": "alive",
+        "deathMonth": null,
+        "location": "home",
+        "bond": 30
+      },
+      "ally": {
+        "id": "ally",
+        "name": "嵇萝",
+        "role": "异乡友人",
+        "born": -144,
+        "realm": 2,
+        "sex": "F",
+        "known": false,
+        "alive": true,
+        "status": "alive",
+        "deathMonth": null,
+        "location": "refuge",
+        "bond": 0
+      },
+      "rival": {
+        "id": "rival",
+        "name": "宋却",
+        "role": "追猎者",
+        "born": -240,
+        "realm": 2,
+        "sex": "M",
+        "known": false,
+        "alive": true,
+        "status": "alive",
+        "deathMonth": null,
+        "location": "refuge",
+        "bond": 0
+      },
+      "keeper": {
+        "id": "keeper",
+        "name": "白渡",
+        "role": "守门人",
+        "born": -936,
+        "realm": 3,
+        "sex": "M",
+        "known": false,
+        "alive": true,
+        "status": "alive",
+        "deathMonth": null,
+        "location": "refuge",
+        "bond": 0
+      },
+      "trialmate": {
+        "id": "trialmate",
+        "name": "陶宁",
+        "role": "试炼同伴",
+        "born": -24,
+        "realm": 1,
+        "sex": "M",
+        "known": false,
+        "alive": true,
+        "status": "alive",
+        "deathMonth": null,
+        "location": "home",
+        "bond": 0
+      }
+    },
+    "pending": null,
+    "journey": {
+      "from": 192,
+      "to": 12000,
+      "target": null,
+      "practice": "array",
+      "open": true
+    },
+    "waiting": false,
+    "result": {
+      "event": "early_demonic",
+      "title": "留在堂中学法",
+      "body": "你领到堂中的弟子牌。",
+      "success": true,
+      "chance": null,
+      "changes": [],
+      "months": 0,
+      "next": null,
+      "planned": null,
+      "provisional": false,
+      "completed": false
+    },
+    "ending": null,
+    "decisions": [
+      {
+        "event": "early_demonic",
+        "choice": "stay",
+        "month": 192,
+        "success": true,
+        "chance": null
+      }
+    ],
+    "journal": [
+      {
+        "id": 1,
+        "month": 0,
+        "act": 0,
+        "kind": "birth",
+        "title": "扑哧君出生了",
+        "body": "山历906年，你出生在临潮大陆的听潮港，来自修仙世家。战乱中，一名幽灯堂修士把你带离故乡，留下了今后需要面对的师承。",
+        "automatic": true,
+        "context": "childhood",
+        "location": "home"
+      },
+      {
+        "id": 2,
+        "month": 12,
+        "act": 0,
+        "kind": "life",
+        "title": "收养者带你认灯上的字",
+        "body": "黑衣修士把你带进院里，让你擦去旧灯底的灰，照着牌上的字念出每间屋的名字。你念错时他没有笑，只让你重来；院门始终由别人拿着钥匙。",
+        "automatic": true,
+        "location": "home",
+        "context": "childhood"
+      },
+      {
+        "id": 3,
+        "month": 22,
+        "act": 0,
+        "kind": "life",
+        "title": "集市上的一句旧乡音",
+        "body": "收养你的修士带你下山换灯油，摊边忽然传来故乡口音。你停下脚步想听，修士已经叫你跟上；那个人到底认不认识你的家，你没能问出口。",
+        "automatic": true,
+        "location": "home",
+        "context": "childhood"
+      },
+      {
+        "id": 4,
+        "month": 33,
+        "act": 0,
+        "kind": "life",
+        "title": "夜里不能走的石阶",
+        "body": "你半夜想去院后找水，被守灯人拦在石阶前。他给你半碗温水，让你天亮再去。你记住那段路有人看守，却还不懂为什么不能靠近。",
+        "automatic": true,
+        "location": "home",
+        "context": "childhood"
+      },
+      {
+        "id": 5,
+        "month": 40,
+        "act": 0,
+        "kind": "life",
+        "title": "夜里不能走的石阶",
+        "body": "你半夜想去院后找水，被守灯人拦在石阶前。他给你半碗温水，让你天亮再去。你记住那段路有人看守，却还不懂为什么不能靠近。",
+        "automatic": true,
+        "location": "home",
+        "context": "childhood"
+      },
+      {
+        "id": 6,
+        "month": 47,
+        "act": 0,
+        "kind": "life",
+        "title": "收养者带你认灯上的字",
+        "body": "黑衣修士把你带进院里，让你擦去旧灯底的灰，照着牌上的字念出每间屋的名字。你念错时他没有笑，只让你重来；院门始终由别人拿着钥匙。",
+        "automatic": true,
+        "location": "home",
+        "context": "childhood"
+      },
+      {
+        "id": 7,
+        "month": 53,
+        "act": 0,
+        "kind": "life",
+        "title": "集市上的一句旧乡音",
+        "body": "收养你的修士带你下山换灯油，摊边忽然传来故乡口音。你停下脚步想听，修士已经叫你跟上；那个人到底认不认识你的家，你没能问出口。",
+        "automatic": true,
+        "location": "home",
+        "context": "childhood"
+      },
+      {
+        "id": 8,
+        "month": 60,
+        "act": 0,
+        "kind": "life",
+        "title": "收养者带你认灯上的字",
+        "body": "黑衣修士把你带进院里，让你擦去旧灯底的灰，照着牌上的字念出每间屋的名字。你念错时他没有笑，只让你重来；院门始终由别人拿着钥匙。",
+        "automatic": true,
+        "location": "home",
+        "context": "childhood"
+      },
+      {
+        "id": 9,
+        "month": 72,
+        "act": 0,
+        "kind": "life",
+        "title": "夜里不能走的石阶",
+        "body": "你半夜想去院后找水，被守灯人拦在石阶前。他给你半碗温水，让你天亮再去。你记住那段路有人看守，却还不懂为什么不能靠近。",
+        "automatic": true,
+        "location": "home",
+        "context": "childhood"
+      },
+      {
+        "id": 10,
+        "month": 83,
+        "act": 0,
+        "kind": "life",
+        "title": "集市上的一句旧乡音",
+        "body": "收养你的修士带你下山换灯油，摊边忽然传来故乡口音。你停下脚步想听，修士已经叫你跟上；那个人到底认不认识你的家，你没能问出口。",
+        "automatic": true,
+        "location": "home",
+        "context": "childhood"
+      },
+      {
+        "id": 11,
+        "month": 94,
+        "act": 0,
+        "kind": "life",
+        "title": "夜里不能走的石阶",
+        "body": "你半夜想去院后找水，被守灯人拦在石阶前。他给你半碗温水，让你天亮再去。你记住那段路有人看守，却还不懂为什么不能靠近。",
+        "automatic": true,
+        "location": "home",
+        "context": "childhood"
+      },
+      {
+        "id": 12,
+        "month": 100,
+        "act": 0,
+        "kind": "life",
+        "title": "集市上的一句旧乡音",
+        "body": "收养你的修士带你下山换灯油，摊边忽然传来故乡口音。你停下脚步想听，修士已经叫你跟上；那个人到底认不认识你的家，你没能问出口。",
+        "automatic": true,
+        "location": "home",
+        "context": "childhood"
+      },
+      {
+        "id": 13,
+        "month": 109,
+        "act": 0,
+        "kind": "life",
+        "title": "收养者带你认灯上的字",
+        "body": "黑衣修士把你带进院里，让你擦去旧灯底的灰，照着牌上的字念出每间屋的名字。你念错时他没有笑，只让你重来；院门始终由别人拿着钥匙。",
+        "automatic": true,
+        "location": "home",
+        "context": "childhood"
+      },
+      {
+        "id": 14,
+        "month": 115,
+        "act": 0,
+        "kind": "life",
+        "title": "集市上的一句旧乡音",
+        "body": "收养你的修士带你下山换灯油，摊边忽然传来故乡口音。你停下脚步想听，修士已经叫你跟上；那个人到底认不认识你的家，你没能问出口。",
+        "automatic": true,
+        "location": "home",
+        "context": "childhood"
+      },
+      {
+        "id": 15,
+        "month": 123,
+        "act": 0,
+        "kind": "life",
+        "title": "夜里不能走的石阶",
+        "body": "你半夜想去院后找水，被守灯人拦在石阶前。他给你半碗温水，让你天亮再去。你记住那段路有人看守，却还不懂为什么不能靠近。",
+        "automatic": true,
+        "location": "home",
+        "context": "childhood"
+      },
+      {
+        "id": 16,
+        "month": 129,
+        "act": 0,
+        "kind": "life",
+        "title": "收养者带你认灯上的字",
+        "body": "黑衣修士把你带进院里，让你擦去旧灯底的灰，照着牌上的字念出每间屋的名字。你念错时他没有笑，只让你重来；院门始终由别人拿着钥匙。",
+        "automatic": true,
+        "location": "home",
+        "context": "childhood"
+      },
+      {
+        "id": 17,
+        "month": 137,
+        "act": 0,
+        "kind": "life",
+        "title": "集市上的一句旧乡音",
+        "body": "收养你的修士带你下山换灯油，摊边忽然传来故乡口音。你停下脚步想听，修士已经叫你跟上；那个人到底认不认识你的家，你没能问出口。",
+        "automatic": true,
+        "location": "home",
+        "context": "childhood"
+      },
+      {
+        "id": 18,
+        "month": 143,
+        "act": 0,
+        "kind": "life",
+        "title": "收养者带你认灯上的字",
+        "body": "黑衣修士把你带进院里，让你擦去旧灯底的灰，照着牌上的字念出每间屋的名字。你念错时他没有笑，只让你重来；院门始终由别人拿着钥匙。",
+        "automatic": true,
+        "location": "home",
+        "context": "childhood"
+      },
+      {
+        "id": 19,
+        "month": 150,
+        "act": 0,
+        "kind": "life",
+        "title": "夜里不能走的石阶",
+        "body": "你半夜想去院后找水，被守灯人拦在石阶前。他给你半碗温水，让你天亮再去。你记住那段路有人看守，却还不懂为什么不能靠近。",
+        "automatic": true,
+        "location": "home",
+        "context": "childhood"
+      },
+      {
+        "id": 20,
+        "month": 159,
+        "act": 0,
+        "kind": "life",
+        "title": "集市上的一句旧乡音",
+        "body": "收养你的修士带你下山换灯油，摊边忽然传来故乡口音。你停下脚步想听，修士已经叫你跟上；那个人到底认不认识你的家，你没能问出口。",
+        "automatic": true,
+        "location": "home",
+        "context": "childhood"
+      },
+      {
+        "id": 21,
+        "month": 166,
+        "act": 0,
+        "kind": "life",
+        "title": "收养者带你认灯上的字",
+        "body": "黑衣修士把你带进院里，让你擦去旧灯底的灰，照着牌上的字念出每间屋的名字。你念错时他没有笑，只让你重来；院门始终由别人拿着钥匙。",
+        "automatic": true,
+        "location": "home",
+        "context": "childhood"
+      },
+      {
+        "id": 22,
+        "month": 174,
+        "act": 0,
+        "kind": "life",
+        "title": "夜里不能走的石阶",
+        "body": "你半夜想去院后找水，被守灯人拦在石阶前。他给你半碗温水，让你天亮再去。你记住那段路有人看守，却还不懂为什么不能靠近。",
+        "automatic": true,
+        "location": "home",
+        "context": "childhood"
+      },
+      {
+        "id": 23,
+        "month": 183,
+        "act": 0,
+        "kind": "life",
+        "title": "集市上的一句旧乡音",
+        "body": "收养你的修士带你下山换灯油，摊边忽然传来故乡口音。你停下脚步想听，修士已经叫你跟上；那个人到底认不认识你的家，你没能问出口。",
+        "automatic": true,
+        "location": "home",
+        "context": "childhood"
+      },
+      {
+        "id": 24,
+        "month": 192,
+        "act": 0,
+        "kind": "story",
+        "event": "early_demonic",
+        "title": "收养你的幽灯堂",
+        "body": "小时候，一名幽灯堂修士把你带离战乱。他教你读字和打坐，如今要求你在堂中登记，师兄会检查你的练习。",
+        "location": "home",
+        "context": "home"
+      },
+      {
+        "id": 25,
+        "month": 192,
+        "act": 0,
+        "kind": "choice",
+        "event": "early_demonic",
+        "choice": "stay",
+        "title": "留在堂中学法",
+        "body": "你领到堂中的弟子牌。",
+        "success": true,
+        "changes": []
+      },
+      {
+        "id": 26,
+        "month": 192,
+        "act": 0,
+        "kind": "life",
+        "title": "进入魔修的生活",
+        "body": "你现在住在幽灯堂弟子院。旧有的亲属、欠账和他人的记忆仍会继续影响你。",
+        "automatic": true,
+        "location": "home",
+        "context": "demonic"
+      }
+    ],
+    "life": {
+      "feedback": false,
+      "family": {
+        "kind": "clan",
+        "bond": 65,
+        "reserve": 12,
+        "nextAt": 24,
+        "visits": 0,
+        "members": [
+          {
+            "id": "parent",
+            "name": "扑氏长辈",
+            "role": "家族长辈，擅长调息与制符",
+            "status": "alive",
+            "location": "home",
+            "deathAt": 1500
+          },
+          {
+            "id": "cousin",
+            "name": "扑长平",
+            "role": "族中堂亲，负责送药与传信",
+            "status": "alive",
+            "location": "home",
+            "deathAt": 2160
+          }
+        ]
+      },
+      "lastBreakthrough": null,
+      "arcPause": null,
+      "format": 1,
+      "mode": "childhood",
+      "modeSince": 0,
+      "activity": "读经 · 幽灯堂弟子院",
+      "activitySince": 192,
+      "choiceAt": 230,
+      "dailyAt": 12,
+      "recent": [],
+      "memory": {},
+      "automaticCount": 24,
+      "queue": null,
+      "arc": null,
+      "expeditions": [],
+      "upheavalAt": 451,
+      "upheavalKind": "decree",
+      "foreignAt": null,
+      "letterAt": null,
+      "settlementEnd": null,
+      "crisis": null,
+      "suspended": null,
+      "interruptions": [],
+      "unreadNews": [],
+      "properties": {
+        "family_home": {
+          "id": "family_home",
+          "name": "家中灵田与宅屋",
+          "location": "home",
+          "status": "kept",
+          "acquired": 0,
+          "changed": 0,
+          "value": 28
+        },
+        "dwelling": {
+          "id": "dwelling",
+          "name": "幽灯堂弟子院",
+          "location": "home",
+          "continent": "tide",
+          "status": "kept",
+          "acquired": 192,
+          "changed": 192,
+          "value": 12
+        }
+      },
+      "cultivation": {
+        "format": 1,
+        "rulesVersion": 6,
+        "opportunities": {},
+        "dailyMemory": {
+          "raised-demonic": [
+            2
+          ]
+        },
+        "economy": {
+          "received": 0,
+          "spent": 0,
+          "last": {
+            "month": 192,
+            "gross": 0,
+            "upkeep": 0,
+            "shortfall": 0,
+            "net": 0,
+            "balance": 4,
+            "repaid": 0
+          }
+        },
+        "evidence": [],
+        "activityMonths": {
+          "study": 1
+        },
+        "activityGains": {
+          "study": {
+            "progress": 0.4,
+            "array": 0.5,
+            "insight": 0.3500000000000014
+          }
+        },
+        "inquiry": null,
+        "detained": false,
+        "path": "demonic",
+        "rank": "幽灯弟子",
+        "activity": "study",
+        "rootKnown": false,
+        "progress": 0.4,
+        "entered": 192,
+        "admissionDone": true,
+        "choiceAt": 230,
+        "dailyAt": 193,
+        "punishmentUntil": 0,
+        "reputation": 0,
+        "wanted": 0,
+        "exam": null,
+        "attempts": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "retryAt": 0,
+        "context": null,
+        "activeChain": null,
+        "chains": {},
+        "queue": [
+          {
+            "event": "first_method",
+            "due": 194
+          }
+        ],
+        "continent": "tide",
+        "closed": [],
+        "visited": [
+          "tide"
+        ],
+        "spot": "幽灯堂弟子院",
+        "history": [
+          {
+            "path": "demonic",
+            "month": 192
+          }
+        ],
+        "familyPolicy": "keep",
+        "mail": null,
+        "mailHistory": [],
+        "familyLoss": "",
+        "knownDeaths": [],
+        "familyAt": 336,
+        "nextFamilyAt": 480,
+        "aidPending": [],
+        "familyVisited": false,
+        "descendants": [],
+        "deathNews": [],
+        "routes": [],
+        "worldAt": 588,
+        "worldKind": 2,
+        "worldDone": false,
+        "finalOffered": false,
+        "readiness": 0,
+        "turnAt": 0,
+        "officers": [
+          {
+            "id": "reception",
+            "name": "陆行舟",
+            "role": "接引弟子",
+            "realm": 1,
+            "description": "在山门接待来访者、核实身份和传递消息。",
+            "status": "alive",
+            "location": "home"
+          },
+          {
+            "id": "steward",
+            "name": "许执事",
+            "role": "外门执事",
+            "realm": 2,
+            "description": "分配杂务、月例和住处，登记任务完成情况。",
+            "status": "alive",
+            "location": "home"
+          },
+          {
+            "id": "discipline",
+            "name": "严衡",
+            "role": "执法长老",
+            "realm": 3,
+            "description": "调查事故，听取证词，决定赔偿与处分。",
+            "status": "alive",
+            "location": "home"
+          },
+          {
+            "id": "head",
+            "name": "沈宗主",
+            "role": "宗主",
+            "realm": 4,
+            "description": "决定宗门战事、外交和重要资源的分配。",
+            "status": "alive",
+            "location": "home"
+          }
+        ]
+      }
+    }
+  }
+}

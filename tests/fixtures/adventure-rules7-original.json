@@ -1,0 +1,498 @@
+{
+  "origin": "Original rules7 engine; captured before rules8 edits",
+  "state": {
+    "product": "gui-shan-preview",
+    "format": 1,
+    "version": "0.1.0-preview.4",
+    "contentRevision": "many-roads-through-a-life-04",
+    "id": "life-117agg8",
+    "seed": "规则7真实原档",
+    "revision": 82,
+    "phase": "life",
+    "month": 81,
+    "act": 0,
+    "random": {
+      "birth": {
+        "value": 1704210186,
+        "draws": 7
+      },
+      "life": {
+        "value": 734818807,
+        "draws": 0
+      },
+      "people": {
+        "value": 2009288392,
+        "draws": 0
+      },
+      "world": {
+        "value": 734780001,
+        "draws": 1
+      },
+      "story": {
+        "value": 871664948,
+        "draws": 0
+      },
+      "events": {
+        "value": 1517365440,
+        "draws": 15
+      },
+      "daily": {
+        "value": 450614389,
+        "draws": 1
+      }
+    },
+    "birth": {
+      "era": "tide",
+      "continent": "ember",
+      "family": "common",
+      "address": "赤炉谷",
+      "startAge": 0,
+      "year": 471,
+      "goal": "free",
+      "upbringing": "loose"
+    },
+    "player": {
+      "name": "成玉",
+      "origin": "village",
+      "sex": "F",
+      "root": "水木灵根",
+      "realm": 0,
+      "focus": "array",
+      "skills": {
+        "sword": 6,
+        "array": 6,
+        "alchemy": 6
+      },
+      "health": 90,
+      "mind": 65,
+      "insight": 34,
+      "courage": 30,
+      "empathy": 44,
+      "stones": 0,
+      "location": "home",
+      "home": "赤炉谷家中旧屋",
+      "homeBeforeWar": null,
+      "practice": 81
+    },
+    "inventory": [
+      "herb_kit"
+    ],
+    "flags": {},
+    "world": {
+      "threat": "beast",
+      "survivors": 18,
+      "masterDeadline": null
+    },
+    "people": {
+      "master": {
+        "id": "master",
+        "name": "闻竹",
+        "role": "师父",
+        "born": -1152,
+        "realm": 3,
+        "sex": "F",
+        "known": false,
+        "alive": true,
+        "status": "alive",
+        "deathMonth": null,
+        "location": "home",
+        "bond": 35
+      },
+      "sister": {
+        "id": "sister",
+        "name": "程照雪",
+        "role": "师姐",
+        "born": -84,
+        "realm": 2,
+        "sex": "F",
+        "known": false,
+        "alive": true,
+        "status": "alive",
+        "deathMonth": null,
+        "location": "home",
+        "bond": 25
+      },
+      "friend": {
+        "id": "friend",
+        "name": "沈砚",
+        "role": "同门",
+        "born": -12,
+        "realm": 1,
+        "sex": "M",
+        "known": false,
+        "alive": true,
+        "status": "alive",
+        "deathMonth": null,
+        "location": "home",
+        "bond": 30
+      },
+      "ally": {
+        "id": "ally",
+        "name": "嵇萝",
+        "role": "异乡友人",
+        "born": -144,
+        "realm": 2,
+        "sex": "F",
+        "known": false,
+        "alive": true,
+        "status": "alive",
+        "deathMonth": null,
+        "location": "refuge",
+        "bond": 0
+      },
+      "rival": {
+        "id": "rival",
+        "name": "宋却",
+        "role": "追猎者",
+        "born": -240,
+        "realm": 2,
+        "sex": "M",
+        "known": false,
+        "alive": true,
+        "status": "alive",
+        "deathMonth": null,
+        "location": "refuge",
+        "bond": 0
+      },
+      "keeper": {
+        "id": "keeper",
+        "name": "白渡",
+        "role": "守门人",
+        "born": -936,
+        "realm": 3,
+        "sex": "M",
+        "known": false,
+        "alive": true,
+        "status": "alive",
+        "deathMonth": null,
+        "location": "refuge",
+        "bond": 0
+      },
+      "trialmate": {
+        "id": "trialmate",
+        "name": "陶宁",
+        "role": "试炼同伴",
+        "born": -24,
+        "realm": 1,
+        "sex": "M",
+        "known": false,
+        "alive": true,
+        "status": "alive",
+        "deathMonth": null,
+        "location": "home",
+        "bond": 0
+      }
+    },
+    "pending": null,
+    "journey": {
+      "from": 81,
+      "to": 12000,
+      "target": null,
+      "practice": "array",
+      "open": true
+    },
+    "waiting": false,
+    "result": {
+      "event": "child_school",
+      "title": "去村塾读书",
+      "body": "你每天先扫净学堂，再坐到最后一排。先生教你认契书上的字，也记住了你的名字。",
+      "success": true,
+      "chance": null,
+      "changes": [
+        "悟性+4"
+      ],
+      "months": 0,
+      "next": null,
+      "planned": null,
+      "provisional": false,
+      "completed": false
+    },
+    "ending": null,
+    "decisions": [
+      {
+        "event": "child_school",
+        "choice": "read",
+        "month": 81,
+        "success": true,
+        "chance": null
+      }
+    ],
+    "journal": [
+      {
+        "id": 1,
+        "month": 0,
+        "act": 0,
+        "kind": "birth",
+        "title": "成玉出生了",
+        "body": "山历471年，你出生在烬原大陆的赤炉谷，来自普通人家。战乱中一名游方药师救下你，教你认字与辨药。",
+        "automatic": true,
+        "context": "childhood",
+        "location": "home"
+      },
+      {
+        "id": 2,
+        "month": 80,
+        "act": 0,
+        "kind": "life",
+        "title": "药师教你认商路的旗",
+        "body": "救下你的药师把商队的旗画在纸上，说迷路时先找守驿的人，不要跟陌生人走小道。你把四面旗记在卷尾，夹着他留下的基础口诀一起保存。",
+        "automatic": true,
+        "location": "home",
+        "context": "childhood"
+      },
+      {
+        "id": 3,
+        "month": 81,
+        "act": 0,
+        "kind": "story",
+        "event": "child_school",
+        "title": "先生只剩一个免束脩的名额",
+        "body": "村塾先生拿着三本旧书来到你家。家里只能负担一份学费，堂亲也到了读书的年纪。先生问你，愿意来塾里认字，还是先跟家人学一门谋生手艺？",
+        "location": "home",
+        "context": "childhood"
+      },
+      {
+        "id": 4,
+        "month": 81,
+        "act": 0,
+        "kind": "choice",
+        "event": "child_school",
+        "choice": "read",
+        "title": "去村塾读书",
+        "body": "你每天先扫净学堂，再坐到最后一排。先生教你认契书上的字，也记住了你的名字。",
+        "success": true,
+        "changes": [
+          "悟性+4"
+        ]
+      }
+    ],
+    "life": {
+      "feedback": false,
+      "family": {
+        "kind": "common",
+        "bond": 65,
+        "reserve": 0,
+        "nextAt": 24,
+        "visits": 0,
+        "members": [
+          {
+            "id": "parent",
+            "name": "成氏长辈",
+            "role": "家中长辈，靠药田与手艺谋生",
+            "status": "alive",
+            "location": "home",
+            "deathAt": 696
+          },
+          {
+            "id": "cousin",
+            "name": "成长平",
+            "role": "家中亲人，照管旧屋与日常往来",
+            "status": "alive",
+            "location": "home",
+            "deathAt": 984
+          }
+        ]
+      },
+      "lastBreakthrough": null,
+      "arcPause": null,
+      "format": 1,
+      "mode": "childhood",
+      "modeSince": 0,
+      "activity": "在赤炉谷长大",
+      "activitySince": 81,
+      "choiceAt": 118,
+      "dailyAt": 12,
+      "recent": [],
+      "memory": {},
+      "automaticCount": 2,
+      "queue": null,
+      "arc": null,
+      "expeditions": [],
+      "upheavalAt": 444,
+      "upheavalKind": "devour",
+      "foreignAt": null,
+      "letterAt": null,
+      "settlementEnd": null,
+      "crisis": null,
+      "suspended": null,
+      "interruptions": [],
+      "unreadNews": [],
+      "properties": {
+        "family_home": {
+          "id": "family_home",
+          "name": "家中旧屋",
+          "location": "home",
+          "status": "kept",
+          "acquired": 0,
+          "changed": 0,
+          "value": 28
+        }
+      },
+      "cultivation": {
+        "format": 1,
+        "rulesVersion": 7,
+        "opportunities": {},
+        "dailyMemory": {
+          "raised-loose": [
+            0
+          ]
+        },
+        "economy": {
+          "received": 0,
+          "spent": 0,
+          "last": {
+            "month": 72,
+            "gross": 0,
+            "upkeep": 0,
+            "shortfall": 0,
+            "net": 0,
+            "balance": 0,
+            "repaid": 0
+          }
+        },
+        "evidence": [],
+        "activityMonths": {},
+        "activityGains": {},
+        "inquiry": null,
+        "detained": false,
+        "path": "mortal",
+        "rank": "未入门",
+        "activity": "study",
+        "rootKnown": false,
+        "progress": 0,
+        "entered": null,
+        "admissionDone": false,
+        "choiceAt": 118,
+        "dailyAt": 107,
+        "punishmentUntil": 0,
+        "reputation": 0,
+        "wanted": 0,
+        "exam": null,
+        "attempts": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "retryAt": 0,
+        "context": null,
+        "activeChain": null,
+        "chains": {},
+        "queue": [],
+        "continent": "ember",
+        "closed": [],
+        "visited": [
+          "ember"
+        ],
+        "spot": "赤炉谷",
+        "history": [],
+        "familyPolicy": "keep",
+        "mail": null,
+        "mailHistory": [],
+        "familyLoss": "",
+        "knownDeaths": [],
+        "familyAt": 336,
+        "nextFamilyAt": 480,
+        "aidPending": [],
+        "familyVisited": false,
+        "descendants": [],
+        "deathNews": [],
+        "routes": [],
+        "worldAt": 780,
+        "worldKind": 1,
+        "worldDone": false,
+        "finalOffered": false,
+        "readiness": 0,
+        "turnAt": 0,
+        "officers": [
+          {
+            "id": "reception",
+            "name": "陆行舟",
+            "role": "接引弟子",
+            "realm": 1,
+            "description": "在山门接待来访者、核实身份和传递消息。",
+            "status": "alive",
+            "location": "home"
+          },
+          {
+            "id": "steward",
+            "name": "许执事",
+            "role": "外门执事",
+            "realm": 2,
+            "description": "分配杂务、月例和住处，登记任务完成情况。",
+            "status": "alive",
+            "location": "home"
+          },
+          {
+            "id": "discipline",
+            "name": "严衡",
+            "role": "执法长老",
+            "realm": 3,
+            "description": "调查事故，听取证词，决定赔偿与处分。",
+            "status": "alive",
+            "location": "home"
+          },
+          {
+            "id": "head",
+            "name": "沈宗主",
+            "role": "宗主",
+            "realm": 4,
+            "description": "决定宗门战事、外交和重要资源的分配。",
+            "status": "alive",
+            "location": "home"
+          }
+        ],
+        "network": {
+          "format": 1,
+          "childhood": [
+            {
+              "event": "child_school",
+              "due": 81,
+              "done": true
+            },
+            {
+              "event": "child_caravan",
+              "due": 140,
+              "done": false
+            },
+            {
+              "event": "child_recruit",
+              "due": 164,
+              "done": false
+            }
+          ],
+          "marks": {
+            "letters": {
+              "month": 81,
+              "event": "child_school"
+            }
+          },
+          "echoChecked": false,
+          "method": null,
+          "methods": [],
+          "methodDue": 0,
+          "bottleneck": false,
+          "seekVolume": false,
+          "volumeChecked": false,
+          "offer": null,
+          "arc": null,
+          "next": null,
+          "offerCount": 0,
+          "offerChecked": [],
+          "quietUntil": 0,
+          "role": null,
+          "progressMonths": 0,
+          "summary": {
+            "month": 0,
+            "activity": "study",
+            "months": 0,
+            "skill": 6
+          },
+          "clanChecked": false,
+          "seniorChecked": false
+        }
+      }
+    }
+  }
+}

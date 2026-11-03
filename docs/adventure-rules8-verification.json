@@ -1,0 +1,1351 @@
+{
+  "createdAt": "2026-11-03T09:08:26.606Z",
+  "passed": true,
+  "rulesVersion": 8,
+  "scope": "Independent HTML preview only; no production Web or mini program changes, no GitHub push or deployment",
+  "preview": "http://127.0.0.1:8877/preview/",
+  "tests": 162,
+  "regression": {
+    "startedAt": "2026-11-03T09:02:05.828Z",
+    "node": "v22.22.2",
+    "platform": "win32",
+    "results": [
+      {
+        "name": "preview-assets",
+        "code": 0,
+        "durationMs": 153
+      },
+      {
+        "name": "check",
+        "code": 0,
+        "durationMs": 11194
+      },
+      {
+        "name": "engine-storage",
+        "code": 0,
+        "durationMs": 16260
+      },
+      {
+        "name": "life-simulation",
+        "code": 0,
+        "durationMs": 6526
+      },
+      {
+        "name": "build",
+        "code": 0,
+        "durationMs": 336
+      },
+      {
+        "name": "browser",
+        "code": 0,
+        "durationMs": 57393
+      },
+      {
+        "name": "feedback-browser",
+        "code": 0,
+        "durationMs": 18872
+      },
+      {
+        "name": "adventure-browser",
+        "code": 0,
+        "durationMs": 143281
+      },
+      {
+        "name": "decision-browser",
+        "code": 0,
+        "durationMs": 44715
+      },
+      {
+        "name": "network-browser",
+        "code": 0,
+        "durationMs": 29860
+      },
+      {
+        "name": "progression-browser",
+        "code": 0,
+        "durationMs": 48125
+      },
+      {
+        "name": "family-browser",
+        "code": 0,
+        "durationMs": 24060
+      },
+      {
+        "name": "static-build",
+        "code": 0,
+        "durationMs": 5157
+      },
+      {
+        "name": "adventure-static",
+        "code": 0,
+        "durationMs": 142749
+      },
+      {
+        "name": "decision-static",
+        "code": 0,
+        "durationMs": 45137
+      },
+      {
+        "name": "network-static",
+        "code": 0,
+        "durationMs": 29498
+      },
+      {
+        "name": "progression-static",
+        "code": 0,
+        "durationMs": 48627
+      },
+      {
+        "name": "family-static",
+        "code": 0,
+        "durationMs": 24558
+      }
+    ],
+    "finishedAt": "2026-11-03T09:08:14.363Z",
+    "passed": true
+  },
+  "manifest": {
+    "sha256": "9de9501010eab54ead7be66ff4dd3fd91cd51a6f5c56484b74332e713bcd3e41",
+    "files": 73,
+    "bytes": 1429851,
+    "sourceAndStaticMatch": true
+  },
+  "originalArchives": {
+    "5": {
+      "path": "tests/fixtures/adventure-rules5-original.json",
+      "sha256": "d54a4fd3aa5a4e457ca2ce5778b3ee8ebdc275df23a98d9c8bfbf6694192b24b"
+    },
+    "6": {
+      "path": "tests/fixtures/adventure-rules6-original.json",
+      "sha256": "22b508d136b25fc358c6724033ede0def95ca7c4e86f9e110b83a92d7e983838"
+    },
+    "7": {
+      "path": "tests/fixtures/adventure-rules7-original.json",
+      "sha256": "0834a44a518deefa91ec8a45445ae1ab92bd61f9610fb274f99587f5c2f35b87"
+    }
+  },
+  "gates": {
+    "artifacts/progression-source/report.json": {
+      "sha256": "6c7700522ccff5a0cdd7f2caf8315ddd96044cc4b2b690e1abf9d8cd2cf4f45c",
+      "report": {
+        "built": false,
+        "rulesVersion": 8,
+        "scope": "Real mouse/touch input and natural lives; no state injection; Chrome mobile emulation, not a physical device",
+        "checks": [
+          "all three early childhood experiences exist before first childhood choice",
+          "actual siege → camp → new sect; shared funds debit independently from player balance",
+          "years-long action animates a single smooth progress span; no premature material reward",
+          "mobile material readiness reflects actual inventory; real touch decision",
+          "natural nascent-soul life completes array/medicine preparation before actual final tribulation"
+        ],
+        "servedHashes": {
+          "apps/preview/app.js": "0ea29a314ea3e639c3be8c8466d136a1c23c70262c6d8089b8b8a867bcc3fc3b",
+          "apps/preview/cultivation-pixel.js": "285aae735a48e3c0004cb9153cb598dae9361659297b940737a9ff1605cf73d9",
+          "packages/adventure/progression.js": "2e53db93962726a4e16403be659850cd12e186b9b4e96f947847ce06955690ff",
+          "content/progression-stories.js": "2a23d89e02375122906a56a879498ae01524f8eb15b72edd5773ff1f53a5dcbf"
+        },
+        "passed": true,
+        "browser": "Chrome/155.0.8059.40",
+        "finishedAt": "2026-11-03T09:05:37.835Z"
+      }
+    },
+    "artifacts/progression-static/report.json": {
+      "sha256": "efd04dd64d3047447f201daae3fd756c23cfae3e5e4b1a8271824377e9f2885b",
+      "report": {
+        "built": true,
+        "rulesVersion": 8,
+        "scope": "Real mouse/touch input and natural lives; no state injection; Chrome mobile emulation, not a physical device",
+        "checks": [
+          "all three early childhood experiences exist before first childhood choice",
+          "actual siege → camp → new sect; shared funds debit independently from player balance",
+          "years-long action animates a single smooth progress span; no premature material reward",
+          "mobile material readiness reflects actual inventory; real touch decision",
+          "natural nascent-soul life completes array/medicine preparation before actual final tribulation"
+        ],
+        "servedHashes": {
+          "apps/preview/app.js": "0ea29a314ea3e639c3be8c8466d136a1c23c70262c6d8089b8b8a867bcc3fc3b",
+          "apps/preview/cultivation-pixel.js": "285aae735a48e3c0004cb9153cb598dae9361659297b940737a9ff1605cf73d9",
+          "packages/adventure/progression.js": "2e53db93962726a4e16403be659850cd12e186b9b4e96f947847ce06955690ff",
+          "content/progression-stories.js": "2a23d89e02375122906a56a879498ae01524f8eb15b72edd5773ff1f53a5dcbf"
+        },
+        "passed": true,
+        "browser": "Chrome/155.0.8059.40",
+        "finishedAt": "2026-11-03T09:07:49.754Z"
+      }
+    },
+    "artifacts/story-network-source/report.json": {
+      "sha256": "955252016f2fd0489c5f0a1b830b10d9ba269f1a363500dbfc35a2bc2f3fe871",
+      "report": {
+        "built": false,
+        "checks": [
+          "real childhood choice persists its consequences",
+          "journal result creates a readable hold without advancing the month",
+          "actual probation completes before rank and role are granted",
+          "touch decision and real twelve-month method replacement; five-axis chart fits mobile",
+          "scrolling old journal suspends playback",
+          "one click returns to recent history and resumes the clock",
+          "native reload preserves network, current method, and role"
+        ],
+        "scope": "Real browser interactions; mobile viewport/touch emulation, not a physical device",
+        "passed": true,
+        "browser": "Chrome/155.0.8059.40",
+        "finishedAt": "2026-11-03T09:04:49.578Z"
+      }
+    },
+    "artifacts/story-network-static/report.json": {
+      "sha256": "b678b3bfd566b842fc85fcfc150861c06f5c674a230e7e7f6d1a18a97ce0664c",
+      "report": {
+        "built": true,
+        "checks": [
+          "real childhood choice persists its consequences",
+          "journal result creates a readable hold without advancing the month",
+          "actual probation completes before rank and role are granted",
+          "touch decision and real twelve-month method replacement; five-axis chart fits mobile",
+          "scrolling old journal suspends playback",
+          "one click returns to recent history and resumes the clock",
+          "native reload preserves network, current method, and role"
+        ],
+        "scope": "Real browser interactions; mobile viewport/touch emulation, not a physical device",
+        "passed": true,
+        "browser": "Chrome/155.0.8059.40",
+        "finishedAt": "2026-11-03T09:07:01.120Z"
+      }
+    },
+    "artifacts/cultivation-browser-source/report.json": {
+      "sha256": "922bda6be431eb371e6ed868bce7400ca2f9b7689ed4899f0e5cad3c76ce9e48",
+      "report": {
+        "startedAt": "2026-11-03T09:02:59.408Z",
+        "built": false,
+        "checks": [
+          "one-click random birth; automatic childhood with meaningful choices; smooth frame progress; fractional pause; automatic decision pause; readable result hold and automatic continuation",
+          "native daily focus; real travel payment, elapsed route and continent map",
+          "active expedition withdrawal cancels unfinished stages and retains owned items",
+          "two-tab write conflict protects original; actual native JSON export keeps unsaved choice",
+          "native preview.3 file import and original story continuation",
+          "desktop/mobile no overflow, newest-first feed, no runtime errors or external requests"
+        ],
+        "lives": [
+          {
+            "seed": "万千道途-1",
+            "requestedPath": "orthodox",
+            "path": "orthodox",
+            "conduct": "care",
+            "mobile": false,
+            "events": [
+              "child_clan",
+              "child_relic",
+              "child_teacher",
+              "reception",
+              "root_result",
+              "first_method",
+              "network_method",
+              "selection_1",
+              "selection_1_result",
+              "breakthrough_1_0",
+              "family_rules",
+              "family_gate",
+              "sect_repair_0",
+              "sect_repair_1",
+              "sect_repair_2",
+              "family_support",
+              "breakthrough_2_0",
+              "road_turn",
+              "selection_2",
+              "selection_2_result",
+              "sect_return_0",
+              "sect_return_1",
+              "sect_return_2",
+              "sect_rebuild",
+              "world_raid",
+              "sect_council_0",
+              "advance_material_3_0_0",
+              "sect_council_1",
+              "advance_material_3_0_1",
+              "sect_council_2",
+              "advance_material_3_0_2",
+              "breakthrough_3_0",
+              "years_practice_0",
+              "years_practice_1",
+              "years_practice_2",
+              "advance_material_4_0_0",
+              "advance_material_4_0_1",
+              "advance_material_4_0_2",
+              "years_practice_3",
+              "system_final"
+            ],
+            "ending": "guardian",
+            "decisions": 40
+          },
+          {
+            "seed": "万千道途-0",
+            "requestedPath": "loose",
+            "path": "loose",
+            "conduct": "care",
+            "mobile": false,
+            "events": [
+              "child_school",
+              "child_caravan",
+              "child_recruit",
+              "early_loose",
+              "first_method",
+              "network_method",
+              "selection_1",
+              "selection_1_result",
+              "network_echo",
+              "family_gate",
+              "breakthrough_1_0",
+              "loose_escort_0",
+              "loose_escort_1",
+              "loose_escort_2",
+              "loose_relic_0",
+              "loose_relic_1",
+              "loose_relic_2",
+              "breakthrough_2_0",
+              "loose_portal_0",
+              "loose_portal_1",
+              "loose_portal_2",
+              "selection_2",
+              "selection_2_result",
+              "family_grave",
+              "system_final"
+            ],
+            "ending": "loose_home",
+            "decisions": 25
+          },
+          {
+            "seed": "万千道途-34",
+            "requestedPath": "demonic",
+            "path": "loose",
+            "conduct": "care",
+            "mobile": false,
+            "events": [
+              "child_keeper",
+              "child_relic",
+              "child_teacher",
+              "early_demonic",
+              "first_method",
+              "network_method",
+              "selection_1",
+              "selection_1_result",
+              "network_echo",
+              "family_gate",
+              "family_home_ambush",
+              "family_support",
+              "breakthrough_1_0",
+              "dark_method_0",
+              "dark_method_1",
+              "dark_method_2",
+              "dark_sacrifice_0",
+              "dark_sacrifice_1",
+              "dark_sacrifice_2",
+              "loose_escort_0",
+              "loose_escort_1",
+              "loose_escort_2",
+              "loose_relic_0",
+              "loose_relic_1",
+              "loose_relic_2"
+            ],
+            "ending": "old_age",
+            "decisions": 25
+          },
+          {
+            "seed": "万千道途-3",
+            "requestedPath": "beast",
+            "path": "beast",
+            "conduct": "care",
+            "mobile": true,
+            "events": [
+              "child_keeper",
+              "child_secret",
+              "child_teacher",
+              "early_beast",
+              "first_method",
+              "network_method",
+              "selection_1",
+              "selection_1_result",
+              "network_echo",
+              "beast_home_0",
+              "beast_home_1",
+              "beast_home_2",
+              "family_gate",
+              "breakthrough_1_0",
+              "family_rules",
+              "beast_form_0",
+              "beast_form_1",
+              "beast_form_2",
+              "beast_eclipse_0",
+              "beast_eclipse_1",
+              "beast_eclipse_2",
+              "family_grave",
+              "world_raid",
+              "system_final"
+            ],
+            "ending": "wild_king",
+            "decisions": 24
+          },
+          {
+            "seed": "万千道途-1",
+            "requestedPath": "mortal",
+            "path": "mortal",
+            "conduct": "care",
+            "mobile": false,
+            "events": [
+              "child_clan",
+              "child_relic",
+              "child_teacher",
+              "reception",
+              "family_support",
+              "family_dispute",
+              "road_turn",
+              "system_final"
+            ],
+            "ending": "mortal_home",
+            "decisions": 8
+          },
+          {
+            "seed": "万千道途-34",
+            "requestedPath": "demonic",
+            "path": "demonic",
+            "conduct": "selfish",
+            "mobile": false,
+            "events": [
+              "child_keeper",
+              "child_relic",
+              "child_teacher",
+              "early_demonic",
+              "first_method",
+              "network_method",
+              "selection_1",
+              "selection_1_result",
+              "network_echo",
+              "family_gate",
+              "family_home_ambush",
+              "family_support",
+              "breakthrough_1_0",
+              "dark_method_0",
+              "dark_method_1",
+              "dark_method_2",
+              "dark_sacrifice_0",
+              "dark_sacrifice_1",
+              "dark_sacrifice_2",
+              "system_warrant",
+              "system_pursuit"
+            ],
+            "ending": "battle_lost",
+            "decisions": 21
+          }
+        ],
+        "scope": "Actual Chrome mouse/touch decisions and automatic playback; accelerated full lives are not human retention evidence",
+        "browser": {
+          "protocolVersion": "1.3",
+          "product": "Chrome/155.0.8059.40",
+          "revision": "@cfaadc5a132d78e1828635aa8405a499f3e14864",
+          "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36",
+          "jsVersion": "15.5.35.20"
+        },
+        "passed": true,
+        "finishedAt": "2026-11-03T09:05:19.454Z"
+      }
+    },
+    "artifacts/cultivation-browser-static/report.json": {
+      "sha256": "30f48ac011ecfc613222defc85c1b21e48a4c2a18ea1acf5be999c9bfb8031e6",
+      "report": {
+        "startedAt": "2026-11-03T09:05:45.760Z",
+        "built": true,
+        "checks": [
+          "one-click random birth; automatic childhood with meaningful choices; smooth frame progress; fractional pause; automatic decision pause; readable result hold and automatic continuation",
+          "native daily focus; real travel payment, elapsed route and continent map",
+          "active expedition withdrawal cancels unfinished stages and retains owned items",
+          "two-tab write conflict protects original; actual native JSON export keeps unsaved choice",
+          "native preview.3 file import and original story continuation",
+          "desktop/mobile no overflow, newest-first feed, no runtime errors or external requests"
+        ],
+        "lives": [
+          {
+            "seed": "万千道途-1",
+            "requestedPath": "orthodox",
+            "path": "orthodox",
+            "conduct": "care",
+            "mobile": false,
+            "events": [
+              "child_clan",
+              "child_relic",
+              "child_teacher",
+              "reception",
+              "root_result",
+              "first_method",
+              "network_method",
+              "selection_1",
+              "selection_1_result",
+              "breakthrough_1_0",
+              "family_rules",
+              "family_gate",
+              "sect_repair_0",
+              "sect_repair_1",
+              "sect_repair_2",
+              "family_support",
+              "breakthrough_2_0",
+              "road_turn",
+              "selection_2",
+              "selection_2_result",
+              "sect_return_0",
+              "sect_return_1",
+              "sect_return_2",
+              "sect_rebuild",
+              "world_raid",
+              "sect_council_0",
+              "advance_material_3_0_0",
+              "sect_council_1",
+              "advance_material_3_0_1",
+              "sect_council_2",
+              "advance_material_3_0_2",
+              "breakthrough_3_0",
+              "years_practice_0",
+              "years_practice_1",
+              "years_practice_2",
+              "advance_material_4_0_0",
+              "advance_material_4_0_1",
+              "advance_material_4_0_2",
+              "years_practice_3",
+              "system_final"
+            ],
+            "ending": "guardian",
+            "decisions": 40
+          },
+          {
+            "seed": "万千道途-0",
+            "requestedPath": "loose",
+            "path": "loose",
+            "conduct": "care",
+            "mobile": false,
+            "events": [
+              "child_school",
+              "child_caravan",
+              "child_recruit",
+              "early_loose",
+              "first_method",
+              "network_method",
+              "selection_1",
+              "selection_1_result",
+              "network_echo",
+              "family_gate",
+              "breakthrough_1_0",
+              "loose_escort_0",
+              "loose_escort_1",
+              "loose_escort_2",
+              "loose_relic_0",
+              "loose_relic_1",
+              "loose_relic_2",
+              "breakthrough_2_0",
+              "loose_portal_0",
+              "loose_portal_1",
+              "loose_portal_2",
+              "selection_2",
+              "selection_2_result",
+              "family_grave",
+              "system_final"
+            ],
+            "ending": "loose_home",
+            "decisions": 25
+          },
+          {
+            "seed": "万千道途-34",
+            "requestedPath": "demonic",
+            "path": "loose",
+            "conduct": "care",
+            "mobile": false,
+            "events": [
+              "child_keeper",
+              "child_relic",
+              "child_teacher",
+              "early_demonic",
+              "first_method",
+              "network_method",
+              "selection_1",
+              "selection_1_result",
+              "network_echo",
+              "family_gate",
+              "family_home_ambush",
+              "family_support",
+              "breakthrough_1_0",
+              "dark_method_0",
+              "dark_method_1",
+              "dark_method_2",
+              "dark_sacrifice_0",
+              "dark_sacrifice_1",
+              "dark_sacrifice_2",
+              "loose_escort_0",
+              "loose_escort_1",
+              "loose_escort_2",
+              "loose_relic_0",
+              "loose_relic_1",
+              "loose_relic_2"
+            ],
+            "ending": "old_age",
+            "decisions": 25
+          },
+          {
+            "seed": "万千道途-3",
+            "requestedPath": "beast",
+            "path": "beast",
+            "conduct": "care",
+            "mobile": true,
+            "events": [
+              "child_keeper",
+              "child_secret",
+              "child_teacher",
+              "early_beast",
+              "first_method",
+              "network_method",
+              "selection_1",
+              "selection_1_result",
+              "network_echo",
+              "beast_home_0",
+              "beast_home_1",
+              "beast_home_2",
+              "family_gate",
+              "breakthrough_1_0",
+              "family_rules",
+              "beast_form_0",
+              "beast_form_1",
+              "beast_form_2",
+              "beast_eclipse_0",
+              "beast_eclipse_1",
+              "beast_eclipse_2",
+              "family_grave",
+              "world_raid",
+              "system_final"
+            ],
+            "ending": "wild_king",
+            "decisions": 24
+          },
+          {
+            "seed": "万千道途-1",
+            "requestedPath": "mortal",
+            "path": "mortal",
+            "conduct": "care",
+            "mobile": false,
+            "events": [
+              "child_clan",
+              "child_relic",
+              "child_teacher",
+              "reception",
+              "family_support",
+              "family_dispute",
+              "road_turn",
+              "system_final"
+            ],
+            "ending": "mortal_home",
+            "decisions": 8
+          },
+          {
+            "seed": "万千道途-34",
+            "requestedPath": "demonic",
+            "path": "demonic",
+            "conduct": "selfish",
+            "mobile": false,
+            "events": [
+              "child_keeper",
+              "child_relic",
+              "child_teacher",
+              "early_demonic",
+              "first_method",
+              "network_method",
+              "selection_1",
+              "selection_1_result",
+              "network_echo",
+              "family_gate",
+              "family_home_ambush",
+              "family_support",
+              "breakthrough_1_0",
+              "dark_method_0",
+              "dark_method_1",
+              "dark_method_2",
+              "dark_sacrifice_0",
+              "dark_sacrifice_1",
+              "dark_sacrifice_2",
+              "system_warrant",
+              "system_pursuit"
+            ],
+            "ending": "battle_lost",
+            "decisions": 21
+          }
+        ],
+        "scope": "Actual Chrome mouse/touch decisions and automatic playback; accelerated full lives are not human retention evidence",
+        "browser": {
+          "protocolVersion": "1.3",
+          "product": "Chrome/155.0.8059.40",
+          "revision": "@cfaadc5a132d78e1828635aa8405a499f3e14864",
+          "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36",
+          "jsVersion": "15.5.35.20"
+        },
+        "passed": true,
+        "finishedAt": "2026-11-03T09:08:05.295Z"
+      }
+    },
+    "artifacts/life-richness-simulation.json": {
+      "sha256": "ed4b3d2339267a986a8131835fb7927c6cf56b47b61d371b318bf6d14becb5eb",
+      "report": {
+        "progression": {
+          "events": [
+            "advance_material_3_0_0",
+            "advance_material_3_0_1",
+            "advance_material_3_0_2",
+            "advance_material_3_1_1",
+            "advance_material_3_1_2",
+            "sect_rebuild",
+            "years_practice_0",
+            "advance_material_4_0_0",
+            "advance_material_4_0_1",
+            "advance_material_4_0_2",
+            "years_practice_1",
+            "years_practice_2",
+            "years_practice_3",
+            "tribulation_prepare",
+            "sect_revenge",
+            "advance_material_3_0_0_resume",
+            "sect_council_0",
+            "sect_council_1",
+            "sect_council_2",
+            "parcel_exposed",
+            "advance_material_4_1_1",
+            "advance_material_4_1_2",
+            "parcel_missing",
+            "advance_material_3_0_1_resume",
+            "advance_material_3_1_1_resume",
+            "advance_material_3_0_2_resume",
+            "advance_material_3_2_1",
+            "advance_material_3_2_2"
+          ],
+          "goldenLives": 32,
+          "nascentLives": 7,
+          "remittances": 50,
+          "rebuilds": 31
+        },
+        "createdAt": "2026-11-03T09:02:39.955Z",
+        "passed": true,
+        "rulesVersion": 8,
+        "count": 400,
+        "network": {
+          "childhoodPatterns": 29,
+          "methods": [
+            "ember",
+            "flame",
+            "clear",
+            "beast",
+            "shade",
+            "river",
+            "stone",
+            "iron"
+          ],
+          "events": [
+            "network_method",
+            "network_bottleneck",
+            "network_volume",
+            "network_echo",
+            "network_mentor",
+            "network_mentor_result",
+            "network_senior",
+            "network_archive",
+            "network_ward",
+            "network_ward_result",
+            "network_clan_call"
+          ],
+          "invitations": 78,
+          "promotions": 34
+        },
+        "scope": "Actual integer-month simulation; policies are automated, not human enjoyment or retention",
+        "maximumJournalGapMonths": 360,
+        "distinctDetailedAutomaticProse": 1367,
+        "chains": [
+          {
+            "id": "sect_repair",
+            "opened": 57,
+            "completed": 52,
+            "stages": [
+              57,
+              56,
+              52
+            ]
+          },
+          {
+            "id": "sect_trial",
+            "opened": 45,
+            "completed": 43,
+            "stages": [
+              45,
+              45,
+              43
+            ]
+          },
+          {
+            "id": "sect_return",
+            "opened": 53,
+            "completed": 50,
+            "stages": [
+              53,
+              51,
+              50
+            ]
+          },
+          {
+            "id": "loose_contract",
+            "opened": 94,
+            "completed": 93,
+            "stages": [
+              94,
+              94,
+              93
+            ]
+          },
+          {
+            "id": "loose_relic",
+            "opened": 71,
+            "completed": 65,
+            "stages": [
+              71,
+              70,
+              65
+            ]
+          },
+          {
+            "id": "loose_portal",
+            "opened": 58,
+            "completed": 54,
+            "stages": [
+              58,
+              56,
+              54
+            ]
+          },
+          {
+            "id": "dark_ledger",
+            "opened": 50,
+            "completed": 50,
+            "stages": [
+              50,
+              50,
+              50
+            ]
+          },
+          {
+            "id": "dark_method",
+            "opened": 27,
+            "completed": 23,
+            "stages": [
+              27,
+              26,
+              23
+            ]
+          },
+          {
+            "id": "dark_pursuit",
+            "opened": 12,
+            "completed": 12,
+            "stages": [
+              12,
+              12,
+              12
+            ]
+          },
+          {
+            "id": "beast_home",
+            "opened": 4,
+            "completed": 4,
+            "stages": [
+              4,
+              4,
+              4
+            ]
+          },
+          {
+            "id": "beast_form",
+            "opened": 5,
+            "completed": 4,
+            "stages": [
+              5,
+              5,
+              4
+            ]
+          },
+          {
+            "id": "beast_war",
+            "opened": 1,
+            "completed": 1,
+            "stages": [
+              1,
+              1,
+              1
+            ]
+          },
+          {
+            "id": "sect_feud",
+            "opened": 65,
+            "completed": 63,
+            "stages": [
+              65,
+              65,
+              63
+            ]
+          },
+          {
+            "id": "loose_escort",
+            "opened": 67,
+            "completed": 63,
+            "stages": [
+              67,
+              67,
+              63
+            ]
+          },
+          {
+            "id": "dark_sacrifice",
+            "opened": 48,
+            "completed": 41,
+            "stages": [
+              48,
+              48,
+              41
+            ]
+          },
+          {
+            "id": "beast_eclipse",
+            "opened": 5,
+            "completed": 4,
+            "stages": [
+              5,
+              5,
+              4
+            ]
+          }
+        ],
+        "familyGate": {
+          "opened": 211,
+          "ambushed": 58,
+          "origins": [
+            53,
+            45,
+            51,
+            62
+          ]
+        },
+        "paths": [
+          {
+            "path": "orthodox",
+            "lives": 115,
+            "meanFinalStones": 6.8,
+            "maxFinalStones": 96,
+            "materialByLabour": 171
+          },
+          {
+            "path": "loose",
+            "lives": 175,
+            "meanFinalStones": 0,
+            "maxFinalStones": 1,
+            "materialByLabour": 242
+          },
+          {
+            "path": "demonic",
+            "lives": 48,
+            "meanFinalStones": 0.6,
+            "maxFinalStones": 8,
+            "materialByLabour": 75
+          },
+          {
+            "path": "beast",
+            "lives": 9,
+            "meanFinalStones": 0.1,
+            "maxFinalStones": 1,
+            "materialByLabour": 13
+          },
+          {
+            "path": "mortal",
+            "lives": 53,
+            "meanFinalStones": 2.1,
+            "maxFinalStones": 6,
+            "materialByLabour": 0
+          }
+        ]
+      }
+    }
+  },
+  "limits": [
+    "Mobile viewport and touch are browser emulation, not physical device testing",
+    "Automated lives do not prove human enjoyment, retention or actual duration",
+    "New story rules require a new life; saved lives retain their original rules"
+  ],
+  "publication": {
+    "scope": "Current HTML candidate plus mini-program integration manual; no runtime edits in this publication",
+    "sourceRecheckedAt": "2026-11-03T09:58:29.231Z",
+    "matchedSourceFiles": 72,
+    "latestFeedbackImplemented": false,
+    "miniProgramImplemented": false
+  },
+  "staticFiles": [
+    {
+      "path": "apps/preview/app.js",
+      "bytes": 48397,
+      "sha256": "0ea29a314ea3e639c3be8c8466d136a1c23c70262c6d8089b8b8a867bcc3fc3b"
+    },
+    {
+      "path": "apps/preview/base.css",
+      "bytes": 77955,
+      "sha256": "3875acb720d6e4c31560afd819538d73e71930874ffe8fa28469bcc7c37c5938"
+    },
+    {
+      "path": "apps/preview/continent-atlas.js",
+      "bytes": 3951,
+      "sha256": "3f3cebe14d0ad9ee8d3d5f249a6ba38a19dd478f7f4862cc435a9b2af666a347"
+    },
+    {
+      "path": "apps/preview/continent-map.js",
+      "bytes": 2121,
+      "sha256": "d9dd806a27ccf7953ebb2993dead6246d3a1599b17ce6c551776e69160e704c3"
+    },
+    {
+      "path": "apps/preview/cultivation-pixel.js",
+      "bytes": 11684,
+      "sha256": "285aae735a48e3c0004cb9153cb598dae9361659297b940737a9ff1605cf73d9"
+    },
+    {
+      "path": "apps/preview/icon.svg",
+      "bytes": 266,
+      "sha256": "d13638ada1bfe9f85f71040f660272765bf00a3f30de640c1342fc0de6c140ca"
+    },
+    {
+      "path": "apps/preview/index.html",
+      "bytes": 1117,
+      "sha256": "c1c0b4693e8d91ad63ddb5aada750a87ef5711fa9e7f308c92e74dd95aa9c7bc"
+    },
+    {
+      "path": "apps/preview/life-panels.js",
+      "bytes": 9489,
+      "sha256": "d9355b5221c3e609b1841fea84441a104fcbd1984c91b254f9276f9a3b49c199"
+    },
+    {
+      "path": "apps/preview/pixel-style.js",
+      "bytes": 4044,
+      "sha256": "78791ceb46d10e352e06272e01a97cf41f3cfb48fa3447c45ff819a6589979d6"
+    },
+    {
+      "path": "apps/preview/style.css",
+      "bytes": 14386,
+      "sha256": "eee87bda80aea88e21e0434b238902957a81a94ea010bb0dacb33d6c943140e1"
+    },
+    {
+      "path": "apps/web/app.js",
+      "bytes": 24155,
+      "sha256": "11497d735389ede33ab7704749e9711b657110684eddc981f9207fdf955128e6"
+    },
+    {
+      "path": "apps/web/dialogs.js",
+      "bytes": 29832,
+      "sha256": "4e3b59a7e0edebea867b67030dc0dda3b661c072811a2620516842b4548d20fd"
+    },
+    {
+      "path": "apps/web/favicon.svg",
+      "bytes": 278,
+      "sha256": "af9e6ae143927897c73a023e34cdb3a4de1625de6b787235e96c01816b203bb4"
+    },
+    {
+      "path": "apps/web/game-api.js",
+      "bytes": 178,
+      "sha256": "a93d544d7bfcc698f40d39f2753733db554904ec0f8f8b3945f88105818de1fd"
+    },
+    {
+      "path": "apps/web/icons.js",
+      "bytes": 1226,
+      "sha256": "b78a4e602bf7974aa94d88bcb82ab492400f4c7f29d54651788973f4d19e3958"
+    },
+    {
+      "path": "apps/web/index.html",
+      "bytes": 2602,
+      "sha256": "b510354c02fda8b5c0ca9eb7fa82960d9d2cd8ece93d98fd288a83de0112eb79"
+    },
+    {
+      "path": "apps/web/style.css",
+      "bytes": 33300,
+      "sha256": "f7434c5936488a69c4cc5eb30937fa1075db5a396847d243fa00ea522adc05a4"
+    },
+    {
+      "path": "apps/web/views.js",
+      "bytes": 19512,
+      "sha256": "a653572c1ceffe13315a444d6a593118cb2afb6f747d1830c6bb4b84fa2f0bef"
+    },
+    {
+      "path": "content/adventure.js",
+      "bytes": 93963,
+      "sha256": "38da9f74f9693f816d9c26716e71c4cc6fe43eabc0805c9526887323c813be57"
+    },
+    {
+      "path": "content/allegiance-stories.js",
+      "bytes": 15079,
+      "sha256": "9905dc390ade6b2412e155293611b64b9ffebe4f55ab8c28ecd7d5eb5c4b2dda"
+    },
+    {
+      "path": "content/automatic-life.js",
+      "bytes": 19360,
+      "sha256": "cf7bb63f20b469759e89760ce37c952af93556ec39494932c8613f1532a6d7dd"
+    },
+    {
+      "path": "content/cultivation-daily-v6.js",
+      "bytes": 24438,
+      "sha256": "a33e8bc04b77fa5bdb39ad99af8b5e17ec7ea568dba0b28221107a8a5b136e5e"
+    },
+    {
+      "path": "content/cultivation-daily-v7.js",
+      "bytes": 31575,
+      "sha256": "3ff6cfa045a1fc9e6e547a87dc259c38933b51fce11b066986639279aed413f7"
+    },
+    {
+      "path": "content/cultivation-daily.js",
+      "bytes": 31575,
+      "sha256": "3ff6cfa045a1fc9e6e547a87dc259c38933b51fce11b066986639279aed413f7"
+    },
+    {
+      "path": "content/cultivation-revision-v6.js",
+      "bytes": 20051,
+      "sha256": "63268567247882c5bd0fb8539f81c5bdb95812ba7d11e6eebef31d523117078f"
+    },
+    {
+      "path": "content/cultivation-revision-v7.js",
+      "bytes": 20051,
+      "sha256": "63268567247882c5bd0fb8539f81c5bdb95812ba7d11e6eebef31d523117078f"
+    },
+    {
+      "path": "content/cultivation-revision.js",
+      "bytes": 20051,
+      "sha256": "63268567247882c5bd0fb8539f81c5bdb95812ba7d11e6eebef31d523117078f"
+    },
+    {
+      "path": "content/cultivation-stories-v5.js",
+      "bytes": 37424,
+      "sha256": "2cee3b93be42d90c0c60bed9a36ee1e51f614d2dfcbf74fa35cd27d4f897431c"
+    },
+    {
+      "path": "content/cultivation-stories-v6.js",
+      "bytes": 37741,
+      "sha256": "aed42cf5aabf96aff90a8321977f9ad3d72dcba3217600042df91f5e69d4b4f8"
+    },
+    {
+      "path": "content/cultivation-stories-v7.js",
+      "bytes": 38368,
+      "sha256": "81970efb438d95954eac59e2263701d7eaec4b460f0ab60d3dd9cbd0d5655084"
+    },
+    {
+      "path": "content/cultivation-stories.js",
+      "bytes": 38571,
+      "sha256": "a7bad0810f203469ccc0d12e70ac1e119d596e44182d2bd39885404d39ae6548"
+    },
+    {
+      "path": "content/cultivation-world.js",
+      "bytes": 6174,
+      "sha256": "d32cbb8577a71accedf9fec246d7fabb12bf95d12e94176d2dd7cc65c499b8f0"
+    },
+    {
+      "path": "content/decision-details.js",
+      "bytes": 13229,
+      "sha256": "7d1d41251b8bea36bf9b551d4c8c0dd75048655fde25a1c4ee5e1b4ae029a17e"
+    },
+    {
+      "path": "content/expansion.js",
+      "bytes": 16556,
+      "sha256": "f5fe7d7256ffeb8cf5705ed364a4581201e700b77ca8e304937db8aee04b4f6b"
+    },
+    {
+      "path": "content/expedition-changes.js",
+      "bytes": 6372,
+      "sha256": "da649a89571a19bd33f87af9357baaa10efec3f10747e7aec0a4595608446843"
+    },
+    {
+      "path": "content/living-episodes.js",
+      "bytes": 39886,
+      "sha256": "cbb3277634f930c28582f6f800e3d6bac35246485b14571e00f3521e136a302f"
+    },
+    {
+      "path": "content/living-world.js",
+      "bytes": 5356,
+      "sha256": "41182ded897d32198e2bfbd1d9d91d147526b18085d7425fffa43626a7250250"
+    },
+    {
+      "path": "content/novel-names.js",
+      "bytes": 15555,
+      "sha256": "dc17411d1d7b32e40825a30015fb21560a510c069c212c2900b223e7f24fe5c7"
+    },
+    {
+      "path": "content/progression-stories.js",
+      "bytes": 21704,
+      "sha256": "2a23d89e02375122906a56a879498ae01524f8eb15b72edd5773ff1f53a5dcbf"
+    },
+    {
+      "path": "content/readable-automatic.js",
+      "bytes": 6773,
+      "sha256": "7fb5d2306b9793fe2e00c6a4ef17d53a4047d574c5d0f0e65bf18817c7c08a59"
+    },
+    {
+      "path": "content/readable-stories.js",
+      "bytes": 27542,
+      "sha256": "7e15161ffdf8c39d3816988d082c5be9fc133c59d9de9661ab7f8ec55b5372db"
+    },
+    {
+      "path": "content/stories.js",
+      "bytes": 13688,
+      "sha256": "e0ff18424b3c7e8c8e63c2c71d0c399c8b9a0761e9ab5bc0636b5e298107c99e"
+    },
+    {
+      "path": "content/story-network.js",
+      "bytes": 40946,
+      "sha256": "2bc61abd96414eaf6ae5bdcd06b573e5ae203dcbe94ecabd865201a7e51c8c9e"
+    },
+    {
+      "path": "content/world.js",
+      "bytes": 11274,
+      "sha256": "48c55afa7e3cfe3850128ae41b35b9ece7f4136c564b3ea4282856ace48b278f"
+    },
+    {
+      "path": "index.html",
+      "bytes": 2602,
+      "sha256": "b510354c02fda8b5c0ca9eb7fa82960d9d2cd8ece93d98fd288a83de0112eb79"
+    },
+    {
+      "path": "package.json",
+      "bytes": 75,
+      "sha256": "52b3164beb4981f0a8095c3bae7ca8acb6baa12ebe54330903e331bc323dbb0f"
+    },
+    {
+      "path": "packages/adventure/birth.js",
+      "bytes": 1933,
+      "sha256": "13aa745d957ed0715bd16edf4647d9162fdfd185cd9681c1ac88ef3c36662c8f"
+    },
+    {
+      "path": "packages/adventure/context.js",
+      "bytes": 2149,
+      "sha256": "da043e10177aadc1fb4dbb7735d1c6c3cea43bb895c418615b36a71d7cca99d7"
+    },
+    {
+      "path": "packages/adventure/cultivation-economy.js",
+      "bytes": 2216,
+      "sha256": "a488a49224c59671c051729cd1efc1597fedc9c90573f703ef62864a4cc6c551"
+    },
+    {
+      "path": "packages/adventure/cultivation-v5.js",
+      "bytes": 37871,
+      "sha256": "bf8f93d5ef60b778cd390110b16590c3de28c127e3379f9de83a13c35e67c476"
+    },
+    {
+      "path": "packages/adventure/cultivation-v6.js",
+      "bytes": 43693,
+      "sha256": "755f4285b73218598c24f296c41f1b310c0e416d1b0894ceff7b126804e0b87d"
+    },
+    {
+      "path": "packages/adventure/cultivation-v7.js",
+      "bytes": 46129,
+      "sha256": "01b152b5234b31ec256cf796567d1ad4d544ecb69f6ad3632133de0c46044a9a"
+    },
+    {
+      "path": "packages/adventure/cultivation.js",
+      "bytes": 48753,
+      "sha256": "d5d19098865424fd7f22835b72a484265df611488060621196635d42a3fa95f1"
+    },
+    {
+      "path": "packages/adventure/engine.js",
+      "bytes": 52206,
+      "sha256": "2a95b060bba2129d23389de4903d57bca6e98d299b3ab4641544db0eea2702f1"
+    },
+    {
+      "path": "packages/adventure/family.js",
+      "bytes": 3506,
+      "sha256": "9a6f0699486cacbb4677c143e16d4a98f4905e941e59a8a1b3b88f6020debb4f"
+    },
+    {
+      "path": "packages/adventure/life.js",
+      "bytes": 34201,
+      "sha256": "55844bff9668735590d3d921f56cc6e23353433d57a5a706098b4a5d31c7ccd4"
+    },
+    {
+      "path": "packages/adventure/progression.js",
+      "bytes": 25150,
+      "sha256": "2e53db93962726a4e16403be659850cd12e186b9b4e96f947847ce06955690ff"
+    },
+    {
+      "path": "packages/adventure/realm.js",
+      "bytes": 1122,
+      "sha256": "ec8c4f0c2c0149ec3c2a28ea34f51568693b2c1fe0f34eca33c35a90c0bc3881"
+    },
+    {
+      "path": "packages/adventure/store.js",
+      "bytes": 8980,
+      "sha256": "d7671582cc0f6a80bb41b8a3d72be833cb3cccfe915998158dea1c89fc92c8a9"
+    },
+    {
+      "path": "packages/adventure/story-network.js",
+      "bytes": 16195,
+      "sha256": "aba4b9c4529e676eda36cc66fecd4d10eae4b2a8c86b0b214e017aa71c89e516"
+    },
+    {
+      "path": "packages/core/engine.js",
+      "bytes": 82419,
+      "sha256": "5e5bd4d229d6885c0fe26514e8e67d23ddfff2bd320502e618fb64f023b1f007"
+    },
+    {
+      "path": "packages/core/legacy-v1.js",
+      "bytes": 4812,
+      "sha256": "4723b08fcfd85879161f1e261bb446bc6ebe86673593abf3a7a1dafdd1f35328"
+    },
+    {
+      "path": "packages/core/migrate.js",
+      "bytes": 2311,
+      "sha256": "d6df93cb5704519d64e0f04d572df6dc6578e1e6cc7309e3a0f578c72eaf6599"
+    },
+    {
+      "path": "packages/core/random.js",
+      "bytes": 1427,
+      "sha256": "5cc65b632c86293fdb1e45515c1fa9e9fed2b3b21e34bccfa0c449c9326ada68"
+    },
+    {
+      "path": "packages/core/state.js",
+      "bytes": 8424,
+      "sha256": "ec17a323460775dae373c5d684f7ba1067ede02f73b07b4a8a0cd04d6c8e5ae6"
+    },
+    {
+      "path": "packages/core/validate.js",
+      "bytes": 20449,
+      "sha256": "a1642289cd089af4a2f3dcbc5035fe9709931e849bef8f05247d50124db8d4ca"
+    },
+    {
+      "path": "packages/core/world-events.js",
+      "bytes": 4484,
+      "sha256": "a5e5dc54a310f4abbe3603e1d337da48c7cf24cded570f38ef57d829a628e130"
+    },
+    {
+      "path": "packages/media/audio.js",
+      "bytes": 1807,
+      "sha256": "7e16b9c69fbe400310d93fd5bcd939bd1f033d627ed9c739e28e9dd089f11fe2"
+    },
+    {
+      "path": "packages/media/exports.js",
+      "bytes": 4598,
+      "sha256": "9abcafedb456d3013d3e5325d4351c74ba285b2043f9e4fc579757bca72e2c10"
+    },
+    {
+      "path": "packages/render/canvas.js",
+      "bytes": 20236,
+      "sha256": "b719c895fa6712c50a997a9b5f4e2595c34b9a5b867ed225ffb4ea63fdff1100"
+    },
+    {
+      "path": "packages/storage/fork.js",
+      "bytes": 2537,
+      "sha256": "ee26cead1c961464e95964dfe9545507653a392f6c0e2d86c09bcfaada8f891d"
+    },
+    {
+      "path": "packages/storage/store.js",
+      "bytes": 10654,
+      "sha256": "4fea3dd3148205afefdbf8c24b03ecdb18d1f46a650d6674a361fcb98f36b74d"
+    },
+    {
+      "path": "preview/index.html",
+      "bytes": 1117,
+      "sha256": "c1c0b4693e8d91ad63ddb5aada750a87ef5711fa9e7f308c92e74dd95aa9c7bc"
+    }
+  ]
+}

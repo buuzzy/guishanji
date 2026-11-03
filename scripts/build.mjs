@@ -9,8 +9,10 @@ if (relative(projectRoot, output) !== 'dist') throw new Error('构建输出路�
 await mkdir(local, { recursive: true });
 const stamp = new Date().toISOString().replace(/[^0-9]/gu, '');
 const stage = join(local, 'build-' + stamp); await mkdir(stage);
-for (const folder of ['apps/web', 'packages', 'content']) await cp(join(projectRoot, folder), join(stage, folder), { recursive: true, dereference: false });
+for (const folder of ['apps/web', 'apps/preview', 'packages', 'content']) await cp(join(projectRoot, folder), join(stage, folder), { recursive: true, dereference: false, filter: path => !['pixel.js','cultivation-scene.js'].some(file=>path.replaceAll('\\','/').endsWith('/apps/preview/'+file)) && !['reference', 'entry'].some(name => path.replaceAll('\\', '/').includes('/apps/preview/' + name)) });
 await cp(join(projectRoot, 'apps/web/index.html'), join(stage, 'index.html'));
+await mkdir(join(stage, 'preview'), { recursive: true });
+await cp(join(projectRoot, 'apps/preview/index.html'), join(stage, 'preview/index.html'));
 await writeFile(join(stage, 'package.json'), JSON.stringify({ name: 'shanhai-life-static', type: 'module', private: true }, null, 2) + '\n');
 const files = [];
 async function walk(dir) { for (const entry of await readdir(dir, { withFileTypes: true })) { const path = join(dir, entry.name); if (entry.isDirectory()) await walk(path); else if (entry.isFile()) { const data = await readFile(path); files.push({ path: relative(stage, path).replaceAll('\\', '/'), bytes: data.length, sha256: createHash('sha256').update(data).digest('hex') }); } else throw new Error('构建目录存在不支持的链接。'); } }

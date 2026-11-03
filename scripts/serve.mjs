@@ -16,7 +16,8 @@ export async function startServer({ root = projectRoot, host = '127.0.0.1', port
       let pathname = decodeURIComponent(new URL(request.url, 'http://localhost').pathname);
       if (pathname.includes('\\') || pathname.includes('\0') || pathname.split('/').some(part => part === '..' || part.startsWith('.'))) throw new Error('Invalid path');
       if (pathname === '/' || pathname === '/index.html') pathname = '/apps/web/index.html';
-      if (!['/apps/web/', '/packages/', '/content/'].some(prefix => pathname.startsWith(prefix)) || !types[extname(pathname)]) throw new Error('Private path');
+      if (pathname === '/preview' || pathname === '/preview/') pathname = '/apps/preview/index.html';
+      if (!['/apps/web/', '/apps/preview/', '/preview/', '/packages/', '/content/'].some(prefix => pathname.startsWith(prefix)) || !types[extname(pathname)]) throw new Error('Private path');
       const path = resolve(actualRoot, '.' + pathname);
       if (!within(actualRoot, path) || !within(actualRoot, await realpath(path)) || !(await stat(path)).isFile()) throw new Error('Invalid file');
       const data = await readFile(path);

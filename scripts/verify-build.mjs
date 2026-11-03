@@ -36,7 +36,7 @@ try {
       assert.ok(rel !== '..' && !rel.startsWith('..' + sep) && !isAbsolute(rel));
       const bytes = await readFile(destination); assert.equal(bytes.length, file.bytes, file.path); assert.equal(hash(bytes), file.sha256, file.path);
       if (file.path !== 'package.json') {
-        const source = file.path === 'index.html' ? 'apps/web/index.html' : file.path;
+        const source = file.path === 'index.html' ? 'apps/web/index.html' : file.path === 'preview/index.html' ? 'apps/preview/index.html' : file.path;
         assert.equal(hash(await readFile(join(projectRoot, source))), file.sha256, source);
       }
     }

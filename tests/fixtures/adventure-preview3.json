@@ -1,0 +1,510 @@
+{
+  "product": "gui-shan-preview",
+  "format": 1,
+  "contentRevision": "choices-in-an-unknown-world-03",
+  "revision": 1,
+  "activeId": "preview3-fixture",
+  "lives": [
+    {
+      "product": "gui-shan-preview",
+      "format": 1,
+      "version": "0.1.0-preview.3",
+      "contentRevision": "choices-in-an-unknown-world-03",
+      "id": "preview3-fixture",
+      "seed": "真实preview3存档",
+      "revision": 203,
+      "phase": "life",
+      "month": 202,
+      "act": 0,
+      "random": {
+        "birth": {
+          "value": 1340179840,
+          "draws": 7
+        },
+        "life": {
+          "value": 1922023737,
+          "draws": 0
+        },
+        "people": {
+          "value": 1712013764,
+          "draws": 0
+        },
+        "world": {
+          "value": 1111347532,
+          "draws": 1
+        },
+        "story": {
+          "value": 1713417242,
+          "draws": 0
+        },
+        "events": {
+          "value": 437220681,
+          "draws": 5
+        },
+        "daily": {
+          "value": 968382180,
+          "draws": 18
+        }
+      },
+      "birth": {
+        "era": "fracture",
+        "continent": "ember",
+        "family": "clan",
+        "address": "赤炉谷",
+        "startAge": 0,
+        "year": 906,
+        "goal": "free"
+      },
+      "player": {
+        "name": "萧炎",
+        "origin": "clan",
+        "sex": "M",
+        "root": "三相灵根",
+        "realm": 0,
+        "focus": "array",
+        "skills": {
+          "sword": 7,
+          "array": 10.9,
+          "alchemy": 6
+        },
+        "health": 91.2,
+        "mind": 66,
+        "insight": 46,
+        "courage": 42,
+        "empathy": 33,
+        "stones": 79,
+        "location": "home",
+        "home": "赤炉宗新弟子客舍",
+        "homeBeforeWar": null,
+        "practice": 202
+      },
+      "inventory": [
+        "ward",
+        "herb_kit",
+        "signal_talisman"
+      ],
+      "flags": {
+        "childhoodBooks": true
+      },
+      "world": {
+        "threat": "sovereign",
+        "survivors": 18,
+        "masterDeadline": null
+      },
+      "people": {
+        "master": {
+          "id": "master",
+          "name": "闻竹",
+          "role": "师父",
+          "born": -1152,
+          "realm": 3,
+          "sex": "F",
+          "known": true,
+          "alive": true,
+          "status": "alive",
+          "deathMonth": null,
+          "location": "home",
+          "bond": 35
+        },
+        "sister": {
+          "id": "sister",
+          "name": "程照雪",
+          "role": "师姐",
+          "born": -84,
+          "realm": 2,
+          "sex": "F",
+          "known": true,
+          "alive": true,
+          "status": "alive",
+          "deathMonth": null,
+          "location": "home",
+          "bond": 27
+        },
+        "friend": {
+          "id": "friend",
+          "name": "沈砚",
+          "role": "同门",
+          "born": -12,
+          "realm": 1,
+          "sex": "M",
+          "known": true,
+          "alive": true,
+          "status": "alive",
+          "deathMonth": null,
+          "location": "home",
+          "bond": 30
+        },
+        "ally": {
+          "id": "ally",
+          "name": "嵇萝",
+          "role": "异乡友人",
+          "born": -144,
+          "realm": 2,
+          "sex": "F",
+          "known": false,
+          "alive": true,
+          "status": "alive",
+          "deathMonth": null,
+          "location": "refuge",
+          "bond": 0
+        },
+        "rival": {
+          "id": "rival",
+          "name": "宋却",
+          "role": "追猎者",
+          "born": -240,
+          "realm": 2,
+          "sex": "M",
+          "known": false,
+          "alive": true,
+          "status": "alive",
+          "deathMonth": null,
+          "location": "refuge",
+          "bond": 0
+        },
+        "keeper": {
+          "id": "keeper",
+          "name": "白渡",
+          "role": "守门人",
+          "born": -936,
+          "realm": 3,
+          "sex": "M",
+          "known": false,
+          "alive": true,
+          "status": "alive",
+          "deathMonth": null,
+          "location": "refuge",
+          "bond": 0
+        },
+        "trialmate": {
+          "id": "trialmate",
+          "name": "陶宁",
+          "role": "试炼同伴",
+          "born": -24,
+          "realm": 1,
+          "sex": "M",
+          "known": false,
+          "alive": true,
+          "status": "alive",
+          "deathMonth": null,
+          "location": "home",
+          "bond": 0
+        }
+      },
+      "pending": {
+        "event": "entry",
+        "month": 202
+      },
+      "journey": null,
+      "waiting": false,
+      "result": {
+        "event": "childhood",
+        "title": "跟先生认字，听他说山河",
+        "body": "你学会把陌生地名写下来。多年以后，地图上再大的山也有了可以问路的名字。",
+        "success": true,
+        "chance": null,
+        "changes": [
+          "悟性+8",
+          "阵法+4"
+        ],
+        "months": 0,
+        "next": null,
+        "planned": null,
+        "provisional": false,
+        "completed": false
+      },
+      "ending": null,
+      "decisions": [
+        {
+          "event": "childhood",
+          "choice": "books",
+          "month": 72,
+          "success": true,
+          "chance": null
+        }
+      ],
+      "journal": [
+        {
+          "id": 1,
+          "month": 0,
+          "act": 0,
+          "kind": "birth",
+          "title": "萧炎出生了",
+          "body": "山历906年，你出生在烬原大陆的赤炉谷，来自修仙世家。这一世处在诸界断裂，世界与家世已经进入这段人生的规则。",
+          "automatic": true,
+          "context": "childhood",
+          "location": "home"
+        },
+        {
+          "id": 2,
+          "month": 12,
+          "act": 0,
+          "kind": "life",
+          "event": "family_work",
+          "title": "一双手能做的事慢慢多了",
+          "body": "你能把灵草按火候分开了。家传符纹仍认不全，长辈却没有把未完成的笔画当作天命。",
+          "changes": [
+            "悟性+1"
+          ],
+          "automatic": true,
+          "location": "home",
+          "context": "childhood"
+        },
+        {
+          "id": 3,
+          "month": 32,
+          "act": 0,
+          "kind": "world",
+          "event": "birth_world",
+          "title": "大人谈起外面的局势",
+          "body": "天穹曾经破碎，各大陆散落在界海两岸。漂移的门会带来遗迹，也会带来异界凶兽；修行者必须先学会认路。你尚不明白这些话，只记得商旅这次回来得比往年晚。",
+          "changes": [],
+          "automatic": true,
+          "location": "home",
+          "context": "childhood"
+        },
+        {
+          "id": 4,
+          "month": 54,
+          "act": 0,
+          "kind": "life",
+          "event": "first_friend",
+          "title": "另一个孩子记住了你的名字",
+          "body": "集市上有人与你交换了两块形状不同的石头。你们约好以后再见，后来才明白，许多最初的约定没有写在任何盟约里。",
+          "changes": [
+            "仁心+2"
+          ],
+          "automatic": true,
+          "location": "home",
+          "context": "childhood"
+        },
+        {
+          "id": 5,
+          "month": 72,
+          "act": 0,
+          "kind": "story",
+          "event": "childhood",
+          "title": "六岁，开始学一门本事",
+          "body": "六岁，家族长辈教你辨认护符，堂亲带你看药田。家里准备让你先学一门本事。",
+          "location": "home",
+          "context": "childhood"
+        },
+        {
+          "id": 6,
+          "month": 72,
+          "act": 0,
+          "kind": "choice",
+          "event": "childhood",
+          "choice": "books",
+          "title": "跟先生认字，听他说山河",
+          "body": "你学会把陌生地名写下来。多年以后，地图上再大的山也有了可以问路的名字。",
+          "success": true,
+          "changes": [
+            "悟性+8",
+            "阵法+4"
+          ]
+        },
+        {
+          "id": 7,
+          "month": 73,
+          "act": 0,
+          "kind": "life",
+          "event": "small_world",
+          "title": "世界起初只是一扇窗",
+          "body": "你在烬原大陆的赤炉谷长大。家门外的路还很短，远处的赤炉宗只在大人偶尔提起时有名字。",
+          "changes": [
+            "心境+1"
+          ],
+          "automatic": true,
+          "location": "home",
+          "context": "childhood"
+        },
+        {
+          "id": 8,
+          "month": 94,
+          "act": 0,
+          "kind": "life",
+          "event": "first_weather",
+          "title": "记住家门前的一场雨",
+          "body": "你最早记住的不是法术，是家里把漏下来的雨接进木盆。窗外有人踩着水回来，鞋子放在门外，饭留在灶上。",
+          "changes": [
+            "仁心+1"
+          ],
+          "automatic": true,
+          "location": "home",
+          "context": "childhood"
+        },
+        {
+          "id": 9,
+          "month": 143,
+          "act": 0,
+          "kind": "life",
+          "event": "older_hands",
+          "title": "家门里的活换到了你手上",
+          "body": "你已经能独自出门办事。旧屋的门槛仍是从前的高度，走出去时却不必再踮脚，家里的嘱托也变得更长了。",
+          "changes": [
+            "胆识+2"
+          ],
+          "automatic": true,
+          "location": "home",
+          "context": "childhood"
+        },
+        {
+          "id": 10,
+          "month": 161,
+          "act": 0,
+          "kind": "practice",
+          "event": "root_seen",
+          "title": "灵息第一次在掌心停住",
+          "body": "家里认出了你的三相灵根。它还不能替你御剑，也不能替你长大；你开始在每次吐纳时记住自己的呼吸。",
+          "changes": [
+            "悟性+2"
+          ],
+          "automatic": true,
+          "location": "home",
+          "context": "childhood"
+        },
+        {
+          "id": 11,
+          "month": 192,
+          "act": 0,
+          "kind": "life",
+          "title": "十六岁，走进故乡的山门",
+          "body": "你离开赤炉谷，拜入赤炉宗。闻竹、程照雪与沈砚从这一刻成为身边的人，山门给你留下了一枚能接收急讯的传音符。",
+          "automatic": true,
+          "context": "home",
+          "changes": [
+            "得到传音符"
+          ]
+        },
+        {
+          "id": 12,
+          "month": 194,
+          "act": 0,
+          "kind": "people",
+          "event": "sister_practice",
+          "title": "今日对练，她终于没有替你挡剑",
+          "body": "程照雪陪你练剑，指出你收剑太慢。她演示怎样在护住身前的人后退一步，你反复练到天黑。",
+          "changes": [
+            "御剑+1"
+          ],
+          "automatic": true,
+          "location": "home",
+          "context": "home"
+        },
+        {
+          "id": 13,
+          "month": 202,
+          "act": 0,
+          "kind": "story",
+          "event": "entry",
+          "title": "拜师之后，先学哪门本事",
+          "body": "闻竹带你看过练剑场、阵法课和药圃。程照雪负责教剑，沈砚在药圃做事。你可以先选一门本事，日后仍会有学习其他技艺的机会。",
+          "location": "home",
+          "context": "home"
+        }
+      ],
+      "life": {
+        "feedback": true,
+        "family": {
+          "kind": "clan",
+          "bond": 65,
+          "reserve": 80,
+          "nextAt": 24,
+          "visits": 0,
+          "members": [
+            {
+              "id": "parent",
+              "name": "萧氏长辈",
+              "role": "家族长辈，擅长调息与制符",
+              "status": "alive",
+              "location": "home",
+              "deathAt": 660
+            },
+            {
+              "id": "cousin",
+              "name": "萧长平",
+              "role": "族中堂亲，负责送药与传信",
+              "status": "alive",
+              "location": "home",
+              "deathAt": 1020
+            }
+          ]
+        },
+        "lastBreakthrough": null,
+        "arcPause": null,
+        "format": 1,
+        "mode": "home",
+        "modeSince": 192,
+        "activity": "在赤炉山练阵法，过寻常日子",
+        "activitySince": 72,
+        "choiceAt": 202,
+        "dailyAt": 204,
+        "recent": [
+          "first_weather",
+          "older_hands",
+          "root_seen",
+          "sister_practice"
+        ],
+        "memory": {
+          "family_work": {
+            "count": 1,
+            "last": 12
+          },
+          "birth_world": {
+            "count": 1,
+            "last": 32
+          },
+          "first_friend": {
+            "count": 1,
+            "last": 54
+          },
+          "small_world": {
+            "count": 1,
+            "last": 73
+          },
+          "first_weather": {
+            "count": 1,
+            "last": 94
+          },
+          "older_hands": {
+            "count": 1,
+            "last": 143
+          },
+          "root_seen": {
+            "count": 1,
+            "last": 161
+          },
+          "sister_practice": {
+            "count": 1,
+            "last": 194
+          }
+        },
+        "automaticCount": 10,
+        "queue": null,
+        "arc": null,
+        "expeditions": [],
+        "upheavalAt": 332,
+        "upheavalKind": "war",
+        "foreignAt": null,
+        "letterAt": null,
+        "settlementEnd": null,
+        "crisis": null,
+        "suspended": null,
+        "interruptions": [],
+        "unreadNews": [],
+        "properties": {
+          "family_home": {
+            "id": "family_home",
+            "name": "家中灵田与宅屋",
+            "location": "home",
+            "status": "kept",
+            "acquired": 0,
+            "changed": 0,
+            "value": 28
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,727 @@
+{
+  "product": "gui-shan-preview",
+  "format": 1,
+  "contentRevision": "return-to-the-mountains-01",
+  "revision": 6,
+  "activeId": "legacy-period",
+  "lives": [
+    {
+      "product": "gui-shan-preview",
+      "format": 1,
+      "version": "0.1.0-preview.1",
+      "contentRevision": "return-to-the-mountains-01",
+      "id": "legacy-first",
+      "seed": "旧试玩的第一夜",
+      "revision": 0,
+      "phase": "life",
+      "month": 0,
+      "act": 0,
+      "random": {
+        "birth": {
+          "value": 1294160096,
+          "draws": 2
+        },
+        "life": {
+          "value": 1342572641,
+          "draws": 0
+        },
+        "people": {
+          "value": 1592042954,
+          "draws": 0
+        },
+        "world": {
+          "value": 940842100,
+          "draws": 1
+        },
+        "story": {
+          "value": 1773469298,
+          "draws": 0
+        }
+      },
+      "player": {
+        "name": "云归",
+        "origin": "village",
+        "sex": "F",
+        "realm": 0,
+        "focus": "array",
+        "skills": {
+          "sword": 6,
+          "array": 6,
+          "alchemy": 6
+        },
+        "health": 90,
+        "mind": 65,
+        "insight": 30,
+        "courage": 36,
+        "empathy": 38,
+        "stones": 62,
+        "location": "home",
+        "home": "新弟子客舍",
+        "homeBeforeWar": null,
+        "practice": 0,
+        "root": "三相灵根"
+      },
+      "inventory": [
+        "herb_kit"
+      ],
+      "flags": {},
+      "world": {
+        "threat": "beast",
+        "survivors": 18,
+        "masterDeadline": null
+      },
+      "people": {
+        "master": {
+          "id": "master",
+          "name": "闻竹",
+          "role": "师父",
+          "born": -1152,
+          "realm": 3,
+          "sex": "F",
+          "known": true,
+          "alive": true,
+          "status": "alive",
+          "deathMonth": null,
+          "location": "home",
+          "bond": 35
+        },
+        "sister": {
+          "id": "sister",
+          "name": "程照雪",
+          "role": "师姐",
+          "born": -84,
+          "realm": 2,
+          "sex": "F",
+          "known": true,
+          "alive": true,
+          "status": "alive",
+          "deathMonth": null,
+          "location": "home",
+          "bond": 25
+        },
+        "friend": {
+          "id": "friend",
+          "name": "沈砚",
+          "role": "同门",
+          "born": -12,
+          "realm": 1,
+          "sex": "M",
+          "known": true,
+          "alive": true,
+          "status": "alive",
+          "deathMonth": null,
+          "location": "home",
+          "bond": 30
+        },
+        "ally": {
+          "id": "ally",
+          "name": "嵇萝",
+          "role": "异乡友人",
+          "born": -144,
+          "realm": 2,
+          "sex": "F",
+          "known": false,
+          "alive": true,
+          "status": "alive",
+          "deathMonth": null,
+          "location": "refuge",
+          "bond": 0
+        },
+        "rival": {
+          "id": "rival",
+          "name": "宋却",
+          "role": "追猎者",
+          "born": -240,
+          "realm": 2,
+          "sex": "M",
+          "known": false,
+          "alive": true,
+          "status": "alive",
+          "deathMonth": null,
+          "location": "refuge",
+          "bond": 0
+        },
+        "keeper": {
+          "id": "keeper",
+          "name": "白渡",
+          "role": "守门人",
+          "born": -936,
+          "realm": 3,
+          "sex": "M",
+          "known": false,
+          "alive": true,
+          "status": "alive",
+          "deathMonth": null,
+          "location": "refuge",
+          "bond": 0
+        }
+      },
+      "pending": {
+        "event": "entry",
+        "month": 0
+      },
+      "journey": null,
+      "waiting": false,
+      "result": null,
+      "ending": null,
+      "decisions": [],
+      "journal": [
+        {
+          "id": 1,
+          "month": 0,
+          "act": 0,
+          "kind": "story",
+          "event": "entry",
+          "title": "山门只收三个名字",
+          "body": "十六岁那年，你沿着松阶来到渡云宗。山门没有测灵石，只有闻竹摆出的三件东西：一把缺口木剑、一盘散乱阵棋、一篮濒死药苗。她说，来处只是起点，肯为谁停下来，才决定你往哪里走。程照雪抱着手等你，沈砚已经把行李放在你的铺边。"
+        }
+      ]
+    },
+    {
+      "product": "gui-shan-preview",
+      "format": 1,
+      "version": "0.1.0-preview.1",
+      "contentRevision": "return-to-the-mountains-01",
+      "id": "legacy-period",
+      "seed": "回归-有归途",
+      "revision": 127,
+      "phase": "life",
+      "month": 105,
+      "act": 1,
+      "random": {
+        "birth": {
+          "value": 1583058441,
+          "draws": 2
+        },
+        "life": {
+          "value": 516546718,
+          "draws": 0
+        },
+        "people": {
+          "value": 306563285,
+          "draws": 0
+        },
+        "world": {
+          "value": 474035607,
+          "draws": 1
+        },
+        "story": {
+          "value": 314258513,
+          "draws": 0
+        }
+      },
+      "player": {
+        "name": "云归",
+        "origin": "village",
+        "sex": "F",
+        "realm": 1,
+        "focus": "array",
+        "skills": {
+          "sword": 6,
+          "array": 45.65,
+          "alchemy": 6
+        },
+        "health": 100,
+        "mind": 65,
+        "insight": 38,
+        "courage": 30,
+        "empathy": 64,
+        "stones": 62,
+        "location": "refuge",
+        "home": "渡口草棚",
+        "homeBeforeWar": "旧阵台",
+        "practice": 105,
+        "root": "三相灵根"
+      },
+      "inventory": [
+        "return_chart",
+        "home_seed",
+        "old_letter",
+        "phantom_mask"
+      ],
+      "flags": {
+        "trusted": true,
+        "escapeWay": true,
+        "evacuated": true,
+        "escapeReady": true,
+        "sectLost": true,
+        "archive": true,
+        "sheltered": true,
+        "mercy": true,
+        "marked": false
+      },
+      "world": {
+        "threat": "beast",
+        "survivors": 60,
+        "masterDeadline": null
+      },
+      "people": {
+        "master": {
+          "id": "master",
+          "name": "闻竹",
+          "role": "师父",
+          "born": -1152,
+          "realm": 3,
+          "sex": "F",
+          "known": true,
+          "alive": true,
+          "status": "captured",
+          "deathMonth": null,
+          "location": "home",
+          "bond": 55
+        },
+        "sister": {
+          "id": "sister",
+          "name": "程照雪",
+          "role": "师姐",
+          "born": -84,
+          "realm": 2,
+          "sex": "F",
+          "known": true,
+          "alive": true,
+          "status": "alive",
+          "deathMonth": null,
+          "location": "home",
+          "bond": 33
+        },
+        "friend": {
+          "id": "friend",
+          "name": "沈砚",
+          "role": "同门",
+          "born": -12,
+          "realm": 1,
+          "sex": "M",
+          "known": true,
+          "alive": true,
+          "status": "missing",
+          "deathMonth": null,
+          "location": "home",
+          "bond": 50
+        },
+        "ally": {
+          "id": "ally",
+          "name": "嵇萝",
+          "role": "异乡友人",
+          "born": -144,
+          "realm": 2,
+          "sex": "F",
+          "known": false,
+          "alive": true,
+          "status": "alive",
+          "deathMonth": null,
+          "location": "refuge",
+          "bond": 0
+        },
+        "rival": {
+          "id": "rival",
+          "name": "宋却",
+          "role": "追猎者",
+          "born": -240,
+          "realm": 2,
+          "sex": "M",
+          "known": true,
+          "alive": true,
+          "status": "alive",
+          "deathMonth": null,
+          "location": "refuge",
+          "bond": 35
+        },
+        "keeper": {
+          "id": "keeper",
+          "name": "白渡",
+          "role": "守门人",
+          "born": -936,
+          "realm": 3,
+          "sex": "M",
+          "known": true,
+          "alive": true,
+          "status": "alive",
+          "deathMonth": null,
+          "location": "refuge",
+          "bond": 0
+        }
+      },
+      "pending": null,
+      "journey": {
+        "from": 105,
+        "to": 129,
+        "target": "gate",
+        "practice": "array",
+        "resolution": {
+          "event": "foundation",
+          "choice": "medicine",
+          "title": "用药师行囊，稳稳筑基",
+          "body": "两年间有人把饭放在门外。你出关时，原先怕你的孩子已敢向你讨一枚避雨符。筑基成了。",
+          "success": true,
+          "chance": null,
+          "effects": {
+            "realm": 2,
+            "stats": {
+              "health": 18,
+              "mind": 8
+            },
+            "flags": {
+              "stableFoundation": true
+            }
+          }
+        }
+      },
+      "waiting": false,
+      "result": {
+        "event": "foundation",
+        "title": "用药师行囊，稳稳筑基",
+        "body": "你与白渡约好守关的日子，把院里的灯交给他。炼气的灵息尚不稳，你要从这一程学会在每个雨夜里把它安住。",
+        "success": true,
+        "chance": null,
+        "changes": [
+          "用掉药师行囊"
+        ],
+        "months": 24,
+        "next": "gate",
+        "planned": null,
+        "provisional": true,
+        "completed": false
+      },
+      "ending": null,
+      "decisions": [
+        {
+          "event": "entry",
+          "choice": "array",
+          "month": 0,
+          "success": true,
+          "chance": null
+        },
+        {
+          "event": "lesson",
+          "choice": "together",
+          "month": 6,
+          "success": true,
+          "chance": null
+        },
+        {
+          "event": "mission_array",
+          "choice": "keep",
+          "month": 18,
+          "success": true,
+          "chance": null
+        },
+        {
+          "event": "cave",
+          "choice": "ruin",
+          "month": 30,
+          "success": true,
+          "chance": null
+        },
+        {
+          "event": "omen",
+          "choice": "evacuate",
+          "month": 54,
+          "success": true,
+          "chance": null
+        },
+        {
+          "event": "war_council",
+          "choice": "escape",
+          "month": 60,
+          "success": true,
+          "chance": null
+        },
+        {
+          "event": "siege",
+          "choice": "archive",
+          "month": 61,
+          "success": true,
+          "chance": null
+        },
+        {
+          "event": "refugees",
+          "choice": "shelter",
+          "month": 63,
+          "success": true,
+          "chance": null
+        },
+        {
+          "event": "hunter",
+          "choice": "mercy",
+          "month": 87,
+          "success": true,
+          "chance": null
+        },
+        {
+          "event": "foundation",
+          "choice": "medicine",
+          "month": 105,
+          "success": true,
+          "chance": null
+        }
+      ],
+      "journal": [
+        {
+          "id": 1,
+          "month": 0,
+          "act": 0,
+          "kind": "story",
+          "event": "entry",
+          "title": "山门只收三个名字",
+          "body": "十六岁那年，你沿着松阶来到渡云宗。山门没有测灵石，只有闻竹摆出的三件东西：一把缺口木剑、一盘散乱阵棋、一篮濒死药苗。她说，来处只是起点，肯为谁停下来，才决定你往哪里走。程照雪抱着手等你，沈砚已经把行李放在你的铺边。"
+        },
+        {
+          "id": 2,
+          "month": 0,
+          "act": 0,
+          "kind": "choice",
+          "event": "entry",
+          "choice": "array",
+          "title": "把散乱阵棋重新排好",
+          "body": "你把逃生的出口留在阵棋边缘。闻竹笑了，说能让旁人活着离开的阵，也是一门好法术。",
+          "success": true,
+          "changes": [
+            "悟性+8",
+            "阵法+12"
+          ]
+        },
+        {
+          "id": 3,
+          "month": 6,
+          "act": 0,
+          "kind": "story",
+          "event": "lesson",
+          "title": "一个可以认错的夜晚",
+          "body": "沈砚为赶上考核，偷偷借了丹房的火。你们赶到时药圃已烧掉一角，他站在焦土里不敢开口。程照雪准备替他背罚，闻竹却只问，明早谁来告诉那些等药的山民。你的第一次修炼没有卡在境界，而是卡在这一句问话上。"
+        },
+        {
+          "id": 4,
+          "month": 6,
+          "act": 0,
+          "kind": "plan",
+          "event": "lesson",
+          "choice": "together",
+          "title": "陪他认错，一起补回药圃",
+          "body": "你陪沈砚认下过错，先去敲那些等药的山民的门。药圃要一点点补回，信任也要在日子里重新长出来。",
+          "success": true,
+          "changes": [
+            "踏入炼气"
+          ]
+        },
+        {
+          "id": 5,
+          "month": 18,
+          "act": 0,
+          "kind": "choice",
+          "event": "lesson",
+          "choice": "together",
+          "title": "陪他认错，一起补回药圃",
+          "body": "你们一户一户送药，听过责骂，也收到过热饭。后来沈砚遇见危险，总会先找你的眼睛。",
+          "success": true,
+          "changes": [
+            "仁心+8"
+          ]
+        },
+        {
+          "id": 6,
+          "month": 18,
+          "act": 0,
+          "kind": "story",
+          "event": "mission_array",
+          "title": "一张多出来的地形图",
+          "body": "修补山门阵法时，你发现旧地图背面还有一条通往山外的暗渠。阵眼长老说那是废线，不必深究。闻竹却让你自己决定：把这条路堵死，还是留给某个还不知道名字的逃亡者。山外的钟声比去年密了。"
+        },
+        {
+          "id": 7,
+          "month": 18,
+          "act": 0,
+          "kind": "choice",
+          "event": "mission_array",
+          "choice": "keep",
+          "title": "修复暗渠，把阵图留一份",
+          "body": "水重新流过石槽。你在图角写下自己的名字，却没有想到，这会成为全宗最后的出口。",
+          "success": true,
+          "changes": [
+            "花费10灵石",
+            "阵法+8",
+            "得到归山阵图"
+          ]
+        },
+        {
+          "id": 8,
+          "month": 30,
+          "act": 0,
+          "kind": "story",
+          "event": "cave",
+          "title": "你想把哪一盏灯留下",
+          "body": "你终于能领一处洞府。山顶灵气最足，药谷有人共灶，废阵台便宜却常漏雨。闻竹提醒你，住处不只是修炼的地方：有人会到这里敲门，你也会在离开时决定带走什么。今晚沈砚与程照雪都提着灯来替你搬家。"
+        },
+        {
+          "id": 9,
+          "month": 30,
+          "act": 0,
+          "kind": "choice",
+          "event": "cave",
+          "choice": "ruin",
+          "title": "修补废阵台，把出山的路连起来",
+          "body": "你补好屋顶，也连通了暗渠。闻竹第一次在这里喝茶时说，旧的东西不一定只配被丢掉。",
+          "success": true,
+          "changes": [
+            "花费6灵石",
+            "阵法+12"
+          ]
+        },
+        {
+          "id": 10,
+          "month": 54,
+          "act": 1,
+          "kind": "story",
+          "event": "omen",
+          "title": "远处的天少了一块",
+          "body": "一队商旅从北境回来，说一座山连同山上宗门一夜不见了。河水里漂着比船还大的鳞。镜火盟送来借阵的盟约，闻竹没有签。你梦见洞府的灯在巨口里亮着，醒来时警铃已经响了第一声。"
+        },
+        {
+          "id": 11,
+          "month": 54,
+          "act": 1,
+          "kind": "choice",
+          "event": "omen",
+          "choice": "evacuate",
+          "title": "先把山民与杂役送往渡口",
+          "body": "不少人抱怨你惊扰生计。船真正载着他们离山时，抱怨变成了低声报出亲人的名字。",
+          "success": true,
+          "changes": [
+            "花费14灵石",
+            "仁心+6"
+          ]
+        },
+        {
+          "id": 12,
+          "month": 60,
+          "act": 1,
+          "kind": "story",
+          "event": "war_council",
+          "title": "不是每个人都能守住这里",
+          "body": "镜火盟的战舟停在山外，宗门护阵开始渗血。闻竹让你选最后一项准备，自己转身去守主阵。她没有许诺会赢，只说：弟子名单要带走，谁还活着，不能只记在长老心里。沈砚握着空药箱，程照雪等你一句话。"
+        },
+        {
+          "id": 13,
+          "month": 60,
+          "act": 1,
+          "kind": "choice",
+          "event": "war_council",
+          "choice": "escape",
+          "title": "把准备留给撤离，连通暗渠",
+          "body": "你们把逃生的出口标在每间屋门上。钟声从此不只是召集令，也成了出山的信号。",
+          "success": true,
+          "changes": []
+        },
+        {
+          "id": 14,
+          "month": 61,
+          "act": 1,
+          "kind": "story",
+          "event": "siege",
+          "title": "渡云宗的最后一夜",
+          "body": "护山阵被从里面打开。火落进药谷，暗渠只能再过一队人。闻竹被钉在主阵上，沈砚困在藏经阁，阵图和弟子名单散在钟楼。你只能亲自赶往一处。程照雪喊出那句“回家”，随后转身替你守住岔路。"
+        },
+        {
+          "id": 15,
+          "month": 61,
+          "act": 1,
+          "kind": "choice",
+          "event": "siege",
+          "choice": "archive",
+          "title": "带走阵图、典籍与弟子名单",
+          "body": "你把纸卷背进水里，沿着名字一遍遍点人。名单没有烧掉，闻竹与沈砚的名字却暂时只能留在纸上。",
+          "success": true,
+          "changes": [
+            "得到渡云松种",
+            "闻竹被困",
+            "沈砚失踪",
+            "前期准备多保全20人"
+          ]
+        },
+        {
+          "id": 16,
+          "month": 63,
+          "act": 1,
+          "kind": "story",
+          "event": "refugees",
+          "title": "人比行李多",
+          "body": "望渡镇的船不够，米也不够。你点出了54名幸存者，里面有人从未正式拜师。沈砚的位置空着，你仍多摆了一只碗。程照雪带来消息：旧阵台深处的界门还能开，但镜火盟的人很快就会追到这里。"
+        },
+        {
+          "id": 17,
+          "month": 63,
+          "act": 1,
+          "kind": "plan",
+          "event": "refugees",
+          "choice": "shelter",
+          "title": "先安置大家，靠治病与修器攒路费",
+          "body": "你在镇上留下来，给流亡者找住处，也靠治病与修器攒路费。大家开始等下一顿热饭，不必只等下一场逃亡。",
+          "success": true,
+          "changes": []
+        },
+        {
+          "id": 18,
+          "month": 87,
+          "act": 1,
+          "kind": "choice",
+          "event": "refugees",
+          "choice": "shelter",
+          "title": "先安置大家，靠治病与修器攒路费",
+          "body": "你在镇上有了第一批病人和顾客，也有了迟迟未走的理由。程照雪把分散的名字抄进旧信，交到你手里。",
+          "success": true,
+          "changes": [
+            "灵石+24",
+            "仁心+6",
+            "得到旧信"
+          ]
+        },
+        {
+          "id": 19,
+          "month": 87,
+          "act": 1,
+          "kind": "story",
+          "event": "hunter",
+          "title": "追你的人也有一封家书",
+          "body": "雨夜，镜火盟的宋却堵住你。他的飞剑断了一半，怀里却藏着交不起供奉的家书。他说只要带走你的镜印，家人才有活路。程照雪正在照顾另一批伤员，这一次没有人替你出剑。"
+        },
+        {
+          "id": 20,
+          "month": 87,
+          "act": 1,
+          "kind": "choice",
+          "event": "hunter",
+          "choice": "mercy",
+          "title": "用一份归途换他的家人平安",
+          "body": "宋却把镜印压进泥里，告诉你守门人的名字。临走他没有道谢，只说有一天会把这条命还到该还的地方。",
+          "success": true,
+          "changes": [
+            "花费10灵石",
+            "得到掩息面具"
+          ]
+        },
+        {
+          "id": 21,
+          "month": 105,
+          "act": 1,
+          "kind": "story",
+          "event": "foundation",
+          "title": "筑基不是在按钮前等来的",
+          "body": "你在望渡镇修器、治伤、练剑，走过了足以筑基的年月。白渡找来时，只带了三种安排：借药铺静养，替镇民修阵后借阵筑基，或直面雷雨破关。程照雪准备远行照看散落同门，你们要在界门前暂时分开。"
+        },
+        {
+          "id": 22,
+          "month": 105,
+          "act": 1,
+          "kind": "plan",
+          "event": "foundation",
+          "choice": "medicine",
+          "title": "用药师行囊，稳稳筑基",
+          "body": "你与白渡约好守关的日子，把院里的灯交给他。炼气的灵息尚不稳，你要从这一程学会在每个雨夜里把它安住。",
+          "success": true,
+          "changes": [
+            "用掉药师行囊"
+          ]
+        }
+      ]
+    }
+  ]
+}

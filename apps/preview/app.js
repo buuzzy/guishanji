@@ -1,3 +1,6 @@
+import {mundanePeople,mundane,activeMundane} from '../../packages/adventure/mundane-life.js';
+import {autoChoice} from '../../packages/adventure/auto-choice.js';
+import {storyPeople,rootLabel,rootDescription,canCultivate,active10} from '../../packages/adventure/story-rules10.js';
 import { createRun, choose, acknowledge, advance, advanceToChoice, age, date, duration, options, currentNode, nodeText, review, aid, cloneRun, ORIGINS, seekTraining, setActivity, travelTo, leaveExpedition } from '../../packages/adventure/engine.js';
 import { AdventureStore, ADVENTURE_KEY, MAX_ARCHIVE_BYTES } from '../../packages/adventure/store.js';
 import { ITEMS, REGIONS, REALMS, SKILLS } from '../../content/adventure.js';
@@ -17,7 +20,7 @@ import {longAction,prose} from '../../packages/adventure/progression.js';
 const app = document.querySelector('#app'), topbar = document.querySelector('#topbar'), sheet = document.querySelector('#sheet'), noticeEl = document.querySelector('#notice');
 const escape = input => String(input ?? '').replace(/[&<>"']/gu, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[character]));
 const statusNames = { alive: '在世', dead: '已逝', captured: '被困', missing: '失踪' };
-const ui = { screen: 'welcome', modal: null, playing: false, speed: 1, timelineAll: false, theme: 'light', writes: Promise.resolve(), saved: true, blocked: false, startedAt: null, readUntil: 0, readPauses: true, readingHistory: false, birth: null, draft: null, birthTicket: 0 };
+const ui = { screen: 'welcome', modal: null, playing: false, speed: 1, timelineAll: false, theme: 'light', writes: Promise.resolve(), saved: true, blocked: false, startedAt: null, readUntil: 0, readPauses: true, readingHistory: false, birth: null, draft: null, birthTicket: 0, autoStopped: false, autoAt: 0, autoKey: null };
 let state = null, storage, store, noticeTimer;
 try { storage = window.localStorage; store = new AdventureStore(storage); state = store.load(); }
 catch (error) { ui.blocked = true; storage ??= { getItem: () => { throw new Error('storage unavailable'); }, setItem: () => { throw new Error('storage unavailable'); } }; store ??= new AdventureStore(storage); announce(error.message); }
@@ -94,7 +97,7 @@ async function renderBirth() {
  ui.birth={seed,facts,draft:{}};ui.screen='certificate';
  document.querySelector('#roller-name').textContent=facts.name;document.querySelector('#roller-meta').textContent=facts.place.name+' · '+facts.address+' · '+facts.household.name;drawMap(document.getElementById('birth-map'),{birth:facts,player:{location:'home'}},ui.theme);
  await new Promise(r=>setTimeout(r,1100));if(ticket!==ui.birthTicket||ui.screen!=='certificate')return;
- state=createRun({seed,id:'life-'+crypto.randomUUID().replaceAll('-','')});ui.startedAt=performance.now();ui.playing=true;ui.readUntil=0;renderLife();await save();
+ state=createRun({seed,...(new URLSearchParams(location.search).get('rules')==='10'?{rulesVersion:10}:{}),id:'life-'+crypto.randomUUID().replaceAll('-','')});ui.startedAt=performance.now();ui.playing=true;ui.readUntil=0;renderLife();await save();
 }
 function statBar() {
   const p = state.player;
@@ -102,17 +105,16 @@ function statBar() {
 }
 function expeditionTask(id){return ({valley:'此行采药坡灵草、查看古坛；外门有宗门接应。',cavern:'此行寻找失联前队、查看旧炼器炉；洞外有补给点。',outer:'此行沿定位绳寻找失联修士；另一端有守门人接应。'})[id];}
 function passageMarkup(){
- const j=state.journey,c=state.life.cultivation;
- if(state.pending)return '<section class="panel"><div class="panel-h"><span>有一件事需要回应</span><button class="ghost sm" data-action="respond">作出选择 →</button></div></section>';
- const event=j?.resolution?.event,retreat=event?.startsWith('breakthrough_')||Boolean(longAction(state)),labour=retreat&&j.choice==='service'&&c?.rulesVersion===6;
- return '<section class="panel current-life"><span id="life-activity-status">'+(ui.playing?'日子正在过去':'人生已暂停')+'</span><p>'+escape(labour&&state.month-j.from<12?'先守库与修器一年，以劳作换取闭关材料':activityLabel(state))+'</p>'+(retreat?'<div class="journey-meter"><div id="plan-progress" style="width:'+((state.month-j.from)/(j.to-j.from)*100)+'%"></div></div><div class="journey-meta"><span id="plan-elapsed">已过 '+duration(state.month-j.from)+'</span><span>'+(labour?'原定劳作与闭关 ':'此程原定 ')+duration(j.to-j.from)+'</span></div>':'')+(c?.exam?'<p class="hint">本届考核：山历 '+date(state,c.exam.deadline).year+' 年 '+date(state,c.exam.deadline).month+' 月截止报名与准备</p>':'')+'</section>';
+ const c=state.life.cultivation;
+ return c?.exam?'<p class="hint exam-deadline">本届考核截止：山历 '+date(state,c.exam.deadline).year+' 年 '+date(state,c.exam.deadline).month+' 月</p>':'';
 }
 function personRows() {
   const unconfirmed = new Set(state.life.unreadNews.flatMap(news => news.people || []));
   const c=state.life.cultivation;
   const family=state.life.family.members.map(p=>`<div class="person-row ${c?.knownDeaths.includes(p.id)?'dead':''}"><div class="person-initial">${escape(p.name[0])}</div><div class="person-text"><strong>${escape(p.name)}</strong><span>${escape(p.role)}</span><small>${c?.knownDeaths.includes(p.id)?'已确认离世':state.month<192?'在故乡身边':'故乡近况以已送达消息为准'}</small></div></div>`).join('')+(c?.descendants||[]).filter(p=>p.known).map(p=>`<div class="person-row"><div class="person-initial">${escape(p.name[0])}</div><div class="person-text"><strong>${escape(p.name)}</strong><span>${escape(p.relation)}</span><small>最近一次家中消息提及</small></div></div>`).join('');
   const oldFriends=(c?.network?.contacts||[]).map(p=>'<div class="person-row"><div class="person-initial">'+escape(p.name[0])+'</div><div class="person-text"><strong>'+escape(p.name)+'</strong><span>'+escape(p.role)+' · '+escape(p.description)+'</span><small>'+escape(p.status)+'</small></div></div>').join('');
-  return family+oldFriends+Object.values(state.people).filter(p => p.known).map(p => {
+  const storyCast=[...storyPeople(state),...mundanePeople(state)].map(p=>'<div class="person-row"><div class="person-initial">'+escape(p.name[0])+'</div><div class="person-text"><strong>'+escape(p.name)+'</strong><span>'+escape(p.role)+'</span><small>'+escape(p.description)+' · '+escape(p.status)+'</small></div></div>').join('');
+  return family+oldFriends+storyCast+Object.values(state.people).filter(p => p.known).map(p => {
     const unknown = unconfirmed.has(p.id), when = date(state, p.deathMonth ?? state.month);
     const years = (state.birth.startAge ?? 16) + Math.floor(((p.deathMonth ?? state.month) - p.born) / 12);
     return `<div class="person-row ${unknown ? 'unconfirmed' : p.status}"><div class="person-initial">${p.name.slice(0, 1)}</div><div class="person-text"><strong>${p.name}</strong><span>${p.role}</span><small>${escape(prose(PEOPLE_BACKGROUNDS[p.id],state))}</small><small>${unknown ? '远方近况尚待消息确认' : statusNames[p.status] + ' · ' + regionInfo(state, p.location).name}${!unknown && p.status === 'dead' ? ` · 山历${when.year}年离世` : !unknown ? ` · ${years}岁` : ''}</small></div></div>`;
@@ -125,7 +127,7 @@ function familyStatus(p){const c=state.life.cultivation;return c?(c.knownDeaths.
 
 function sidebarMarkup() {
   const p = state.player, allies = aid(state), grown = age(state) >= 16;
-  return `<section class="panel"><span class="lbl">这一生的你</span><div class="identity-name">${escape(p.name)}</div><p class="identity-caption">${FAMILIES[state.birth.family].name} · ${p.root}</p><div class="stat-line"><span>境界</span><b>${REALMS[p.realm].name}</b></div><p class="sidebar-note realm-benefits">${REALM_ABILITIES[p.realm]}寿元上限 ${REALMS[p.realm].lifespan} 岁。</p><div class="stat-line"><span>灵石</span><b id="stone-count">${Math.round(p.stones)}</b></div>${state.flags.debt ? `<div class="stat-line"><span>未还路费</span><b>${state.flags.debt}</b></div>` : ''}<div class="stat-line"><span>仁心</span><b>${Math.round(p.empathy)}</b></div><div class="stat-line"><span>世界</span><b>${WORLD_ERAS[state.birth.era].name}</b></div><p class="sidebar-note">${grown ? '每年净结余 +' + income(state) + ' 灵石，先还路费欠账。当前灵脉的修行倍率 ' + practiceRate(state) + '×。' : '幼年先经历成长与启蒙；十六岁后才开始修行与日常结余。'}</p></section><section class="panel"><h3 class="panel-h"><span>修行本事</span><span class="lbl">${SKILLS[p.focus]}为重</span></h3>${Object.entries(p.skills).map(([key, v]) => `<div class="skill-row ${key === p.focus ? 'active' : ''}"><strong>${SKILLS[key]}</strong><div class="meter"><div style="width:${v}%"></div></div><span class="mono">${Math.round(v)}</span></div>`).join('')}<p class="sidebar-note">平日练习会自动积累；大境界突破与危险经历仍由你决定。</p></section><section class="panel"><h3 class="panel-h"><span>随身行囊</span><span class="lbl">${state.inventory.length}件</span></h3><div class="inventory">${state.inventory.length ? state.inventory.map(id => `<span class="chip" data-item="${id}">${ITEMS[id].name}</span>`).join('') : '<span class="hint">行囊暂空，故事仍可继续。</span>'}</div>${allies.length ? `<p class="sidebar-note">已建立的援手与承诺</p><div class="inventory">${allies.map(promise => `<span class="chip positive">${promise}</span>`).join('')}</div>` : ''}</section><section class="panel"><h3 class="panel-h">家产与住处</h3>${Object.values(state.life.properties).map(p => `<div class="property-row ${p.status}"><strong>${escape(p.name)}</strong><small>${p.continent?GEOGRAPHY.find(g=>g.id===p.continent).name:regionInfo(state,p.location).name} · ${({ kept: '保有', damaged: '损坏', lost: '已失去' })[p.status]}</small></div>`).join('')}</section><section class="panel"><h3 class="panel-h">收到的历练消息</h3>${groundsMarkup()}</section><section class="panel people-panel"><h3 class="panel-h"><span>人物与牵挂</span><button class="sheet-close" data-action="people">全部 →</button></h3><div class="people-list">${personRows() || '<p class="hint">还没有遇见山门与异乡的人。</p>'}</div></section>`;
+  return `<section class="panel"><span class="lbl">这一生的你</span><div class="identity-name">${escape(p.name)}</div><p class="identity-caption">${FAMILIES[state.birth.family].name} · ${rootLabel(state)}</p><div class="stat-line"><span>境界</span><b>${REALMS[p.realm].name}</b></div><p class="sidebar-note realm-benefits">${REALM_ABILITIES[p.realm]}寿元上限 ${REALMS[p.realm].lifespan} 岁。</p><div class="stat-line"><span>灵石</span><b id="stone-count">${Math.round(p.stones)}</b></div>${state.flags.debt ? `<div class="stat-line"><span>未还路费</span><b>${state.flags.debt}</b></div>` : ''}<div class="stat-line"><span>仁心</span><b>${Math.round(p.empathy)}</b></div><div class="stat-line"><span>世界</span><b>${WORLD_ERAS[state.birth.era].name}</b></div><p class="sidebar-note">${grown ? '每年净结余 +' + income(state) + ' 灵石，先还路费欠账。当前灵脉的修行倍率 ' + practiceRate(state) + '×。' : '幼年先经历成长与启蒙；十六岁后才开始修行与日常结余。'}</p></section><section class="panel"><h3 class="panel-h"><span>修行本事</span><span class="lbl">${SKILLS[p.focus]}为重</span></h3>${Object.entries(p.skills).map(([key, v]) => `<div class="skill-row ${key === p.focus ? 'active' : ''}"><strong>${SKILLS[key]}</strong><div class="meter"><div style="width:${v}%"></div></div><span class="mono">${Math.round(v)}</span></div>`).join('')}<p class="sidebar-note">平日练习会自动积累；大境界突破与危险经历仍由你决定。</p></section><section class="panel"><h3 class="panel-h"><span>随身行囊</span><span class="lbl">${state.inventory.length}件</span></h3><div class="inventory">${state.inventory.length ? state.inventory.map(id => `<span class="chip" data-item="${id}">${ITEMS[id].name}</span>`).join('') : '<span class="hint">行囊暂空，故事仍可继续。</span>'}</div>${allies.length ? `<p class="sidebar-note">已建立的援手与承诺</p><div class="inventory">${allies.map(promise => `<span class="chip positive">${promise}</span>`).join('')}</div>` : ''}</section><section class="panel"><h3 class="panel-h">家产与住处</h3>${Object.values(state.life.properties).map(p => `<div class="property-row ${p.status}"><strong>${escape(p.name)}</strong><small>${p.continent?GEOGRAPHY.find(g=>g.id===p.continent).name:regionInfo(state,p.location).name} · ${({ kept: '保有', damaged: '损坏', lost: '已失去' })[p.status]}</small></div>`).join('')}</section><section class="panel"><h3 class="panel-h">收到的历练消息</h3>${groundsMarkup()}</section><section class="panel people-panel"><h3 class="panel-h"><span>人物与牵挂</span><button class="sheet-close" data-action="people">全部 →</button></h3><div class="people-list">${personRows() || '<p class="hint">还没有遇见山门与异乡的人。</p>'}</div></section>`;
 }
 function timelineMarkup(all = ui.timelineAll) {
   const records = (all ? state.journal : state.journal.slice(-6)).slice().reverse();
@@ -171,7 +173,7 @@ function updateLifeClock() {
   if(state.life.cultivation&& !sheet.open && document.querySelector('.practice-panel')){
    // Monthly state changes are visible even between new journal entries.
    const c=state.life.cultivation,p=state.player;
-   for(const el of document.querySelectorAll('[data-value]')){const k=el.dataset.value;el.textContent=k==='stones'?Math.floor(p.stones):k==='progress'?(p.realm<4?Math.round(Math.min(100,c.progress/[80,140,220,320][p.realm]*100))+'%':'已臻元婴'):(p.skills[k]??p[k]).toFixed(1);}
+   for(const el of document.querySelectorAll('[data-value]')){const k=el.dataset.value;el.textContent=k==='money'?mundane(state).money:k==='mundaneDebt'?mundane(state).debt:k==='stones'?Math.floor(p.stones):k==='progress'?(p.realm<4?Math.round(Math.min(100,c.progress/[80,140,220,320][p.realm]*100))+'%':'已臻元婴'):(p.skills[k]??p[k]).toFixed(1);}
    const pct=p.realm<4?Math.min(100,c.progress/[80,140,220,320][p.realm]*100):100;const meter=document.querySelector('[data-progress-meter]');if(meter)meter.style.width=pct+'%';
    for(const el of document.querySelectorAll('.visible-meter')){const v=el.parentElement.querySelector('[data-value]');if(v)el.firstElementChild.style.width=(p.skills[v.dataset.value]??p[v.dataset.value])+'%';}
    const radar=document.querySelector('.ability-radar');if(radar&&radar.dataset.values!==['insight','courage','empathy','health','mind'].map(k=>p[k]).join(',')){radar.outerHTML=abilityRadar(p);document.querySelector('.ability-radar').dataset.values=['insight','courage','empathy','health','mind'].map(k=>p[k]).join(',');}
@@ -180,7 +182,7 @@ function updateLifeClock() {
 }
 
 function showSheet(kind, heading, body, headerRight = '<button class="sheet-close" data-action="close">关闭</button>') {
-  ui.modal = kind;
+  ui.modal = kind;ui.autoAt=0;ui.autoKey=null;
   sheet.dataset.kind=kind;
   sheet.innerHTML = `<div class="dec"><div class="hd"><span>${heading}</span>${headerRight}</div><div class="bd">${body}</div></div>`;
   if (!sheet.open) sheet.showModal();
@@ -190,7 +192,7 @@ function closeSheet() { if (sheet.open) sheet.close(); ui.modal = null; }
 function showDecision() {
   const node = currentNode(state); if (!node) return;
   const d = date(state), offered = options(state);
-  showSheet('decision', `${d.age}岁 · 这一刻由你决定`, `<div class="fact">${regionInfo(state).name} · ${REALMS[state.player.realm].name} · ${Math.round(state.player.stones)} 灵石</div><h2 id="decision-title">${node.title}</h2><p>${escape(nodeText(node, state))}</p><div class="ch" id="decision-options">${offered.map((o, i) => `<button type="button" data-action="choose" data-choice="${o.id}" ${o.enabled ? '' : 'disabled'} class="${o.lethal ? 'lethal' : ''}"><span class="k">${String(i + 1).padStart(2, '0')}</span><span class="choice-label">${escape(o.label)}</span><span class="choice-hint">${escape(o.hint)}</span><span class="choice-meta">${o.enabled ? `${o.lethal ? '可能危及性命 · ' : ''}${o.cost.stones ? `花费 ${o.cost.stones} 灵石` : ''}${o.cost.debt ? ` · 路费欠账 ${o.cost.debt} 灵石` : ''}${o.cost.items?.length ? ` · 使用${o.cost.items.map(id => ITEMS[id].name).join('、')}` : ''}` : `暂时无法这样做：${escape(o.reasons.join('；'))}`}</span></button>`).join('')}</div><div class="sheet-note">未回应时，年月暂停。选好之后，日子继续往前走。</div>`, '<button class="sheet-close" data-action="later">稍后回应</button>');
+  showSheet('decision', `${d.age}岁 · 这一刻由你决定`, `<div class="fact">${regionInfo(state).name} · ${REALMS[state.player.realm].name} · ${Math.round(state.player.stones)} 灵石${activeMundane(state)&&mundane(state).started?" · "+mundane(state).money+"文钱":""}</div><h2 id="decision-title">${node.title}</h2><p>${escape(nodeText(node, state))}</p><div class="ch" id="decision-options">${offered.map((o, i) => `<button type="button" data-action="choose" data-choice="${o.id}" ${o.enabled ? '' : 'disabled'} class="${o.lethal ? 'lethal' : ''}"><span class="k">${String(i + 1).padStart(2, '0')}</span><span class="choice-label">${escape(o.label)}</span><span class="choice-hint">${escape(o.hint)}</span><span class="choice-meta">${o.enabled ? `${o.lethal ? '可能危及性命 · ' : ''}${o.cost.stones ? `花费 ${o.cost.stones} 灵石` : ''}${o.cost.debt ? ` · 路费欠账 ${o.cost.debt} 灵石` : ''}${o.cost.items?.length ? ` · 使用${o.cost.items.map(id => ITEMS[id].name).join('、')}` : ''}` : `暂时无法这样做：${escape(o.reasons.join('；'))}`}</span></button>`).join('')}</div><div id="auto-countdown" class="sheet-note" aria-live="polite"></div>`, '<button class="sheet-close" data-action="later">稍后回应</button>');
 }
 function showResult() {
   if (!state.result || state.phase === 'ended') return;
@@ -208,11 +210,11 @@ function showWorld(){
 }
 function showFocus(){
  if(!state.life.cultivation){showSheet('focus','旧人生的修行安排','<p>旧人生保留原有的已选安排。新的日常重心在新人生中使用。</p>');return;}
- showSheet('focus','重心','<h2>接下来的日子，以什么为重？</h2><p>重心决定平日如何度过。实际本事与身体变化见主页面“修行本事”；赶路、探险和禁闭期间不能自由安排。</p><div class="ch">'+activityOptions(state).map(a=>'<button data-action="activity" data-activity="'+a.id+'" '+(a.enabled?'':'disabled')+'><strong>'+a.name+'</strong><span>'+a.description+'</span><small>影响：'+activityMeaning(a)+'</small>'+(a.reason?'<small>'+a.reason+'</small>':'')+'</button>').join('')+'</div>');
+ showSheet('focus','重心','<h2>接下来的日子，以什么为重？</h2><p>重心决定平日如何度过。实际本事与身体变化见主页面“修行本事”；赶路、探险和禁闭期间不能自由安排。</p><div class="ch">'+activityOptions(state).map(a=>'<button data-action="activity" data-activity="'+a.id+'" '+(a.enabled?'':'disabled')+'><strong>'+a.name+'</strong><span>'+a.description+'</span><small>影响：'+activityMeaning(a,state)+'</small>'+(a.reason?'<small>'+a.reason+'</small>':'')+'</button>').join('')+'</div>');
 }
 function lifeDetails(){
  const c=state.life.cultivation;
- const system=c?'<section class="panel"><h3>'+PATHS[c.path].name+' · '+c.rank+'</h3><p>'+(c.rootKnown?ROOTS[state.player.root].description:'灵根尚未正式测定。')+'</p><p>'+REALMS[state.player.realm].name+' · '+REALM_ABILITIES[state.player.realm]+'</p><p>灵石 '+Math.round(state.player.stones)+' · 每年净结余 '+income(state)+'</p>'+(state.month<c.punishmentUntil?'<p>处分尚余 '+duration(c.punishmentUntil-state.month)+'</p>':'')+'</section><section class="panel"><h3>授业与管理</h3>'+c.officers.filter(p=>c.path==='orthodox').map(p=>'<p><strong>'+p.name+' · '+p.role+'</strong><br>'+p.description+'</p>').join('')+'</section>':'';
+ const system=c?'<section class="panel"><h3>'+PATHS[c.path].name+' · '+c.rank+'</h3><p>'+rootDescription(state)+'</p><p>'+REALMS[state.player.realm].name+' · '+REALM_ABILITIES[state.player.realm]+'</p><p>灵石 '+Math.round(state.player.stones)+' · 每年净结余 '+income(state)+'</p>'+(state.month<c.punishmentUntil?'<p>处分尚余 '+duration(c.punishmentUntil-state.month)+'</p>':'')+'</section><section class="panel"><h3>授业与管理</h3>'+c.officers.filter(p=>c.path==='orthodox'&&(!active10(state)||c.story10.contacts.some(person=>person.id==='officer:'+p.id))).map(p=>'<p><strong>'+p.name+' · '+p.role+'</strong><br>'+p.description+'</p>').join('')+'</section>':'';
  showSheet('details',c?'授业与记录':'家人与生活',c?system:sidebarMarkup());
 }
 function showHistory() {
@@ -222,7 +224,7 @@ function showHistory() {
 }
 function showMenu() {
   ui.playing = false; updateBar();
-  showSheet('menu', '暂歇片刻', `<h2>故事可以等你</h2><p>${ui.blocked ? '当前浏览器无法完成自动存档，请导出本页进度。' : '选择与年月会自动保存。关闭页面后可从首页继续。'}</p><div class="utility-row"><button class="ghost" data-action="export">导出这一生</button><button class="ghost" data-action="history">往期人生</button><button class="ghost" data-action="people">人物近况</button><button class="ghost" data-action="world">世界地图</button><button class="ghost" data-action="details">授业与记录</button><button class="ghost" data-action="focus">重心</button>${state.life.cultivation?.activeChain&&!state.pending?'<button class="ghost" data-action="withdraw">离开当前探险</button>':''}<button class="ghost" data-action="next">下一个 »</button><button class="ghost" data-action="read-mode">${ui.readPauses ? '取消结果阅读稍歇' : '开启结果阅读稍歇'}</button><button class="ghost" data-action="theme">${ui.theme === 'light' ? '切换夜读' : '切换日读'}</button><button class="ghost" data-action="home">回到首页</button>${ui.blocked ? '<button class="ghost" data-action="reload-save">重新读取档案</button><button class="ghost" data-action="raw">导出原档</button><button class="ghost" data-action="recover">读取备份</button>' : ''}</div>`);
+  showSheet('menu', '暂歇片刻', `<h2>故事可以等你</h2><p>${ui.blocked ? '当前浏览器无法完成自动存档，请导出本页进度。' : '选择与年月会自动保存。关闭页面后可从首页继续。'}</p><div class="utility-row"><button class="ghost" data-action="export">导出这一生</button><button class="ghost" data-action="history">往期人生</button><button class="ghost" data-action="people">人物近况</button><button class="ghost" data-action="world">世界地图</button><button class="ghost" data-action="details">授业与记录</button><button class="ghost" data-action="focus">重心</button>${state.life.cultivation?.activeChain&&!state.pending?'<button class="ghost" data-action="withdraw">离开当前探险</button>':''}${state.autoPolicy?'<button class="ghost" data-action="auto">自动抉择：'+(state.autoPolicy.enabled?'开':'关')+'</button>':''}<button class="ghost" data-action="next">下一个 »</button><button class="ghost" data-action="read-mode">${ui.readPauses ? '取消结果阅读稍歇' : '开启结果阅读稍歇'}</button><button class="ghost" data-action="theme">${ui.theme === 'light' ? '切换夜读' : '切换日读'}</button><button class="ghost" data-action="home">回到首页</button>${ui.blocked ? '<button class="ghost" data-action="reload-save">重新读取档案</button><button class="ghost" data-action="raw">导出原档</button><button class="ghost" data-action="recover">读取备份</button>' : ''}</div>`);
 }
 function endingConsequences() {
   const r = review(state), master = state.people.master, friend = state.people.friend, arcs = state.life.expeditions;
@@ -253,12 +255,12 @@ async function action(name, button) {
     }
     case 'home': ui.playing = false; await save(); renderWelcome(); break;
     case 'continue': closeSheet(); ui.startedAt ??= performance.now(); ui.playing = true; ui.readUntil = 0; state.phase === 'ended' ? renderEnding() : renderLife(); break;
-    case 'respond': showDecision(); break;
-    case 'later': ui.playing = false; closeSheet(); updateLifeClock(); break;
+    case 'respond': ui.autoStopped=false;ui.autoAt=0;showDecision(); break;
+    case 'later': ui.autoStopped=true;ui.autoAt=0;ui.autoKey=null;ui.playing = false; closeSheet(); updateLifeClock(); break;
     case 'close': closeSheet(); updateBar(); break;
     case 'choose': {
       if (!state.pending || ui.modal !== 'decision') return;
-      const result = choose(state, button.dataset.choice); ui.startedAt ??= performance.now();
+      const result = choose(state, button.dataset.choice);if(button.dataset.automatic==='true'){state.autoPolicy.cursor++;state.revision++;}ui.autoAt=0;ui.autoKey=null;ui.autoStopped=false; ui.startedAt ??= performance.now();
       closeSheet(); ui.playing = true; readingHold(result.body); renderLife({ modal: false, preserveScroll: true }); await save();
       if (!result.success) announce('这次没有照计划发生，后果已留在这一生里。');
       break;
@@ -266,7 +268,7 @@ async function action(name, button) {
     case 'result': showResult(); break;
     case 'acknowledge': closeSheet(); acknowledge(state); ui.playing = true; ui.readUntil = 0; renderLife(); await save(); break;
     case 'play':
-      if (state.pending) { showDecision(); break; }
+      if (state.pending) { ui.autoStopped=false;ui.autoAt=0;showDecision(); break; }
       if (state.waiting) { acknowledge(state); ui.playing = true; }
       else if (ui.readingHistory) { document.querySelector('#life-log').scrollIntoView({block:'start',behavior:'instant'});ui.readingHistory=false;ui.readUntil=0;ui.playing=true; }
       else if (ui.playing) { ui.playing=false; }
@@ -296,7 +298,8 @@ async function action(name, button) {
     case 'timeline-recent': ui.timelineAll = false; renderLife({ modal: false, preserveScroll: true }); break;
     case 'ending-timeline': document.querySelector('#ending-timeline').innerHTML = timelineMarkup(true); document.querySelector('#ending-timeline').scrollIntoView({ behavior: 'smooth' }); break;
     case 'history': await ui.writes; showHistory(); break;
-    case 'menu': await save(); showMenu(); break;
+    case 'menu': ui.autoAt=0;await save(); showMenu(); break;
+    case 'auto': if(state.autoPolicy){state.autoPolicy.enabled=!state.autoPolicy.enabled;state.revision++;ui.autoStopped=false;ui.autoAt=0;await save();showMenu();}break;
     case 'read-mode': ui.readPauses = !ui.readPauses; if (!ui.readPauses) ui.readUntil = 0; showMenu(); break;
     case 'activate': {
       await ui.writes; state = navigator.locks?.request ? await navigator.locks.request(ADVENTURE_KEY + '.write', () => store.activate(button.dataset.id)) : store.activate(button.dataset.id);
@@ -344,8 +347,8 @@ document.querySelector('#import-file').addEventListener('change', async event =>
   } catch (error) { announce(error.message); }
   finally { event.target.value = ''; }
 });
-sheet.addEventListener('cancel', () => { ui.playing = false; ui.modal = null; updateBar(); });
-document.addEventListener('visibilitychange', () => { if (document.hidden) { ui.playing = false; if (state && ui.screen === 'life') { save(); updateBar(); } } });
+sheet.addEventListener('cancel', () => { ui.autoStopped=true;ui.autoAt=0;ui.autoKey=null;ui.playing = false; ui.modal = null; updateBar(); });
+document.addEventListener('visibilitychange', () => { if (document.hidden) { ui.autoStopped=true;ui.autoAt=0;ui.autoKey=null;ui.playing = false; if (state && ui.screen === 'life') { save(); updateBar(); } } });
 window.addEventListener('storage', event => {
   if (event.key === ADVENTURE_KEY && event.newValue !== store.rawSnapshot) { ui.playing = false; ui.blocked = true; updateBar(); announce('另一个页面更新了档案。可先导出本页进度，再读取最新档案。'); }
 });
@@ -360,7 +363,7 @@ window.adventurePreview = Object.freeze({
   snapshot: () => state ? cloneRun(state) : null,
   options: () => state ? options(state) : [],
   birth: () => ui.birth ? cloneRun(ui.birth.facts) : null,
-  status: () => ({ screen: ui.screen, playing: ui.screen === 'life' && ui.playing && !sheet.open && !state?.pending && !state?.waiting && performance.now() >= ui.readUntil && !ui.readingHistory, intendsToPlay: ui.playing, saved: ui.saved, blocked: ui.blocked, reading: performance.now() < ui.readUntil || ui.readingHistory }),
+  status: () => ({ screen: ui.screen, playing: ui.screen === 'life' && ui.playing && !sheet.open && !state?.pending && !state?.waiting && performance.now() >= ui.readUntil && !ui.readingHistory, intendsToPlay: ui.playing, saved: ui.saved, blocked: ui.blocked, reading: performance.now() < ui.readUntil || ui.readingHistory, auto: Boolean(state?.autoPolicy?.enabled), autoStopped:ui.autoStopped }),
 });
 let previousTime = performance.now(), bank = 0, lastPaint = 0, lastSave = 0, lastScenePaint = 0;
 function yearProgress() {
@@ -370,6 +373,13 @@ function yearProgress() {
 }
 function frame(now) {
   const elapsed = Math.min(now - previousTime, 250); previousTime = now;
+  if(ui.screen==='life'&&state?.pending&&state.autoPolicy?.enabled&&!ui.autoStopped&&!ui.blocked&&ui.modal==='decision'&&sheet.open&&!document.hidden&&now>=ui.readUntil){
+   const key=state.id+':'+state.pending.event+':'+state.pending.month;
+   if(ui.autoKey!==key){ui.autoKey=key;ui.autoAt=now;}
+   const hint=document.getElementById('auto-countdown');if(hint)hint.textContent='自动抉择 · '+Math.max(0,(1200-(now-ui.autoAt))/1000).toFixed(1)+' 秒';
+   if(now-ui.autoAt>=1200){const id=autoChoice(state.seed,state.autoPolicy.cursor,options(state).map(o=>({id:o.id,enabled:o.enabled})));ui.autoAt=0;ui.autoKey=null;if(id)action('choose',{dataset:{choice:id,automatic:'true'}}).catch(error=>{ui.playing=false;ui.autoStopped=true;announce(error.message);});}
+  }else{ui.autoAt=0;ui.autoKey=null;const hint=document.getElementById('auto-countdown');if(hint)hint.textContent='';}
+
   if (ui.screen === 'life' && ui.playing && !sheet.open && state?.journey && !state.waiting && !state.pending && now >= ui.readUntil && !ui.readingHistory && !document.hidden) {
     bank += elapsed / 1000 / monthSeconds(state) * ui.speed;
     const months = Math.min(longAction(state)?24:1, Math.floor(bank));

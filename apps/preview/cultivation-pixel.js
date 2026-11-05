@@ -42,9 +42,21 @@ function room(c,P,m,t){
  person(c,P,80,96,m.run?.player.sex,m.age,m.robe,t,m.context==='retreat'?'rest':m.activity,m.path==='beast');lantern(c,P,113,39,t);
 }
 function specialScene(mid,front,P,m,t){
- const scene=m.scene;if(!['siege','camp','settlement','hide','tribulation'].includes(scene))return false;
+ const scene=m.scene;if(!['mine','siege','camp','settlement','hide','tribulation'].includes(scene))return false;
  px(mid,P.soil,0,78,W,30);for(let i=0;i<50;i++)px(mid,i%2?P.soil2:P.grass2,i*31%W,80+i*17%27,2,1);
- if(scene==='siege'){
+ if(scene==='mine'){
+  px(mid,P.ol,0,0,W,78);px(mid,P.stone,0,0,W,62);
+  for(let y=0;y<64;y+=8)for(let x=(y%16?4:0);x<W;x+=16){px(mid,P.ol,x,y,14,1);px(mid,P.wall2,x+2,y+2,5,1);}
+  px(mid,P.ol,62,26,68,59);px(mid,P.soil2,65,72,62,13);
+  for(const x of [60,127]){px(mid,P.ol,x,24,6,62);px(mid,P.trunk,x+1,25,3,60);px(mid,P.thatch2,x+2,27,1,54);}
+  px(mid,P.trunk,60,23,74,5);px(mid,P.thatch2,63,24,68,1);
+  for(let y=76;y<H;y++){px(mid,P.metal,81-(y-76)/2,y,2,1);px(mid,P.metal,110+(y-76)/2,y,2,1);if(y%6===0)px(mid,P.trunk,80-(y-76)/2,y,33+y-76,2);}
+  px(mid,P.ol,120,77,28,14);px(mid,P.trunk,121,78,26,10);for(let i=0;i<6;i++)rock(mid,P,121+i*4,75-i%2*3);px(mid,P.ol,123,90,5,5);px(mid,P.ol,141,90,5,5);
+  lantern(mid,P,57,41,t);lantern(mid,P,135,39,t+2);
+  person(front,P,76,100,m.run?.player.sex,m.age,m.robe,t,'work');person(front,P,104,99,'M',32,P.pt,t+3,'work');
+  px(front,P.metal,113,79,1,18);px(front,P.metal,110,79,8,2);
+  for(let i=0;i<8;i++)px(front,P.smoke,67+i*7,65-(i+t)%6,2,1);
+ }else if(scene==='siege'){
   house(mid,P,16,82,52,false,true);house(mid,P,131,83,42,false,true);
   for(const x of [24,39,145,157]){for(let k=0;k<4;k++){px(front,k%2?P.gold:P.roof,x+k%2,75-k*4-(t+k)%3,4-k%2,5);px(front,P.smoke,x+(t/3+k)%5,52-k*6,5,3);}}
   for(let y=48;y<99;y+=4){const x=92+Math.floor(Math.sin(y*.1+t*.1)*3);px(front,y%8?P.me:P.gold,x,y,1,3);}for(let x=77;x<111;x+=4)px(front,P.me,x,99+Math.floor(Math.sin(x+t*.1)),2,1);

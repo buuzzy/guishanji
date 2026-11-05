@@ -1,0 +1,1937 @@
+{
+  "origin": "Original rules8 engine, captured before rules9 source edits",
+  "state": {
+    "product": "gui-shan-preview",
+    "format": 1,
+    "version": "0.1.0-preview.4",
+    "contentRevision": "many-roads-through-a-life-04",
+    "id": "life-psml9c",
+    "seed": "规则八师承原档",
+    "revision": 274,
+    "phase": "life",
+    "month": 266,
+    "act": 0,
+    "random": {
+      "birth": {
+        "value": 1813569550,
+        "draws": 7
+      },
+      "life": {
+        "value": 449998927,
+        "draws": 0
+      },
+      "people": {
+        "value": 1329030240,
+        "draws": 0
+      },
+      "world": {
+        "value": 334673240,
+        "draws": 1
+      },
+      "story": {
+        "value": 1077892286,
+        "draws": 0
+      },
+      "events": {
+        "value": 1730004925,
+        "draws": 29
+      },
+      "daily": {
+        "value": 1902663149,
+        "draws": 8
+      }
+    },
+    "birth": {
+      "era": "tide",
+      "continent": "sky",
+      "family": "clan",
+      "address": "明霞屿",
+      "startAge": 0,
+      "year": 471,
+      "goal": "free",
+      "upbringing": "ordinary"
+    },
+    "player": {
+      "name": "曲魂",
+      "origin": "clan",
+      "sex": "M",
+      "root": "五行杂灵根",
+      "realm": 0,
+      "focus": "sword",
+      "skills": {
+        "sword": 12,
+        "array": 6.5,
+        "alchemy": 6
+      },
+      "health": 90,
+      "mind": 65,
+      "insight": 37.35,
+      "courage": 36.400000000000034,
+      "empathy": 42,
+      "stones": 0,
+      "location": "home",
+      "home": "外门弟子院",
+      "homeBeforeWar": null,
+      "practice": 266
+    },
+    "inventory": [
+      "ward",
+      "herb_kit",
+      "signal_talisman"
+    ],
+    "flags": {},
+    "world": {
+      "threat": "beast",
+      "survivors": 18,
+      "masterDeadline": null
+    },
+    "people": {
+      "master": {
+        "id": "master",
+        "name": "姜泥",
+        "role": "师父",
+        "born": -1152,
+        "realm": 3,
+        "sex": "F",
+        "known": true,
+        "alive": true,
+        "status": "alive",
+        "deathMonth": null,
+        "location": "home",
+        "bond": 35
+      },
+      "sister": {
+        "id": "sister",
+        "name": "幽姬",
+        "role": "师姐",
+        "born": -84,
+        "realm": 2,
+        "sex": "F",
+        "known": true,
+        "alive": true,
+        "status": "alive",
+        "deathMonth": null,
+        "location": "home",
+        "bond": 25
+      },
+      "friend": {
+        "id": "friend",
+        "name": "萧炎",
+        "role": "同门",
+        "born": -12,
+        "realm": 1,
+        "sex": "M",
+        "known": true,
+        "alive": true,
+        "status": "alive",
+        "deathMonth": null,
+        "location": "home",
+        "bond": 30
+      },
+      "ally": {
+        "id": "ally",
+        "name": "徐渭熊",
+        "role": "异乡友人",
+        "born": -144,
+        "realm": 2,
+        "sex": "F",
+        "known": false,
+        "alive": true,
+        "status": "alive",
+        "deathMonth": null,
+        "location": "refuge",
+        "bond": 0
+      },
+      "rival": {
+        "id": "rival",
+        "name": "卓昊",
+        "role": "追猎者",
+        "born": -240,
+        "realm": 2,
+        "sex": "M",
+        "known": false,
+        "alive": true,
+        "status": "alive",
+        "deathMonth": null,
+        "location": "refuge",
+        "bond": 0
+      },
+      "keeper": {
+        "id": "keeper",
+        "name": "曾书书",
+        "role": "守门人",
+        "born": -936,
+        "realm": 3,
+        "sex": "M",
+        "known": false,
+        "alive": true,
+        "status": "alive",
+        "deathMonth": null,
+        "location": "refuge",
+        "bond": 0
+      },
+      "trialmate": {
+        "id": "trialmate",
+        "name": "温华",
+        "role": "试炼同伴",
+        "born": -24,
+        "realm": 1,
+        "sex": "M",
+        "known": false,
+        "alive": true,
+        "status": "alive",
+        "deathMonth": null,
+        "location": "home",
+        "bond": 0
+      }
+    },
+    "pending": {
+      "event": "selection_1_result",
+      "month": 266
+    },
+    "journey": null,
+    "waiting": false,
+    "result": {
+      "event": "selection_1",
+      "title": "报名剑术比试",
+      "body": "剑堂教习核过弟子牌，让你在报名卷轴上落名。卷面亮起黄光，名签收入试剑台；传音告知两年后应试，期间可在西院练身法。",
+      "success": true,
+      "chance": null,
+      "changes": [],
+      "months": 0,
+      "next": null,
+      "planned": null,
+      "provisional": false,
+      "completed": false
+    },
+    "ending": null,
+    "decisions": [
+      {
+        "event": "child_clan",
+        "choice": "share",
+        "month": 91,
+        "success": true,
+        "chance": null
+      },
+      {
+        "event": "child_friend",
+        "choice": "witness",
+        "month": 128,
+        "success": true,
+        "chance": null
+      },
+      {
+        "event": "child_recruit",
+        "choice": "ask",
+        "month": 182,
+        "success": true,
+        "chance": null
+      },
+      {
+        "event": "reception",
+        "choice": "test",
+        "month": 192,
+        "success": true,
+        "chance": null
+      },
+      {
+        "event": "root_result",
+        "choice": "join",
+        "month": 195,
+        "success": true,
+        "chance": null
+      },
+      {
+        "event": "first_method",
+        "choice": "sword",
+        "month": 197,
+        "success": true,
+        "chance": null
+      },
+      {
+        "event": "network_method",
+        "choice": "clear",
+        "month": 203,
+        "success": true,
+        "chance": null
+      },
+      {
+        "event": "selection_1",
+        "choice": "sword",
+        "month": 242,
+        "success": true,
+        "chance": null
+      }
+    ],
+    "journal": [
+      {
+        "id": 1,
+        "month": 0,
+        "act": 0,
+        "kind": "birth",
+        "title": "曲魂出生了",
+        "body": "山历471年，你出生在浮屿界的明霞屿，来自修仙世家。家人安排生计，邻里偶尔传来宗门的消息。",
+        "automatic": true,
+        "context": "childhood",
+        "location": "home"
+      },
+      {
+        "id": 2,
+        "month": 12,
+        "act": 0,
+        "kind": "life",
+        "title": "学着喊出家人的名字",
+        "body": "曲仙芝把你抱到院里，指着门边的人教你叫名字。你先认出每天给你端饭的人，堂亲从屋里拿来一只拨浪鼓。",
+        "automatic": true,
+        "location": "home",
+        "context": "home"
+      },
+      {
+        "id": 3,
+        "month": 30,
+        "act": 0,
+        "kind": "life",
+        "title": "跟着大人走过集市",
+        "body": "曲仙芝带你去集市，货摊和牲口挤在路旁。你走累了，被抱到背篓边；回家时仍记得药铺门前那只会响的铜铃。",
+        "automatic": true,
+        "location": "home",
+        "context": "home"
+      },
+      {
+        "id": 4,
+        "month": 54,
+        "act": 0,
+        "kind": "life",
+        "title": "第一次帮家中照看东西",
+        "body": "大人修屋时，把几件小工具放到你面前。你照着交代一件件递过去，认不清的先举起来问；家人留下一块平整木片，让你学着写自己的名字。",
+        "automatic": true,
+        "location": "home",
+        "context": "home"
+      },
+      {
+        "id": 5,
+        "month": 90,
+        "act": 0,
+        "kind": "life",
+        "title": "族里的名额",
+        "body": "两房长辈为今年入山的名额争到深夜。你从门缝看见自己的名字被圈住，又被划掉；第二天家中照常吃饭，没人向孩子解释昨夜的争吵。",
+        "automatic": true,
+        "location": "home",
+        "context": "childhood"
+      },
+      {
+        "id": 6,
+        "month": 91,
+        "act": 0,
+        "kind": "story",
+        "event": "child_clan",
+        "title": "族学分下第一批练习护符",
+        "body": "族中长辈检查了几个孩子的调息。护符不够每人一枚，堂兄提出与你共用，管事却说优秀者可以独占。你尚未测出完整灵根，长辈只允许练最基础的呼吸。",
+        "location": "home",
+        "context": "childhood"
+      },
+      {
+        "id": 7,
+        "month": 91,
+        "act": 0,
+        "kind": "choice",
+        "event": "child_clan",
+        "choice": "share",
+        "title": "与堂兄轮流使用",
+        "body": "你们在院中轮流调息，堂兄替你守住不被打断的半个时辰。族学先生在册上记下共同练习的名字。",
+        "success": true,
+        "changes": [
+          "仁心+3"
+        ]
+      },
+      {
+        "id": 8,
+        "month": 114,
+        "act": 0,
+        "kind": "life",
+        "title": "不肯借人的护符",
+        "body": "堂亲想拿家传护符去与邻家比试。长辈当场收回护符，让你们站在祖堂门外听完旧年族战的伤亡。你第一次知道，那道纹路不是供人炫耀的玩具。",
+        "automatic": true,
+        "location": "home",
+        "context": "childhood"
+      },
+      {
+        "id": 9,
+        "month": 128,
+        "act": 0,
+        "kind": "story",
+        "event": "child_friend",
+        "title": "渡口少年被追上了",
+        "body": "与你一起捡柴的药尘跑进渡口，后面两个大孩子说他偷了干粮。你看过粮袋，知道那是他替病母领的赊粮。船工只看见双方争执，没有看见领粮。",
+        "location": "home",
+        "context": "childhood"
+      },
+      {
+        "id": 10,
+        "month": 128,
+        "act": 0,
+        "kind": "choice",
+        "event": "child_friend",
+        "choice": "witness",
+        "title": "带他们去粮铺核实",
+        "body": "粮铺掌柜翻出赊账纸，船工拦住追赶者。药尘把病母的住处告诉你，说以后有难可以来找他。",
+        "success": true,
+        "changes": [
+          "仁心+3"
+        ]
+      },
+      {
+        "id": 11,
+        "month": 162,
+        "act": 0,
+        "kind": "life",
+        "title": "祠堂外的启蒙课",
+        "body": "族中长辈在祠堂外教孩子调息，先让你感受一杯水何时变冷。你急着模仿指诀，差点掀翻杯子；长辈按住你的手，说家传法门也得从坐稳开始。",
+        "automatic": true,
+        "location": "home",
+        "context": "childhood"
+      },
+      {
+        "id": 12,
+        "month": 182,
+        "act": 0,
+        "kind": "story",
+        "event": "child_recruit",
+        "title": "接引弟子在镇口停了三天",
+        "body": "萧战随商队来到镇口，公布下一次山门招募。报名要家人同意，再去山门测灵根；他不会在镇口承诺收徒。你可以先问准备办法，也可以继续眼前的学徒生活。",
+        "location": "home",
+        "context": "childhood"
+      },
+      {
+        "id": 13,
+        "month": 182,
+        "act": 0,
+        "kind": "choice",
+        "event": "child_recruit",
+        "choice": "ask",
+        "title": "问清测灵与上山需要什么",
+        "body": "萧战给你招募日期，告诉你带干粮、身份证明和一身能走山路的衣服。他记下了这个问得仔细的孩子。",
+        "success": true,
+        "changes": [
+          "悟性+2"
+        ]
+      },
+      {
+        "id": 14,
+        "month": 192,
+        "act": 0,
+        "kind": "story",
+        "event": "reception",
+        "title": "山门外的队伍",
+        "body": "萧战带新来的少年走过镇口山阶，万执事在测灵石旁核对家乡证明。萧战认出你是镇口问过招募的孩子，先替你检查证明，但没有承诺收徒。",
+        "location": "home",
+        "context": "home"
+      },
+      {
+        "id": 15,
+        "month": 192,
+        "act": 0,
+        "kind": "choice",
+        "event": "reception",
+        "choice": "test",
+        "title": "排队接受测灵根",
+        "body": "萧战让你把手放到测灵石上。",
+        "success": true,
+        "changes": []
+      },
+      {
+        "id": 16,
+        "month": 195,
+        "act": 0,
+        "kind": "story",
+        "event": "root_result",
+        "title": "测灵石上的记录",
+        "body": "万执事记下：五行杂灵根。五行混杂，宗门可能只收为杂役，其他师承仍有机会。 长老培养的名额有限，执事也在招收照料药田的杂役。",
+        "location": "home",
+        "context": "home"
+      },
+      {
+        "id": 17,
+        "month": 195,
+        "act": 0,
+        "kind": "choice",
+        "event": "root_result",
+        "choice": "join",
+        "title": "接受宗门的安排",
+        "body": "万执事核过测灵记录，发给你杂役弟子牌，指出住处和第一份差事。灵根优异者被列入长老观察名单，还须实际授业才能成为亲传。",
+        "success": true,
+        "changes": []
+      },
+      {
+        "id": 18,
+        "month": 195,
+        "act": 0,
+        "kind": "life",
+        "title": "进入宗门修士的生活",
+        "body": "你现在住在外门弟子院。",
+        "automatic": true,
+        "location": "home",
+        "context": "home"
+      },
+      {
+        "id": 19,
+        "month": 197,
+        "act": 0,
+        "kind": "story",
+        "event": "first_method",
+        "title": "第一次授业",
+        "body": "姜泥检查了你的基础练习。你已经可以选择一门常练的本事，日后也能通过重心调整。",
+        "location": "home",
+        "context": "home"
+      },
+      {
+        "id": 20,
+        "month": 197,
+        "act": 0,
+        "kind": "choice",
+        "event": "first_method",
+        "choice": "sword",
+        "title": "先学剑术",
+        "body": "教习先让你握木剑，练站姿和收势，不准对同门催动剑气。你每天到院中练基本身法，心法须另向授业者学。",
+        "success": true,
+        "changes": []
+      },
+      {
+        "id": 21,
+        "month": 203,
+        "act": 0,
+        "kind": "story",
+        "event": "network_method",
+        "title": "授业者先问你怎样运气",
+        "body": "姜泥检查你绕行经脉的办法。剑术与丹术要用灵力，但先得有主修心法。授业者拿出两册完整基础口诀和一页离火残卷，说明残页不能当全本修炼。 你的灵根是五行杂灵根。",
+        "location": "home",
+        "context": "home"
+      },
+      {
+        "id": 22,
+        "month": 203,
+        "act": 0,
+        "kind": "choice",
+        "event": "network_method",
+        "choice": "clear",
+        "title": "学习完整的清息诀",
+        "body": "授业者替你纠正第一轮周天，收起演示用的护符。你照完整口诀练习，不再凭零散见闻乱运气。",
+        "success": true,
+        "changes": []
+      },
+      {
+        "id": 23,
+        "month": 203,
+        "act": 0,
+        "kind": "institution",
+        "title": "主修心法已定",
+        "body": "清息诀：宗门的完整入门心法，先疏通经脉，再稳住周天；进境不快，少有急火。 灵根适配影响积累效率，熟悉周天仍需日常练习。",
+        "automatic": true,
+        "context": "home",
+        "location": "home"
+      },
+      {
+        "id": 24,
+        "month": 204,
+        "act": 0,
+        "kind": "life",
+        "title": "悬桥市的风铃不响了",
+        "body": "看桥人发现风铃被冻住，没法判断横风。他先停下过桥的人，在绳上挂几条布代替铃；你看清下一阵风的方向，才知道平静的桥面也未必安全。",
+        "automatic": true,
+        "location": "home",
+        "context": "home"
+      },
+      {
+        "id": 25,
+        "month": 242,
+        "act": 0,
+        "kind": "story",
+        "event": "selection_1",
+        "title": "这一届的考核开始报名",
+        "body": "万执事公布剑术、丹术与阵法三堂的考核。长老会核对日常练习和现场表现。 本届报名在两年后截止，不参加也能继续自己的修行。",
+        "location": "home",
+        "context": "home"
+      },
+      {
+        "id": 26,
+        "month": 242,
+        "act": 0,
+        "kind": "choice",
+        "event": "selection_1",
+        "choice": "sword",
+        "title": "报名剑术比试",
+        "body": "剑堂教习核过弟子牌，让你在报名卷轴上落名。卷面亮起黄光，名签收入试剑台；传音告知两年后应试，期间可在西院练身法。",
+        "success": true,
+        "changes": []
+      },
+      {
+        "id": 27,
+        "month": 246,
+        "act": 0,
+        "kind": "life",
+        "title": "灵泉边排队的木牌",
+        "body": "灵泉开门前已有十余人排队。亲传弟子从侧门先进去，杂役只能等末班。你看着木牌在万执事手里一枚枚翻过，第一次把身份与修行资源的差别看得这么清楚。",
+        "automatic": true,
+        "location": "home",
+        "context": "home"
+      },
+      {
+        "id": 28,
+        "month": 266,
+        "act": 0,
+        "kind": "story",
+        "event": "selection_1_result",
+        "title": "来到考核现场",
+        "body": "剑台上的风吹得旗绳作响。剑堂教习让你以木剑挡住三道来招，温华的名签排在旁边。你练过的收势与身法，今天都要在别人面前使出来。",
+        "location": "home",
+        "context": "home"
+      }
+    ],
+    "life": {
+      "feedback": false,
+      "family": {
+        "kind": "clan",
+        "bond": 65,
+        "reserve": 12,
+        "nextAt": 24,
+        "visits": 0,
+        "members": [
+          {
+            "id": "parent",
+            "name": "曲仙芝",
+            "role": "家族长辈，擅长调息与制符",
+            "status": "alive",
+            "location": "home",
+            "deathAt": 1500
+          },
+          {
+            "id": "cousin",
+            "name": "曲宫仆射",
+            "role": "族中堂亲，负责送药与传信",
+            "status": "alive",
+            "location": "home",
+            "deathAt": 2160
+          }
+        ],
+        "money": 0
+      },
+      "lastBreakthrough": null,
+      "arcPause": null,
+      "format": 1,
+      "mode": "childhood",
+      "modeSince": 0,
+      "activity": "练剑 · 外门弟子院",
+      "activitySince": 242,
+      "choiceAt": 272,
+      "dailyAt": 12,
+      "recent": [],
+      "memory": {},
+      "automaticCount": 7,
+      "queue": null,
+      "arc": null,
+      "expeditions": [],
+      "upheavalAt": 375,
+      "upheavalKind": "decree",
+      "foreignAt": null,
+      "letterAt": null,
+      "settlementEnd": null,
+      "crisis": null,
+      "suspended": null,
+      "interruptions": [],
+      "unreadNews": [],
+      "properties": {
+        "family_home": {
+          "id": "family_home",
+          "name": "家中灵田与宅屋",
+          "location": "home",
+          "status": "kept",
+          "acquired": 0,
+          "changed": 0,
+          "value": 28
+        },
+        "dwelling": {
+          "id": "dwelling",
+          "name": "外门弟子院",
+          "location": "home",
+          "continent": "sky",
+          "status": "kept",
+          "acquired": 195,
+          "changed": 195,
+          "value": 12
+        }
+      },
+      "cultivation": {
+        "format": 1,
+        "rulesVersion": 8,
+        "opportunities": {},
+        "dailyMemory": {
+          "clanChild": [
+            2,
+            1,
+            0
+          ],
+          "region-sky": [
+            0
+          ],
+          "orthodox": [
+            1
+          ]
+        },
+        "economy": {
+          "received": 6,
+          "spent": 10,
+          "last": {
+            "month": 264,
+            "gross": 1,
+            "upkeep": 1,
+            "shortfall": 1,
+            "net": 0,
+            "balance": 0,
+            "repaid": 0
+          }
+        },
+        "evidence": [],
+        "activityMonths": {
+          "study": 6,
+          "sword": 69
+        },
+        "activityGains": {
+          "study": {
+            "progress": 3.3,
+            "array": 0.5,
+            "insight": 0.3500000000000014
+          },
+          "sword": {
+            "progress": 46.82699999999994,
+            "sword": 6,
+            "courage": 2.400000000000034
+          }
+        },
+        "inquiry": null,
+        "detained": false,
+        "path": "orthodox",
+        "rank": "杂役",
+        "activity": "sword",
+        "rootKnown": true,
+        "progress": 44.127,
+        "entered": 195,
+        "admissionDone": true,
+        "choiceAt": 272,
+        "dailyAt": 290,
+        "punishmentUntil": 0,
+        "reputation": 0,
+        "wanted": 0,
+        "exam": {
+          "tier": 1,
+          "skill": "sword",
+          "deadline": 266,
+          "started": 242,
+          "preparation": 24
+        },
+        "attempts": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "retryAt": 0,
+        "context": null,
+        "activeChain": null,
+        "chains": {},
+        "queue": [],
+        "continent": "sky",
+        "closed": [],
+        "visited": [
+          "sky"
+        ],
+        "spot": "外门弟子院",
+        "history": [
+          {
+            "path": "orthodox",
+            "month": 195
+          }
+        ],
+        "familyPolicy": "keep",
+        "mail": null,
+        "mailHistory": [],
+        "familyLoss": "",
+        "knownDeaths": [],
+        "familyAt": 336,
+        "nextFamilyAt": 480,
+        "aidPending": [],
+        "familyVisited": false,
+        "descendants": [],
+        "deathNews": [],
+        "routes": [],
+        "worldAt": 1068,
+        "worldKind": 0,
+        "worldDone": false,
+        "finalOffered": false,
+        "readiness": 0,
+        "turnAt": 0,
+        "officers": [
+          {
+            "id": "reception",
+            "name": "萧战",
+            "role": "接引弟子",
+            "realm": 1,
+            "description": "在山门接待来访者、核实身份和传递消息。",
+            "status": "alive",
+            "location": "home"
+          },
+          {
+            "id": "steward",
+            "name": "万剑一",
+            "role": "外门执事",
+            "realm": 2,
+            "description": "分配杂务、月例和住处，登记任务完成情况。",
+            "status": "alive",
+            "location": "home"
+          },
+          {
+            "id": "discipline",
+            "name": "陈芝豹",
+            "role": "执法长老",
+            "realm": 3,
+            "description": "调查事故，听取证词，决定赔偿与处分。",
+            "status": "alive",
+            "location": "home"
+          },
+          {
+            "id": "head",
+            "name": "连宋",
+            "role": "宗主",
+            "realm": 4,
+            "description": "决定宗门战事、外交和重要资源的分配。",
+            "status": "alive",
+            "location": "home"
+          }
+        ],
+        "network": {
+          "format": 1,
+          "childhood": [
+            {
+              "event": "child_clan",
+              "due": 91,
+              "done": true
+            },
+            {
+              "event": "child_friend",
+              "due": 128,
+              "done": true
+            },
+            {
+              "event": "child_recruit",
+              "due": 182,
+              "done": true
+            }
+          ],
+          "marks": {
+            "clan_ally": {
+              "month": 91,
+              "event": "child_clan"
+            },
+            "friend_witness": {
+              "month": 128,
+              "event": "child_friend"
+            },
+            "recruit_contact": {
+              "month": 182,
+              "event": "child_recruit"
+            }
+          },
+          "echoChecked": false,
+          "method": {
+            "id": "clear",
+            "acquired": 203,
+            "months": 63,
+            "source": "network_method"
+          },
+          "methods": [
+            {
+              "id": "clear",
+              "acquired": 203,
+              "months": 0,
+              "source": "network_method"
+            }
+          ],
+          "methodDue": 203,
+          "bottleneck": false,
+          "seekVolume": false,
+          "volumeChecked": false,
+          "offer": null,
+          "arc": null,
+          "next": null,
+          "offerCount": 0,
+          "offerChecked": [],
+          "quietUntil": 0,
+          "role": null,
+          "progressMonths": 63,
+          "summary": {
+            "month": 0,
+            "activity": "study",
+            "months": 0,
+            "skill": 6
+          },
+          "clanChecked": false,
+          "seniorChecked": false,
+          "contacts": [
+            {
+              "name": "药尘",
+              "role": "童年一起捡柴的人",
+              "description": "母亲患病时替她领赊粮，后来是否走上修行尚不清楚。",
+              "status": "旧相识，去向尚未确认"
+            }
+          ],
+          "notebooks": []
+        },
+        "progression": {
+          "format": 1,
+          "names": {
+            "闻竹": "姜泥",
+            "程照雪": "幽姬",
+            "沈砚": "萧炎",
+            "嵇萝": "徐渭熊",
+            "宋却": "卓昊",
+            "白渡": "曾书书",
+            "陶宁": "温华",
+            "陆行舟": "萧战",
+            "许执事": "万执事",
+            "严衡": "陈芝豹",
+            "沈宗主": "连宗主",
+            "余衡": "扑哧君",
+            "阿宁": "药尘",
+            "白苓": "小医仙",
+            "杜魁": "道玄",
+            "顾长老": "徐长老",
+            "余掌柜": "洛掌柜",
+            "顾渊": "东华",
+            "陆岑": "廉晁",
+            "秦岳": "林琅天",
+            "顾临川": "陈长生",
+            "沈长老": "田长老",
+            "林长老": "白长老",
+            "渡云宗": "回霜宗",
+            "曲氏长辈": "曲仙芝",
+            "曲长平": "曲宫仆射"
+          },
+          "early": [
+            {
+              "due": 12,
+              "done": true
+            },
+            {
+              "due": 30,
+              "done": true
+            },
+            {
+              "due": 54,
+              "done": true
+            }
+          ],
+          "sect": {
+            "name": "回霜宗",
+            "size": "大宗门",
+            "highest": 4,
+            "npcHighest": 4,
+            "phase": "intact",
+            "role": null,
+            "treasury": 0,
+            "care": 0,
+            "development": 0,
+            "councils": 0
+          },
+          "materialDeclined": [],
+          "materialAbandoned": [],
+          "notices": [],
+          "parcel": null,
+          "parcels": [],
+          "yearsCount": 0,
+          "yearsDue": 0,
+          "tribulationReady": false,
+          "tribulationDeclined": false,
+          "lastRealm": 0,
+          "scene": null
+        }
+      }
+    }
+  },
+  "continued": {
+    "product": "gui-shan-preview",
+    "format": 1,
+    "version": "0.1.0-preview.4",
+    "contentRevision": "many-roads-through-a-life-04",
+    "id": "life-psml9c",
+    "seed": "规则八师承原档",
+    "revision": 287,
+    "phase": "life",
+    "month": 278,
+    "act": 0,
+    "random": {
+      "birth": {
+        "value": 1813569550,
+        "draws": 7
+      },
+      "life": {
+        "value": 449998927,
+        "draws": 0
+      },
+      "people": {
+        "value": 1329030240,
+        "draws": 0
+      },
+      "world": {
+        "value": 334673240,
+        "draws": 1
+      },
+      "story": {
+        "value": 1704737990,
+        "draws": 1
+      },
+      "events": {
+        "value": 1724529365,
+        "draws": 31
+      },
+      "daily": {
+        "value": 1902663149,
+        "draws": 8
+      }
+    },
+    "birth": {
+      "era": "tide",
+      "continent": "sky",
+      "family": "clan",
+      "address": "明霞屿",
+      "startAge": 0,
+      "year": 471,
+      "goal": "free",
+      "upbringing": "ordinary"
+    },
+    "player": {
+      "name": "曲魂",
+      "origin": "clan",
+      "sex": "M",
+      "root": "五行杂灵根",
+      "realm": 0,
+      "focus": "sword",
+      "skills": {
+        "sword": 13,
+        "array": 6.5,
+        "alchemy": 6
+      },
+      "health": 90,
+      "mind": 60,
+      "insight": 37.35,
+      "courage": 36.80000000000004,
+      "empathy": 42,
+      "stones": 0,
+      "location": "home",
+      "home": "外门弟子院",
+      "homeBeforeWar": null,
+      "practice": 278
+    },
+    "inventory": [
+      "ward",
+      "herb_kit",
+      "signal_talisman"
+    ],
+    "flags": {},
+    "world": {
+      "threat": "beast",
+      "survivors": 18,
+      "masterDeadline": null
+    },
+    "people": {
+      "master": {
+        "id": "master",
+        "name": "姜泥",
+        "role": "师父",
+        "born": -1152,
+        "realm": 3,
+        "sex": "F",
+        "known": true,
+        "alive": true,
+        "status": "alive",
+        "deathMonth": null,
+        "location": "home",
+        "bond": 35
+      },
+      "sister": {
+        "id": "sister",
+        "name": "幽姬",
+        "role": "师姐",
+        "born": -84,
+        "realm": 2,
+        "sex": "F",
+        "known": true,
+        "alive": true,
+        "status": "alive",
+        "deathMonth": null,
+        "location": "home",
+        "bond": 25
+      },
+      "friend": {
+        "id": "friend",
+        "name": "萧炎",
+        "role": "同门",
+        "born": -12,
+        "realm": 1,
+        "sex": "M",
+        "known": true,
+        "alive": true,
+        "status": "alive",
+        "deathMonth": null,
+        "location": "home",
+        "bond": 30
+      },
+      "ally": {
+        "id": "ally",
+        "name": "徐渭熊",
+        "role": "异乡友人",
+        "born": -144,
+        "realm": 2,
+        "sex": "F",
+        "known": false,
+        "alive": true,
+        "status": "alive",
+        "deathMonth": null,
+        "location": "refuge",
+        "bond": 0
+      },
+      "rival": {
+        "id": "rival",
+        "name": "卓昊",
+        "role": "追猎者",
+        "born": -240,
+        "realm": 2,
+        "sex": "M",
+        "known": false,
+        "alive": true,
+        "status": "alive",
+        "deathMonth": null,
+        "location": "refuge",
+        "bond": 0
+      },
+      "keeper": {
+        "id": "keeper",
+        "name": "曾书书",
+        "role": "守门人",
+        "born": -936,
+        "realm": 3,
+        "sex": "M",
+        "known": false,
+        "alive": true,
+        "status": "alive",
+        "deathMonth": null,
+        "location": "refuge",
+        "bond": 0
+      },
+      "trialmate": {
+        "id": "trialmate",
+        "name": "温华",
+        "role": "试炼同伴",
+        "born": -24,
+        "realm": 1,
+        "sex": "M",
+        "known": false,
+        "alive": true,
+        "status": "alive",
+        "deathMonth": null,
+        "location": "home",
+        "bond": 0
+      }
+    },
+    "pending": null,
+    "journey": {
+      "from": 266,
+      "to": 12000,
+      "target": null,
+      "practice": "sword",
+      "open": true
+    },
+    "waiting": false,
+    "result": {
+      "event": "selection_1_result",
+      "title": "按规则完成考核",
+      "body": "你在场上失了手，没能完成教习要求的展示。教习指出错误，让你带回去重练。",
+      "success": false,
+      "chance": 65,
+      "changes": [
+        "心境-5"
+      ],
+      "months": 0,
+      "next": null,
+      "planned": null,
+      "provisional": false,
+      "completed": false
+    },
+    "ending": null,
+    "decisions": [
+      {
+        "event": "child_clan",
+        "choice": "share",
+        "month": 91,
+        "success": true,
+        "chance": null
+      },
+      {
+        "event": "child_friend",
+        "choice": "witness",
+        "month": 128,
+        "success": true,
+        "chance": null
+      },
+      {
+        "event": "child_recruit",
+        "choice": "ask",
+        "month": 182,
+        "success": true,
+        "chance": null
+      },
+      {
+        "event": "reception",
+        "choice": "test",
+        "month": 192,
+        "success": true,
+        "chance": null
+      },
+      {
+        "event": "root_result",
+        "choice": "join",
+        "month": 195,
+        "success": true,
+        "chance": null
+      },
+      {
+        "event": "first_method",
+        "choice": "sword",
+        "month": 197,
+        "success": true,
+        "chance": null
+      },
+      {
+        "event": "network_method",
+        "choice": "clear",
+        "month": 203,
+        "success": true,
+        "chance": null
+      },
+      {
+        "event": "selection_1",
+        "choice": "sword",
+        "month": 242,
+        "success": true,
+        "chance": null
+      },
+      {
+        "event": "selection_1_result",
+        "choice": "fair",
+        "month": 266,
+        "success": false,
+        "chance": 65
+      }
+    ],
+    "journal": [
+      {
+        "id": 1,
+        "month": 0,
+        "act": 0,
+        "kind": "birth",
+        "title": "曲魂出生了",
+        "body": "山历471年，你出生在浮屿界的明霞屿，来自修仙世家。家人安排生计，邻里偶尔传来宗门的消息。",
+        "automatic": true,
+        "context": "childhood",
+        "location": "home"
+      },
+      {
+        "id": 2,
+        "month": 12,
+        "act": 0,
+        "kind": "life",
+        "title": "学着喊出家人的名字",
+        "body": "曲仙芝把你抱到院里，指着门边的人教你叫名字。你先认出每天给你端饭的人，堂亲从屋里拿来一只拨浪鼓。",
+        "automatic": true,
+        "location": "home",
+        "context": "home"
+      },
+      {
+        "id": 3,
+        "month": 30,
+        "act": 0,
+        "kind": "life",
+        "title": "跟着大人走过集市",
+        "body": "曲仙芝带你去集市，货摊和牲口挤在路旁。你走累了，被抱到背篓边；回家时仍记得药铺门前那只会响的铜铃。",
+        "automatic": true,
+        "location": "home",
+        "context": "home"
+      },
+      {
+        "id": 4,
+        "month": 54,
+        "act": 0,
+        "kind": "life",
+        "title": "第一次帮家中照看东西",
+        "body": "大人修屋时，把几件小工具放到你面前。你照着交代一件件递过去，认不清的先举起来问；家人留下一块平整木片，让你学着写自己的名字。",
+        "automatic": true,
+        "location": "home",
+        "context": "home"
+      },
+      {
+        "id": 5,
+        "month": 90,
+        "act": 0,
+        "kind": "life",
+        "title": "族里的名额",
+        "body": "两房长辈为今年入山的名额争到深夜。你从门缝看见自己的名字被圈住，又被划掉；第二天家中照常吃饭，没人向孩子解释昨夜的争吵。",
+        "automatic": true,
+        "location": "home",
+        "context": "childhood"
+      },
+      {
+        "id": 6,
+        "month": 91,
+        "act": 0,
+        "kind": "story",
+        "event": "child_clan",
+        "title": "族学分下第一批练习护符",
+        "body": "族中长辈检查了几个孩子的调息。护符不够每人一枚，堂兄提出与你共用，管事却说优秀者可以独占。你尚未测出完整灵根，长辈只允许练最基础的呼吸。",
+        "location": "home",
+        "context": "childhood"
+      },
+      {
+        "id": 7,
+        "month": 91,
+        "act": 0,
+        "kind": "choice",
+        "event": "child_clan",
+        "choice": "share",
+        "title": "与堂兄轮流使用",
+        "body": "你们在院中轮流调息，堂兄替你守住不被打断的半个时辰。族学先生在册上记下共同练习的名字。",
+        "success": true,
+        "changes": [
+          "仁心+3"
+        ]
+      },
+      {
+        "id": 8,
+        "month": 114,
+        "act": 0,
+        "kind": "life",
+        "title": "不肯借人的护符",
+        "body": "堂亲想拿家传护符去与邻家比试。长辈当场收回护符，让你们站在祖堂门外听完旧年族战的伤亡。你第一次知道，那道纹路不是供人炫耀的玩具。",
+        "automatic": true,
+        "location": "home",
+        "context": "childhood"
+      },
+      {
+        "id": 9,
+        "month": 128,
+        "act": 0,
+        "kind": "story",
+        "event": "child_friend",
+        "title": "渡口少年被追上了",
+        "body": "与你一起捡柴的药尘跑进渡口，后面两个大孩子说他偷了干粮。你看过粮袋，知道那是他替病母领的赊粮。船工只看见双方争执，没有看见领粮。",
+        "location": "home",
+        "context": "childhood"
+      },
+      {
+        "id": 10,
+        "month": 128,
+        "act": 0,
+        "kind": "choice",
+        "event": "child_friend",
+        "choice": "witness",
+        "title": "带他们去粮铺核实",
+        "body": "粮铺掌柜翻出赊账纸，船工拦住追赶者。药尘把病母的住处告诉你，说以后有难可以来找他。",
+        "success": true,
+        "changes": [
+          "仁心+3"
+        ]
+      },
+      {
+        "id": 11,
+        "month": 162,
+        "act": 0,
+        "kind": "life",
+        "title": "祠堂外的启蒙课",
+        "body": "族中长辈在祠堂外教孩子调息，先让你感受一杯水何时变冷。你急着模仿指诀，差点掀翻杯子；长辈按住你的手，说家传法门也得从坐稳开始。",
+        "automatic": true,
+        "location": "home",
+        "context": "childhood"
+      },
+      {
+        "id": 12,
+        "month": 182,
+        "act": 0,
+        "kind": "story",
+        "event": "child_recruit",
+        "title": "接引弟子在镇口停了三天",
+        "body": "萧战随商队来到镇口，公布下一次山门招募。报名要家人同意，再去山门测灵根；他不会在镇口承诺收徒。你可以先问准备办法，也可以继续眼前的学徒生活。",
+        "location": "home",
+        "context": "childhood"
+      },
+      {
+        "id": 13,
+        "month": 182,
+        "act": 0,
+        "kind": "choice",
+        "event": "child_recruit",
+        "choice": "ask",
+        "title": "问清测灵与上山需要什么",
+        "body": "萧战给你招募日期，告诉你带干粮、身份证明和一身能走山路的衣服。他记下了这个问得仔细的孩子。",
+        "success": true,
+        "changes": [
+          "悟性+2"
+        ]
+      },
+      {
+        "id": 14,
+        "month": 192,
+        "act": 0,
+        "kind": "story",
+        "event": "reception",
+        "title": "山门外的队伍",
+        "body": "萧战带新来的少年走过镇口山阶，万执事在测灵石旁核对家乡证明。萧战认出你是镇口问过招募的孩子，先替你检查证明，但没有承诺收徒。",
+        "location": "home",
+        "context": "home"
+      },
+      {
+        "id": 15,
+        "month": 192,
+        "act": 0,
+        "kind": "choice",
+        "event": "reception",
+        "choice": "test",
+        "title": "排队接受测灵根",
+        "body": "萧战让你把手放到测灵石上。",
+        "success": true,
+        "changes": []
+      },
+      {
+        "id": 16,
+        "month": 195,
+        "act": 0,
+        "kind": "story",
+        "event": "root_result",
+        "title": "测灵石上的记录",
+        "body": "万执事记下：五行杂灵根。五行混杂，宗门可能只收为杂役，其他师承仍有机会。 长老培养的名额有限，执事也在招收照料药田的杂役。",
+        "location": "home",
+        "context": "home"
+      },
+      {
+        "id": 17,
+        "month": 195,
+        "act": 0,
+        "kind": "choice",
+        "event": "root_result",
+        "choice": "join",
+        "title": "接受宗门的安排",
+        "body": "万执事核过测灵记录，发给你杂役弟子牌，指出住处和第一份差事。灵根优异者被列入长老观察名单，还须实际授业才能成为亲传。",
+        "success": true,
+        "changes": []
+      },
+      {
+        "id": 18,
+        "month": 195,
+        "act": 0,
+        "kind": "life",
+        "title": "进入宗门修士的生活",
+        "body": "你现在住在外门弟子院。",
+        "automatic": true,
+        "location": "home",
+        "context": "home"
+      },
+      {
+        "id": 19,
+        "month": 197,
+        "act": 0,
+        "kind": "story",
+        "event": "first_method",
+        "title": "第一次授业",
+        "body": "姜泥检查了你的基础练习。你已经可以选择一门常练的本事，日后也能通过重心调整。",
+        "location": "home",
+        "context": "home"
+      },
+      {
+        "id": 20,
+        "month": 197,
+        "act": 0,
+        "kind": "choice",
+        "event": "first_method",
+        "choice": "sword",
+        "title": "先学剑术",
+        "body": "教习先让你握木剑，练站姿和收势，不准对同门催动剑气。你每天到院中练基本身法，心法须另向授业者学。",
+        "success": true,
+        "changes": []
+      },
+      {
+        "id": 21,
+        "month": 203,
+        "act": 0,
+        "kind": "story",
+        "event": "network_method",
+        "title": "授业者先问你怎样运气",
+        "body": "姜泥检查你绕行经脉的办法。剑术与丹术要用灵力，但先得有主修心法。授业者拿出两册完整基础口诀和一页离火残卷，说明残页不能当全本修炼。 你的灵根是五行杂灵根。",
+        "location": "home",
+        "context": "home"
+      },
+      {
+        "id": 22,
+        "month": 203,
+        "act": 0,
+        "kind": "choice",
+        "event": "network_method",
+        "choice": "clear",
+        "title": "学习完整的清息诀",
+        "body": "授业者替你纠正第一轮周天，收起演示用的护符。你照完整口诀练习，不再凭零散见闻乱运气。",
+        "success": true,
+        "changes": []
+      },
+      {
+        "id": 23,
+        "month": 203,
+        "act": 0,
+        "kind": "institution",
+        "title": "主修心法已定",
+        "body": "清息诀：宗门的完整入门心法，先疏通经脉，再稳住周天；进境不快，少有急火。 灵根适配影响积累效率，熟悉周天仍需日常练习。",
+        "automatic": true,
+        "context": "home",
+        "location": "home"
+      },
+      {
+        "id": 24,
+        "month": 204,
+        "act": 0,
+        "kind": "life",
+        "title": "悬桥市的风铃不响了",
+        "body": "看桥人发现风铃被冻住，没法判断横风。他先停下过桥的人，在绳上挂几条布代替铃；你看清下一阵风的方向，才知道平静的桥面也未必安全。",
+        "automatic": true,
+        "location": "home",
+        "context": "home"
+      },
+      {
+        "id": 25,
+        "month": 242,
+        "act": 0,
+        "kind": "story",
+        "event": "selection_1",
+        "title": "这一届的考核开始报名",
+        "body": "万执事公布剑术、丹术与阵法三堂的考核。长老会核对日常练习和现场表现。 本届报名在两年后截止，不参加也能继续自己的修行。",
+        "location": "home",
+        "context": "home"
+      },
+      {
+        "id": 26,
+        "month": 242,
+        "act": 0,
+        "kind": "choice",
+        "event": "selection_1",
+        "choice": "sword",
+        "title": "报名剑术比试",
+        "body": "剑堂教习核过弟子牌，让你在报名卷轴上落名。卷面亮起黄光，名签收入试剑台；传音告知两年后应试，期间可在西院练身法。",
+        "success": true,
+        "changes": []
+      },
+      {
+        "id": 27,
+        "month": 246,
+        "act": 0,
+        "kind": "life",
+        "title": "灵泉边排队的木牌",
+        "body": "灵泉开门前已有十余人排队。亲传弟子从侧门先进去，杂役只能等末班。你看着木牌在万执事手里一枚枚翻过，第一次把身份与修行资源的差别看得这么清楚。",
+        "automatic": true,
+        "location": "home",
+        "context": "home"
+      },
+      {
+        "id": 28,
+        "month": 266,
+        "act": 0,
+        "kind": "story",
+        "event": "selection_1_result",
+        "title": "来到考核现场",
+        "body": "剑台上的风吹得旗绳作响。剑堂教习让你以木剑挡住三道来招，温华的名签排在旁边。你练过的收势与身法，今天都要在别人面前使出来。",
+        "location": "home",
+        "context": "home"
+      },
+      {
+        "id": 29,
+        "month": 266,
+        "act": 0,
+        "kind": "institution",
+        "event": "selection_1_result",
+        "choice": "fair",
+        "title": "山阶上散去的人",
+        "body": "教习在你的卷册上圈出失误，叫你把这一页带回去重练。山阶上有人欢呼，也有人低着头。你收起笔记，未能领到这一届的奖励。",
+        "success": false,
+        "changes": [
+          "心境-5"
+        ]
+      }
+    ],
+    "life": {
+      "feedback": false,
+      "family": {
+        "kind": "clan",
+        "bond": 65,
+        "reserve": 12,
+        "nextAt": 24,
+        "visits": 0,
+        "members": [
+          {
+            "id": "parent",
+            "name": "曲仙芝",
+            "role": "家族长辈，擅长调息与制符",
+            "status": "alive",
+            "location": "home",
+            "deathAt": 1500
+          },
+          {
+            "id": "cousin",
+            "name": "曲宫仆射",
+            "role": "族中堂亲，负责送药与传信",
+            "status": "alive",
+            "location": "home",
+            "deathAt": 2160
+          }
+        ],
+        "money": 0
+      },
+      "lastBreakthrough": null,
+      "arcPause": null,
+      "format": 1,
+      "mode": "childhood",
+      "modeSince": 0,
+      "activity": "练剑 · 外门弟子院",
+      "activitySince": 266,
+      "choiceAt": 307,
+      "dailyAt": 12,
+      "recent": [],
+      "memory": {},
+      "automaticCount": 7,
+      "queue": null,
+      "arc": null,
+      "expeditions": [],
+      "upheavalAt": 375,
+      "upheavalKind": "decree",
+      "foreignAt": null,
+      "letterAt": null,
+      "settlementEnd": null,
+      "crisis": null,
+      "suspended": null,
+      "interruptions": [],
+      "unreadNews": [],
+      "properties": {
+        "family_home": {
+          "id": "family_home",
+          "name": "家中灵田与宅屋",
+          "location": "home",
+          "status": "kept",
+          "acquired": 0,
+          "changed": 0,
+          "value": 28
+        },
+        "dwelling": {
+          "id": "dwelling",
+          "name": "外门弟子院",
+          "location": "home",
+          "continent": "sky",
+          "status": "kept",
+          "acquired": 195,
+          "changed": 195,
+          "value": 12
+        }
+      },
+      "cultivation": {
+        "format": 1,
+        "rulesVersion": 8,
+        "opportunities": {},
+        "dailyMemory": {
+          "clanChild": [
+            2,
+            1,
+            0
+          ],
+          "region-sky": [
+            0
+          ],
+          "orthodox": [
+            1
+          ]
+        },
+        "economy": {
+          "received": 7,
+          "spent": 11,
+          "last": {
+            "month": 276,
+            "gross": 1,
+            "upkeep": 1,
+            "shortfall": 1,
+            "net": 0,
+            "balance": 0,
+            "repaid": 0
+          }
+        },
+        "evidence": [],
+        "activityMonths": {
+          "study": 6,
+          "sword": 81
+        },
+        "activityGains": {
+          "study": {
+            "progress": 3.3,
+            "array": 0.5,
+            "insight": 0.3500000000000014
+          },
+          "sword": {
+            "progress": 55.2221999999999,
+            "sword": 7,
+            "courage": 2.80000000000004
+          }
+        },
+        "inquiry": null,
+        "detained": false,
+        "path": "orthodox",
+        "rank": "杂役",
+        "activity": "sword",
+        "rootKnown": true,
+        "progress": 49.52219999999996,
+        "entered": 195,
+        "admissionDone": true,
+        "choiceAt": 307,
+        "dailyAt": 290,
+        "punishmentUntil": 0,
+        "reputation": 0,
+        "wanted": 0,
+        "exam": null,
+        "attempts": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "retryAt": 0,
+        "context": null,
+        "activeChain": null,
+        "chains": {},
+        "queue": [],
+        "continent": "sky",
+        "closed": [],
+        "visited": [
+          "sky"
+        ],
+        "spot": "外门弟子院",
+        "history": [
+          {
+            "path": "orthodox",
+            "month": 195
+          }
+        ],
+        "familyPolicy": "keep",
+        "mail": null,
+        "mailHistory": [],
+        "familyLoss": "",
+        "knownDeaths": [],
+        "familyAt": 336,
+        "nextFamilyAt": 480,
+        "aidPending": [],
+        "familyVisited": false,
+        "descendants": [],
+        "deathNews": [],
+        "routes": [],
+        "worldAt": 1068,
+        "worldKind": 0,
+        "worldDone": false,
+        "finalOffered": false,
+        "readiness": 0,
+        "turnAt": 0,
+        "officers": [
+          {
+            "id": "reception",
+            "name": "萧战",
+            "role": "接引弟子",
+            "realm": 1,
+            "description": "在山门接待来访者、核实身份和传递消息。",
+            "status": "alive",
+            "location": "home"
+          },
+          {
+            "id": "steward",
+            "name": "万剑一",
+            "role": "外门执事",
+            "realm": 2,
+            "description": "分配杂务、月例和住处，登记任务完成情况。",
+            "status": "alive",
+            "location": "home"
+          },
+          {
+            "id": "discipline",
+            "name": "陈芝豹",
+            "role": "执法长老",
+            "realm": 3,
+            "description": "调查事故，听取证词，决定赔偿与处分。",
+            "status": "alive",
+            "location": "home"
+          },
+          {
+            "id": "head",
+            "name": "连宋",
+            "role": "宗主",
+            "realm": 4,
+            "description": "决定宗门战事、外交和重要资源的分配。",
+            "status": "alive",
+            "location": "home"
+          }
+        ],
+        "network": {
+          "format": 1,
+          "childhood": [
+            {
+              "event": "child_clan",
+              "due": 91,
+              "done": true
+            },
+            {
+              "event": "child_friend",
+              "due": 128,
+              "done": true
+            },
+            {
+              "event": "child_recruit",
+              "due": 182,
+              "done": true
+            }
+          ],
+          "marks": {
+            "clan_ally": {
+              "month": 91,
+              "event": "child_clan"
+            },
+            "friend_witness": {
+              "month": 128,
+              "event": "child_friend"
+            },
+            "recruit_contact": {
+              "month": 182,
+              "event": "child_recruit"
+            }
+          },
+          "echoChecked": true,
+          "method": {
+            "id": "clear",
+            "acquired": 203,
+            "months": 75,
+            "source": "network_method"
+          },
+          "methods": [
+            {
+              "id": "clear",
+              "acquired": 203,
+              "months": 0,
+              "source": "network_method"
+            }
+          ],
+          "methodDue": 203,
+          "bottleneck": false,
+          "seekVolume": false,
+          "volumeChecked": false,
+          "offer": null,
+          "arc": null,
+          "next": null,
+          "offerCount": 0,
+          "offerChecked": [],
+          "quietUntil": 0,
+          "role": null,
+          "progressMonths": 75,
+          "summary": {
+            "month": 0,
+            "activity": "study",
+            "months": 0,
+            "skill": 6
+          },
+          "clanChecked": false,
+          "seniorChecked": false,
+          "contacts": [
+            {
+              "name": "药尘",
+              "role": "童年一起捡柴的人",
+              "description": "母亲患病时替她领赊粮，后来是否走上修行尚不清楚。",
+              "status": "旧相识，去向尚未确认"
+            }
+          ],
+          "notebooks": []
+        },
+        "progression": {
+          "format": 1,
+          "names": {
+            "闻竹": "姜泥",
+            "程照雪": "幽姬",
+            "沈砚": "萧炎",
+            "嵇萝": "徐渭熊",
+            "宋却": "卓昊",
+            "白渡": "曾书书",
+            "陶宁": "温华",
+            "陆行舟": "萧战",
+            "许执事": "万执事",
+            "严衡": "陈芝豹",
+            "沈宗主": "连宗主",
+            "余衡": "扑哧君",
+            "阿宁": "药尘",
+            "白苓": "小医仙",
+            "杜魁": "道玄",
+            "顾长老": "徐长老",
+            "余掌柜": "洛掌柜",
+            "顾渊": "东华",
+            "陆岑": "廉晁",
+            "秦岳": "林琅天",
+            "顾临川": "陈长生",
+            "沈长老": "田长老",
+            "林长老": "白长老",
+            "渡云宗": "回霜宗",
+            "曲氏长辈": "曲仙芝",
+            "曲长平": "曲宫仆射"
+          },
+          "early": [
+            {
+              "due": 12,
+              "done": true
+            },
+            {
+              "due": 30,
+              "done": true
+            },
+            {
+              "due": 54,
+              "done": true
+            }
+          ],
+          "sect": {
+            "name": "回霜宗",
+            "size": "大宗门",
+            "highest": 4,
+            "npcHighest": 4,
+            "phase": "intact",
+            "role": null,
+            "treasury": 0,
+            "care": 0,
+            "development": 0,
+            "councils": 0
+          },
+          "materialDeclined": [],
+          "materialAbandoned": [],
+          "notices": [],
+          "parcel": null,
+          "parcels": [],
+          "yearsCount": 0,
+          "yearsDue": 0,
+          "tribulationReady": false,
+          "tribulationDeclined": false,
+          "lastRealm": 0,
+          "scene": null
+        }
+      }
+    }
+  }
+}

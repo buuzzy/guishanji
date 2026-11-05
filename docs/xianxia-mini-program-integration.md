@@ -1,23 +1,25 @@
 # 归山记接入 1in8b 微信小程序手册
 
-更新时间：2026-11-03。本文是实施手册；本次交付仅包含 HTML 试玩源码、验收记录和本文，小程序接入尚未实施、编译或上传。
+更新时间：2026-11-05。本文是实施手册；本次交付仅包含 HTML 试玩源码、验收记录和本文，小程序接入尚未实施、编译或上传。
 
 ## 1. 交付基线与开始方式
 
-接收方在现有 Mac 仓库拉取对应 PR 分支即可，不需要压缩包，也不要求重新 clone。先检查 `git status --short`；有未提交工作时先提交或自行保存，避免覆盖。两个仓库各有用途：
+接收方在另一系统的现有仓库拉取对应 PR 分支即可，不需要压缩包，也不要求重新 clone。先检查 `git status --short`；有未提交工作时先提交或自行保存，避免覆盖。两个仓库各有用途：
 
 | 仓库 | 交付分支 | 用途 |
 |---|---|---|
 | `buuzzy/xianxia-life` | `feature/adventure-preview-v01` | HTML 试玩和同源修仙规则、内容、测试 |
 | `buuzzy/1in8b` | `docs/xianxia-mini-program-integration` | 实际小程序仓库中的接入手册；仅文档 |
 
-接入前，1in8b 应以当前 GitHub main `fe68acb58dff38459a8e8a736b802f6109a02f25` 或其后代为基础。该版本已经把小程序引擎升级到 v0.9.8，法律页仍保留 v0.8.51 来源，Web 静态快照为 v0.9.8。证据见 `docs/miniprogram-v0.9.8-upgrade-plan.md`、`vendor/mp-engine-snapshot.json` 和 `web-snapshot.json`。本机较旧 checkout 不能当接入基线。
+接入前先拉取1in8b最新main。此前于2026-11-03读回的基线为`fe68acb58dff38459a8e8a736b802f6109a02f25`，不要把它当成今天的远端HEAD。该版本已经把小程序引擎升级到v0.9.8，法律页仍保留v0.8.51来源，Web静态快照为v0.9.8。证据见`docs/miniprogram-v0.9.8-upgrade-plan.md`、`vendor/mp-engine-snapshot.json`和`web-snapshot.json`。接收方须对照最新代码确认本文提到的页面、加载器与分包布局后再实施。
 
 本次通过 GitHub 精确提交读回了 app、boot、engine-loader、index/life 页面、storage/platform、两个 Canvas 组件和验收脚本。手册中的“现有”指上述代码；“待新增”指实施时才创建的代码，不能把本手册当成已经完成接入。
 
-修仙候选采用 `rulesVersion=8`，封套仍为 preview.4。验收见 [xianxia-life 交付分支的规则8记录](https://github.com/buuzzy/xianxia-life/blob/feature/adventure-preview-v01/docs/adventure-rules8-verification.json)：162 项测试、400 次模拟人生、18 阶段回归通过，包含源码与静态构建浏览器操作。它证明 HTML 候选的现有行为，不证明微信真机、审核、真人留存或最新反馈已经解决。
+上一轮 GitHub 交付候选采用 `rulesVersion=8`，其 [规则8记录](https://github.com/buuzzy/xianxia-life/blob/feature/adventure-preview-v01/docs/adventure-rules8-verification.json) 为162项测试、400次模拟、18阶段回归。当前本地候选已进入 `rulesVersion=11`，封套仍为 preview.4；规则9／10通过记录保留为历史，接入须固定实际源版本和该版本的验收。HTML验收不等于微信真机、审核或真人留存验收。
 
-Mac 先在 xianxia-life 中体验这一交付：
+规则11另需携带`mundane-life.js`、`mundane-stories.js`及冻结的旧10依赖，保存个人铜钱、存粮、欠债、凡俗人物、地方变局和遗物来源。财富与人物仍接在现有组件中，不新增整套页面；旧档不能直接升为新人生。具体字段与否定场景以 [凡人人生设计及实际实现](mundane-life-story-design.md) 和 [规则11台账](adventure-rules11-verification.json) 为准。本次GitHub交付包含当前规则11完整源码及本文；1in8b历史文档分支的旧手册不作为本轮规则11说明，小程序代码仍需在另一系统按本文接入。
+
+另一系统先在 xianxia-life 中拉取并体验这一交付：
 
 ```sh
 git fetch origin
@@ -102,7 +104,11 @@ node scripts/build-xianxia-mp.mjs --source=../xianxia-life
 
 构建做 ESM→CommonJS，并按仓库现有 ES2019 解析与 `es2015-downlevel.mjs` 约束降级。不能通过关闭 es6/enhance 来减少包体；现有项目有模块注册失败的历史证据。?.、?? 可由现有 Babel 工具链处理；`Object.hasOwn`、`structuredClone`、`replaceAll`、Error cause 等**运行 API**不会因语法降级自动可用，应对实际依赖逐个兼容或替换。不能照搬浏览器 crypto.randomUUID；新 ID 使用独立平台适配，不改变已存 seed 或模拟随机流。
 
-不把 `apps/preview/app.js`、DOM、navigator.locks、浏览器 localStorage、Node fs、HTML markup、服务器脚本打进运行 bundle。Canvas 模块单独提取，规则不引用绘图。首轮独立微信新档可以只接受规则8；但若 bundle 保留原引擎的旧规则 imports，就必须完整闭包打包，不能留下缺失模块。以后支持 HTML 旧档导入，需要先实现并验证全部冻结规则及迁移合同；不能同时删旧规则、又宣称能继续原档。
+不把 `apps/preview/app.js`、DOM、navigator.locks、浏览器 localStorage、Node fs、HTML markup、服务器脚本打进运行 bundle。Canvas 模块单独提取，规则不引用绘图。首轮独立微信新档可以只接受最后确定的当前规则；但若 bundle 保留原引擎的旧规则 imports，就必须完整闭包打包，不能留下缺失模块。以后支持 HTML 旧档导入，需要先实现并验证全部冻结规则及迁移合同；不能同时删旧规则、又宣称能继续原档。
+
+规则9新增 `revision9.js`、`revision9-stories.js`、纯函数 `auto-choice.js` 和冻结规则8模块。师承借卷、临时住处、后续事件来源、功法练习及自动抉择计数均属于存档状态，平台适配不能只搬玩家属性。自动抉择必须调用同一 `choose`，只传有效选项ID与可用标记；不能读取概率或奖励，不消耗剧情随机流。计时器属于页面，onHide/onUnload、收起卡片、手动选择及存档冲突均取消；重新打开卡片才恢复。新矿役场景也需加入Canvas场景矩阵。
+
+规则10另增 `packages/adventure/story-rules10.js` 与 `content/story-rules10.js`。`story10` 中的灵根鉴定、实际身体来源、已接触人物、童年消息阶段、凡俗谋生和长事件事实也须完整持久化。页面的资格、人物和选项使用引擎查询，不在WXML重复写一套“有无灵根”判断。旧9有独立事件、执行器、故事网络和内容安装器，不能与当前模块共用会修改事件表的安装过程。原规则9的三个继续执行样本是引擎生成的基线，不能对外称为真实玩家导出。
 
 ## 6. 状态和界面适配
 
@@ -229,7 +235,7 @@ measure脚本会按顺序清编译缓存、关项目、重开和preview，默认
 
 新增玩法属于产品内容变化；此前已完成备案、申诉或审核不能自动覆盖这次新增内容。Mac可先预览、真机测试并提交接入PR，审核及发布按实际后台要求另行完成。本文没有承诺审核结果，也没有执行上传或发布。
 
-## 14. 官方文档与本轮未解决反馈
+## 14. 官方文档与版本进度
 
 以下官方页面在2026-11-03已真实读取，均返回HTTP200：
 
@@ -240,4 +246,6 @@ measure脚本会按顺序清编译缓存、关项目、重开和preview，默认
 - [wx.setStorage](https://developers.weixin.qq.com/miniprogram/dev/api/storage/wx.setStorage.html)：单键1MB、缓存总计10MB、保存与失败回调；开启encrypt会增加存储体积。
 - [Page](https://developers.weixin.qq.com/miniprogram/dev/reference/api/Page.html)：onShow/onHide/onUnload、路由生命周期及高频setData注意事项。
 
-当前反馈待下一轮设计与实现：凡人家庭出生资产来源；重复实时状态条；转师承的旧组织关系与消息来源；自动抉择；按专业和场景设计作弊选项；药库故事分层说明；隐瞒换功法的对价与因果；差灵根的长期困境与逐渐激烈的道路选择。本次源码提交保存当前候选，不把这些列为已修复。
+规则9已实施本轮HTML反馈：出生灵石来源、移除独立实时状态条、借卷辞师与有证据的追查、自动抉择、真实专业作弊工具、药库分层叙事、全卷交换和实际修炼、杂灵根矿役及禁术困境。仍待V0.1确认后开展小程序接入；上文“待新增”的构建、页面、存储适配、微信模拟器和真机验收均未实施。后续提交或接入时，记录实际源提交及其验收，不能把当前本地候选当作远端已同步版本。
+
+规则10在本地HTML另完成修炼资格、凡俗中晚年、三类童年线索后续、已接触人物展示和长事件分支因果；以 [规则10台账](adventure-rules10-verification.json) 记录实际验收。接入时还须迁移这些状态和查询合同，不能只复用界面而恢复旧的无根修炼、瞬间拜访或无调查证据行为。本轮没有发布这版源码到GitHub，Mac接入前须另行固定并同步源提交。

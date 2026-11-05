@@ -75,7 +75,7 @@ export function activityLabel(state) {
   return '在' + regionInfo(state).dwelling + '练' + SKILLS[state.player.focus] + '，过寻常日子';
 }
 export function monthSeconds(state) {
-  if(state.life?.cultivation?.rulesVersion===8)return playbackSeconds(state);
+  if(state.life?.cultivation?.rulesVersion>=8)return playbackSeconds(state);
   if(state.life?.cultivation?.rulesVersion===7){
     const years=age(state),c=state.life.cultivation;
     const seconds=years<6?3:years<16?6:c.activeChain||c.network?.arc?8:state.journey?.resolution?6:years<30?8:state.player.realm<2?6:state.player.realm<3?4:3;

@@ -1,0 +1,30 @@
+import assert from 'node:assert/strict';
+import {readFile,writeFile} from 'node:fs/promises';
+import {createHash} from 'node:crypto';
+import {projectRoot} from './serve.mjs';
+import {join} from 'node:path';
+const read=async p=>JSON.parse(await readFile(join(projectRoot,p),'utf8'));
+const regression=await read('artifacts/regression.json');
+assert.equal(regression.passed,true,'完整回归尚未通过，不能登记交付成功');
+assert.equal(regression.results.length,27);
+const audit=await read('artifacts/mundane-life-audit.json');
+const source=await read('artifacts/mundane-source/report.json');
+const built=await read('artifacts/mundane-static/report.json');
+assert.ok(audit.passed&&source.passed&&built.passed);
+assert.equal(source.lives.length,5);assert.equal(built.lives.length,5);
+const hashes={};
+for(const path of ['packages/adventure/engine.js','packages/adventure/cultivation.js','packages/adventure/mundane-life.js','content/mundane-stories.js','apps/preview/app.js','apps/preview/life-panels.js','packages/adventure/cultivation-v10.js','content/cultivation-stories-v10.js','content/cultivation-revision-v10.js','content/story-network-v10.js','tests/fixtures/adventure-rules10-baseline.json'])hashes[path]=createHash('sha256').update(await readFile(join(projectRoot,path))).digest('hex');
+for(const report of [source,built])for(const [path,hash] of Object.entries(report.hashes))assert.equal(hash,hashes[path],path+'已在浏览器验证后改变');
+const live={url:'http://127.0.0.1:8877/preview/',verified:false,hashes:{}};
+for(const path of ['apps/preview/app.js','packages/adventure/engine.js','packages/adventure/mundane-life.js','content/mundane-stories.js']){
+ const response=await fetch('http://127.0.0.1:8877/'+path,{signal:AbortSignal.timeout(5000)});assert.equal(response.status,200);
+ live.hashes[path]=createHash('sha256').update(Buffer.from(await response.arrayBuffer())).digest('hex');assert.equal(live.hashes[path],hashes[path]);
+}
+const response=await fetch(live.url,{signal:AbortSignal.timeout(5000)});assert.equal(response.status,200);live.verified=true;
+const log=await readFile(join(projectRoot,'artifacts/regression-engine-storage.log'),'utf8');
+const unitLog=await readFile(join(projectRoot,'artifacts/regression-mundane-unit.log'),'utf8');
+const count=log=>Number(log.match(/^# pass (\d+)$/m)?.[1]);
+assert.equal(count(log),205);assert.equal(count(unitLog),27);
+const ledger={recordedAt:new Date().toISOString(),rulesVersion:11,scope:'Local independent HTML preview only; no publication, deployment, production Web or mini-program implementation',status:'PASS',regression,unitTests:{existing:count(log),mundane:count(unitLog),passed:232},naturalAudit:{lives:audit.lives,mortalLives:audit.mortalLives,errors:audit.errors,reached:audit.reached,coveredEventIds:Object.keys(audit.reached).length,totalEventIds:50,maxJournalGapMonths:audit.maxUnexplainedGap,gapInterpretation:'Metric is the raw gap between journal rows, despite the older artifact field name maxUnexplainedGap. Maximum60 occurs after successful late cultivation entry in seed177; it is not a60-month gap on the no-root path.',giftAttemptLives:audit.samples.filter(s=>s.events.includes('m11_gift_2')).map(s=>({seed:s.seed,mode:s.mode,finalRealm:s.realm})),limits:'Varied scripted policies over random births;84 lives entered the mundane system. One natural successful late entry does not estimate player success probability. Event coverage is not every option outcome.'},browser:{source,built,limitations:'Chrome mouse and emulated mobile touch; no WeChat developer tools, physical phone or human retention measurement'},compatibility:{rules10Baseline:'Three engine-generated pre-change continuation contracts, each six choices; not player exports; original bytes preserved',otherVersions:'Existing original-save and historical-rule regression checks remain enabled'},manualReview:{performed:'Read natural life journals and decision text; reviewed screenshot layout and causal transitions, employment timing, tenancy, place-scoped tax, deferred bereavement and item provenance',limits:'Not a representative human usability or retention study'},knownBoundaries:['One relic-based plant-root path implemented; no full body-cultivation system','Local regime and water state are scoped story events, not autonomous empire simulation','Birth and existing cultivation continue prior mechanics; this round focuses mundane lives','No mandatory disaster or successful immortal opportunity per life','The ending/world panel retains prior aggregate world data; it is not a full simulation of every mundane household'],live,sourceSha256:hashes};
+await writeFile(join(projectRoot,'docs/adventure-rules11-verification.json'),JSON.stringify(ledger,null,2)+'\n');
+console.log(JSON.stringify({status:ledger.status,stages:27,tests:232,lives:audit.lives,mortalLives:audit.mortalLives,sourceBrowserLives:5,staticBrowserLives:5,live:live.url},null,2));

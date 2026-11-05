@@ -71,7 +71,7 @@ async function activities(p){
  report.checks.push('native daily focus; real travel payment, elapsed route and continent map');
  let trialSeed;for(let i=0;i<500;i++){const candidate=naturalSeed('orthodox',i),played=playCultivation({seed:candidate,path:'orthodox'});if(played.events.includes('sect_trial_0')){trialSeed=candidate;break;}}assert.ok(trialSeed);s=await birth(p,trialSeed);
  for(let i=0;i<70&&s.phase==='life'&&s.pending?.event!=='sect_trial_0';i++){await next(p,s);if(s.pending?.event==='sect_trial_0')break;await select(p,s,decide(s,{path:'orthodox'}).id);}
- assert.equal(s.pending.event,'sect_trial_0');await select(p,s,'cautious');const owned=[...s.inventory];await menu(p);assert.equal(await p.eval('!!document.querySelector("[data-action=withdraw]")'),true);leaveExpedition(s);await p.click('[data-action=withdraw]');await pause(p);actual=await snap(p);advance(s,actual.month-s.month);assert.deepEqual(actual,s);assert.deepEqual(s.inventory,owned);assert.equal(s.life.cultivation.activeChain,null);
+ assert.equal(s.pending.event,'sect_trial_0');await select(p,s,'care');const owned=[...s.inventory];await menu(p);assert.equal(await p.eval('!!document.querySelector("[data-action=withdraw]")'),true);leaveExpedition(s);await p.click('[data-action=withdraw]');await pause(p);actual=await snap(p);advance(s,actual.month-s.month);assert.deepEqual(actual,s);assert.deepEqual(s.inventory,owned);assert.equal(s.life.cultivation.activeChain,null);
  report.checks.push('active expedition withdrawal cancels unfinished stages and retains owned items');
 }
 async function archives(p,downloads){

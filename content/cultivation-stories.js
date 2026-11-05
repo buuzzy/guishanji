@@ -1,3 +1,9 @@
+export {CULTIVATION_EVENTS as RULES10_CULTIVATION_EVENTS} from './cultivation-stories-v10.js';
+import {installMundaneEvents} from './mundane-stories.js';
+export {CULTIVATION_EVENTS as RULES9_CULTIVATION_EVENTS} from './cultivation-stories-v9.js';
+export {CULTIVATION_EVENTS as RULES8_CULTIVATION_EVENTS} from './cultivation-stories-v8.js';
+import {installRules10} from './story-rules10.js';
+import {installRevision9} from './revision9-stories.js';
 export {CULTIVATION_EVENTS as RULES7_CULTIVATION_EVENTS} from './cultivation-stories-v7.js';
 import {installProgressionEvents} from './progression-stories.js';
 import {installStoryNetwork} from './story-network.js';
@@ -208,3 +214,8 @@ installLifeRevision(CULTIVATION_EVENTS,ROAD_CHAINS);
 export const RULES6_CULTIVATION_EVENTS=Object.fromEntries(Object.entries(CULTIVATION_EVENTS).map(([id,n])=>[id,{...n,choices:n.choices.map(c=>({...c,system:c.system?{...c.system}:undefined}))}]));
 installStoryNetwork(CULTIVATION_EVENTS);
 installProgressionEvents(CULTIVATION_EVENTS);
+
+installRevision9(CULTIVATION_EVENTS);
+installRules10(CULTIVATION_EVENTS,ROAD_CHAINS);
+
+installMundaneEvents(CULTIVATION_EVENTS);

@@ -1,4 +1,6 @@
 /** Original adventure for the isolated HTML prototype. Times are integer months. */
+import {REVISION9_ITEMS} from './revision9-stories.js';
+import {MUNDANE_ITEMS} from './mundane-stories.js';
 import {ADVANCEMENT_ITEMS} from './progression-stories.js';
 export const PREVIOUS_VERSION = '0.1.0-preview.2';
 export const PREVIOUS_CONTENT_REVISION = 'a-life-in-changing-worlds-02';
@@ -44,7 +46,7 @@ export const ITEMS = {
   mirror_heart: { name: '界心', detail: '域外空间带回的界门核心。能守住两岸、抵御归来之劫，也可用于最后一次问道。它并不保证永远留在你手中。' },
   signal_talisman: { name: '传音符', detail: '与山门留下的灯号相连。闭关与试炼中可以收到急讯，跨入域外后还须有定位之物，才不会隔着断裂的界海失联。' },
 };
-Object.assign(ITEMS,ADVANCEMENT_ITEMS);
+Object.assign(ITEMS,ADVANCEMENT_ITEMS,REVISION9_ITEMS,MUNDANE_ITEMS);
 export const CAST = {
   master: { name: '闻竹', role: '师父', born: -96 * 12, realm: 3, sex: 'F' },
   sister: { name: '程照雪', role: '师姐', born: -7 * 12, realm: 2, sex: 'F' },

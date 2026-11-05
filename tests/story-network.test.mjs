@@ -1,13 +1,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
-import {createRun,choose,advance,advanceToChoice,options,currentNode,nodeText,cloneRun,validateRun,upgradeRun,setActivity} from '../packages/adventure/engine.js';
+import {createRun,choose,advance,advanceToChoice,options,currentNode,nodeText,cloneRun,validateRun,upgradeRun,setActivity} from './helpers/rules9-engine.mjs';
 import {activityOptions} from '../packages/adventure/cultivation.js';
 import {monthSeconds} from '../packages/adventure/life.js';
 import {automaticStory} from '../content/cultivation-daily.js';
 import {RULES6_CULTIVATION_EVENTS} from '../content/cultivation-stories.js';
 import {networkRate} from '../packages/adventure/story-network.js';
-import {playCultivation,decide} from '../scripts/play-cultivation.mjs';
+import {playCultivation,decide} from './helpers/rules9-play.mjs';
 const resolve=s=>{while(s.phase==='life'&&!s.pending&&s.journey&&!s.journey.open)advance(s,1);};
 function find(id,filter=()=>true,policy={path:'orthodox',school:'array'}){
  for(let i=0;i<650;i++){const s=createRun({seed:'万千道途-'+i});for(let j=0;j<100&&s.phase==='life';j++){if(!s.pending)advanceToChoice(s);if(!s.pending)break;if(s.pending.event===id&&filter(s))return s;choose(s,decide(s,policy).id);if(policy.activity&&activityOptions(s).find(o=>o.id===policy.activity)?.enabled)setActivity(s,policy.activity);}}
@@ -38,7 +38,7 @@ test('巡阵需要完成真实试任，核过旧账才可凭证取得职位',()=
  const s=find('network_ward'),before=cloneRun(s);choose(s,'accept');resolve(s);assert.equal(s.life.cultivation.rank,before.life.cultivation.rank);assert.equal(s.life.cultivation.network.arc.kind,'ward');while(!s.pending&&s.phase==='life')advance(s,1);assert.equal(s.pending.event,'network_ward_result');assert.ok(s.month>=before.month+27);choose(s,'evidence');assert.equal(s.life.cultivation.rank,'内门弟子');assert.equal(s.life.cultivation.network.role,'北坡掌钥弟子');validateRun(s);
 });
 test('未核旧账的试任没有伪造封条的选项，调查不自动判罪',()=>{
- const s=find('network_ward');choose(s,'take');resolve(s);while(!s.pending&&s.phase==='life')advance(s,1);assert.equal(s.pending.event,'network_ward_result');assert.equal(options(s).find(o=>o.id==='evidence').enabled,false);choose(s,'investigate');assert.equal(s.life.cultivation.punishmentUntil,0);assert.equal(s.life.cultivation.network.role,null);validateRun(s);
+ const s=find('network_ward'),priorRole=s.life.cultivation.network.role;choose(s,'take');resolve(s);while(!s.pending&&s.phase==='life')advance(s,1);assert.equal(s.pending.event,'network_ward_result');assert.equal(options(s).find(o=>o.id==='evidence').enabled,false);choose(s,'investigate');assert.equal(s.life.cultivation.punishmentUntil,0);assert.equal(s.life.cultivation.network.role,priorRole);validateRun(s);
 });
 test('有铺垫的炉心陷阱能逃离或真实死亡，不以服从保证晋升',()=>{
  const s=find('network_mentor_result',s=>s.life.cultivation.network.arc.danger,{path:'orthodox',school:'alchemy'});assert.match(nodeText(currentNode(s),s),/抽|残牌|前任/);assert.equal(options(s).find(o=>o.id==='finish').enabled,false);const original=cloneRun(s);choose(s,'escape');resolve(s);assert.equal(s.life.cultivation.path,'loose');assert.equal(s.life.cultivation.network.arc,null);validateRun(s);choose(original,'submit');assert.ok(original.phase==='ended'||original.player.health<60);assert.notEqual(original.life.cultivation.rank,'亲传弟子');validateRun(original);

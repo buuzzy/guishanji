@@ -41,8 +41,8 @@ export function decide(s,{path='birth',conduct='care',ending='guard',family='kee
  if(ROAD_CHAINS.some(a=>id.startsWith(a.id+'_')))preferred.push(conduct);
  return available.find(o=>preferred.includes(o.id)&&o.id===preferred.find(p=>available.some(a=>a.id===p)))||available[0];
 }
-export function playCultivation({seed='新版人生',...policy}={}){
- const state=createRun({seed}),events=[],snapshots=[],seconds={automatic:0,reading:0};
+export function playCultivation({seed='新版人生',rulesVersion=11,...policy}={}){
+ const state=createRun({seed,rulesVersion}),events=[],snapshots=[],seconds={automatic:0,reading:0};
  for(let step=0;step<160&&state.phase==='life';step++){
   while(state.phase==='life'&&!state.pending){seconds.automatic+=monthSeconds(state);advance(state,1);}
   if(!state.pending)break;

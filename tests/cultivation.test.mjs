@@ -1,13 +1,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
-import {createRun,choose,advance,advanceToChoice,options,cloneRun,validateRun,setActivity,travelTo,leaveExpedition,upgradeRun} from '../packages/adventure/engine.js';
+import {createRun,choose,advance,advanceToChoice,options,cloneRun,validateRun,setActivity,travelTo,leaveExpedition,upgradeRun} from './helpers/rules9-engine.mjs';
 import {activityOptions,routeOptions,currentContinent} from '../packages/adventure/cultivation.js';
 import {ROOTS} from '../content/cultivation-world.js';
 import {ROAD_CHAINS} from '../content/cultivation-stories.js';
-import {decide,playCultivation,naturalSeed} from '../scripts/play-cultivation.mjs';
+import {decide,playCultivation,naturalSeed} from './helpers/rules9-play.mjs';
 import {AdventureStore,ADVENTURE_KEY} from '../packages/adventure/store.js';
-const follow=(s,id,policy={})=>{for(let i=0;i<130&&s.phase==='life';i++){if(!s.pending)advanceToChoice(s);if(s.pending?.event===id)return s;if(!s.pending)break;choose(s,decide(s,policy).id);}return null;};
+const follow=(s,id,policy={})=>{for(let i=0;i<130&&s.phase==='life';i++){if(!s.pending)advanceToChoice(s);if(s.pending?.event===id)return s;if(!s.pending)break;choose(s,decide(s,policy).id);if(policy.activity&&activityOptions(s).find(a=>a.id===policy.activity)?.enabled)setActivity(s,policy.activity);}return null;};
 const find=(id,policy={},filter=()=>true)=>{for(let i=0;i<250;i++){const s=follow(createRun({seed:'万千道途-'+i}),id,policy);if(s&&filter(s))return s;}throw Error('自然规则未到达 '+id);};
 const resolve=s=>{while(s.journey&&!s.journey.open&&s.phase==='life'&&!s.pending)advance(s,1);};
 class Memory{data=new Map();getItem(k){return this.data.get(k)??null;}setItem(k,v){this.data.set(k,v);}}
@@ -28,13 +28,13 @@ test('目击者如实作证不承担他人点火的赔偿或禁闭',()=>{
  choose(s,'honest');assert.equal(s.month,month);assert.equal(s.player.stones,stones);assert.equal(s.life.cultivation.activity,activity);assert.equal(s.life.cultivation.punishmentUntil,0);assert.ok(activityOptions(s).some(a=>a.enabled));assert.ok(!s.flags.unpaidGarden);validateRun(s);
 });
 test('外出不弹宗门考核现场，截止后返回不能补领成绩与奖励',()=>{
- const s=find('selection_1',{path:'orthodox'},s=>s.month<26*12&&s.player.stones>=6);choose(s,'array');const deadline=s.life.cultivation.exam.deadline,origin=currentContinent(s),target=routeOptions(s).find(p=>p.enabled);travelTo(s,target.id);resolve(s);advance(s,deadline-s.month+1);assert.ok(s.month>deadline);assert.equal(s.pending,null);assert.ok(s.life.cultivation.exam.preparation<=24);const returnRoute=routeOptions(s).find(p=>p.id===origin);assert.ok(returnRoute.enabled);travelTo(s,origin);resolve(s);assert.equal(s.pending.event,'selection_1_result');assert.equal(options(s).find(o=>o.id==='fair').enabled,false);assert.throws(()=>choose(s,'fair'));choose(s,'withdraw');assert.equal(s.life.cultivation.exam,null);validateRun(s);
+ const s=find('selection_1',{path:'orthodox',activity:'work'},s=>s.month<26*12&&s.player.stones>=6);choose(s,'array');const deadline=s.life.cultivation.exam.deadline,origin=currentContinent(s),target=routeOptions(s).find(p=>p.enabled);travelTo(s,target.id);resolve(s);advance(s,deadline-s.month+1);assert.ok(s.month>deadline);assert.equal(s.pending,null);assert.ok(s.life.cultivation.exam.preparation<=24);const returnRoute=routeOptions(s).find(p=>p.id===origin);assert.ok(returnRoute.enabled);travelTo(s,origin);resolve(s);assert.equal(s.pending.event,'selection_1_result');assert.equal(options(s).find(o=>o.id==='fair').enabled,false);assert.throws(()=>choose(s,'fair'));choose(s,'withdraw');assert.equal(s.life.cultivation.exam,null);validateRun(s);
 });
 test('突破需要实际闭关，独立记录在完成之月出现',()=>{
  const s=find('breakthrough_1_0',{path:'orthodox'},s=>options(s).find(o=>o.id==='try').enabled),month=s.month;choose(s,'try');assert.equal(s.player.realm,0);advance(s,11);assert.equal(s.player.realm,0);advance(s,1);assert.equal(s.month,month+12);assert.equal(s.player.realm,1);assert.ok(s.journal.some(e=>e.kind==='breakthrough'&&e.month===s.month));validateRun(s);
 });
 test('战事中止闭关会取消本次结果，继续守阵则恢复原剩余月份',()=>{
- const original=find('world_raid',{path:'loose'},s=>s.life.cultivation.suspended?.journey?.resolution?.event?.startsWith('breakthrough_'));
+ const original=find('world_raid',{path:'loose',activity:'work'},s=>s.life.cultivation.suspended?.journey?.resolution?.event?.startsWith('breakthrough_'));
  const interrupted=original.life.cultivation.suspended.journey,tier=Number(interrupted.resolution.event.split('_')[1]),left=interrupted.to-original.month;
  const escaped=cloneRun(original);choose(escaped,'escape');assert.equal(escaped.life.cultivation.suspended,undefined);assert.equal(escaped.life.cultivation.attempts[tier],Number(interrupted.resolution.event.split('_')[2])+1);assert.equal(escaped.player.realm,original.player.realm);validateRun(escaped);
  const defended=cloneRun(original);choose(defended,'defend');assert.equal(defended.journey.resolution.event,interrupted.resolution.event);assert.equal(defended.journey.to-defended.month,left);assert.equal(defended.life.cultivation.attempts[tier],original.life.cultivation.attempts[tier]);advance(defended,left);assert.equal(defended.life.cultivation.attempts[tier],original.life.cultivation.attempts[tier]+1);assert.equal(defended.player.realm,interrupted.resolution.success?tier:original.player.realm);validateRun(defended);

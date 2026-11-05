@@ -1,10 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
-import {createRun,choose,advance,advanceToChoice,options,currentNode,nodeText,cloneRun,validateRun,upgradeRun} from '../packages/adventure/engine.js';
+import {createRun,choose,advance,advanceToChoice,options,currentNode,nodeText,cloneRun,validateRun,upgradeRun} from './helpers/rules9-engine.mjs';
 import {progressionMonth,prose,materialSlots,longAction,playbackSeconds,sceneFor} from '../packages/adventure/progression.js';
 import {RULES7_CULTIVATION_EVENTS} from '../content/cultivation-stories.js';
-import {decide,playCultivation} from '../scripts/play-cultivation.mjs';
+import {decide,playCultivation} from './helpers/rules9-play.mjs';
 const cc=s=>s.life.cultivation;
 function pending(event,seed='进阶核验') {const s=createRun({seed});s.month=240;cc(s).admissionDone=true;cc(s).worldDone=true;cc(s).dailyAt=10000;cc(s).choiceAt=10000;cc(s).queue=[];s.pending={event,month:s.month};s.journey=null;return s;}
 function resolve(s){while(s.phase==='life'&&!s.pending&&s.journey&&!s.journey.open)advance(s,1);}

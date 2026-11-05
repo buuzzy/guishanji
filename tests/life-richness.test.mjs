@@ -1,13 +1,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
-import {createRun,choose,advance,advanceToChoice,options,cloneRun,validateRun,setActivity,upgradeRun,currentNode,nodeText} from '../packages/adventure/engine.js';
+import {createRun,choose,advance,advanceToChoice,options,cloneRun,validateRun,setActivity,upgradeRun,currentNode,nodeText} from './helpers/rules9-engine.mjs';
 import {activityOptions,routeOptions} from '../packages/adventure/cultivation.js';
 import {economyQuote} from '../packages/adventure/cultivation-economy.js';
 import {storyOpportunity,familyMessage} from '../content/cultivation-daily.js';
 import {RULES5_CULTIVATION_EVENTS,ROAD_CHAINS} from '../content/cultivation-stories.js';
 import {CULTIVATION_EVENTS as FROZEN_EVENTS} from '../content/cultivation-stories-v5.js';
-import {decide,playCultivation} from '../scripts/play-cultivation.mjs';
+import {decide,playCultivation} from './helpers/rules9-play.mjs';
 const resolve=s=>{while(s.phase==='life'&&!s.pending&&s.journey&&!s.journey.open)advance(s,1);};
 function find(id,filter=()=>true,policy={path:'orthodox'}){
  for(let i=0;i<500;i++){

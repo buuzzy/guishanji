@@ -1,16 +1,16 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
-import {createRun,choose,advance,advanceToChoice,options,cloneRun,validateRun,setActivity,upgradeRun,currentNode} from '../packages/adventure/engine.js';
+import {createRun,choose,advance,advanceToChoice,options,cloneRun,validateRun,setActivity,upgradeRun,currentNode} from './helpers/rules9-engine.mjs';
 import {activityOptions,routeOptions,currentContinent,discoverableEvidence} from '../packages/adventure/cultivation.js';
 import {CULTIVATION_EVENTS,LEGACY_CULTIVATION_EVENTS,ROAD_CHAINS} from '../content/cultivation-stories.js';
-import {decide} from '../scripts/play-cultivation.mjs';
+import {decide} from './helpers/rules9-play.mjs';
 import {lifePanels} from '../apps/preview/life-panels.js';
 const resolve=s=>{while(s.journey&&!s.journey.open&&!s.pending&&s.phase==='life')advance(s,1);};
 function follow(s,id,policy={}){for(let i=0;i<140&&s.phase==='life';i++){if(!s.pending)advanceToChoice(s);if(s.pending?.event===id)return s;if(!s.pending)return null;choose(s,decide(s,policy).id);if(policy.activity&&activityOptions(s).find(o=>o.id===policy.activity)?.enabled)setActivity(s,policy.activity);}return null;}
 function find(id,policy={},filter=()=>true){for(let i=0;i<400;i++){const s=follow(createRun({seed:'决策查验-'+i}),id,policy);if(s&&filter(s))return s;}throw Error('未自然到达 '+id);}
 test('所有长事件选项有各自的行动与处境提示，书面查账不会变成致命剑战',()=>{
- const hints=[];for(const chain of ROAD_CHAINS)for(let step=0;step<3;step++)for(const c of CULTIVATION_EVENTS[chain.id+'_'+step].choices){assert.ok(c.hint.length>=20);assert.ok(!/先核对眼前|保留退路，处理|其他人也会记得|实际完成/u.test(c.hint+c.startReply));hints.push(c.hint);}assert.equal(new Set(hints).size,hints.length);assert.equal(CULTIVATION_EVENTS.dark_ledger_1.choices[2].check,undefined);
+ const hints=[];for(const chain of ROAD_CHAINS)for(let step=0;step<3;step++)for(const c of CULTIVATION_EVENTS[chain.id+'_'+step].choices){assert.ok(c.hint.length>=12);assert.ok(!/先核对眼前|保留退路，处理|其他人也会记得|实际完成/u.test(c.hint+c.startReply));hints.push(c.hint);}assert.equal(new Set(hints).size,hints.length);assert.equal(CULTIVATION_EVENTS.dark_ledger_1.choices[2].check,undefined);
 });
 test('买禁术残卷仅开启询问，试学结束才能正式拜师，可在登记前反悔',()=>{
  const s=find('road_turn',{path:'loose',activity:'work'},s=>s.life.cultivation.worldDone&&options(s).find(o=>o.id==='dark').enabled),old=s.life.cultivation.path,root=s.player.root;

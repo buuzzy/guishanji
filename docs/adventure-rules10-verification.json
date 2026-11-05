@@ -1,0 +1,622 @@
+{
+  "createdAt": "2026-11-04T04:27:33.829Z",
+  "passed": true,
+  "rulesVersion": 10,
+  "scope": "Local independent HTML preview only. No production Web, mini program, GitHub publication or deployment in this round.",
+  "preview": "http://127.0.0.1:8877/preview/",
+  "tests": 205,
+  "regression": {
+    "startedAt": "2026-11-04T04:17:44.772Z",
+    "node": "v22.22.2",
+    "platform": "win32",
+    "results": [
+      {
+        "name": "preview-assets",
+        "code": 0,
+        "durationMs": 171
+      },
+      {
+        "name": "check",
+        "code": 0,
+        "durationMs": 13321
+      },
+      {
+        "name": "engine-storage",
+        "code": 0,
+        "durationMs": 16527
+      },
+      {
+        "name": "story-audit",
+        "code": 0,
+        "durationMs": 10836
+      },
+      {
+        "name": "life-simulation",
+        "code": 0,
+        "durationMs": 7811
+      },
+      {
+        "name": "build",
+        "code": 0,
+        "durationMs": 378
+      },
+      {
+        "name": "browser",
+        "code": 0,
+        "durationMs": 55937
+      },
+      {
+        "name": "feedback-browser",
+        "code": 0,
+        "durationMs": 18409
+      },
+      {
+        "name": "adventure-browser",
+        "code": 0,
+        "durationMs": 143834
+      },
+      {
+        "name": "decision-browser",
+        "code": 0,
+        "durationMs": 45103
+      },
+      {
+        "name": "network-browser",
+        "code": 0,
+        "durationMs": 30642
+      },
+      {
+        "name": "progression-browser",
+        "code": 0,
+        "durationMs": 66322
+      },
+      {
+        "name": "revision9-browser",
+        "code": 0,
+        "durationMs": 41934
+      },
+      {
+        "name": "rules10-browser",
+        "code": 0,
+        "durationMs": 91252
+      },
+      {
+        "name": "family-browser",
+        "code": 0,
+        "durationMs": 29618
+      },
+      {
+        "name": "static-build",
+        "code": 0,
+        "durationMs": 5095
+      },
+      {
+        "name": "adventure-static",
+        "code": 0,
+        "durationMs": 142772
+      },
+      {
+        "name": "decision-static",
+        "code": 0,
+        "durationMs": 45215
+      },
+      {
+        "name": "network-static",
+        "code": 0,
+        "durationMs": 30450
+      },
+      {
+        "name": "progression-static",
+        "code": 0,
+        "durationMs": 67004
+      },
+      {
+        "name": "revision9-static",
+        "code": 0,
+        "durationMs": 42238
+      },
+      {
+        "name": "rules10-static",
+        "code": 0,
+        "durationMs": 89749
+      },
+      {
+        "name": "family-static",
+        "code": 0,
+        "durationMs": 29436
+      }
+    ],
+    "finishedAt": "2026-11-04T04:27:07.498Z",
+    "passed": true
+  },
+  "storyAudit": {
+    "count": 600,
+    "decisionCards": 205,
+    "naturallyReached": 151,
+    "notNaturallyReached": [
+      "breakthrough_1_2",
+      "selection_3",
+      "selection_3_result",
+      "selection_4",
+      "selection_4_result",
+      "breakthrough_4_2",
+      "beast_war_0",
+      "beast_war_1",
+      "beast_war_2",
+      "parcel_exposed",
+      "parcel_missing_1",
+      "parcel_exposed_1",
+      "parcel_missing_2",
+      "parcel_exposed_2",
+      "parcel_missing_3",
+      "parcel_exposed_3",
+      "parcel_missing_4",
+      "parcel_exposed_4",
+      "parcel_missing_5",
+      "parcel_exposed_5",
+      "parcel_missing_6",
+      "parcel_exposed_6",
+      "parcel_missing_7",
+      "parcel_exposed_7",
+      "advance_material_3_1_0",
+      "advance_material_3_1_0_resume",
+      "advance_material_3_1_1_resume",
+      "advance_material_3_1_2_resume",
+      "advance_material_3_2_0",
+      "advance_material_3_2_0_resume",
+      "advance_material_3_2_1_resume",
+      "advance_material_3_2_2_resume",
+      "advance_material_4_0_0_resume",
+      "advance_material_4_0_1_resume",
+      "advance_material_4_0_2_resume",
+      "advance_material_4_1_0",
+      "advance_material_4_1_0_resume",
+      "advance_material_4_1_1_resume",
+      "advance_material_4_1_2_resume",
+      "advance_material_4_2_0",
+      "advance_material_4_2_0_resume",
+      "advance_material_4_2_1",
+      "advance_material_4_2_1_resume",
+      "advance_material_4_2_2",
+      "advance_material_4_2_2_resume",
+      "sect_revenge",
+      "dark_oath_return",
+      "echo_resume_after_war",
+      "echo_friend_check_resume",
+      "echo_friend_visit_resume",
+      "echo_relic_check_resume",
+      "echo_relic_visit_resume",
+      "echo_teacher_check_resume",
+      "echo_teacher_visit_resume"
+    ],
+    "generatedExamsNotScheduledInRules10": [
+      "selection_3",
+      "selection_3_result",
+      "selection_4",
+      "selection_4_result"
+    ],
+    "unqualifiedBirths": 71,
+    "confirmedAbsent": 60,
+    "discovered": 1,
+    "coverageNote": "Natural coverage is this 600-life sample only. High-realm basic exams are generated by the content installer but are not scheduled in rules10; other unreached IDs include retry/resume variants. Do not claim all branches were played.",
+    "artifact": "artifacts/story-rules10-audit.json"
+  },
+  "simulation": {
+    "count": 400,
+    "chains": [
+      {
+        "id": "sect_repair",
+        "opened": 47,
+        "completed": 44,
+        "stages": [
+          47,
+          46,
+          44
+        ]
+      },
+      {
+        "id": "sect_trial",
+        "opened": 47,
+        "completed": 31,
+        "stages": [
+          47,
+          33,
+          31
+        ]
+      },
+      {
+        "id": "sect_return",
+        "opened": 59,
+        "completed": 54,
+        "stages": [
+          59,
+          57,
+          54
+        ]
+      },
+      {
+        "id": "loose_contract",
+        "opened": 79,
+        "completed": 79,
+        "stages": [
+          79,
+          79,
+          79
+        ]
+      },
+      {
+        "id": "loose_relic",
+        "opened": 69,
+        "completed": 37,
+        "stages": [
+          69,
+          43,
+          37
+        ]
+      },
+      {
+        "id": "loose_portal",
+        "opened": 53,
+        "completed": 29,
+        "stages": [
+          53,
+          29,
+          29
+        ]
+      },
+      {
+        "id": "dark_ledger",
+        "opened": 42,
+        "completed": 42,
+        "stages": [
+          42,
+          42,
+          42
+        ]
+      },
+      {
+        "id": "dark_method",
+        "opened": 21,
+        "completed": 19,
+        "stages": [
+          21,
+          21,
+          19
+        ]
+      },
+      {
+        "id": "dark_pursuit",
+        "opened": 15,
+        "completed": 14,
+        "stages": [
+          15,
+          15,
+          14
+        ]
+      },
+      {
+        "id": "beast_home",
+        "opened": 4,
+        "completed": 4,
+        "stages": [
+          4,
+          4,
+          4
+        ]
+      },
+      {
+        "id": "beast_form",
+        "opened": 3,
+        "completed": 3,
+        "stages": [
+          3,
+          3,
+          3
+        ]
+      },
+      {
+        "id": "beast_war",
+        "opened": 3,
+        "completed": 3,
+        "stages": [
+          3,
+          3,
+          3
+        ]
+      },
+      {
+        "id": "sect_feud",
+        "opened": 64,
+        "completed": 61,
+        "stages": [
+          64,
+          64,
+          61
+        ]
+      },
+      {
+        "id": "loose_escort",
+        "opened": 64,
+        "completed": 61,
+        "stages": [
+          64,
+          64,
+          61
+        ]
+      },
+      {
+        "id": "dark_sacrifice",
+        "opened": 47,
+        "completed": 40,
+        "stages": [
+          47,
+          47,
+          40
+        ]
+      },
+      {
+        "id": "beast_eclipse",
+        "opened": 6,
+        "completed": 4,
+        "stages": [
+          6,
+          6,
+          4
+        ]
+      }
+    ],
+    "maximumJournalGapMonths": 360,
+    "longJournalGaps": [
+      {
+        "seed": "万千道途-1",
+        "months": 360,
+        "before": {
+          "month": 1428,
+          "title": "交代外事，封门静修",
+          "body": "你安排住处、补给和代收消息的人，封门开始这一程静修。"
+        },
+        "after": {
+          "month": 1788,
+          "title": "交代外事，封门静修",
+          "body": "你解开静室封符，护法带来这些年按时送达的消息。练过的周天仍记在笔记里，你先核经脉与行囊，再决定下一程。"
+        }
+      },
+      {
+        "seed": "万千道途-1",
+        "months": 360,
+        "before": {
+          "month": 1824,
+          "title": "交代外事，封门静修",
+          "body": "你安排住处、补给和代收消息的人，封门开始这一程静修。"
+        },
+        "after": {
+          "month": 2184,
+          "title": "交代外事，封门静修",
+          "body": "你解开静室封符，护法带来这些年按时送达的消息。练过的周天仍记在笔记里，你先核经脉与行囊，再决定下一程。"
+        }
+      },
+      {
+        "seed": "万千道途-1",
+        "months": 360,
+        "before": {
+          "month": 2220,
+          "title": "交代外事，封门静修",
+          "body": "你安排住处、补给和代收消息的人，封门开始这一程静修。"
+        },
+        "after": {
+          "month": 2580,
+          "title": "交代外事，封门静修",
+          "body": "你解开静室封符，护法带来这些年按时送达的消息。练过的周天仍记在笔记里，你先核经脉与行囊，再决定下一程。"
+        }
+      },
+      {
+        "seed": "万千道途-1",
+        "months": 360,
+        "before": {
+          "month": 2622,
+          "title": "交代外事，封门静修",
+          "body": "你安排住处、补给和代收消息的人，封门开始这一程静修。"
+        },
+        "after": {
+          "month": 2982,
+          "title": "交代外事，封门静修",
+          "body": "你解开静室封符，护法带来这些年按时送达的消息。练过的周天仍记在笔记里，你先核经脉与行囊，再决定下一程。"
+        }
+      },
+      {
+        "seed": "万千道途-5",
+        "months": 360,
+        "before": {
+          "month": 1400,
+          "title": "交代外事，封门静修",
+          "body": "你安排住处、补给和代收消息的人，封门开始这一程静修。"
+        },
+        "after": {
+          "month": 1760,
+          "title": "交代外事，封门静修",
+          "body": "你解开静室封符，护法带来这些年按时送达的消息。练过的周天仍记在笔记里，你先核经脉与行囊，再决定下一程。"
+        }
+      },
+      {
+        "seed": "万千道途-5",
+        "months": 360,
+        "before": {
+          "month": 1799,
+          "title": "交代外事，封门静修",
+          "body": "你安排住处、补给和代收消息的人，封门开始这一程静修。"
+        },
+        "after": {
+          "month": 2159,
+          "title": "交代外事，封门静修",
+          "body": "你解开静室封符，护法带来这些年按时送达的消息。练过的周天仍记在笔记里，你先核经脉与行囊，再决定下一程。"
+        }
+      }
+    ],
+    "artifact": "artifacts/life-richness-simulation.json"
+  },
+  "browser": {
+    "version": {
+      "protocolVersion": "1.3",
+      "product": "Chrome/155.0.8059.40",
+      "revision": "@cfaadc5a132d78e1828635aa8405a499f3e14864",
+      "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36",
+      "jsVersion": "15.5.35.20"
+    },
+    "sourceLives": [
+      {
+        "seed": "root-audit-15",
+        "mode": "root",
+        "ending": "mundane_settled"
+      },
+      {
+        "seed": "浏览器剧情核实-3",
+        "mode": "friend",
+        "ending": "guardian"
+      },
+      {
+        "seed": "浏览器剧情核实-1",
+        "mode": "relic",
+        "ending": "guardian"
+      },
+      {
+        "seed": "浏览器剧情核实-2",
+        "mode": "teacher",
+        "ending": "guardian"
+      },
+      {
+        "seed": "浏览器剧情核实-4",
+        "mode": "feud",
+        "ending": "guardian"
+      }
+    ],
+    "builtLives": [
+      {
+        "seed": "root-audit-15",
+        "mode": "root",
+        "ending": "mundane_settled"
+      },
+      {
+        "seed": "浏览器剧情核实-3",
+        "mode": "friend",
+        "ending": "guardian"
+      },
+      {
+        "seed": "浏览器剧情核实-1",
+        "mode": "relic",
+        "ending": "guardian"
+      },
+      {
+        "seed": "浏览器剧情核实-2",
+        "mode": "teacher",
+        "ending": "guardian"
+      },
+      {
+        "seed": "浏览器剧情核实-4",
+        "mode": "feud",
+        "ending": "guardian"
+      }
+    ],
+    "checks": [
+      "宗门管理者已登记，卡片说明派遣与权限",
+      "五条自然人生完成，鼠标／触控操作与引擎逐步一致",
+      "暂缓后继续旧友拜访",
+      "刷新恢复存档逐值一致",
+      "无引气资格的人生没有修炼心法或境界"
+    ],
+    "sourceArtifact": "artifacts/story-rules10-source/report.json",
+    "builtArtifact": "artifacts/story-rules10-static/report.json",
+    "limits": "Actual Chrome mouse and emulated touch; not physical-device or WeChat verification. Automated full lives do not establish human comprehension, play duration or retention."
+  },
+  "compatibility": {
+    "rules9BaselineSamples": 3,
+    "baselineSource": "Engine-generated states captured before rules10 changes, not player exports",
+    "fixture": "tests/fixtures/adventure-rules9-baseline.json",
+    "historicalSuites": "Historical contract suites use explicit rules9 helpers; rules10 has its own 21-test suite and natural simulations."
+  },
+  "sourceHashes": {
+    "apps/preview/app.js": "8d132dfb480d74b4c852864ce06eb8fa57e4111d6427146ff8029406f7e01ae0",
+    "apps/preview/base.css": "3875acb720d6e4c31560afd819538d73e71930874ffe8fa28469bcc7c37c5938",
+    "apps/preview/continent-atlas.js": "3f3cebe14d0ad9ee8d3d5f249a6ba38a19dd478f7f4862cc435a9b2af666a347",
+    "apps/preview/continent-map.js": "d9dd806a27ccf7953ebb2993dead6246d3a1599b17ce6c551776e69160e704c3",
+    "apps/preview/cultivation-pixel.js": "1fc33265a3e016c095957e511906d0adc682f5395ee1845de8bd50eb66491d78",
+    "apps/preview/icon.svg": "d13638ada1bfe9f85f71040f660272765bf00a3f30de640c1342fc0de6c140ca",
+    "apps/preview/index.html": "c1c0b4693e8d91ad63ddb5aada750a87ef5711fa9e7f308c92e74dd95aa9c7bc",
+    "apps/preview/life-panels.js": "4b1281c79eb1b577ef7f88333a8e23739faa4fdeeaf3753c4c6c2fd1d6cea209",
+    "apps/preview/pixel-style.js": "78791ceb46d10e352e06272e01a97cf41f3cfb48fa3447c45ff819a6589979d6",
+    "apps/preview/style.css": "eee87bda80aea88e21e0434b238902957a81a94ea010bb0dacb33d6c943140e1",
+    "apps/web/app.js": "11497d735389ede33ab7704749e9711b657110684eddc981f9207fdf955128e6",
+    "apps/web/dialogs.js": "4e3b59a7e0edebea867b67030dc0dda3b661c072811a2620516842b4548d20fd",
+    "apps/web/favicon.svg": "af9e6ae143927897c73a023e34cdb3a4de1625de6b787235e96c01816b203bb4",
+    "apps/web/game-api.js": "a93d544d7bfcc698f40d39f2753733db554904ec0f8f8b3945f88105818de1fd",
+    "apps/web/icons.js": "b78a4e602bf7974aa94d88bcb82ab492400f4c7f29d54651788973f4d19e3958",
+    "apps/web/index.html": "b510354c02fda8b5c0ca9eb7fa82960d9d2cd8ece93d98fd288a83de0112eb79",
+    "apps/web/style.css": "f7434c5936488a69c4cc5eb30937fa1075db5a396847d243fa00ea522adc05a4",
+    "apps/web/views.js": "a653572c1ceffe13315a444d6a593118cb2afb6f747d1830c6bb4b84fa2f0bef",
+    "content/adventure.js": "585e2bab91ffbf2add8f41b0edfbe561204c20094598d3fb1920943b87ee67d9",
+    "content/allegiance-stories.js": "9905dc390ade6b2412e155293611b64b9ffebe4f55ab8c28ecd7d5eb5c4b2dda",
+    "content/automatic-life.js": "cf7bb63f20b469759e89760ce37c952af93556ec39494932c8613f1532a6d7dd",
+    "content/cultivation-daily-v6.js": "a33e8bc04b77fa5bdb39ad99af8b5e17ec7ea568dba0b28221107a8a5b136e5e",
+    "content/cultivation-daily-v7.js": "3ff6cfa045a1fc9e6e547a87dc259c38933b51fce11b066986639279aed413f7",
+    "content/cultivation-daily.js": "3ff6cfa045a1fc9e6e547a87dc259c38933b51fce11b066986639279aed413f7",
+    "content/cultivation-revision-v6.js": "63268567247882c5bd0fb8539f81c5bdb95812ba7d11e6eebef31d523117078f",
+    "content/cultivation-revision-v7.js": "63268567247882c5bd0fb8539f81c5bdb95812ba7d11e6eebef31d523117078f",
+    "content/cultivation-revision-v8.js": "63268567247882c5bd0fb8539f81c5bdb95812ba7d11e6eebef31d523117078f",
+    "content/cultivation-revision-v9.js": "63268567247882c5bd0fb8539f81c5bdb95812ba7d11e6eebef31d523117078f",
+    "content/cultivation-revision.js": "63268567247882c5bd0fb8539f81c5bdb95812ba7d11e6eebef31d523117078f",
+    "content/cultivation-stories-v5.js": "2cee3b93be42d90c0c60bed9a36ee1e51f614d2dfcbf74fa35cd27d4f897431c",
+    "content/cultivation-stories-v6.js": "aed42cf5aabf96aff90a8321977f9ad3d72dcba3217600042df91f5e69d4b4f8",
+    "content/cultivation-stories-v7.js": "81970efb438d95954eac59e2263701d7eaec4b460f0ab60d3dd9cbd0d5655084",
+    "content/cultivation-stories-v8.js": "aeb628cfb0609815bf1ad29c50da8b58a9a4ba52e43d1f0fc0c82fb01d03a9da",
+    "content/cultivation-stories-v9.js": "1543aed4311e1c670565095b64e40c8e371971ab4e3483ced2697746a88c3d67",
+    "content/cultivation-stories.js": "2f21c5f39238bb02399c49f87dd5f30743bff1c7942c257deca25fcb4f22952b",
+    "content/cultivation-world.js": "5b5aaa5141b62a2c8d5f80d1195ffd8c43dbdab58600e83210e617b6ef00364f",
+    "content/decision-details.js": "7d1d41251b8bea36bf9b551d4c8c0dd75048655fde25a1c4ee5e1b4ae029a17e",
+    "content/expansion.js": "f5fe7d7256ffeb8cf5705ed364a4581201e700b77ca8e304937db8aee04b4f6b",
+    "content/expedition-changes.js": "da649a89571a19bd33f87af9357baaa10efec3f10747e7aec0a4595608446843",
+    "content/living-episodes.js": "cbb3277634f930c28582f6f800e3d6bac35246485b14571e00f3521e136a302f",
+    "content/living-world.js": "41182ded897d32198e2bfbd1d9d91d147526b18085d7425fffa43626a7250250",
+    "content/novel-names.js": "dc17411d1d7b32e40825a30015fb21560a510c069c212c2900b223e7f24fe5c7",
+    "content/progression-stories.js": "2a23d89e02375122906a56a879498ae01524f8eb15b72edd5773ff1f53a5dcbf",
+    "content/readable-automatic.js": "7fb5d2306b9793fe2e00c6a4ef17d53a4047d574c5d0f0e65bf18817c7c08a59",
+    "content/readable-stories.js": "7e15161ffdf8c39d3816988d082c5be9fc133c59d9de9661ab7f8ec55b5372db",
+    "content/revision9-stories.js": "7928757afc26bcb5e27dd835abaafeabd3c5c924e3cbe5e6a3aab4a662d50658",
+    "content/stories.js": "e0ff18424b3c7e8c8e63c2c71d0c399c8b9a0761e9ab5bc0636b5e298107c99e",
+    "content/story-network-v9.js": "2bc61abd96414eaf6ae5bdcd06b573e5ae203dcbe94ecabd865201a7e51c8c9e",
+    "content/story-network.js": "2bc61abd96414eaf6ae5bdcd06b573e5ae203dcbe94ecabd865201a7e51c8c9e",
+    "content/story-rules10.js": "06cd92402d76de5b8530fc4814a093c7aeb8c8bf617c65393bc5b586c94d0516",
+    "content/world.js": "48c55afa7e3cfe3850128ae41b35b9ece7f4136c564b3ea4282856ace48b278f",
+    "packages/adventure/auto-choice.js": "bbc6d0f0319bdb06ea711f446bcbe60604d9a64f219df4954f20870f549ee3bd",
+    "packages/adventure/birth.js": "13aa745d957ed0715bd16edf4647d9162fdfd185cd9681c1ac88ef3c36662c8f",
+    "packages/adventure/context.js": "da043e10177aadc1fb4dbb7735d1c6c3cea43bb895c418615b36a71d7cca99d7",
+    "packages/adventure/cultivation-economy.js": "1913c643acbe94af6467406eeea391ee28fe87915627fcfee9589125125e4eb9",
+    "packages/adventure/cultivation-v5.js": "bf8f93d5ef60b778cd390110b16590c3de28c127e3379f9de83a13c35e67c476",
+    "packages/adventure/cultivation-v6.js": "755f4285b73218598c24f296c41f1b310c0e416d1b0894ceff7b126804e0b87d",
+    "packages/adventure/cultivation-v7.js": "01b152b5234b31ec256cf796567d1ad4d544ecb69f6ad3632133de0c46044a9a",
+    "packages/adventure/cultivation-v8.js": "cca481607055ae928c4468cb227edaaaf97089260878431bd4ba8dbedc652184",
+    "packages/adventure/cultivation-v9.js": "1cd7650595fdaa0a86a1eb570323e0efe8e13f4dd99f7d2596b686c21db28d7e",
+    "packages/adventure/cultivation.js": "377dd60e0111df9ee0d7a5cf53520c70197af4f393cb8a1cbe4173a3ceb844a5",
+    "packages/adventure/engine.js": "e576a1968007dc02adafd725057e9545b7e87d24398d8024ca4be0d85aa0f877",
+    "packages/adventure/family.js": "9a6f0699486cacbb4677c143e16d4a98f4905e941e59a8a1b3b88f6020debb4f",
+    "packages/adventure/life.js": "d4c1bc31239f54fa81f406a5de80469e44d8fe35a7ff535141aff165e8cfa35d",
+    "packages/adventure/progression.js": "fe6351f4be375a0d7f0a9b217a2fcc52b22a4eefd7587f76b5f5eae0e1d4ce42",
+    "packages/adventure/realm.js": "ec8c4f0c2c0149ec3c2a28ea34f51568693b2c1fe0f34eca33c35a90c0bc3881",
+    "packages/adventure/revision9-v9.js": "4ad2cf6803ceda9d4d6e341460afe8f63ebb6adff67422dceeafe32a43e5c4be",
+    "packages/adventure/revision9.js": "953bde7ebe8479f1549d2f1788c08b0574b948bdcc37f2918f5565b5e569d4d6",
+    "packages/adventure/store.js": "d7671582cc0f6a80bb41b8a3d72be833cb3cccfe915998158dea1c89fc92c8a9",
+    "packages/adventure/story-network-v9.js": "570860d61ee4405b7bba85e41790fc0ee4f2c0dcb9f164716c83760d979e28a9",
+    "packages/adventure/story-network.js": "4503b1736a8052d9d5d7c075647cd365ae3544fe4c1706b812e86b1f383cb87c",
+    "packages/adventure/story-rules10.js": "284d187785dd4214d9979e3cef88ad7b99630041a6454bd3aec056b114f9a9bb",
+    "packages/core/engine.js": "5e5bd4d229d6885c0fe26514e8e67d23ddfff2bd320502e618fb64f023b1f007",
+    "packages/core/legacy-v1.js": "4723b08fcfd85879161f1e261bb446bc6ebe86673593abf3a7a1dafdd1f35328",
+    "packages/core/migrate.js": "d6df93cb5704519d64e0f04d572df6dc6578e1e6cc7309e3a0f578c72eaf6599",
+    "packages/core/random.js": "5cc65b632c86293fdb1e45515c1fa9e9fed2b3b21e34bccfa0c449c9326ada68",
+    "packages/core/state.js": "ec17a323460775dae373c5d684f7ba1067ede02f73b07b4a8a0cd04d6c8e5ae6",
+    "packages/core/validate.js": "a1642289cd089af4a2f3dcbc5035fe9709931e849bef8f05247d50124db8d4ca",
+    "packages/core/world-events.js": "a5e5dc54a310f4abbe3603e1d337da48c7cf24cded570f38ef57d829a628e130",
+    "packages/media/audio.js": "7e16b9c69fbe400310d93fd5bcd939bd1f033d627ed9c739e28e9dd089f11fe2",
+    "packages/media/exports.js": "9abcafedb456d3013d3e5325d4351c74ba285b2043f9e4fc579757bca72e2c10",
+    "packages/render/canvas.js": "b719c895fa6712c50a997a9b5f4e2595c34b9a5b867ed225ffb4ea63fdff1100",
+    "packages/storage/fork.js": "ee26cead1c961464e95964dfe9545507653a392f6c0e2d86c09bcfaada8f891d",
+    "packages/storage/store.js": "4fea3dd3148205afefdbf8c24b03ecdb18d1f46a650d6674a361fcb98f36b74d"
+  }
+}

@@ -1,4 +1,5 @@
 import {random,hashText} from '../core/random.js';
+import {active10,canCultivate} from './story-rules10.js';
 import {CHILD_WINDOWS,METHODS,NETWORK_EVENTS} from '../../content/story-network.js';
 const age=s=>Math.floor(s.month/12)+(s.birth.startAge||0);
 const seen=(s,id)=>s.decisions.some(d=>d.event===id)||s.pending?.event===id;
@@ -21,13 +22,13 @@ export function initializeNetwork(s){
 }
 export function networkRate(s){
  const info=n(s)?.method;if(!info)return 1;
- const m=METHODS[info.id],fit=m.root.some(x=>s.player.root.includes(x)||x==='木'&&s.player.root==='松骨灵根');
+ const m=METHODS[info.id],fit=m.root.some(x=>s.player.root.includes(x)||x==='木'&&s.player.root==='松骨灵根'||active10(s)&&s.player.root==='五行杂灵根');
  if(info.id==='ember'&&info.months>=60)return .75;
  return Math.min(m.rate,1+(info.months/60)*(m.rate-1))*(fit?1.03:1);
 }
 function offer(s,kind,reason,cb){
  const a=n(s),c=s.life.cultivation;
- if(a.offer||a.arc||a.offerCount>=3||s.month<a.quietUntil||c.path!=='orthodox'||c.continent!==s.birth.continent)return;
+ if(a.offer||a.arc||a.offerCount>=3||s.month<a.quietUntil||c.path!=='orthodox'||c.continent!==s.birth.continent||!canCultivate(s))return;
  if(a.offerChecked.includes(kind))return;
  a.offerChecked.push(kind);
  // A deed can lead nowhere; the roll is taken once, never retried each year.
@@ -52,7 +53,7 @@ export function networkAction(s,event,id,success,cb){
   const skill=s.player.focus;
   offer(s,skill==='alchemy'?'mentor':skill==='array'?'ward':'archive','教习把你在'+({sword:'试剑台',alchemy:'丹院',array:'经堂'})[skill]+'的表现写入授业记录。',cb);
  }
- if(['sect_repair_2','sect_feud_2','sect_trial_2'].includes(event)&&success&&id==='care'){
+ if(['sect_repair_2','sect_feud_2','sect_trial_2'].includes(event)&&success&&id==='care'&&(!active10(s)||event!=='sect_repair_2'||s.life.cultivation.story10.facts.repairPlan)){
   const kinds=event==='sect_repair_2'?['ward','archive']:event==='sect_trial_2'?['mentor','archive']:['ward','mentor'];
   offer(s,kinds[Math.floor(random(s,'events')*kinds.length)],event==='sect_repair_2'?'严衡已核过你交出的阵石账与钥匙记录。':event==='sect_trial_2'?'值守药师记下你带回药材与伤员线索的经过。':'严衡记下你据实说明分泉和接回弟子的经过。',cb);
  }
@@ -87,11 +88,12 @@ export function networkMonth(s,cb){
  if(!a)return false;
  const free=s.journey?.open&&!s.pending&&!c.detained&&!c.inquiry&&s.month>=c.punishmentUntil;
  const quiet=free&&!c.activeChain&&!c.context;
- if(a.method&&age(s)>=16&&!c.detained&&!c.inquiry&&s.month>=c.punishmentUntil&&!['travel','work'].includes(c.context)&&!s.journey?.resolution){a.method.months++;a.progressMonths++;}
+ if(a.method&&age(s)>=16&&!c.detained&&!c.inquiry&&s.month>=c.punishmentUntil&&!['travel','work'].includes(c.context)&&!s.journey?.resolution&&c.revision9?.methodFinishedAt!==s.month){a.method.months++;a.progressMonths++;}
  if(age(s)<16){
   if(free){const ticket=a.childhood.find(x=>!x.done&&x.due<=s.month);if(ticket){ticket.done=true;cb.arrive(ticket.event);return true;}}
   return false;
  }
+ if(active10(s)&&!canCultivate(s))return false;
  // A world emergency has priority. Its existing transport rules decide whether it can arrive.
  if(c.queue.some(q=>q.event==='world_raid'&&q.due<=s.month))return false;
  if(a.offer&&s.month>a.offer.expires){log(s,cb,'这一轮名额已另作安排','你未在名签期限内到场，原堂院已安排其他弟子。没有获得职位或功法，旧功劳仍保留。');a.offer=null;}
@@ -134,7 +136,7 @@ export function networkMonth(s,cb){
   }
  }
  if(a.methodDue&&s.month>=a.methodDue&&!seen(s,'network_method')){cb.arrive('network_method');return true;}
- if(!a.echoChecked&&age(s)>=23&&s.month>=a.quietUntil){
+ if(!active10(s)&&!a.echoChecked&&age(s)>=23&&s.month>=a.quietUntil){
   a.echoChecked=true;const related=['friend_witness','friend_hide','herbs','old_page','relic_route','teacher_notes','teacher_route','route_contact'].some(k=>a.marks[k]);
   if(related&&random(s,'events')<.65){cb.arrive('network_echo');return true;}
  }

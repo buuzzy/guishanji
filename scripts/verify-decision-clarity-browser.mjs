@@ -4,7 +4,7 @@ import {mkdir,writeFile,readFile} from 'node:fs/promises';
 import {join} from 'node:path';
 import {startServer,projectRoot} from './serve.mjs';
 import {launchBrowser} from './lib/browser.mjs';
-import {createRun,choose,advanceToChoice,options,validateRun,setActivity} from '../packages/adventure/engine.js';
+import {createRun,choose,advanceToChoice,options,validateRun,setActivity} from '../tests/helpers/rules11-engine.mjs';
 import {decide} from './play-cultivation.mjs';
 import {activityOptions} from '../packages/adventure/cultivation.js';
 const built=process.argv.includes('--built'),out=join(projectRoot,'artifacts',built?'decision-browser-static':'decision-browser-source');
@@ -12,7 +12,7 @@ await mkdir(out,{recursive:true});const report={built,checks:[],flows:[],scope:'
 let server,browser;
 const snapshot=p=>p.eval('adventurePreview.snapshot()');
 async function stop(p){if(await p.eval('adventurePreview.status().screen==="life"&&adventurePreview.status().intendsToPlay'))await p.click('#play-control');await p.waitFor('adventurePreview.status().saved');}
-async function begin(p,seed){await p.navigate(server.url+'preview/?replay='+encodeURIComponent(seed));await p.waitFor('!!window.adventurePreview');await p.click('[data-action=new]');await p.waitFor('adventurePreview.status().screen==="life"');await stop(p);}
+async function begin(p,seed){await p.navigate(server.url+'preview/?rules=11&replay='+encodeURIComponent(seed));await p.waitFor('!!window.adventurePreview');await p.click('[data-action=new]');await p.waitFor('adventurePreview.status().screen==="life"');await stop(p);}
 async function next(p){if((await snapshot(p)).pending)return;await p.click('[data-action=menu]');await p.waitFor('!!document.querySelector("dialog[open] [data-action=next]")');await p.click('[data-action=next]');await p.waitFor('!!adventurePreview.snapshot().pending||adventurePreview.snapshot().phase==="ended"');await p.waitFor('adventurePreview.status().saved');}
 async function select(p,id,touch=false){await p.click('[data-action=choose][data-choice='+id+']',touch);await p.waitFor('!document.querySelector("dialog[open]")');if((await snapshot(p)).phase!=='ended')await stop(p);}
 async function reach(p,id,policy={}){for(let i=0;i<110;i++){await next(p);const s=await snapshot(p);if(s.pending?.event===id)return s;if(s.phase==='ended')throw Error('Died before '+id);await select(p,decide(s,policy).id);if(policy.activity&&activityOptions(await snapshot(p)).find(a=>a.id===policy.activity)?.enabled){await p.click('[data-action=menu]');await p.waitFor('!!document.querySelector("dialog[open] [data-action=focus]")');await p.click('dialog[open] [data-action=focus]');await p.waitFor('document.querySelectorAll("dialog[open] [data-action=activity]").length===7');await p.click('[data-action=activity][data-activity='+policy.activity+']');await p.waitFor('!document.querySelector("dialog[open]")');await stop(p);}}throw Error('Did not reach '+id);}

@@ -3,7 +3,7 @@ import {mkdir,mkdtemp,readFile,writeFile,readdir} from 'node:fs/promises';
 import {join} from 'node:path';
 import {startServer,projectRoot} from './serve.mjs';
 import {launchBrowser,delay} from './lib/browser.mjs';
-import {createRun,choose,advance,advanceToChoice,options,cloneRun,validateRun,setActivity,travelTo,leaveExpedition,upgradeRun} from '../packages/adventure/engine.js';
+import {createRun,choose,advance,advanceToChoice,options,cloneRun,validateRun,setActivity,travelTo,leaveExpedition,upgradeRun} from '../tests/helpers/rules11-engine.mjs';
 import {routeOptions,currentContinent} from '../packages/adventure/cultivation.js';
 import {ADVENTURE_KEY} from '../packages/adventure/store.js';
 import {decide,playCultivation,naturalSeed} from './play-cultivation.mjs';
@@ -16,7 +16,7 @@ const saved=p=>p.waitFor('adventurePreview.status().saved||adventurePreview.stat
 async function pause(p){if(await p.eval('adventurePreview.status().screen==="life"&&adventurePreview.status().intendsToPlay&&!document.querySelector("dialog[open]")'))await p.click('#play-control');await saved(p);assert.equal(await p.eval('adventurePreview.status().blocked'),false);}
 async function menu(p){await p.click('[data-action=menu]');await p.waitFor('!!document.querySelector("dialog[open] [data-action=next]")');}
 async function birth(p,seed,touch=false){
- await p.navigate(service.url+'preview/?replay='+encodeURIComponent(seed));await p.waitFor('!!window.adventurePreview');
+ await p.navigate(service.url+'preview/?rules=11&replay='+encodeURIComponent(seed));await p.waitFor('!!window.adventurePreview');
  assert.equal(await p.eval('!!document.querySelector("#birth-form")'),false);
  await p.click('[data-action=new]',touch);await p.waitFor('adventurePreview.status().screen==="life"');await pause(p);
  const actual=await snap(p),expected=createRun({seed,id:actual.id});advance(expected,actual.month);assert.deepEqual(actual,expected);return expected;

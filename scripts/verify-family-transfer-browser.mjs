@@ -4,7 +4,7 @@ import {mkdir,writeFile,readFile} from 'node:fs/promises';
 import {join} from 'node:path';
 import {startServer,projectRoot} from './serve.mjs';
 import {launchBrowser} from './lib/browser.mjs';
-import {createRun,choose,advance,advanceToChoice,setActivity,options,validateRun,cloneRun} from '../packages/adventure/engine.js';
+import {createRun,choose,advance,advanceToChoice,setActivity,options,validateRun,cloneRun} from '../tests/helpers/rules11-engine.mjs';
 import {activityOptions} from '../packages/adventure/cultivation.js';
 import {decide} from './play-cultivation.mjs';
 const built=process.argv.includes('--built'),out=join(projectRoot,'artifacts',built?'family-transfer-static':'family-transfer-source');
@@ -19,7 +19,7 @@ function seedFor(id){for(let i=0;i<500;i++){
   choose(s,decide(s,{path:'orthodox'}).id);if(activityOptions(s).find(a=>a.id==='work')?.enabled)setActivity(s,'work');
  }
 }throw Error('No natural seed '+id);}
-async function birth(p,seed){await p.navigate(server.url+'preview/?replay='+encodeURIComponent(seed));await p.waitFor('!!window.adventurePreview');await p.click('[data-action=new]');await p.waitFor('adventurePreview.status().screen==="life"');await stop(p);const actual=await snap(p),s=createRun({seed,id:actual.id});advance(s,actual.month);assert.deepEqual(actual,s);return s;}
+async function birth(p,seed){await p.navigate(server.url+'preview/?rules=11&replay='+encodeURIComponent(seed));await p.waitFor('!!window.adventurePreview');await p.click('[data-action=new]');await p.waitFor('adventurePreview.status().screen==="life"');await stop(p);const actual=await snap(p),s=createRun({seed,id:actual.id});advance(s,actual.month);assert.deepEqual(actual,s);return s;}
 async function next(p,s){if(s.pending||s.phase==='ended')return;await p.click('[data-action=menu]');await p.waitFor('!!document.querySelector("dialog[open] [data-action=next]")');advanceToChoice(s);await p.click('[data-action=next]');await p.waitFor('!!adventurePreview.snapshot().pending||adventurePreview.snapshot().phase==="ended"');await p.waitFor('adventurePreview.status().saved');assert.deepEqual(await snap(p),s);}
 async function select(p,s,id,touch=false){choose(s,id);await p.click('[data-action=choose][data-choice='+id+']',touch);await p.waitFor('!document.querySelector("dialog[open]")');await stop(p);const actual=await snap(p);advance(s,actual.month-s.month);assert.deepEqual(actual,s);validateRun(actual);}
 async function work(p,s){if(!activityOptions(s).find(a=>a.id==='work')?.enabled||s.life.cultivation.activity==='work')return;await p.click('[data-action=menu]');await p.waitFor('!!document.querySelector("dialog[open] [data-action=focus]")');await p.click('[data-action=focus]');await p.waitFor('document.querySelectorAll("dialog[open] [data-action=activity]").length===7');setActivity(s,'work');await p.click('[data-action=activity][data-activity=work]');await p.waitFor('!document.querySelector("dialog[open]")');await p.waitFor('adventurePreview.status().saved');assert.deepEqual(await snap(p),s);}

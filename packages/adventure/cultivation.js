@@ -1,3 +1,5 @@
+import * as rules11 from './cultivation-v11.js';
+import {initialize12,month12,begin12,complete12,practiceFactor12,validate12} from './story-rules12.js';
 import * as rules10 from './cultivation-v10.js';
 import {initializeMundane,mundaneMonth,mundaneComplete,mundaneBegin,validateMundane,mundaneSettlement} from './mundane-life.js';
 import * as rules9 from './cultivation-v9.js';
@@ -22,7 +24,7 @@ const delay=(s,min,max)=>min+Math.floor(random(s,'events')*(max-min+1));
 export function initializeCultivation(s) {
  const roll=hashText(s.seed+':early')%100,kind=s.birth.era==='fracture'&&roll<9?'beast':roll<12?'demonic':roll<30?'loose':'ordinary';
  s.birth.upbringing=kind;
- const c={format:1,rulesVersion:11,opportunities:{},dailyMemory:{},economy:{received:0,spent:0,last:null},evidence:[],activityMonths:{},activityGains:{},inquiry:null,detained:false,path:'mortal',rank:'未入门',activity:'study',rootKnown:false,progress:0,entered:null,admissionDone:false,choiceAt:192,dailyAt:12,
+ const c={format:1,rulesVersion:12,opportunities:{},dailyMemory:{},economy:{received:0,spent:0,last:null},evidence:[],activityMonths:{},activityGains:{},inquiry:null,detained:false,path:'mortal',rank:'未入门',activity:'study',rootKnown:false,progress:0,entered:null,admissionDone:false,choiceAt:192,dailyAt:12,
   punishmentUntil:0,reputation:0,wanted:0,exam:null,attempts:[0,0,0,0,0],retryAt:0,context:null,activeChain:null,chains:{},queue:[],
   continent:s.birth.continent,closed:[],visited:[s.birth.continent],spot:s.birth.address,history:[],familyPolicy:'keep',mail:null,mailHistory:[],familyLoss:'',knownDeaths:[],
   familyAt:28*12,nextFamilyAt:40*12,aidPending:[],familyVisited:false,descendants:[],deathNews:[],routes:[],worldAt:(45+hashText(s.seed+':war')%60)*12,
@@ -31,15 +33,15 @@ export function initializeCultivation(s) {
  s.player.stones=({common:0,noble:6,clan:4})[s.birth.family];s.life.family.reserve=({common:0,noble:0,clan:12})[s.birth.family];
  s.life.family.members[0].deathAt=s.birth.family==='clan'?125*12:58*12;
  s.life.family.members[1].deathAt=s.birth.family==='clan'?180*12:82*12;
- initializeNetwork(s);initializeProgression(s);initializeRevision9(s);initialize10(s);initializeMundane(s);return c;
+ initializeNetwork(s);initializeProgression(s);initializeRevision9(s);initialize10(s);initializeMundane(s);initialize12(s);return c;
 }
 function revised_currentContinent(s){return s.life?.cultivation?.continent||(['home','refuge'].includes(s.player.location)?s.birth.continent:s.player.location);}
 function revised_cultivationActionTrip(s,op={}){
  if(!s.life?.cultivation)return null;
- const c=s.life.cultivation,target=op.echoTravel?c.story10.echo.origin:op.familyVisit||op.progression==='rebuild'&&op.route!=='delegate'||op.chain==='sect_return'&&op.step===0&&op.conduct==='care'?s.birth.continent:op.chain==='loose_portal'&&op.step===2?c.chains.loose_portal?.origin:null;
+ const c=s.life.cultivation,target=op.return12?c.v12.visit?.origin:op.echoTravel?c.story10.echo.origin:op.familyVisit||op.progression==='rebuild'&&op.route!=='delegate'||op.chain==='sect_return'&&op.step===0&&op.conduct==='care'?s.birth.continent:op.chain==='loose_portal'&&op.step===2?c.chains.loose_portal?.origin:null;
  if(!target)return null;const r=routeOptions(s).find(p=>p.id===target);if(!r?.route)throw Error('没有已确认的返程路线');return {location:target,route:copy(r.route),months:r.months};
 }
-function revised_beginCultivationAction(s,selected){mundaneBegin(s,selected);progressionBegin(s,selected);const c=s.life.cultivation,op=selected.system||{};if(op.punishment){c.punishmentKind=op.confinement?'confinement':'service';c.punishmentUntil=s.month+op.punishment;c.activity='work';s.player.focus=ACTIVITIES.work.skill;}}
+function revised_beginCultivationAction(s,selected){mundaneBegin(s,selected);progressionBegin(s,selected);const c=s.life.cultivation,op=selected.system||{};begin12(s,selected);if(op.punishment){c.punishmentKind=op.confinement?'confinement':'service';c.punishmentUntil=s.month+op.punishment;c.activity='work';s.player.focus=ACTIVITIES.work.skill;}}
 function revised_cultivationContext(s) {
  const c=s.life.cultivation;
  if(age(s)<16)return 'childhood';
@@ -54,6 +56,7 @@ function revised_cultivationActivity(s) {
  const event=s.journey?.event;if(event?.startsWith('advance_material_'))return s.result?.title||'跟授业者准备冲关所需的法门与灵药';
  if(event==='sect_rebuild'||event?.startsWith('sect_council_'))return '与掌事安排住处、护阵和山门差事';
  if(event==='tribulation_prepare')return '与护法炼阵、配药，勘查渡劫地';
+ if(c.v12?.action)return ({retreat:'在石室中闭关细练',travel:'随商队在本大陆历练',work:'完成约定的换料差事'})[c.v12.action.kind];
  if(c.detained)return '被看管在药院，等待下一次换岗';
  if(c.inquiry)return c.inquiry==='beast'?'与白苓相处，了解淬体功法':'核实新功法与离开师门的条件';
  if(context==='travel')return '沿已确认的路线赶路';
@@ -67,6 +70,7 @@ function revised_activityOptions(s) {
  return Object.entries(ACTIVITIES).map(([id,a])=>{
   let reason='';
   if(s.pending||s.waiting||s.phase!=='life')reason='先回应当前事件';
+  else if(c.v12?.visit)reason='先处理返乡安排';
   else if(c.mundane?.arc)reason='先处理正在进行的差事或安排';
   else if(c.revision9?.arc)reason='先完成矿役或问清眼前的传承条件';
   else if(c.detained||c.inquiry)reason=c.detained?'被看管期间不能自由安排日常':'先处理正在了解的拜师或离开条件';
@@ -84,7 +88,7 @@ function revised_changeActivity(s,id) {
  return s;
 }
 function revised_cultivationIncome(s) {return economyQuote(s).net;}
-export function annualCultivationSettlement(s){return s.life?.cultivation?.rulesVersion===11?settleEconomy(s):s.life?.cultivation?.rulesVersion===10?rules10.annualCultivationSettlement(s):s.life?.cultivation?.rulesVersion===9?rules9.annualCultivationSettlement(s):s.life?.cultivation?.rulesVersion===8?rules8.annualCultivationSettlement(s):s.life?.cultivation?.rulesVersion===7?rules7.annualCultivationSettlement(s):s.life?.cultivation?.rulesVersion===6?rules6.annualCultivationSettlement(s):null;}
+export function annualCultivationSettlement(s){return s.life?.cultivation?.rulesVersion===12?settleEconomy(s):s.life?.cultivation?.rulesVersion===11?rules11.annualCultivationSettlement(s):s.life?.cultivation?.rulesVersion===10?rules10.annualCultivationSettlement(s):s.life?.cultivation?.rulesVersion===9?rules9.annualCultivationSettlement(s):s.life?.cultivation?.rulesVersion===8?rules8.annualCultivationSettlement(s):s.life?.cultivation?.rulesVersion===7?rules7.annualCultivationSettlement(s):s.life?.cultivation?.rulesVersion===6?rules6.annualCultivationSettlement(s):null;}
 function schedule(s,event,months=0){const c=s.life.cultivation;if(!seen(s,event)&&!c.queue.some(q=>q.event===event))c.queue.push({event,due:s.month+months});}
 function record(s,cb,title,body,kind='life'){cb.log({kind,title,body,automatic:true,location:s.player.location,context:cultivationContext(s)});s.life.automaticCount++;}
 function addEvidence(s,event,choice,description,authority){
@@ -105,7 +109,7 @@ function registerDwelling(s){s.life.properties.dwelling={id:'dwelling',name:s.pl
 function setPath(s,path,cb,rank){
  const c=s.life.cultivation,old=c.path;c.path=path;c.rank=rank||({orthodox:'外门弟子',loose:'独立修士',demonic:'幽灯弟子',beast:'山林族人',mortal:'家中后辈'}[path]);
  if(!canCultivate(s))c.rank=path==='orthodox'?'凡俗杂役':path==='demonic'?'药房苦役':path==='mortal'?'家中后辈':'坊市学徒';
- c.admissionDone=true;c.entered=s.month;c.context=null;c.activeChain=null;c.queue=c.queue.filter(q=>!ROAD_CHAINS.some(a=>q.event.startsWith(a.id+'_')));
+ c.admissionDone=true;c.entered=s.month;c.context=null;c.inquiry=null;c.activeChain=null;c.queue=c.queue.filter(q=>!ROAD_CHAINS.some(a=>q.event.startsWith(a.id+'_')));
  c.spot=!canCultivate(s)&&path==='orthodox'?'外院粮房旁的通铺':PATHS[path].home;s.player.home=c.spot;registerDwelling(s);c.history.push({path,month:s.month});
  if(path==='orthodox') {cb.apply({items:['signal_talisman'],people:{master:{known:true,location:s.player.location},sister:{known:true,location:s.player.location},friend:{known:true,location:s.player.location}}});}
  else for(const id of ['master','sister','friend','trialmate'])s.people[id].known=false;
@@ -154,7 +158,7 @@ function revised_completeCultivationAction(s,event,choiceId,cb) {
  if(returnTrip){c.continent=returnTrip.location;if(returnTrip.route.length>1)c.routes.push(copy(returnTrip.route));if(op.chain==='loose_portal')cb.apply({location:returnTrip.location,home:c.chains.loose_portal.originHome});c.spot=s.player.home;}
  if(returnTrip&&op.echoTravel){cb.apply({location:returnTrip.location,home:'旧联系人药铺旁的客房'});c.spot=s.player.home;registerDwelling(s);}
  if(op.familyVisit&&s.life.family.members.some(p=>p.status==='alive')&&storyOpportunity(s,'family_home_ambush',age(s),age(s)+1,.3))schedule(s,'family_home_ambush',2);
- if(op.familyVisit){const member=s.life.family.members.find(p=>p.status==='alive');c.familyVisited=true;const from=currentContinent(s);c.continent=s.birth.continent;cb.apply({location:'home',home:PATHS[c.path].home});c.spot=s.player.home;if(from!==s.birth.continent)c.routes.push([from,s.birth.continent]);if(member)record(s,cb,'见到家中来人',member.name+'为你开门，先问你这些年住在哪里。'+(c.network.visits?.length?'上次返乡后，旧屋仍由他们照看；你拿出旧回信，核对哪些事情已经办妥。':'你从山门或坊市带回近况，亲人拿出这些年保存的信，问清收不到回音的那段日子。')+'你们把还未办妥的事写给往来的药商，约好下次如何传话。');else{const child=c.descendants.find(p=>p.status==='alive');record(s,cb,'旧屋里已换了一代人',child?child.name+'为你打开旧院门，把长辈留下的信从箱里取出来。你们在檐下谈到天黑，家里终于知道你这些年去了哪里。':'旧院没有亲人来开门，邻人替你找到保存旧信的箱子。你坐在旧屋里读了很久，离世的人不会因为这次归来重新醒来。');}for(const p of s.life.family.members)if(p.status==='dead'&&!c.knownDeaths.includes(p.id))c.knownDeaths.push(p.id);for(const p of c.descendants)p.known=true;(c.network.visits||=[]).push({month:s.month,reserve:s.life.family.reserve});}
+ if(op.familyVisit&&c.rulesVersion!==12){const member=s.life.family.members.find(p=>p.status==='alive');c.familyVisited=true;const from=currentContinent(s);c.continent=s.birth.continent;cb.apply({location:'home',home:PATHS[c.path].home});c.spot=s.player.home;if(from!==s.birth.continent)c.routes.push([from,s.birth.continent]);if(member)record(s,cb,'见到家中来人',member.name+'为你开门，先问你这些年住在哪里。'+(c.network.visits?.length?'上次返乡后，旧屋仍由他们照看；你拿出旧回信，核对哪些事情已经办妥。':'你从山门或坊市带回近况，亲人拿出这些年保存的信，问清收不到回音的那段日子。')+'你们把还未办妥的事写给往来的药商，约好下次如何传话。');else{const child=c.descendants.find(p=>p.status==='alive');record(s,cb,'旧屋里已换了一代人',child?child.name+'为你打开旧院门，把长辈留下的信从箱里取出来。你们在檐下谈到天黑，家里终于知道你这些年去了哪里。':'旧院没有亲人来开门，邻人替你找到保存旧信的箱子。你坐在旧屋里读了很久，离世的人不会因为这次归来重新醒来。');}for(const p of s.life.family.members)if(p.status==='dead'&&!c.knownDeaths.includes(p.id))c.knownDeaths.push(p.id);for(const p of c.descendants)p.known=true;(c.network.visits||=[]).push({month:s.month,reserve:s.life.family.reserve});}
  if(op.familyAid){s.life.family.reserve=clamp(s.life.family.reserve+2,0,1000);s.life.family.bond=clamp(s.life.family.bond+8);}
  if(op.familyRefuse){s.life.family.bond=clamp(s.life.family.bond-15);}
  if(op.familyDispute)c.reputation=clamp(c.reputation+(op.familyDispute==='take'?-8:4),-100,100);
@@ -184,6 +188,7 @@ function revised_completeCultivationAction(s,event,choiceId,cb) {
  progressionAction(s,event,choiceId,success,cb);
  revisionAction(s,event,choiceId,success,cb);
  choose10(s,event,choiceId,success,cb);
+ complete12(s,event,choice,success,cb);
  let resumed=c.progression.resumeJourney||null;delete c.progression.resumeJourney;
  if(event==='world_raid'&&choiceId==='defend'&&c.suspended){c.context=c.suspended.context;c.activeChain=c.suspended.chain;for(const q of c.suspended.queue)c.queue.push({event:q.event,due:s.month+q.remaining});if(c.suspended.journey){resumed=c.suspended.journey;if(!resumed.open)resumed.to+=s.month-c.suspended.month;}delete c.suspended;}
  else if(event==='world_raid'){
@@ -209,13 +214,13 @@ function revised_routeOptions(s) {
 function revised_beginTravel(s,id,cb){const r=routeOptions(s).find(p=>p.id===id);if(!r?.enabled)throw Error(r?.reason||'没有这个目的地');s.player.stones-=r.fee;s.life.cultivation.economy.spent+=r.fee;s.journey={from:s.month,to:s.month+r.months,target:null,practice:s.player.focus,cultivationTravel:{location:id,route:r.route}};s.revision++;record(s,cb,'出发前往'+r.name,'路费'+r.fee+'灵石，按已确认的路线赶路，预计'+r.months+'个月。抵达后再寻找住处。','plan');return s;}
 function revised_finishTravel(s,cb){const trip=s.journey.cultivationTravel,c=s.life.cultivation;c.continent=trip.location;cb.apply({location:trip.location,home:GEOGRAPHY.find(p=>p.id===trip.location).places[1]+'租屋'});c.spot=s.player.home;registerDwelling(s);for(const id of trip.route)if(!c.visited.includes(id))c.visited.push(id);if(trip.route.length>1)c.routes.push(copy(trip.route));record(s,cb,'抵达新的住处','你到达'+s.player.home+'，沿路经过的地点已记入地图。');cb.open();}
 function revised_withdrawCultivation(s,cb){const c=s.life.cultivation;if(!c.activeChain||s.pending||s.phase!=='life')throw Error('目前没有可离开的探险');const chain=c.activeChain;c.queue=c.queue.filter(q=>!q.event.startsWith(chain+'_'));c.context=null;c.activeChain=null;s.journey={from:s.month,to:s.month+6,target:null,practice:s.player.focus,cultivationTravel:{location:currentContinent(s),route:[currentContinent(s)]}};s.revision++;record(s,cb,'离开当前探险','你带走已取得的物品，沿已知出口返回。尚未取得的奖励与后续阶段取消。','plan');return s;}
-function automaticCultivation(s,cb){const c=s.life.cultivation;if(!canCultivate(s))return;if(c.revision9?.arc||s.month<c.dailyAt)return;const mundane=mundaneDaily(s),row=mundane===undefined?automaticStory(s,cultivationContext(s)):mundane;if(row)record(s,cb,row.title,row.body);c.dailyAt=s.month+delay(s,c.activeChain?18:24,c.activeChain?36:48);}
+function automaticCultivation(s,cb){const c=s.life.cultivation;if(!canCultivate(s)||c.v12?.action||c.v12?.visit)return;if(c.revision9?.arc||s.month<c.dailyAt)return;const mundane=mundaneDaily(s),row=mundane===undefined?automaticStory(s,cultivationContext(s)):mundane;if(row)record(s,cb,row.title,row.body);c.dailyAt=s.month+delay(s,c.activeChain?18:24,c.activeChain?36:48);}
 function revised_cultivationMonth(s,cb){
  const c=s.life.cultivation,context=cultivationContext(s);
  if(age(s)>=16){
   const activity=s.month<c.punishmentUntil?'work':c.activity,a=ACTIVITIES[activity],restricted=['travel','valley','cavern','outer','work'].includes(context)||c.detained||c.inquiry||s.month<c.punishmentUntil&&c.punishmentKind==='confinement';
   if(!restricted){
-    const before=c.progress;c.progress=canCultivate(s)?clamp(c.progress+(a.progress||1)*ROOTS[s.player.root].rate*(s.birth.era==='ebb'?.8:1)*networkRate(s),0,1000):0;
+    const before=c.progress;c.progress=canCultivate(s)?clamp(c.progress+(a.progress||1)*ROOTS[s.player.root].rate*(s.birth.era==='ebb'?.8:1)*networkRate(s)*practiceFactor12(s),0,1000):0;
    if(c.rulesVersion>=5){c.activityMonths[activity]=(c.activityMonths[activity]||0)+1;const gains=c.activityGains[activity]||={};gains.progress=(gains.progress||0)+c.progress-before;}
    if(s.month%6===0){const beforeSkills=s.player.skills[a.skill],prior=Object.fromEntries(['insight','courage','empathy','health','mind'].map(k=>[k,s.player[k]]));cb.apply({skills:c.rulesVersion>=5&&a.trainSkill===false?{}:{[a.skill]:.5},stats:Object.fromEntries(['insight','courage','empathy','health','mind'].filter(k=>a[k]).map(k=>[k,a[k]]))});
     if(c.rulesVersion>=5){const gains=c.activityGains[activity];gains[a.skill]=(gains[a.skill]||0)+s.player.skills[a.skill]-beforeSkills;for(const k of Object.keys(prior))if(a[k])gains[k]=(gains[k]||0)+s.player[k]-prior[k];}}
@@ -247,6 +252,7 @@ function revised_cultivationMonth(s,cb){
   c.queue=c.queue.filter(q=>q!==alert&&!ROAD_CHAINS.some(a=>q.event.startsWith(a.id+'_')));c.context=null;c.activeChain=null;
   record(s,cb,'中转者送来战事急讯','争夺灵泉的战事波及住处，可靠的中转者带来了具体位置。','world');cb.arrive('world_raid');return;
  }
+ if(month12(s,cb))return;
  if(!c.mundane?.arc&&revisionMonth(s,cb))return;
  if(month10(s,cb))return;
  if(mundaneMonth(s,cb))return;
@@ -257,7 +263,7 @@ function revised_cultivationMonth(s,cb){
  if(due.length){const next=due[0];c.queue=c.queue.filter(q=>q!==next);if(!seen(s,next.event))cb.arrive(next.event);return;}
  if(c.activeChain||c.detained||c.inquiry||!c.admissionDone||s.month<c.choiceAt)return;
  const possible=[];
- if(canCultivate(s)&&c.path!=='mortal'&&s.player.realm<4&&c.progress>=([80,140,220,320][s.player.realm])&&s.month>=c.retryAt&&c.attempts[s.player.realm+1]<3&&(s.player.realm<2||materialSlots(s,s.player.realm+1).every(x=>x[0])&&(c.network.method?.months||0)>=(s.player.realm===2?120:240))){const id='breakthrough_'+(s.player.realm+1)+'_'+c.attempts[s.player.realm+1];if(!seen(s,id))possible.push(id);}
+ if(canCultivate(s)&&c.path!=='mortal'&&s.player.realm<4&&c.progress>=([80,260,220,320][s.player.realm])&&s.month>=c.retryAt&&c.attempts[s.player.realm+1]<3&&(s.player.realm<2||materialSlots(s,s.player.realm+1).every(x=>x[0])&&(c.network.method?.months||0)>=(s.player.realm===2?120:240))){const id='breakthrough_'+(s.player.realm+1)+'_'+c.attempts[s.player.realm+1];if(!seen(s,id))possible.push(id);}
  if(c.path==='orthodox'&&currentContinent(s)===s.birth.continent&&s.player.realm>=1&&s.month>=c.punishmentUntil&&!seen(s,'garden_accident')&&storyOpportunity(s,'garden_accident',20,36,.5))possible.push('garden_accident');
  if(canCultivate(s)&&age(s)>=40&&!seen(s,'road_turn')&&storyOpportunity(s,'road_turn',40,55,.6))possible.push('road_turn');
  const evidence=discoverableEvidence(s);
@@ -276,7 +282,7 @@ function revised_cultivationMonth(s,cb){
 }
 function revised_validateCultivation(s,fail){
  const c=s.life?.cultivation;if(!c)return;
- if(c.rulesVersion!==11)fail('修行规则版本');validateNetwork(s,fail);validateProgression(s,fail);validateRevision9(s,fail);validate10(s,fail);validateMundane(s,fail);
+ if(c.rulesVersion!==12)fail('修行规则版本');validate12(s,fail);validateNetwork(s,fail);validateProgression(s,fail);validateRevision9(s,fail);validate10(s,fail);validateMundane(s,fail);
  if(c.rulesVersion>=5){
   if(!c.opportunities||Array.isArray(c.opportunities)||Object.entries(c.opportunities).length>96||Object.entries(c.opportunities).some(([id,o])=>!CULTIVATION_EVENTS[id]&&!ROAD_CHAINS.some(a=>a.id===id)||typeof o.occurs!=='boolean'||!Number.isSafeInteger(o.from)||!Number.isSafeInteger(o.to)||o.from>s.month||o.to<o.from||o.to>13000))fail('故事机会窗口');
   if(!c.dailyMemory||Array.isArray(c.dailyMemory)||Object.entries(c.dailyMemory).some(([id,a])=>!Array.isArray(a)||a.length>64||a.some(v=>!Number.isInteger(v)||v<0||v>64)))fail('日常故事记忆');
@@ -331,29 +337,30 @@ function revised_cultivationText(input,s,event,kind='node'){
 }
 
 // Existing lives continue with their original scheduling, economy and choices.
-export function currentContinent(...args){const version=args[0]?.life?.cultivation?.rulesVersion;return version===11?revised_currentContinent(...args):(version===10?rules10:version===9?rules9:version===8?rules8:version===7?rules7:version===6?rules6:previousRules).currentContinent(...args);}
-export function cultivationActionTrip(...args){const version=args[0]?.life?.cultivation?.rulesVersion;return version===11?revised_cultivationActionTrip(...args):(version===10?rules10:version===9?rules9:version===8?rules8:version===7?rules7:version===6?rules6:previousRules).cultivationActionTrip(...args);}
-export function beginCultivationAction(...args){const version=args[0]?.life?.cultivation?.rulesVersion;return version===11?revised_beginCultivationAction(...args):(version===10?rules10:version===9?rules9:version===8?rules8:version===7?rules7:version===6?rules6:previousRules).beginCultivationAction(...args);}
-export function cultivationContext(...args){const version=args[0]?.life?.cultivation?.rulesVersion;return version===11?revised_cultivationContext(...args):(version===10?rules10:version===9?rules9:version===8?rules8:version===7?rules7:version===6?rules6:previousRules).cultivationContext(...args);}
-export function cultivationActivity(...args){const version=args[0]?.life?.cultivation?.rulesVersion;return version===11?revised_cultivationActivity(...args):(version===10?rules10:version===9?rules9:version===8?rules8:version===7?rules7:version===6?rules6:previousRules).cultivationActivity(...args);}
-export function activityOptions(...args){const version=args[0]?.life?.cultivation?.rulesVersion;return version===11?revised_activityOptions(...args):(version===10?rules10:version===9?rules9:version===8?rules8:version===7?rules7:version===6?rules6:previousRules).activityOptions(...args);}
-export function changeActivity(...args){const version=args[0]?.life?.cultivation?.rulesVersion;return version===11?revised_changeActivity(...args):(version===10?rules10:version===9?rules9:version===8?rules8:version===7?rules7:version===6?rules6:previousRules).changeActivity(...args);}
-export function cultivationIncome(...args){const version=args[0]?.life?.cultivation?.rulesVersion;return version===11?revised_cultivationIncome(...args):(version===10?rules10:version===9?rules9:version===8?rules8:version===7?rules7:version===6?rules6:previousRules).cultivationIncome(...args);}
-export function discoverableEvidence(...args){const version=args[0]?.life?.cultivation?.rulesVersion;return version===11?revised_discoverableEvidence(...args):(version===10?rules10:version===9?rules9:version===8?rules8:version===7?rules7:version===6?rules6:previousRules).discoverableEvidence(...args);}
-export function completeCultivationAction(...args){const version=args[0]?.life?.cultivation?.rulesVersion;return version===11?revised_completeCultivationAction(...args):(version===10?rules10:version===9?rules9:version===8?rules8:version===7?rules7:version===6?rules6:previousRules).completeCultivationAction(...args);}
-export function routeOptions(...args){const version=args[0]?.life?.cultivation?.rulesVersion;return version===11?revised_routeOptions(...args):(version===10?rules10:version===9?rules9:version===8?rules8:version===7?rules7:version===6?rules6:previousRules).routeOptions(...args);}
-export function beginTravel(...args){const version=args[0]?.life?.cultivation?.rulesVersion;return version===11?revised_beginTravel(...args):(version===10?rules10:version===9?rules9:version===8?rules8:version===7?rules7:version===6?rules6:previousRules).beginTravel(...args);}
-export function finishTravel(...args){const version=args[0]?.life?.cultivation?.rulesVersion;return version===11?revised_finishTravel(...args):(version===10?rules10:version===9?rules9:version===8?rules8:version===7?rules7:version===6?rules6:previousRules).finishTravel(...args);}
-export function withdrawCultivation(...args){const version=args[0]?.life?.cultivation?.rulesVersion;return version===11?revised_withdrawCultivation(...args):(version===10?rules10:version===9?rules9:version===8?rules8:version===7?rules7:version===6?rules6:previousRules).withdrawCultivation(...args);}
-export function cultivationMonth(...args){const version=args[0]?.life?.cultivation?.rulesVersion;return version===11?revised_cultivationMonth(...args):(version===10?rules10:version===9?rules9:version===8?rules8:version===7?rules7:version===6?rules6:previousRules).cultivationMonth(...args);}
-export function validateCultivation(...args){const version=args[0]?.life?.cultivation?.rulesVersion;return version===11?revised_validateCultivation(...args):(version===10?rules10:version===9?rules9:version===8?rules8:version===7?rules7:version===6?rules6:previousRules).validateCultivation(...args);}
-export function cultivationText(...args){const version=args[1]?.life?.cultivation?.rulesVersion;return version===11?revised_cultivationText(...args):(version===10?rules10:version===9?rules9:version===8?rules8:version===7?rules7:version===6?rules6:previousRules).cultivationText(...args);}
+export function currentContinent(...args){const version=args[0]?.life?.cultivation?.rulesVersion;return version===12?revised_currentContinent(...args):(version===11?rules11:version===10?rules10:version===9?rules9:version===8?rules8:version===7?rules7:version===6?rules6:previousRules).currentContinent(...args);}
+export function cultivationActionTrip(...args){const version=args[0]?.life?.cultivation?.rulesVersion;return version===12?revised_cultivationActionTrip(...args):(version===11?rules11:version===10?rules10:version===9?rules9:version===8?rules8:version===7?rules7:version===6?rules6:previousRules).cultivationActionTrip(...args);}
+export function beginCultivationAction(...args){const version=args[0]?.life?.cultivation?.rulesVersion;return version===12?revised_beginCultivationAction(...args):(version===11?rules11:version===10?rules10:version===9?rules9:version===8?rules8:version===7?rules7:version===6?rules6:previousRules).beginCultivationAction(...args);}
+export function cultivationContext(...args){const version=args[0]?.life?.cultivation?.rulesVersion;return version===12?revised_cultivationContext(...args):(version===11?rules11:version===10?rules10:version===9?rules9:version===8?rules8:version===7?rules7:version===6?rules6:previousRules).cultivationContext(...args);}
+export function cultivationActivity(...args){const version=args[0]?.life?.cultivation?.rulesVersion;return version===12?revised_cultivationActivity(...args):(version===11?rules11:version===10?rules10:version===9?rules9:version===8?rules8:version===7?rules7:version===6?rules6:previousRules).cultivationActivity(...args);}
+export function activityOptions(...args){const version=args[0]?.life?.cultivation?.rulesVersion;return version===12?revised_activityOptions(...args):(version===11?rules11:version===10?rules10:version===9?rules9:version===8?rules8:version===7?rules7:version===6?rules6:previousRules).activityOptions(...args);}
+export function changeActivity(...args){const version=args[0]?.life?.cultivation?.rulesVersion;return version===12?revised_changeActivity(...args):(version===11?rules11:version===10?rules10:version===9?rules9:version===8?rules8:version===7?rules7:version===6?rules6:previousRules).changeActivity(...args);}
+export function cultivationIncome(...args){const version=args[0]?.life?.cultivation?.rulesVersion;return version===12?revised_cultivationIncome(...args):(version===11?rules11:version===10?rules10:version===9?rules9:version===8?rules8:version===7?rules7:version===6?rules6:previousRules).cultivationIncome(...args);}
+export function discoverableEvidence(...args){const version=args[0]?.life?.cultivation?.rulesVersion;return version===12?revised_discoverableEvidence(...args):(version===11?rules11:version===10?rules10:version===9?rules9:version===8?rules8:version===7?rules7:version===6?rules6:previousRules).discoverableEvidence(...args);}
+export function completeCultivationAction(...args){const version=args[0]?.life?.cultivation?.rulesVersion;return version===12?revised_completeCultivationAction(...args):(version===11?rules11:version===10?rules10:version===9?rules9:version===8?rules8:version===7?rules7:version===6?rules6:previousRules).completeCultivationAction(...args);}
+export function routeOptions(...args){const version=args[0]?.life?.cultivation?.rulesVersion;return version===12?revised_routeOptions(...args):(version===11?rules11:version===10?rules10:version===9?rules9:version===8?rules8:version===7?rules7:version===6?rules6:previousRules).routeOptions(...args);}
+export function beginTravel(...args){const version=args[0]?.life?.cultivation?.rulesVersion;return version===12?revised_beginTravel(...args):(version===11?rules11:version===10?rules10:version===9?rules9:version===8?rules8:version===7?rules7:version===6?rules6:previousRules).beginTravel(...args);}
+export function finishTravel(...args){const version=args[0]?.life?.cultivation?.rulesVersion;return version===12?revised_finishTravel(...args):(version===11?rules11:version===10?rules10:version===9?rules9:version===8?rules8:version===7?rules7:version===6?rules6:previousRules).finishTravel(...args);}
+export function withdrawCultivation(...args){const version=args[0]?.life?.cultivation?.rulesVersion;return version===12?revised_withdrawCultivation(...args):(version===11?rules11:version===10?rules10:version===9?rules9:version===8?rules8:version===7?rules7:version===6?rules6:previousRules).withdrawCultivation(...args);}
+export function cultivationMonth(...args){const version=args[0]?.life?.cultivation?.rulesVersion;return version===12?revised_cultivationMonth(...args):(version===11?rules11:version===10?rules10:version===9?rules9:version===8?rules8:version===7?rules7:version===6?rules6:previousRules).cultivationMonth(...args);}
+export function validateCultivation(...args){const version=args[0]?.life?.cultivation?.rulesVersion;return version===12?revised_validateCultivation(...args):(version===11?rules11:version===10?rules10:version===9?rules9:version===8?rules8:version===7?rules7:version===6?rules6:previousRules).validateCultivation(...args);}
+export function cultivationText(...args){const version=args[1]?.life?.cultivation?.rulesVersion;return version===12?revised_cultivationText(...args):(version===11?rules11:version===10?rules10:version===9?rules9:version===8?rules8:version===7?rules7:version===6?rules6:previousRules).cultivationText(...args);}
 
 export function cultivationDeliveryMonths(s,selected){
+ if(s.life?.cultivation?.rulesVersion===11)return rules11.cultivationDeliveryMonths(s,selected);
  if(s.life?.cultivation?.rulesVersion===10)return rules10.cultivationDeliveryMonths(s,selected);
  if(s.life?.cultivation?.rulesVersion===7)return rules7.cultivationDeliveryMonths(s,selected);
  if(s.life?.cultivation?.rulesVersion===8)return rules8.cultivationDeliveryMonths(s,selected);
- if(s.life?.cultivation?.rulesVersion!==11)return 0;
+ if(s.life?.cultivation?.rulesVersion!==12)return 0;
  const op=selected.system||{};
  if(!op.familySend&&!op.familySupport&&!op.familyAid&&!op.familyPolicy)return 0;
  const trip=routeOptions(s).find(r=>r.id===s.birth.continent);return trip?.route?6+(trip.route.length-1)*18:0;

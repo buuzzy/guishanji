@@ -138,7 +138,7 @@ export function choose10(s,event,id,success,cb){
 }
 export function month10(s,cb){
  if(!active10(s))return false;
- if(c(s).rulesVersion===11&&c(s).mundane?.arc)return false;
+ if(c(s).rulesVersion>=11&&c(s).mundane?.arc)return false;
  const cc=c(s),rr=r(s),free=s.journey?.open&&!s.pending&&!cc.detained&&!cc.inquiry&&!cc.activeChain&&!cc.context&&s.month>=cc.punishmentUntil;
  if(!canCultivate(s))cc.progress=0;
  if(!free||age(s)<16||!cc.admissionDone)return false;

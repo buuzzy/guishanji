@@ -4,7 +4,7 @@ import {createHash} from 'node:crypto';
 import {join} from 'node:path';
 import {startServer,projectRoot} from './serve.mjs';
 import {launchBrowser} from './lib/browser.mjs';
-import {createRun,choose,advance,advanceToChoice,validateRun,options} from '../packages/adventure/engine.js';
+import {createRun,choose,advance,advanceToChoice,validateRun,options} from '../tests/helpers/rules11-engine.mjs';
 import {mortalChoice} from './audit-mundane-life.mjs';
 import {mundane,mundanePeople} from '../packages/adventure/mundane-life.js';
 const built=process.argv.includes('--built'),out=join(projectRoot,'artifacts',built?'mundane-static':'mundane-source');
@@ -19,7 +19,7 @@ try{
  const cases=[{seed:'凡人世事-24',mode:'steady'},{seed:'凡人世事-28',mode:'yard'},{seed:'凡人世事-74',mode:'farm'},{seed:'凡人世事-177',mode:'sell'},{seed:'root-audit-15',mode:'burial'}];
  for(let i=0;i<cases.length;i++){
   const row=cases[i],p=await browser.page();await p.send('Emulation.setDeviceMetricsOverride',{width:i%2?390:1280,height:900,deviceScaleFactor:1,mobile:!!(i%2)});
-  await p.navigate(server.url+'preview/?replay='+encodeURIComponent(row.seed));await p.waitFor('!!document.querySelector("[data-action=new]")');await p.click('[data-action=new]');await p.waitFor('adventurePreview.status().screen==="life"');await stop(p);
+  await p.navigate(server.url+'preview/?rules=11&replay='+encodeURIComponent(row.seed));await p.waitFor('!!document.querySelector("[data-action=new]")');await p.click('[data-action=new]');await p.waitFor('adventurePreview.status().screen==="life"');await stop(p);
   const born=await snapshot(p),s=createRun({seed:row.seed,id:born.id});advance(s,born.month);assert.deepEqual(born,s);assert.equal(s.life.cultivation.rulesVersion,11);
   const visited=[];let reloaded=false,moneyChecked=false,peopleChecked=false;
   for(let n=0;n<220&&s.phase==='life';n++){

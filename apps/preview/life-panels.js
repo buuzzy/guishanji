@@ -1,3 +1,5 @@
+import {active12,rules12,lifespan12,stage12,sectProfile} from '../../packages/adventure/story-rules12.js';
+import {BODY_TYPES} from '../../content/rules12-world.js';
 import {activeMundane,mundane,mundaneQuote} from '../../packages/adventure/mundane-life.js';
 import {materialSlots} from '../../packages/adventure/progression.js';
 import {active10,canCultivate,rootLabel} from '../../packages/adventure/story-rules10.js';
@@ -32,9 +34,9 @@ export function abilityRadar(p){
 
 export function practicePanel(s){
  const c=s.life.cultivation,p=s.player;if(!c)return '';
- if(active10(s)&&!canCultivate(s))return `<section class="panel practice-panel">${heading('修行本事','凡身')} ${Object.entries(p.skills).map(([k,v])=>bar(k,v,s)).join('')}${abilityRadar(p)}${methodPanel(s)}<p class="hint">${REALM_ABILITIES[0]}寿元上限 ${REALMS[0].lifespan} 岁。</p></section>`;
- const threshold=[80,140,220,320][p.realm],pct=threshold?Math.min(100,c.progress/threshold*100):100;
- return `<section class="panel practice-panel">${heading('修行本事',REALMS[p.realm].name)}<div class="cultivation-progress"><div class="stat-line"><span>境界积累</span><b class="mono" data-value="progress">${threshold?Math.round(pct)+'%':'已臻元婴'}</b></div><div class="prog"><div data-progress-meter style="width:${pct}%"></div></div><div class="realm-steps">${REALMS.map((r,i)=>`<span class="${i<=p.realm?'reached':''}"><i></i>${r.name}</span>`).join('')}</div></div>${Object.entries(p.skills).map(([k,v])=>bar(k,v,s)).join('')}${abilityRadar(p)}${methodPanel(s)}${advancementPanel(s)}<p class="hint">${REALM_ABILITIES[p.realm]}寿元上限 ${REALMS[p.realm].lifespan} 岁。${threshold?'积累到门槛后，再准备材料与闭关。':''}</p></section>`;
+ if(active10(s)&&!canCultivate(s))return `<section class="panel practice-panel">${heading('修行本事','凡身')}${active12(s)?'<p class="hint">'+BODY_TYPES[rules12(s).body.type].name+'</p>':''} ${Object.entries(p.skills).map(([k,v])=>bar(k,v,s)).join('')}${abilityRadar(p)}${methodPanel(s)}<p class="hint">${REALM_ABILITIES[0]}寿元上限 ${lifespan12(s)} 岁。</p></section>`;
+ const threshold=(active12(s)?[80,260,220,320]:[80,140,220,320])[p.realm],pct=threshold?Math.min(100,c.progress/threshold*100):100;
+ return `<section class="panel practice-panel">${heading('修行本事',stage12(s)||REALMS[p.realm].name)}${active12(s)?'<p class="hint">'+BODY_TYPES[rules12(s).body.type].name+(rules12(s).body.damage?' · 经脉受损':'')+'</p>':''}<div class="cultivation-progress"><div class="stat-line"><span>境界积累</span><b class="mono" data-value="progress">${threshold?Math.round(pct)+'%':'已臻元婴'}</b></div><div class="prog"><div data-progress-meter style="width:${pct}%"></div></div><div class="realm-steps">${REALMS.map((r,i)=>`<span class="${i<=p.realm?'reached':''}"><i></i>${r.name}</span>`).join('')}</div></div>${Object.entries(p.skills).map(([k,v])=>bar(k,v,s)).join('')}${abilityRadar(p)}${methodPanel(s)}${advancementPanel(s)}<p class="hint">${REALM_ABILITIES[p.realm]}寿元上限 ${lifespan12(s)} 岁。${threshold?'积累到门槛后，再准备材料与闭关。':''}</p></section>`;
 }
 function advancementPanel(s){
  if(s.life.cultivation.rulesVersion<8||s.player.realm<2||s.player.realm>=4)return '';
@@ -58,6 +60,6 @@ function inventory(s){return `<section class="panel belongings-panel">${heading(
 function sectPanel(s){
  const sect=s.life.cultivation?.progression?.sect;if(!sect||s.life.cultivation.path!=='orthodox')return '';
  const phases={intact:'原山门',camp:'撤离后的临时营地',rebuilt:'重新建立的山门'},roles={core:'守山与护法',leader:'领事与议事',supporter:'已交接管理'};
- return `<section class="panel sect-panel">${heading(sect.name,sect.size)}<div class="sect-banner"><span>${phases[sect.phase]}</span><b>${REALMS[sect.highest].name}坐镇</b></div><div class="sect-columns"><div><small>你的差事</small><strong>${roles[sect.role]||s.life.cultivation.rank}</strong></div><div><small>公库</small><strong>${sect.phase==='intact'?'由掌事保管':sect.treasury+' 枚灵石'}</strong></div><div><small>安置与营建</small><strong>${sect.development?sect.development+' 项已办妥':'尚待商议'}</strong></div></div>${sect.phase!=='intact'?'<div class="prog public-store"><div style="width:'+Math.min(100,sect.treasury/24*100)+'%"></div></div>':''}</section>`;
+ return `<section class="panel sect-panel">${heading(sect.name,sect.size)}${active12(s)?'<p class="hint">'+esc(sectProfile(s).style)+'</p>':''}<div class="sect-banner"><span>${phases[sect.phase]}</span><b>${REALMS[sect.highest].name}坐镇</b></div><div class="sect-columns"><div><small>你的差事</small><strong>${roles[sect.role]||s.life.cultivation.rank}</strong></div><div><small>公库</small><strong>${sect.phase==='intact'?'由掌事保管':sect.treasury+' 枚灵石'}</strong></div><div><small>安置与营建</small><strong>${sect.development?sect.development+' 项已办妥':'尚待商议'}</strong></div></div>${sect.phase!=='intact'?'<div class="prog public-store"><div style="width:'+Math.min(100,sect.treasury/24*100)+'%"></div></div>':''}</section>`;
 }
 export function lifePanels(s){return identity(s)+practicePanel(s)+sectPanel(s)+wealth(s)+inventory(s);}

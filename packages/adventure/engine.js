@@ -1,3 +1,5 @@
+import {lifespan12,choice12} from './story-rules12.js';
+import {initializeCultivation as initializeRules11} from './cultivation-v11.js';
 import {MUNDANE_ENDINGS} from '../../content/mundane-stories.js';
 import { createStreams, random, hashText } from '../core/random.js';
 import { NODES as ORIGINAL_NODES, ACTS, REALMS, REGIONS, CAST as ORIGINAL_CAST, ITEMS, ADVENTURE_VERSION, CONTENT_REVISION, ENDINGS as ORIGINAL_ENDINGS, SKILLS, LEGACY_VERSION, LEGACY_CONTENT_REVISION, PREVIOUS_VERSION, PREVIOUS_CONTENT_REVISION } from '../../content/adventure.js';
@@ -15,7 +17,7 @@ import {active10,canCultivate,hasMana,encounterPeople,introduceText} from './sto
 import {initializeCultivation as initializeRules10} from './cultivation-v10.js';
 import {mundaneRequirements} from './mundane-life.js';
 import {initializeCultivation as initializeRules9} from './cultivation-v9.js';
-import { CULTIVATION_EVENTS,RULES10_CULTIVATION_EVENTS,RULES9_CULTIVATION_EVENTS,RULES8_CULTIVATION_EVENTS,LEGACY_CULTIVATION_EVENTS,RULES5_CULTIVATION_EVENTS,RULES6_CULTIVATION_EVENTS,RULES7_CULTIVATION_EVENTS } from '../../content/cultivation-stories.js';
+import { CULTIVATION_EVENTS,RULES11_CULTIVATION_EVENTS,RULES10_CULTIVATION_EVENTS,RULES9_CULTIVATION_EVENTS,RULES8_CULTIVATION_EVENTS,LEGACY_CULTIVATION_EVENTS,RULES5_CULTIVATION_EVENTS,RULES6_CULTIVATION_EVENTS,RULES7_CULTIVATION_EVENTS } from '../../content/cultivation-stories.js';
 import { ROOTS,SYSTEM_ENDINGS } from '../../content/cultivation-world.js';
 import { annualCultivationSettlement,initializeCultivation,validateCultivation,finishTravel,beginTravel,changeActivity,withdrawCultivation,cultivationText,cultivationActionTrip,cultivationDeliveryMonths } from './cultivation.js';
 import { PREVIEW3_VERSION,PREVIEW3_CONTENT_REVISION } from '../../content/adventure.js';
@@ -25,7 +27,7 @@ NODES.beacon.legacyOnly = true;
 Object.assign(NODES,CULTIVATION_EVENTS);
 for(const node of Object.values(CULTIVATION_EVENTS))node.cultivationOnly=true;
 const CAST = { ...ORIGINAL_CAST, ...NEW_CAST };
-const ENDINGS = { ...ORIGINAL_ENDINGS, ...EXTRA_ENDINGS, ...SYSTEM_ENDINGS,...MUNDANE_ENDINGS };
+const ENDINGS = { ...ORIGINAL_ENDINGS, ...EXTRA_ENDINGS, ...SYSTEM_ENDINGS,...MUNDANE_ENDINGS,childhood_illness:{title:'夭折于童年',text:'热病没能治好，家人守到了最后。短短的一生，留在他们记得的院落里。'},breakthrough_lost:{title:'陨落于冲关',text:'强行冲关伤断了心脉，石室外再没等到你的回音。留下的卷册与未用完的药，由相识的人收起。'} };
 export { NODES as EVENTS, ENDINGS as ALL_ENDINGS };
 
 export const cloneRun = state => JSON.parse(JSON.stringify(state));
@@ -48,8 +50,8 @@ export function duration(months) {
   return (years ? years + '年' : '') + (rest ? rest + '个月' : '');
 }
 function eventNode(state,id){
- if(state.life?.cultivation&&String(id).startsWith('m11_')&&state.life.cultivation.rulesVersion!==11)return undefined;
- const c=state.life?.cultivation,table=c&&(c.rulesVersion===11?CULTIVATION_EVENTS:c.rulesVersion===10?RULES10_CULTIVATION_EVENTS:c.rulesVersion===9?RULES9_CULTIVATION_EVENTS:c.rulesVersion===8?RULES8_CULTIVATION_EVENTS:c.rulesVersion===7?RULES7_CULTIVATION_EVENTS:c.rulesVersion===6?RULES6_CULTIVATION_EVENTS:c.rulesVersion===5?RULES5_CULTIVATION_EVENTS:LEGACY_CULTIVATION_EVENTS);
+ if(state.life?.cultivation&&String(id).startsWith('m11_')&&state.life.cultivation.rulesVersion<11)return undefined;
+ const c=state.life?.cultivation,table=c&&(c.rulesVersion===12?CULTIVATION_EVENTS:c.rulesVersion===11?RULES11_CULTIVATION_EVENTS:c.rulesVersion===10?RULES10_CULTIVATION_EVENTS:c.rulesVersion===9?RULES9_CULTIVATION_EVENTS:c.rulesVersion===8?RULES8_CULTIVATION_EVENTS:c.rulesVersion===7?RULES7_CULTIVATION_EVENTS:c.rulesVersion===6?RULES6_CULTIVATION_EVENTS:c.rulesVersion===5?RULES5_CULTIVATION_EVENTS:LEGACY_CULTIVATION_EVENTS);
  return table&&Object.hasOwn(table,id)?table[id]:Object.hasOwn(NODES,id)?NODES[id]:undefined;
 }
 export function currentNode(state) { return state.pending ? eventNode(state,state.pending.event) : null; }
@@ -61,7 +63,7 @@ function log(state, entry) {
   state.journal.push({ id: state.journal.length + 1, month: state.month, act: state.act, ...entry });
 }
 
-export function createRun({ seed = '松风有信', id = 'life-' + hashText(seed).toString(36), name, origin, sex, goal = 'free', classic = false, rulesVersion = 11 } = {}) {
+export function createRun({ seed = '松风有信', id = 'life-' + hashText(seed).toString(36), name, origin, sex, goal = 'free', classic = false, rulesVersion = 12 } = {}) {
   if (typeof seed !== 'string' || !seed.trim() || seed.length > 80) throw new Error('机缘种子需要一至八十个字。');
   const config = birthConfiguration(seed.trim(), { name, origin, sex, goal:classic?goal:'free',classic });
   name = config.name; origin = config.origin; sex = config.sex;
@@ -83,7 +85,7 @@ export function createRun({ seed = '松风有信', id = 'life-' + hashText(seed)
   const bonus = ['insight', 'courage', 'empathy'][Math.floor(random(state, 'birth') * 3)];
   state.player[bonus] += 6;
   initializeLife(state);
-  if(!classic){if(![9,10,11].includes(rulesVersion))throw Error('不支持创建此规则的人生');(rulesVersion===9?initializeRules9:rulesVersion===10?initializeRules10:initializeCultivation)(state);}
+  if(!classic){if(![9,10,11,12].includes(rulesVersion))throw Error('不支持创建此规则的人生');(rulesVersion===9?initializeRules9:rulesVersion===10?initializeRules10:rulesVersion===11?initializeRules11:initializeCultivation)(state);}
   log(state, { kind: 'birth', title: name + '出生了', body: '山历' + state.birth.year + '年，你出生在' + BIRTHPLACES[state.birth.continent].name + '的' + state.birth.address + '，来自' + FAMILIES[state.birth.family].name + '。'+(classic?'这一世处在'+WORLD_ERAS[state.birth.era].name+'。':({ordinary:'家人安排生计，邻里偶尔传来宗门的消息。',demonic:'战乱中，一名幽灯堂修士把你带离故乡，留下了今后需要面对的师承。',beast:'出生时的异象改变了你的身体，家人把你藏在山林，请老猿照看。',loose:'战乱中一名游方药师救下你，教你认字与辨药。'})[state.birth.upbringing]), automatic: true, context: 'childhood', location: 'home' });
   state.life.automaticCount = 1;
   if(state.life?.cultivation?.rulesVersion>=9&&state.birth.family==='clan')log(state,{kind:'birth',title:'长辈为你留下的灵石',body:'族中长辈为你封存四枚灵石，归在你的名下；族库和其他家产仍由家人保管。',automatic:true,context:'childhood',location:'home'});
@@ -176,8 +178,8 @@ export function chance(state, check) {
 export function options(state) {
   const node = currentNode(state);
   if (!node) return [];
-  return node.choices.map(rawChoice => {
-    const choice=progressionChoice(state,rawChoice,node.id);
+  return node.choices.filter(o=>state.life?.cultivation?.rulesVersion!==12||!o.visible||o.visible(state)).map(rawChoice => {
+    const choice=choice12(state,progressionChoice(state,rawChoice,node.id),node.id);
     const cost = cloneRun(value(choice.cost, state) || {});
     if (node.id === 'gate' && state.birth && !state.birth.legacy) {
       const fee = WORLD_ERAS[state.birth.era].gateCost;
@@ -227,8 +229,8 @@ function applyEffects(state, input) {
     state.inventory = state.inventory.filter(existing => existing !== item);
   }
   if (effect.realm !== undefined && effect.realm > state.player.realm) {
-    const from=state.player.realm; state.player.realm=effect.realm; changes.push('踏入'+REALMS[effect.realm].name);
-    if(state.life) { state.life.lastBreakthrough=state.month; log(state,breakthroughRecord(from,effect.realm,state.month,state.life.cultivation?.rulesVersion)); }
+    const from=state.player.realm,actual=state.life?.cultivation?.rulesVersion===12,oldLimit=actual?lifespan12(state):null; state.player.realm=effect.realm; changes.push('踏入'+REALMS[effect.realm].name);
+    if(state.life) { state.life.lastBreakthrough=state.month; log(state,breakthroughRecord(from,effect.realm,state.month,state.life.cultivation?.rulesVersion,actual?{from:oldLimit,to:lifespan12(state)}:null)); }
   }
   if (effect.location) state.player.location = effect.location;
   if (effect.home) state.player.home = effect.home;
@@ -285,7 +287,7 @@ function end(state, id, body = '') {
   if (!ENDINGS[id]) throw new Error('未知终章：' + id);
   state.ending = { id, ...ENDINGS[id], month: state.month, final: body };
   state.phase = 'ended'; state.pending = null; state.journey = null; state.waiting = false;
-  if(state.life?.cultivation?.rulesVersion===11&&state.life.cultivation.mundane){const m=state.life.cultivation.mundane;if(m.action)m.notes.push('unfinished:'+m.action.kind);m.action=null;m.arc=null;state.life.cultivation.context=null;}
+  if(state.life?.cultivation?.rulesVersion>=11&&state.life.cultivation.mundane){const m=state.life.cultivation.mundane;if(m.action)m.notes.push('unfinished:'+m.action.kind);m.action=null;m.arc=null;state.life.cultivation.context=null;}
   if (state.life?.arc) {
     state.life.expeditions.push({ ...cloneRun(state.life.arc), ended: state.month, status: 'died' });
     state.life.arc = null; state.life.suspended = null; state.life.queue = null;
@@ -296,10 +298,11 @@ function end(state, id, body = '') {
 
 export function choose(state, choiceId) {
   if (state.phase !== 'life' || !state.pending || state.waiting) throw new Error('目前没有可以回应的事件。');
-  const node = currentNode(state), original = progressionChoice(state,node.choices.find(choice => choice.id === choiceId),node.id);
+  const node = currentNode(state), original = choice12(state,progressionChoice(state,node.choices.find(choice => choice.id === choiceId),node.id),node.id);
   const selected = original && state.life?.feedback && node.id === 'retreat' && choiceId === 'nascent' ? { ...original, interrupt: undefined, deferEffects: true, startReply: '你备好炉心与药，安排收信的人，开始尝试孕育元婴。', effects: { realm: 4, flags: { nascent: true }, stats: { health: 10 } }, reply: '你完成了这一程闭关，元婴在体内成形。出关后，你先查看这些年收到的来信，再决定接下来的路。' } : original;
   if (!selected) throw new Error('没有这个选项。');
   const presented = options(state).find(option => option.id === choiceId);
+  if (!presented) throw new Error('当前故事没有这个选项。');
   if (!presented.enabled) throw new Error(presented.reasons.join('；'));
   const before = cloneRun(state);
   // All presentation and conditional effects use the same pre-choice snapshot.
@@ -423,7 +426,7 @@ function tick(state) {
     if (state.journey?.resolution?.effects?.people?.master?.status === 'alive') delete state.journey.resolution.effects.people.master;
     log(state, { kind: 'loss', title: '阵眼耗尽了最后的灯', body: '求援期限到了，闻竹没能等到接替阵眼的炉火。她的死亡留在这一局中，后面的救援不能让她复活。' });
   }
-  if (age(state) >= REALMS[state.player.realm].lifespan) { end(state, 'old_age'); return; }
+  if (age(state) >= lifespan12(state)) { end(state, 'old_age'); return; }
   if (state.journey?.interrupt && state.month >= state.journey.interrupt.month) {
     const target = state.journey.interrupt.target;
     log(state, { kind: 'interrupt', title: '急报打断闭关', body: `原计划${duration(state.journey.to - state.journey.from)}，实际只过${duration(state.month - state.journey.from)}。余下年月尚未消耗。` });

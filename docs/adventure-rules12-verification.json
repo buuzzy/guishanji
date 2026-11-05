@@ -1,0 +1,830 @@
+{
+  "rulesVersion": 12,
+  "createdAt": "2026-11-05T13:14:13.997Z",
+  "scope": "Local isolated HTML preview. No mini-program compilation, physical-device test, GitHub publication or deployment in this iteration.",
+  "passed": true,
+  "regression": {
+    "startedAt": "2026-11-05T12:52:02.177Z",
+    "node": "v22.22.2",
+    "platform": "win32",
+    "results": [
+      {
+        "name": "preview-assets",
+        "code": 0,
+        "durationMs": 154
+      },
+      {
+        "name": "check",
+        "code": 0,
+        "durationMs": 15656
+      },
+      {
+        "name": "engine-storage",
+        "code": 0,
+        "durationMs": 16002
+      },
+      {
+        "name": "mundane-unit",
+        "code": 0,
+        "durationMs": 633
+      },
+      {
+        "name": "rules12-unit",
+        "code": 0,
+        "durationMs": 566
+      },
+      {
+        "name": "rules12-audit",
+        "code": 0,
+        "durationMs": 21951
+      },
+      {
+        "name": "mundane-audit",
+        "code": 0,
+        "durationMs": 16843
+      },
+      {
+        "name": "story-audit",
+        "code": 0,
+        "durationMs": 10882
+      },
+      {
+        "name": "life-simulation",
+        "code": 0,
+        "durationMs": 8527
+      },
+      {
+        "name": "build",
+        "code": 0,
+        "durationMs": 385
+      },
+      {
+        "name": "browser",
+        "code": 0,
+        "durationMs": 69325
+      },
+      {
+        "name": "feedback-browser",
+        "code": 0,
+        "durationMs": 22783
+      },
+      {
+        "name": "adventure-browser",
+        "code": 0,
+        "durationMs": 185213
+      },
+      {
+        "name": "decision-browser",
+        "code": 0,
+        "durationMs": 59005
+      },
+      {
+        "name": "network-browser",
+        "code": 0,
+        "durationMs": 37759
+      },
+      {
+        "name": "progression-browser",
+        "code": 0,
+        "durationMs": 89392
+      },
+      {
+        "name": "revision9-browser",
+        "code": 0,
+        "durationMs": 50168
+      },
+      {
+        "name": "rules10-browser",
+        "code": 0,
+        "durationMs": 119877
+      },
+      {
+        "name": "mundane-browser",
+        "code": 0,
+        "durationMs": 112727
+      },
+      {
+        "name": "rules12-browser",
+        "code": 0,
+        "durationMs": 113225
+      },
+      {
+        "name": "family-browser",
+        "code": 0,
+        "durationMs": 36076
+      },
+      {
+        "name": "static-build",
+        "code": 0,
+        "durationMs": 5771
+      },
+      {
+        "name": "adventure-static",
+        "code": 0,
+        "durationMs": 183890
+      },
+      {
+        "name": "decision-static",
+        "code": 0,
+        "durationMs": 59995
+      },
+      {
+        "name": "network-static",
+        "code": 0,
+        "durationMs": 37047
+      },
+      {
+        "name": "progression-static",
+        "code": 0,
+        "durationMs": 88102
+      },
+      {
+        "name": "revision9-static",
+        "code": 0,
+        "durationMs": 51187
+      },
+      {
+        "name": "rules10-static",
+        "code": 0,
+        "durationMs": 118991
+      },
+      {
+        "name": "mundane-static",
+        "code": 0,
+        "durationMs": 115060
+      },
+      {
+        "name": "rules12-static",
+        "code": 0,
+        "durationMs": 113233
+      },
+      {
+        "name": "family-static",
+        "code": 0,
+        "durationMs": 37191
+      }
+    ],
+    "finishedAt": "2026-11-05T13:08:18.325Z",
+    "passed": true
+  },
+  "postChecks": [
+    {
+      "name": "latest-rules12-unit",
+      "code": 0
+    },
+    {
+      "name": "latest-check",
+      "code": 0
+    }
+  ],
+  "unitTests": {
+    "historical": 205,
+    "mundane": 27,
+    "rules12": 33,
+    "total": 265
+  },
+  "natural": {
+    "count": 600,
+    "completed": true,
+    "naturallyReachedIds": 190,
+    "tableEvents": 281,
+    "newIds": [
+      "r12_child_body",
+      "r12_child_fever",
+      "r12_home_resolve",
+      "r12_home_leave",
+      "r12_home_resolve_1",
+      "r12_home_leave_1",
+      "r12_home_resolve_2",
+      "r12_home_leave_2",
+      "r12_home_resolve_3",
+      "r12_home_leave_3",
+      "r12_home_resolve_4",
+      "r12_home_leave_4",
+      "r12_home_resolve_5",
+      "r12_home_leave_5",
+      "r12_direction_0",
+      "r12_direction_1",
+      "r12_direction_2",
+      "r12_direction_3",
+      "r12_direction_4",
+      "r12_direction_5",
+      "r12_patron",
+      "r12_late_doubt",
+      "r12_foundation_supply",
+      "r12_sect_clue",
+      "r12_bazaar_follow",
+      "r12_sealed_warning"
+    ],
+    "unreachedNewIds": [
+      "r12_home_resolve_2",
+      "r12_home_leave_2",
+      "r12_home_resolve_3",
+      "r12_home_leave_3",
+      "r12_home_resolve_4",
+      "r12_home_leave_4",
+      "r12_home_resolve_5",
+      "r12_home_leave_5"
+    ],
+    "unreachedCoverage": "All eight remaining IDs are third-to-sixth return-home variants, covered in controlled continuation tests; not counted as natural hits.",
+    "longCards": 0,
+    "longestJournalIntervalYears": 12.916666666666666,
+    "observedRealms": {
+      "0": 236,
+      "1": 181,
+      "2": 166,
+      "3": 10,
+      "4": 7
+    },
+    "observedEndings": {
+      "old_age": 214,
+      "loose_home": 68,
+      "mundane_family": 20,
+      "battle_lost": 46,
+      "breakthrough_lost": 28,
+      "mundane_craft": 11,
+      "guardian": 165,
+      "childhood_illness": 22,
+      "demon_oath": 16,
+      "wild_king": 10
+    },
+    "limits": "Scripted policies are not probability estimates or human retention; quiet intervals still occur and are recorded rather than padded with yearly events."
+  },
+  "browser": {
+    "source": {
+      "rulesVersion": 12,
+      "built": false,
+      "scope": "Actual Chrome mouse/touch, natural seeded births, full lives and save reload. Mobile emulation; not WeChat developer tools or physical-device testing.",
+      "lives": [
+        {
+          "seed": "规则十二人生-0",
+          "mode": "retreat",
+          "realm": 0,
+          "age": 63,
+          "lifespan": 63,
+          "ending": "old_age",
+          "reload": true,
+          "events": [
+            "r12_child_body",
+            "child_school",
+            "child_caravan",
+            "child_teacher",
+            "reception",
+            "root_result",
+            "m11_start",
+            "m11_work_0",
+            "m11_work_1",
+            "m11_work_2",
+            "m11_corpse_0",
+            "m11_corpse_1",
+            "m11_family_0",
+            "m11_family_1",
+            "m11_family_2",
+            "m11_water_0",
+            "m11_water_1",
+            "m11_water_2",
+            "m11_life_6",
+            "m11_child_0",
+            "m11_child_1",
+            "m11_child_2",
+            "m11_inheritance_0",
+            "m11_inheritance_1",
+            "m11_life_7"
+          ],
+          "errors": []
+        },
+        {
+          "seed": "规则十二人生-4",
+          "mode": "retreat",
+          "realm": 2,
+          "age": 100,
+          "lifespan": 219,
+          "ending": "loose_home",
+          "reload": true,
+          "events": [
+            "r12_child_body",
+            "child_school",
+            "child_friend",
+            "child_teacher",
+            "early_loose",
+            "first_method",
+            "network_method",
+            "r12_direction_0",
+            "echo_friend",
+            "echo_friend_check",
+            "echo_friend_visit",
+            "loose_contract_0",
+            "loose_contract_1",
+            "loose_contract_2",
+            "breakthrough_1_0",
+            "family_rules",
+            "r12_direction_1",
+            "selection_1",
+            "selection_1_result",
+            "r12_direction_2",
+            "breakthrough_2_0",
+            "selection_2",
+            "selection_2_result",
+            "loose_portal_0",
+            "loose_portal_1",
+            "loose_portal_2",
+            "system_final"
+          ],
+          "errors": []
+        },
+        {
+          "seed": "规则十二人生-5",
+          "mode": "work",
+          "realm": 1,
+          "age": 103,
+          "lifespan": 103,
+          "ending": "old_age",
+          "reload": true,
+          "events": [
+            "r12_child_fever",
+            "child_apothecary",
+            "child_caravan",
+            "child_teacher",
+            "reception",
+            "root_result",
+            "first_method",
+            "network_method",
+            "r12_direction_0",
+            "echo_teacher",
+            "echo_teacher_check",
+            "thin_root_offer",
+            "echo_teacher_visit",
+            "r12_direction_1",
+            "selection_1",
+            "selection_1_result",
+            "family_support",
+            "breakthrough_1_0",
+            "family_rules",
+            "r12_direction_2",
+            "r12_direction_3",
+            "r12_direction_4",
+            "sect_repair_0",
+            "sect_repair_1",
+            "sect_repair_2",
+            "r12_direction_5",
+            "r12_patron",
+            "breakthrough_2_0"
+          ],
+          "errors": []
+        },
+        {
+          "seed": "规则十二人生-6",
+          "mode": "travel",
+          "realm": 0,
+          "age": 72,
+          "lifespan": 74,
+          "ending": "mundane_family",
+          "reload": true,
+          "events": [
+            "r12_child_body",
+            "child_apothecary",
+            "child_friend",
+            "child_recruit",
+            "reception",
+            "root_result",
+            "m11_start",
+            "m11_work_0",
+            "m11_work_1",
+            "m11_work_2",
+            "m11_corpse_0",
+            "m11_corpse_1",
+            "m11_family_0",
+            "m11_family_1",
+            "m11_family_2",
+            "m11_water_0",
+            "m11_water_1",
+            "m11_water_2",
+            "m11_siege_0",
+            "m11_siege_1",
+            "m11_siege_2",
+            "m11_child_0",
+            "m11_child_1",
+            "m11_child_2",
+            "m11_inheritance_0",
+            "m11_inheritance_1",
+            "m11_levy_0",
+            "m11_levy_1",
+            "m11_levy_2",
+            "m11_life_11",
+            "m11_end"
+          ],
+          "errors": []
+        },
+        {
+          "seed": "规则十二人生-11",
+          "mode": "risk",
+          "realm": 1,
+          "age": 73,
+          "lifespan": 104,
+          "ending": "breakthrough_lost",
+          "reload": true,
+          "events": [
+            "r12_child_body",
+            "child_apothecary",
+            "child_caravan",
+            "child_recruit",
+            "early_loose",
+            "first_method",
+            "network_method",
+            "r12_direction_0",
+            "echo_teacher",
+            "echo_teacher_check",
+            "echo_teacher_visit",
+            "family_gate",
+            "r12_home_resolve",
+            "r12_home_leave",
+            "family_home_ambush",
+            "breakthrough_1_0",
+            "family_rules",
+            "r12_direction_1",
+            "road_turn",
+            "r12_direction_2",
+            "selection_1",
+            "selection_1_result",
+            "r12_direction_3",
+            "breakthrough_2_0"
+          ],
+          "errors": []
+        }
+      ],
+      "checks": [
+        "新版存档刷新恢复一致",
+        "无关师承选项完全隐藏"
+      ],
+      "hashes": {
+        "apps/preview/app.js": "23340af3422835dde0c5ae50282c5657dc0c106e2411231f83810d17e80f1a74",
+        "apps/preview/life-panels.js": "6ac16845f08b040fcfe182f23bf1d8c7972a6cbd2927a6ad94477f1988b1f66b",
+        "packages/adventure/story-rules12.js": "51fc86ae06d2d04014b26a08a9dd8d584f091c5975e4117352992918d756be80",
+        "content/story-rules12.js": "28b212ffc4b6c4acf4961cb835972fefbbcd9ea2886193853846635181bfcf11"
+      },
+      "browser": {
+        "protocolVersion": "1.3",
+        "product": "Chrome/155.0.8059.40",
+        "revision": "@cfaadc5a132d78e1828635aa8405a499f3e14864",
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36",
+        "jsVersion": "15.5.35.20"
+      },
+      "passed": true
+    },
+    "built": {
+      "rulesVersion": 12,
+      "built": true,
+      "scope": "Actual Chrome mouse/touch, natural seeded births, full lives and save reload. Mobile emulation; not WeChat developer tools or physical-device testing.",
+      "lives": [
+        {
+          "seed": "规则十二人生-0",
+          "mode": "retreat",
+          "realm": 0,
+          "age": 63,
+          "lifespan": 63,
+          "ending": "old_age",
+          "reload": true,
+          "events": [
+            "r12_child_body",
+            "child_school",
+            "child_caravan",
+            "child_teacher",
+            "reception",
+            "root_result",
+            "m11_start",
+            "m11_work_0",
+            "m11_work_1",
+            "m11_work_2",
+            "m11_corpse_0",
+            "m11_corpse_1",
+            "m11_family_0",
+            "m11_family_1",
+            "m11_family_2",
+            "m11_water_0",
+            "m11_water_1",
+            "m11_water_2",
+            "m11_life_6",
+            "m11_child_0",
+            "m11_child_1",
+            "m11_child_2",
+            "m11_inheritance_0",
+            "m11_inheritance_1",
+            "m11_life_7"
+          ],
+          "errors": []
+        },
+        {
+          "seed": "规则十二人生-4",
+          "mode": "retreat",
+          "realm": 2,
+          "age": 100,
+          "lifespan": 219,
+          "ending": "loose_home",
+          "reload": true,
+          "events": [
+            "r12_child_body",
+            "child_school",
+            "child_friend",
+            "child_teacher",
+            "early_loose",
+            "first_method",
+            "network_method",
+            "r12_direction_0",
+            "echo_friend",
+            "echo_friend_check",
+            "echo_friend_visit",
+            "loose_contract_0",
+            "loose_contract_1",
+            "loose_contract_2",
+            "breakthrough_1_0",
+            "family_rules",
+            "r12_direction_1",
+            "selection_1",
+            "selection_1_result",
+            "r12_direction_2",
+            "breakthrough_2_0",
+            "selection_2",
+            "selection_2_result",
+            "loose_portal_0",
+            "loose_portal_1",
+            "loose_portal_2",
+            "system_final"
+          ],
+          "errors": []
+        },
+        {
+          "seed": "规则十二人生-5",
+          "mode": "work",
+          "realm": 1,
+          "age": 103,
+          "lifespan": 103,
+          "ending": "old_age",
+          "reload": true,
+          "events": [
+            "r12_child_fever",
+            "child_apothecary",
+            "child_caravan",
+            "child_teacher",
+            "reception",
+            "root_result",
+            "first_method",
+            "network_method",
+            "r12_direction_0",
+            "echo_teacher",
+            "echo_teacher_check",
+            "thin_root_offer",
+            "echo_teacher_visit",
+            "r12_direction_1",
+            "selection_1",
+            "selection_1_result",
+            "family_support",
+            "breakthrough_1_0",
+            "family_rules",
+            "r12_direction_2",
+            "r12_direction_3",
+            "r12_direction_4",
+            "sect_repair_0",
+            "sect_repair_1",
+            "sect_repair_2",
+            "r12_direction_5",
+            "r12_patron",
+            "breakthrough_2_0"
+          ],
+          "errors": []
+        },
+        {
+          "seed": "规则十二人生-6",
+          "mode": "travel",
+          "realm": 0,
+          "age": 72,
+          "lifespan": 74,
+          "ending": "mundane_family",
+          "reload": true,
+          "events": [
+            "r12_child_body",
+            "child_apothecary",
+            "child_friend",
+            "child_recruit",
+            "reception",
+            "root_result",
+            "m11_start",
+            "m11_work_0",
+            "m11_work_1",
+            "m11_work_2",
+            "m11_corpse_0",
+            "m11_corpse_1",
+            "m11_family_0",
+            "m11_family_1",
+            "m11_family_2",
+            "m11_water_0",
+            "m11_water_1",
+            "m11_water_2",
+            "m11_siege_0",
+            "m11_siege_1",
+            "m11_siege_2",
+            "m11_child_0",
+            "m11_child_1",
+            "m11_child_2",
+            "m11_inheritance_0",
+            "m11_inheritance_1",
+            "m11_levy_0",
+            "m11_levy_1",
+            "m11_levy_2",
+            "m11_life_11",
+            "m11_end"
+          ],
+          "errors": []
+        },
+        {
+          "seed": "规则十二人生-11",
+          "mode": "risk",
+          "realm": 1,
+          "age": 73,
+          "lifespan": 104,
+          "ending": "breakthrough_lost",
+          "reload": true,
+          "events": [
+            "r12_child_body",
+            "child_apothecary",
+            "child_caravan",
+            "child_recruit",
+            "early_loose",
+            "first_method",
+            "network_method",
+            "r12_direction_0",
+            "echo_teacher",
+            "echo_teacher_check",
+            "echo_teacher_visit",
+            "family_gate",
+            "r12_home_resolve",
+            "r12_home_leave",
+            "family_home_ambush",
+            "breakthrough_1_0",
+            "family_rules",
+            "r12_direction_1",
+            "road_turn",
+            "r12_direction_2",
+            "selection_1",
+            "selection_1_result",
+            "r12_direction_3",
+            "breakthrough_2_0"
+          ],
+          "errors": []
+        }
+      ],
+      "checks": [
+        "新版存档刷新恢复一致",
+        "无关师承选项完全隐藏"
+      ],
+      "hashes": {
+        "apps/preview/app.js": "23340af3422835dde0c5ae50282c5657dc0c106e2411231f83810d17e80f1a74",
+        "apps/preview/life-panels.js": "6ac16845f08b040fcfe182f23bf1d8c7972a6cbd2927a6ad94477f1988b1f66b",
+        "packages/adventure/story-rules12.js": "51fc86ae06d2d04014b26a08a9dd8d584f091c5975e4117352992918d756be80",
+        "content/story-rules12.js": "28b212ffc4b6c4acf4961cb835972fefbbcd9ea2886193853846635181bfcf11"
+      },
+      "browser": {
+        "protocolVersion": "1.3",
+        "product": "Chrome/155.0.8059.40",
+        "revision": "@cfaadc5a132d78e1828635aa8405a499f3e14864",
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/155.0.0.0 Safari/537.36",
+        "jsVersion": "15.5.35.20"
+      },
+      "passed": true
+    }
+  },
+  "preservedRules11": {
+    "file": "tests/fixtures/adventure-rules11-baseline.json",
+    "sha256": "2c07396712b7e73bac562a8b84d2fe08bf19dd64d519afa14dcc54526dba9dbf",
+    "type": "Generated before modifications; old engine continuation contract, not a player archive"
+  },
+  "sourceSha256": {
+    "packages/adventure/auto-choice.js": "bbc6d0f0319bdb06ea711f446bcbe60604d9a64f219df4954f20870f549ee3bd",
+    "packages/adventure/birth.js": "13aa745d957ed0715bd16edf4647d9162fdfd185cd9681c1ac88ef3c36662c8f",
+    "packages/adventure/context.js": "da043e10177aadc1fb4dbb7735d1c6c3cea43bb895c418615b36a71d7cca99d7",
+    "packages/adventure/cultivation-economy.js": "413247e496366c26df42fdc150efa937791ce582bd845ecafc10dade856afa05",
+    "packages/adventure/cultivation-v10.js": "f25ea9cc056055e1910de606eab2dea813535219ad286bd083def981c9024d99",
+    "packages/adventure/cultivation-v11.js": "5c0ad87a6b15545c0a8d5ed5cd16c4ccfb686b70c80987783e9981149a2ac7b3",
+    "packages/adventure/cultivation-v5.js": "bf8f93d5ef60b778cd390110b16590c3de28c127e3379f9de83a13c35e67c476",
+    "packages/adventure/cultivation-v6.js": "755f4285b73218598c24f296c41f1b310c0e416d1b0894ceff7b126804e0b87d",
+    "packages/adventure/cultivation-v7.js": "01b152b5234b31ec256cf796567d1ad4d544ecb69f6ad3632133de0c46044a9a",
+    "packages/adventure/cultivation-v8.js": "cca481607055ae928c4468cb227edaaaf97089260878431bd4ba8dbedc652184",
+    "packages/adventure/cultivation-v9.js": "1cd7650595fdaa0a86a1eb570323e0efe8e13f4dd99f7d2596b686c21db28d7e",
+    "packages/adventure/cultivation.js": "c04c9381583444dd8689c132dc832d827cd9954566b8fb6353604848e0a515d9",
+    "packages/adventure/engine.js": "52fcc598bf2ad284b0e80dccecd1c085ad95e6619fe09080efc9846250875061",
+    "packages/adventure/family.js": "9a6f0699486cacbb4677c143e16d4a98f4905e941e59a8a1b3b88f6020debb4f",
+    "packages/adventure/life.js": "d4c1bc31239f54fa81f406a5de80469e44d8fe35a7ff535141aff165e8cfa35d",
+    "packages/adventure/mundane-life.js": "a4ecbd46a1cc12c6bee10109e0e100f7f433c291932a76c46ddb35aced9b0a2b",
+    "packages/adventure/progression.js": "453c3732966e9d6fbc43f5d18e8cf5e7c0b49d0696f49fdc727e4152241ca457",
+    "packages/adventure/realm.js": "66f680e2c6e01dabc90d75f898d37f56073ca1bc3f1703c85b2f47871698f4d4",
+    "packages/adventure/revision9-v9.js": "4ad2cf6803ceda9d4d6e341460afe8f63ebb6adff67422dceeafe32a43e5c4be",
+    "packages/adventure/revision9.js": "953bde7ebe8479f1549d2f1788c08b0574b948bdcc37f2918f5565b5e569d4d6",
+    "packages/adventure/store.js": "d7671582cc0f6a80bb41b8a3d72be833cb3cccfe915998158dea1c89fc92c8a9",
+    "packages/adventure/story-network-v9.js": "570860d61ee4405b7bba85e41790fc0ee4f2c0dcb9f164716c83760d979e28a9",
+    "packages/adventure/story-network.js": "ce4cf2ae2e9c3de6903cab5e30c78738826221439c26364dd92c5014697eeb25",
+    "packages/adventure/story-rules10.js": "7dc5ecd1b5727db52e748b9651f809ad36ddd081a28689b864c476508a6d21ca",
+    "packages/adventure/story-rules12.js": "51fc86ae06d2d04014b26a08a9dd8d584f091c5975e4117352992918d756be80",
+    "content/adventure.js": "6b150c7a2b4a9dfc05c1b5b757fae3ed4ea49bd1605dd32e51c2fcd872a12af8",
+    "content/allegiance-stories.js": "9905dc390ade6b2412e155293611b64b9ffebe4f55ab8c28ecd7d5eb5c4b2dda",
+    "content/automatic-life.js": "cf7bb63f20b469759e89760ce37c952af93556ec39494932c8613f1532a6d7dd",
+    "content/cultivation-daily-v6.js": "a33e8bc04b77fa5bdb39ad99af8b5e17ec7ea568dba0b28221107a8a5b136e5e",
+    "content/cultivation-daily-v7.js": "3ff6cfa045a1fc9e6e547a87dc259c38933b51fce11b066986639279aed413f7",
+    "content/cultivation-daily.js": "3ff6cfa045a1fc9e6e547a87dc259c38933b51fce11b066986639279aed413f7",
+    "content/cultivation-revision-v10.js": "63268567247882c5bd0fb8539f81c5bdb95812ba7d11e6eebef31d523117078f",
+    "content/cultivation-revision-v11.js": "63268567247882c5bd0fb8539f81c5bdb95812ba7d11e6eebef31d523117078f",
+    "content/cultivation-revision-v6.js": "63268567247882c5bd0fb8539f81c5bdb95812ba7d11e6eebef31d523117078f",
+    "content/cultivation-revision-v7.js": "63268567247882c5bd0fb8539f81c5bdb95812ba7d11e6eebef31d523117078f",
+    "content/cultivation-revision-v8.js": "63268567247882c5bd0fb8539f81c5bdb95812ba7d11e6eebef31d523117078f",
+    "content/cultivation-revision-v9.js": "63268567247882c5bd0fb8539f81c5bdb95812ba7d11e6eebef31d523117078f",
+    "content/cultivation-revision.js": "63268567247882c5bd0fb8539f81c5bdb95812ba7d11e6eebef31d523117078f",
+    "content/cultivation-stories-v10.js": "8aba79100a53419c51b6714c4e8ecab6389ca66c496f941a97adc67bb73d7240",
+    "content/cultivation-stories-v11.js": "77dcd51b9695033eeada50f9f4ee928b9970dd844d4972cfcc8415051d81162b",
+    "content/cultivation-stories-v5.js": "2cee3b93be42d90c0c60bed9a36ee1e51f614d2dfcbf74fa35cd27d4f897431c",
+    "content/cultivation-stories-v6.js": "aed42cf5aabf96aff90a8321977f9ad3d72dcba3217600042df91f5e69d4b4f8",
+    "content/cultivation-stories-v7.js": "81970efb438d95954eac59e2263701d7eaec4b460f0ab60d3dd9cbd0d5655084",
+    "content/cultivation-stories-v8.js": "aeb628cfb0609815bf1ad29c50da8b58a9a4ba52e43d1f0fc0c82fb01d03a9da",
+    "content/cultivation-stories-v9.js": "1543aed4311e1c670565095b64e40c8e371971ab4e3483ced2697746a88c3d67",
+    "content/cultivation-stories.js": "313dce398df462a8cb3595c213ec82409b5a5050e1c3638a80302d0c53f2249a",
+    "content/cultivation-world.js": "5b5aaa5141b62a2c8d5f80d1195ffd8c43dbdab58600e83210e617b6ef00364f",
+    "content/decision-details.js": "7d1d41251b8bea36bf9b551d4c8c0dd75048655fde25a1c4ee5e1b4ae029a17e",
+    "content/expansion.js": "f5fe7d7256ffeb8cf5705ed364a4581201e700b77ca8e304937db8aee04b4f6b",
+    "content/expedition-changes.js": "da649a89571a19bd33f87af9357baaa10efec3f10747e7aec0a4595608446843",
+    "content/living-episodes.js": "cbb3277634f930c28582f6f800e3d6bac35246485b14571e00f3521e136a302f",
+    "content/living-world.js": "41182ded897d32198e2bfbd1d9d91d147526b18085d7425fffa43626a7250250",
+    "content/mundane-stories-v11.js": "b587471bba3fb3ec2d38c7abf010bc9463ec8ef3a97d7db7939cb1b552a114b7",
+    "content/mundane-stories.js": "b587471bba3fb3ec2d38c7abf010bc9463ec8ef3a97d7db7939cb1b552a114b7",
+    "content/novel-names.js": "dc17411d1d7b32e40825a30015fb21560a510c069c212c2900b223e7f24fe5c7",
+    "content/progression-stories-v11.js": "2a23d89e02375122906a56a879498ae01524f8eb15b72edd5773ff1f53a5dcbf",
+    "content/progression-stories.js": "2a23d89e02375122906a56a879498ae01524f8eb15b72edd5773ff1f53a5dcbf",
+    "content/readable-automatic.js": "7fb5d2306b9793fe2e00c6a4ef17d53a4047d574c5d0f0e65bf18817c7c08a59",
+    "content/readable-stories.js": "7e15161ffdf8c39d3816988d082c5be9fc133c59d9de9661ab7f8ec55b5372db",
+    "content/revision9-stories-v11.js": "7928757afc26bcb5e27dd835abaafeabd3c5c924e3cbe5e6a3aab4a662d50658",
+    "content/revision9-stories.js": "7928757afc26bcb5e27dd835abaafeabd3c5c924e3cbe5e6a3aab4a662d50658",
+    "content/rules12-world.js": "297e6a0a1ce8addd4d7e761ea68715da25fdbb74a9e04745cf23d3b379f0fb5e",
+    "content/stories.js": "e0ff18424b3c7e8c8e63c2c71d0c399c8b9a0761e9ab5bc0636b5e298107c99e",
+    "content/story-network-v10.js": "2bc61abd96414eaf6ae5bdcd06b573e5ae203dcbe94ecabd865201a7e51c8c9e",
+    "content/story-network-v11.js": "43718b15e70faa0c6437fc39937421d4247208120b1f7a8957a2f0e76e896317",
+    "content/story-network-v9.js": "2bc61abd96414eaf6ae5bdcd06b573e5ae203dcbe94ecabd865201a7e51c8c9e",
+    "content/story-network.js": "43718b15e70faa0c6437fc39937421d4247208120b1f7a8957a2f0e76e896317",
+    "content/story-rules10-v11.js": "06cd92402d76de5b8530fc4814a093c7aeb8c8bf617c65393bc5b586c94d0516",
+    "content/story-rules10.js": "06cd92402d76de5b8530fc4814a093c7aeb8c8bf617c65393bc5b586c94d0516",
+    "content/story-rules12.js": "28b212ffc4b6c4acf4961cb835972fefbbcd9ea2886193853846635181bfcf11",
+    "content/world.js": "48c55afa7e3cfe3850128ae41b35b9ece7f4136c564b3ea4282856ace48b278f",
+    "apps/preview/app.js": "23340af3422835dde0c5ae50282c5657dc0c106e2411231f83810d17e80f1a74",
+    "apps/preview/continent-atlas.js": "3f3cebe14d0ad9ee8d3d5f249a6ba38a19dd478f7f4862cc435a9b2af666a347",
+    "apps/preview/continent-map.js": "d9dd806a27ccf7953ebb2993dead6246d3a1599b17ce6c551776e69160e704c3",
+    "apps/preview/cultivation-pixel.js": "1fc33265a3e016c095957e511906d0adc682f5395ee1845de8bd50eb66491d78",
+    "apps/preview/cultivation-scene.js": "c101a26b319b57badbc6b793cefd9f5e8ccbbfba52b47d7b8834e00b41a30f2a",
+    "apps/preview/life-panels.js": "6ac16845f08b040fcfe182f23bf1d8c7972a6cbd2927a6ad94477f1988b1f66b",
+    "apps/preview/pixel-style.js": "78791ceb46d10e352e06272e01a97cf41f3cfb48fa3447c45ff819a6589979d6",
+    "apps/preview/pixel.js": "396acd3518056919fe21321fc59a5541d9b7d0edf170994bb9b77d31949e795c"
+  },
+  "postReview": {
+    "startedAt": "2026-11-05T13:10:47.077Z",
+    "reason": "After full regression: actual breakthrough lifespan and living home receiver corrections.",
+    "results": [
+      {
+        "name": "rules12-unit",
+        "code": 0,
+        "durationMs": 630
+      },
+      {
+        "name": "historical-unit",
+        "code": 0,
+        "durationMs": 16975
+      },
+      {
+        "name": "audit",
+        "code": 0,
+        "durationMs": 23328
+      },
+      {
+        "name": "check",
+        "code": 0,
+        "durationMs": 16811
+      },
+      {
+        "name": "build",
+        "code": 0,
+        "durationMs": 451
+      },
+      {
+        "name": "browser-source",
+        "code": 0,
+        "durationMs": 110322
+      },
+      {
+        "name": "browser-static",
+        "code": 0,
+        "durationMs": 110412
+      },
+      {
+        "name": "static-build",
+        "code": 0,
+        "durationMs": 5415
+      }
+    ],
+    "passed": true,
+    "finishedAt": "2026-11-05T13:13:41.112Z"
+  },
+  "regressionNote": "The full 31-stage regression passed before the final lifespan-log and home-receiver corrections. Eight affected checks were rerun afterward; current browser artifacts are hash-matched to the final runtime."
+}

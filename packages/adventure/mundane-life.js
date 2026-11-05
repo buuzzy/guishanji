@@ -3,7 +3,7 @@ import {GEOGRAPHY} from '../../content/cultivation-world.js';
 import {NOVEL_NAMES} from '../../content/novel-names.js';
 import {canCultivate,route} from './story-rules10.js';
 
-export const activeMundane=s=>s.life?.cultivation?.rulesVersion===11;
+export const activeMundane=s=>s.life?.cultivation?.rulesVersion>=11;
 export const mundane=s=>s.life?.cultivation?.mundane;
 const c=s=>s.life.cultivation;
 const years=s=>(s.birth.startAge||0)+Math.floor(s.month/12);
@@ -126,7 +126,7 @@ export function mundaneMonth(s,cb){
  if(m.child?.status==='alive'&&!m.child.tested&&s.month-m.child.born>=120){m.child.tested=true;beginArc(s,cb,'child');return true;}
  if(s.month>=m.quietAt)ordinary(s,cb);
  if(s.month<m.next)return true;
- if(years(s)>=78){alert(s,cb,'m11_end');return true;}
+ if(years(s)>=(c(s).rulesVersion===12?Math.max(45,c(s).v12.body.natural-c(s).v12.body.loss-4):78)){alert(s,cb,'m11_end');return true;}
  const candidates=[];
  if(m.workMonths>=24&&!m.done.includes('work')&&roll(s,'work')<75)candidates.push('work');
  if(m.job==='shop'&&m.workMonths>=72&&person(s,'employer').status==='alive'&&!m.done.includes('shop')&&roll(s,'shop')<70)candidates.push('shop');

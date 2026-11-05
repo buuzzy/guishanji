@@ -8,6 +8,8 @@ const commands = [
   ['check', ['scripts/check.mjs']],
   ['engine-storage', ['--test', 'tests/engine.test.mjs', 'tests/storage.test.mjs', 'tests/feedback.test.mjs', 'tests/adventure.test.mjs', 'tests/adventure-feedback.test.mjs','tests/cultivation.test.mjs','tests/decision-clarity.test.mjs','tests/life-richness.test.mjs','tests/story-network.test.mjs','tests/progression.test.mjs','tests/revision9.test.mjs','tests/story-rules10.test.mjs']],
   ['mundane-unit', ['--test','tests/mundane-life.test.mjs']],
+  ['rules12-unit', ['--test','tests/story-rules12.test.mjs']],
+  ['rules12-audit', ['scripts/audit-story-rules12.mjs','--count=600']],
   ['mundane-audit', ['scripts/audit-mundane-life.mjs','--count=600']],
   ['story-audit', ['scripts/audit-story-rules10.mjs']],
   ['life-simulation', ['scripts/verify-life-richness.mjs']],
@@ -21,6 +23,7 @@ const commands = [
   ['revision9-browser', ['scripts/verify-revision9-browser.mjs']],
   ['rules10-browser', ['scripts/verify-story-rules10-browser.mjs']],
   ['mundane-browser', ['scripts/verify-mundane-browser.mjs']],
+  ['rules12-browser', ['scripts/verify-story-rules12-browser.mjs']],
   ['family-browser', ['scripts/verify-family-transfer-browser.mjs']],
   ['static-build', ['scripts/verify-build.mjs']],
   ['adventure-static', ['scripts/verify-cultivation-browser.mjs', '--built']],
@@ -30,6 +33,7 @@ const commands = [
   ['revision9-static', ['scripts/verify-revision9-browser.mjs', '--built']],
   ['rules10-static', ['scripts/verify-story-rules10-browser.mjs', '--built']],
   ['mundane-static', ['scripts/verify-mundane-browser.mjs', '--built']],
+  ['rules12-static', ['scripts/verify-story-rules12-browser.mjs', '--built']],
   ['family-static', ['scripts/verify-family-transfer-browser.mjs', '--built']],
 ];
 const report = { startedAt: new Date().toISOString(), node: process.version, platform: process.platform, results: [] };

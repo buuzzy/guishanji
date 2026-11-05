@@ -2,6 +2,24 @@
 
 更新时间：2026-11-05。本文是实施手册；本次交付仅包含 HTML 试玩源码、验收记录和本文，小程序接入尚未实施、编译或上传。
 
+### 规则12本地候选的接入差异
+
+本轮九张小程序截图反馈已经进入独立HTML的规则12候选，随现有[PR #2](https://github.com/buuzzy/xianxia-life/pull/2)更新交付。下文规则11交付记录保留为历史基线；接收方须拉取PR最新分支，并确认新人生rulesVersion为12。计划、实际落地与边界见[规则12设计](adventure-rules12-design.md)，真实结果见[规则12验收台账](adventure-rules12-verification.json)。
+
+继续在现有修仙入口适配，不改官方1in8b模式，也不重做页面。新增同源依赖为`packages/adventure/story-rules12.js`、`content/story-rules12.js`、`content/rules12-world.js`，以及规则11冻结执行器、事件表和其`*-v11.js`安装器。新人生默认12，旧存档继续自己的版本；不要给现存11人生补随机体质或改写往事。
+
+接入端需要逐项确认：
+
+1. 直接使用引擎`options(state)`返回的列表，不能遍历原始`node.choices`再只禁用按钮。新选项的`visible`与`available`不同：前者隐藏无关师承，后者表示玩家已知但条件不够的机会。`choose`会再次校验可见性，手工传入隐藏ID不会生效。
+2. 所有寿元显示和死亡判断使用`lifespan12(state)`；原`REALMS[].lifespan`只为旧规则和境界基础值保留。用`rules12(state).body`读取体质、已知诊断、寿限损失与经脉损伤，不能保留截图中的固定88岁。无灵根能力仍读取`canCultivate/hasMana`。
+3. 炼气阶段用`stage12(state)`。规则12炼气向筑基的积累门槛为260，旧11为140；不能在微信组件中硬编码同一个百分比。能力五轴和专业三项继续复用既有组件。
+4. `v12.action`是多年安排的实际起止月、类型与阶段记录，沿用整程进度条；内部仍调用同一个整数月推进。普通日常不能插入闭关，危机打断由引擎处理，组件不能自己加速年龄或发奖。
+5. `v12.visit/visits`记录返乡原大陆、原住处、抵达、处理和回程；多次返乡有不同事件ID。位置来自引擎，不根据“回家”按钮自行改成宗门。经历与人物位置同步，死亡者不会因返乡复活。
+6. `v12.sect/patron/clue`记录地域宗门、基础/核心功法、供料年限与实际特殊来源。公库仍归原`progression.sect`，不要把公产转为个人灵石。新物品筑基丹须随同ITEMS打包；新死亡结局须随同ALL_ENDINGS打包。
+7. 结果卡不显示后台成功率，沿用红色生命危险提示。首次引气、筑基及强行冲关可能失败；不得在点击按钮时先播成功动画或改境界。
+
+本机验收只能证明HTML同源逻辑与浏览器行为。接收方仍需在微信工具中做编译、包体、组件更新、后台恢复与真机测试；保留原boot/index入口与官方存档路径。
+
 ## 1. 交付基线与开始方式
 
 接收方在另一系统的现有仓库拉取对应 PR 分支即可，不需要压缩包，也不要求重新 clone。先检查 `git status --short`；有未提交工作时先提交或自行保存，避免覆盖。两个仓库各有用途：
@@ -15,9 +33,9 @@
 
 本次通过 GitHub 精确提交读回了 app、boot、engine-loader、index/life 页面、storage/platform、两个 Canvas 组件和验收脚本。手册中的“现有”指上述代码；“待新增”指实施时才创建的代码，不能把本手册当成已经完成接入。
 
-上一轮 GitHub 交付候选采用 `rulesVersion=8`，其 [规则8记录](https://github.com/buuzzy/xianxia-life/blob/feature/adventure-preview-v01/docs/adventure-rules8-verification.json) 为162项测试、400次模拟、18阶段回归。当前本地候选已进入 `rulesVersion=11`，封套仍为 preview.4；规则9／10通过记录保留为历史，接入须固定实际源版本和该版本的验收。HTML验收不等于微信真机、审核或真人留存验收。
+早期 GitHub 交付候选采用 `rulesVersion=8`，其 [规则8记录](https://github.com/buuzzy/xianxia-life/blob/feature/adventure-preview-v01/docs/adventure-rules8-verification.json) 为162项测试、400次模拟、18阶段回归。随后发布基线已进入 `rulesVersion=11`，封套仍为 preview.4；当前本地候选为规则12。规则9／10通过记录保留为历史，接入须固定实际源版本和该版本的验收。HTML验收不等于微信真机、审核或真人留存验收。
 
-规则11另需携带`mundane-life.js`、`mundane-stories.js`及冻结的旧10依赖，保存个人铜钱、存粮、欠债、凡俗人物、地方变局和遗物来源。财富与人物仍接在现有组件中，不新增整套页面；旧档不能直接升为新人生。具体字段与否定场景以 [凡人人生设计及实际实现](mundane-life-story-design.md) 和 [规则11台账](adventure-rules11-verification.json) 为准。本次GitHub交付包含当前规则11完整源码及本文；1in8b历史文档分支的旧手册不作为本轮规则11说明，小程序代码仍需在另一系统按本文接入。
+规则11另需携带`mundane-life.js`、`mundane-stories.js`及冻结的旧10依赖，保存个人铜钱、存粮、欠债、凡俗人物、地方变局和遗物来源。财富与人物仍接在现有组件中，不新增整套页面；旧档不能直接升为新人生。具体字段与否定场景以 [凡人人生设计及实际实现](mundane-life-story-design.md) 和 [规则11台账](adventure-rules11-verification.json) 为准。此前GitHub交付包含规则11完整源码及当时的本文；1in8b历史文档分支的旧手册不作为规则12说明，小程序代码仍需在另一系统按实际交付版本接入。
 
 另一系统先在 xianxia-life 中拉取并体验这一交付：
 

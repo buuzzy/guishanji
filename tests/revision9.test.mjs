@@ -4,7 +4,7 @@ import {readFile} from 'node:fs/promises';
 import {createRun,choose,advance,advanceToChoice,options,currentNode,nodeText,cloneRun,validateRun,upgradeRun} from './helpers/rules9-engine.mjs';
 import {revisionMonth} from '../packages/adventure/revision9.js';
 import {autoChoice} from '../packages/adventure/auto-choice.js';
-import {CULTIVATION_EVENTS,RULES8_CULTIVATION_EVENTS,ROAD_CHAINS} from '../content/cultivation-stories.js';
+import {RULES9_CULTIVATION_EVENTS as CULTIVATION_EVENTS,RULES8_CULTIVATION_EVENTS,ROAD_CHAINS} from '../content/cultivation-stories.js';
 import {activityOptions,routeOptions} from '../packages/adventure/cultivation.js';
 const c=s=>s.life.cultivation,r=s=>c(s).revision9;
 function pending(event){const s=createRun({seed:'因果核验-'+event});s.month=264;s.player.practice=264;c(s).path='demonic';c(s).admissionDone=true;c(s).entered=192;c(s).worldDone=true;c(s).queue=[];r(s).membership.path='demonic';s.pending={event,month:s.month};s.journey=null;return s;}

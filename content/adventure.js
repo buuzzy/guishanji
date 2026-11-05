@@ -25,6 +25,7 @@ export const REALMS = [
 ];
 export const SKILLS = { sword: '御剑', array: '阵法', alchemy: '丹术' };
 export const ITEMS = {
+  foundation_pill: {name:'筑基丹',detail:'冲关时保护经脉，须实际得到并在闭关中用去；不能保证筑基成功。'},
   return_chart: { name: '归山阵图', detail: '旧山门的阵眼位置。归来时可以避开正面强攻。' },
   herb_kit: { name: '药师行囊', detail: '可用于救治、稳妥筑基与缓解金丹旧伤。' },
   ward: { name: '护身玉符', detail: '在追杀、遗迹和雷劫中提供一次额外保障。' },

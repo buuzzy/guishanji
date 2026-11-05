@@ -1,6 +1,7 @@
 import {random,hashText} from '../core/random.js';
 import {active10,canCultivate} from './story-rules10.js';
 import {CHILD_WINDOWS,METHODS,NETWORK_EVENTS} from '../../content/story-network.js';
+import {NETWORK_EVENTS as FROZEN_NETWORK_EVENTS} from '../../content/story-network-v11.js';
 const age=s=>Math.floor(s.month/12)+(s.birth.startAge||0);
 const seen=(s,id)=>s.decisions.some(d=>d.event===id)||s.pending?.event===id;
 const n=s=>s.life.cultivation.network;
@@ -38,7 +39,7 @@ function offer(s,kind,reason,cb){
 }
 function stopArc(s){const a=n(s);a.arc=null;a.next=null;a.quietUntil=s.month+60;s.life.cultivation.context=null;}
 export function networkAction(s,event,id,success,cb){
- const a=n(s),c=s.life.cultivation,choice=NETWORK_EVENTS[event]?.choices.find(o=>o.id===id),op=choice?.system||{};
+ const a=n(s),c=s.life.cultivation,choice=(c.rulesVersion===12?NETWORK_EVENTS:FROZEN_NETWORK_EVENTS)[event]?.choices.find(o=>o.id===id),op=choice?.system||{};
  if(op.childMark){a.marks[op.childMark]={month:s.month,event};const ticket=a.childhood.find(x=>x.event===event);if(ticket)ticket.done=true;}
  if(op.method&&success){
   if(a.method){const previous=a.methods.findLast(m=>m.id===a.method.id);if(previous)previous.months=a.method.months;}
@@ -105,7 +106,7 @@ export function networkMonth(s,cb){
  }
  if(!quiet||!c.admissionDone||c.path==='mortal')return false;
  const notebooks=a.notebooks||=[];
- if(a.method&&a.method.months>=120&&s.month-(s.journal.at(-1)?.month||0)>=96&&s.month-(notebooks.at(-1)?.month||0)>=120&&notebooks.length<8){
+ if(c.rulesVersion!==12&&a.method&&a.method.months>=120&&s.month-(s.journal.at(-1)?.month||0)>=96&&s.month-(notebooks.at(-1)?.month||0)>=120&&notebooks.length<8){
   const subjects=[
    ['经脉起止','你把日常运气实际走过的经脉重新画出，纠正早年抄错的两处方向。图中没有添上自己没练过的部分。'],
    ['急火与停练','你整理过往练习中的失手，记下什么时候须停火、养伤，什么时候才可以重新运气。身受的教训比传闻更可信。'],
@@ -124,7 +125,7 @@ export function networkMonth(s,cb){
  if(!a.clanChecked&&a.marks.clan_vow&&age(s)>=30&&c.familyPolicy!=='sever'&&c.continent===s.birth.continent){a.clanChecked=true;if(random(s,'events')<.6){cb.arrive('network_clan_call');return true;}}
  if(!a.seniorChecked&&a.role&&c.rank==='内门弟子'&&s.player.realm>=2&&s.month-(a.methods.at(-1)?.acquired||c.entered)>=180){a.seniorChecked=true;if(random(s,'events')<.65){cb.arrive('network_senior');return true;}}
  const last=a.summary,practice=c.activityMonths[c.activity]||0,skill=({sword:'sword',alchemy:'alchemy',array:'array',study:'array',work:'alchemy',social:'array',rest:'alchemy'})[c.activity];
- if(s.month-(s.journal.at(-1)?.month||0)>=60&&practice-last.months>=48&&s.player.skills[skill]>last.skill+1){
+ if(c.rulesVersion!==12&&s.month-(s.journal.at(-1)?.month||0)>=60&&practice-last.months>=48&&s.player.skills[skill]>last.skill+1){
   const stories={sword:['把一套剑势练到能收住','你把散乱的出剑拆开，每天先练收势。早先急着追剑光时总会拉伤手腕，这几年终于能在转身前停稳，留出护住自己的空隙。'],alchemy:['从药渣里辨出不同的火候','你留下一排小药罐，对照自己练过的火候。几次药渣发黑后，你改掉急着添火的习惯，如今能分清药性变坏前的气味；炼大炉仍需有人指导。'],array:['把旧符纹从头接通','你将平日练过的符纹分段写在木板上，错一笔便重新接路。这些年的重复不是新奇遇，却让你逐渐认出哪一处会断灵，哪一处会倒转阵旗。'],study:['旧经书终于能读到下一页','你把不懂的经脉字句逐条留给授业者核对，不再见到口诀便急着模仿。几年里，有些旧批注被改过，有些终于对上自己运气时的感受。'],work:['手艺活里磨出来的熟练','你照着真实接过的修补活，逐件核对药包、封绳和器物。忙于谋生的几年没有变成离奇冒险，但反复经手的材料让你认得更多细小差别。']};
   if(stories[c.activity]){
    const memory=c.dailyMemory['summary-'+c.activity]||=[];

@@ -4,7 +4,7 @@ import {mkdir,readFile,writeFile} from 'node:fs/promises';
 import {join} from 'node:path';
 import {startServer,projectRoot} from './serve.mjs';
 import {launchBrowser,delay} from './lib/browser.mjs';
-import {createRun,advance,advanceToChoice,choose,options,validateRun} from '../packages/adventure/engine.js';
+import {createRun,advance,advanceToChoice,choose,options,validateRun} from '../tests/helpers/rules11-engine.mjs';
 import {autoChoice} from '../packages/adventure/auto-choice.js';
 import {decide} from './play-cultivation.mjs';
 const built=process.argv.includes('--built'),out=join(projectRoot,'artifacts',built?'revision9-static':'revision9-source');
@@ -57,7 +57,7 @@ try{
   assert.equal(hash,createHash('sha256').update(await readFile(join(projectRoot,built?'dist':'',path))).digest('hex'));report.servedHashes[path]=hash;
  }
  browser=await launchBrowser();const p=await browser.page();
- await p.navigate(server.url+'preview/?replay='+encodeURIComponent('规则九自动抉择-11'));
+ await p.navigate(server.url+'preview/?rules=11&replay='+encodeURIComponent('规则九自动抉择-11'));
  await p.click('[data-action=new]');await p.waitFor('adventurePreview.status().screen==="life"');await stop(p);
  let actual=await snapshot(p),s=createRun({seed:actual.seed,id:actual.id});advance(s,actual.month);assert.deepEqual(actual,s);assert.equal(s.life.cultivation.rulesVersion,11);assert.equal(s.autoPolicy.enabled,false);
  assert.equal(await p.eval('document.querySelector("#life-activity-status")'),null);
@@ -99,7 +99,7 @@ try{
  report.storySeeds={};
  for(const [mode,target] of [['manual','manual_study'],['mine','thin_root_mine']]){
   const seed=findStory(mode,mode==='mine'?'thin_root_return':target);report.storySeeds[mode]=seed;
-  await p.navigate(server.url+'preview/?replay='+encodeURIComponent(seed));await p.click('[data-action=new]');await p.waitFor('adventurePreview.status().screen==="life"');await stop(p);
+  await p.navigate(server.url+'preview/?rules=11&replay='+encodeURIComponent(seed));await p.click('[data-action=new]');await p.waitFor('adventurePreview.status().screen==="life"');await stop(p);
   actual=await snapshot(p);s=createRun({seed,id:actual.id});advance(s,actual.month);assert.deepEqual(actual,s);
   await storyReach(p,s,mode,target);await p.screenshot(join(out,mode+'-decision-desktop.png'));
   if(mode==='manual'){

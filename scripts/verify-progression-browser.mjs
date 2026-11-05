@@ -4,7 +4,7 @@ import {mkdir,readFile,writeFile} from 'node:fs/promises';
 import {join} from 'node:path';
 import {startServer,projectRoot} from './serve.mjs';
 import {launchBrowser,delay} from './lib/browser.mjs';
-import {createRun,choose,advance,advanceToChoice,options,validateRun} from '../packages/adventure/engine.js';
+import {createRun,choose,advance,advanceToChoice,options,validateRun} from '../tests/helpers/rules11-engine.mjs';
 import {longAction,sceneFor} from '../packages/adventure/progression.js';
 import {decide} from './play-cultivation.mjs';
 const built=process.argv.includes('--built'),out=join(projectRoot,'artifacts',built?'progression-static':'progression-source');
@@ -13,7 +13,7 @@ const policy={path:'orthodox',material:'safe',rebuild:'lead',ending:'dao'};
 function seedFor(event){for(let i=0;i<400;i++){const seed='万千道途-'+i,s=createRun({seed});for(let n=0;n<120&&s.phase==='life';n++){advanceToChoice(s);if(!s.pending)break;if(s.pending.event===event)return seed;choose(s,decide(s,policy).id);}}throw Error('No natural life reaches '+event);}
 const snapshot=p=>p.eval('adventurePreview.snapshot()');
 async function stop(p){if(await p.eval('!!document.querySelector("dialog[open] [data-action=later]")'))await p.click('[data-action=later]');if(await p.eval('adventurePreview.status().screen==="life"&&adventurePreview.status().intendsToPlay'))await p.click('#play-control');await p.waitFor('adventurePreview.status().saved');}
-async function birth(p,seed){await p.navigate(server.url+'preview/?replay='+encodeURIComponent(seed));await p.click('[data-action=new]');await p.waitFor('adventurePreview.status().screen==="life"');await stop(p);const actual=await snapshot(p),s=createRun({seed,id:actual.id});advance(s,actual.month);assert.deepEqual(actual,s);return s;}
+async function birth(p,seed){await p.navigate(server.url+'preview/?rules=11&replay='+encodeURIComponent(seed));await p.click('[data-action=new]');await p.waitFor('adventurePreview.status().screen==="life"');await stop(p);const actual=await snapshot(p),s=createRun({seed,id:actual.id});advance(s,actual.month);assert.deepEqual(actual,s);return s;}
 async function next(p,s){if(s.pending||s.phase==='ended')return;await p.click('[data-action=menu]');await p.waitFor('!!document.querySelector("dialog[open] [data-action=next]")');advanceToChoice(s);await p.click('[data-action=next]');await p.waitFor('!!adventurePreview.snapshot().pending||adventurePreview.snapshot().phase==="ended"');await p.waitFor('adventurePreview.status().saved');assert.deepEqual(await snapshot(p),s);}
 async function select(p,s,id,touch=false){if(!await p.eval('!!document.querySelector("dialog[open]")'))await p.click('#play-control');choose(s,id);await p.click('[data-action=choose][data-choice='+id+']',touch);await p.waitFor('!document.querySelector("dialog[open]")');await stop(p);const actual=await snapshot(p);advance(s,actual.month-s.month);assert.deepEqual(actual,s);validateRun(s);}
 async function reach(p,s,id){for(let i=0;i<100&&s.phase==='life';i++){await next(p,s);if(s.pending?.event===id)return;await select(p,s,decide(s,policy).id);}throw Error('Did not reach '+id);}

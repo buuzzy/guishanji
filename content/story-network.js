@@ -1,5 +1,7 @@
 import {PATHS,ROOTS} from './cultivation-world.js';
+import {REGIONAL_METHODS} from './rules12-world.js';
 export const METHODS={
+ ...REGIONAL_METHODS,
  clear:{name:'清息诀',root:['水','木'],detail:'宗门的完整入门心法，先疏通经脉，再稳住周天；进境不快，少有急火。',rate:1.06},
  stone:{name:'磐石吐纳法',root:['土','金'],detail:'游方修士传下的完整基础口诀，需配合负重与调息；不靠昂贵药浴。',rate:1.05},
  ember:{name:'离火养脉篇',root:['火'],detail:'只存前半卷，借细小炉火练习收放灵力；不能照残页擅自强冲下一层。',rate:1.12},

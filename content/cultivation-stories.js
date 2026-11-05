@@ -1,3 +1,5 @@
+export {CULTIVATION_EVENTS as RULES11_CULTIVATION_EVENTS} from './cultivation-stories-v11.js';
+import {installRules12} from './story-rules12.js';
 export {CULTIVATION_EVENTS as RULES10_CULTIVATION_EVENTS} from './cultivation-stories-v10.js';
 import {installMundaneEvents} from './mundane-stories.js';
 export {CULTIVATION_EVENTS as RULES9_CULTIVATION_EVENTS} from './cultivation-stories-v9.js';
@@ -219,3 +221,5 @@ installRevision9(CULTIVATION_EVENTS);
 installRules10(CULTIVATION_EVENTS,ROAD_CHAINS);
 
 installMundaneEvents(CULTIVATION_EVENTS);
+
+installRules12(CULTIVATION_EVENTS);

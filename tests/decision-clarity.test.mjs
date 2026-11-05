@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {createRun,choose,advance,advanceToChoice,options,cloneRun,validateRun,setActivity,upgradeRun,currentNode} from './helpers/rules9-engine.mjs';
 import {activityOptions,routeOptions,currentContinent,discoverableEvidence} from '../packages/adventure/cultivation.js';
-import {CULTIVATION_EVENTS,LEGACY_CULTIVATION_EVENTS,ROAD_CHAINS} from '../content/cultivation-stories.js';
+import {RULES9_CULTIVATION_EVENTS as CULTIVATION_EVENTS,LEGACY_CULTIVATION_EVENTS,ROAD_CHAINS} from '../content/cultivation-stories.js';
 import {decide} from './helpers/rules9-play.mjs';
 import {lifePanels} from '../apps/preview/life-panels.js';
 const resolve=s=>{while(s.journey&&!s.journey.open&&!s.pending&&s.phase==='life')advance(s,1);};

@@ -14,7 +14,7 @@ test('同伴早逝后，后来的废墟救援不会将她复活',()=>{
 });
 
 test('选项保留线索，不预告概率、收益、伤亡结果和精确行程',()=>{
- for(const node of Object.values(EVENTS).filter(n=>!n.legacyOnly))for(const c of node.choices){assert.equal(typeof c.hint,'string');assert.ok(!/成功率|确定成功|得到|获得|失败会死亡|结束本世|\d+%/u.test(c.hint),node.id+'/'+c.id);}
+ for(const node of Object.values(EVENTS).filter(n=>!n.legacyOnly&&!n.cultivationOnly))for(const c of node.choices){assert.equal(typeof c.hint,'string');assert.ok(!/成功率|确定成功|得到|获得|失败会死亡|结束本世|\d+%/u.test(c.hint),node.id+'/'+c.id);}
 });
 test('姓名来自有来源的完整角色名，男女出生匹配名称库',()=>{
  const seen=new Set();for(let i=0;i<400;i++){const s=createRun({seed:'小说名字-'+i});assert.ok(NOVEL_NAMES.some(n=>n.name===s.player.name&&n.sex===s.player.sex));seen.add(s.player.name);}

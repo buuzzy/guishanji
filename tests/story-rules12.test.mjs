@@ -1,0 +1,127 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
+import {createRun,cloneRun,validateRun,upgradeRun,advance,advanceToChoice,choose,options,currentNode,nodeText,setActivity} from '../packages/adventure/engine.js';
+import {rules12,active12,lifespan12,sectProfile,practiceFactor12,stage12,month12} from '../packages/adventure/story-rules12.js';
+import {canCultivate,hasMana} from '../packages/adventure/story-rules10.js';
+import {CULTIVATION_EVENTS,RULES11_CULTIVATION_EVENTS} from '../content/cultivation-stories.js';
+import {economyQuote} from '../packages/adventure/cultivation-economy.js';
+import {lifePanels} from '../apps/preview/life-panels.js';
+const c=s=>s.life.cultivation;
+function pending(event,{root='五行杂灵根',realm=1,path='orthodox',years=32}={}){
+ const s=createRun({seed:'rules12-case-'+event});s.month=years*12;s.player.practice=s.month;s.player.root=root;s.player.realm=realm;s.player.stones=30;
+ Object.assign(c(s),{rootKnown:true,path,admissionDone:true,entered:192,worldDone:true,queue:[],activeChain:null,context:null,punishmentUntil:0});
+ c(s).story10.rootStatus=root==='未显灵根'?'unverified':'present';c(s).story10.body='human';c(s).network.method={id:'clear',source:'first_method',months:144,acquired:192};c(s).network.methods=[{...c(s).network.method}];
+ s.pending={event,month:s.month};s.journey=null;return s;
+}
+function finish(s){for(let i=0;i<800&&s.phase==='life'&&!s.pending&&s.journey&&!s.journey.open;i++)advance(s,1);validateRun(s);}
+function text(s){return nodeText(currentNode(s),s);}
+test('旧11基线继续八次选择逐值一致，不修改原件',async()=>{
+ const raw=await readFile(new URL('./fixtures/adventure-rules11-baseline.json',import.meta.url),'utf8');
+ for(const row of JSON.parse(raw)){const s=upgradeRun(row.before);assert.deepEqual(s,row.before);for(const id of row.steps){choose(s,id);advanceToChoice(s);}assert.deepEqual(s,row.after);}
+ assert.equal(await readFile(new URL('./fixtures/adventure-rules11-baseline.json',import.meta.url),'utf8'),raw);
+});
+test('新生采用12，旧11保留事件表与88岁凡身上限',()=>{
+ const s=createRun({seed:'new-rules'});assert.ok(active12(s));const old=createRun({seed:'new-rules',rulesVersion:11});assert.equal(lifespan12(old),88);old.pending={event:'road_turn',month:0};old.journey=null;assert.equal(currentNode(old),RULES11_CULTIVATION_EVENTS.road_turn);
+});
+test('旧10与11仍按原事件习得离火残篇，新地域选择不污染执行器',()=>{
+ for(const rulesVersion of [10,11]){const s=createRun({seed:'frozen-ember',rulesVersion});s.month=264;s.player.practice=s.month;s.player.root='金火灵根';s.player.realm=1;Object.assign(c(s),{path:'loose',admissionDone:true,rootKnown:true});s.pending={event:'network_method',month:s.month};s.journey=null;choose(s,'ember');assert.equal(c(s).network.method.id,'ember');validateRun(s);}
+});
+test('独立出生体质有四类，普通家庭寿限与亲人寿限不再固定',()=>{
+ const types=new Set(),spans=new Set();for(let i=0;i<350;i++){const s=createRun({seed:'constitution-'+i});types.add(rules12(s).body.type);spans.add(lifespan12(s));assert.ok(lifespan12(s)>=45&&lifespan12(s)<=84);assert.ok(!hasMana(s));validateRun(s);}assert.equal(types.size,4);assert.ok(spans.size>20);
+});
+test('未入道的天生神力不会给法力或灵根',()=>{
+ const s=pending('r12_child_body',{root:'未显灵根',realm:0,years:5});rules12(s).body.type='mighty';assert.ok(!canCultivate(s));assert.ok(!hasMana(s));choose(s,'practice');assert.ok(!canCultivate(s));assert.equal(s.player.realm,0);
+});
+test('普通幼年与病症会自然到达，不再等六岁才出现抉择',()=>{
+ const kinds=new Set();for(let i=0;i<40;i++){const s=createRun({seed:'early-body-'+i});advanceToChoice(s);assert.ok(s.month<6*12);kinds.add(s.pending.event);validateRun(s);}assert.ok(kinds.has('r12_child_fever'));assert.ok(kinds.has('r12_child_body'));
+});
+test('童年求医在完成前不治愈，治病不会保证入道',()=>{
+ const s=pending('r12_child_fever',{root:'未显灵根',realm:0,years:5});rules12(s).body.illness=true;s.player.health=65;
+ choose(s,'immortal');assert.equal(rules12(s).body.treated,false);advance(s,5);assert.equal(rules12(s).body.treated,false);finish(s);assert.equal(s.player.realm,0);assert.ok(s.phase==='ended'||s.player.health>=65);validateRun(s);
+});
+test('童年热病存在真实死亡分支',()=>{
+ let died=false;for(let i=0;i<120&&!died;i++){const s=createRun({seed:'illness-death-'+i});advanceToChoice(s);if(s.pending.event!=='r12_child_fever')continue;choose(s,'rest');finish(s);if(s.phase==='ended'){assert.equal(s.ending.id,'childhood_illness');died=true;}}assert.ok(died);
+});
+test('无关师承隐藏，不会显示幽灯和妖族的灰色功法',()=>{
+ for(const path of ['orthodox','loose','demonic','beast']){const s=pending('network_method',{path}),before=cloneRun(s);const os=options(s);assert.deepEqual(s,before);assert.ok(os.some(o=>o.enabled));assert.equal(os.some(o=>o.id==='shade'),path==='demonic');assert.equal(os.some(o=>o.id==='beast'),path==='beast');if(path==='orthodox')assert.ok(os.some(o=>o.id===sectProfile(s).base));}
+ const s=pending('network_method');assert.throws(()=>choose(s,'shade'),/当前故事/);
+});
+test('四大陆出生会进入不同地域功法，授业后序列化稳定',()=>{
+ const regions=new Map();for(let i=0;i<80;i++){const s=createRun({seed:'regional-'+i});regions.set(s.birth.continent,sectProfile(s).base);}assert.equal(regions.size,4);assert.equal(new Set(regions.values()).size,4);
+ const s=pending('network_method'),id=sectProfile(s).base;choose(s,id);assert.equal(c(s).network.method.id,id);validateRun(s);assert.deepEqual(upgradeRun(s),s);
+});
+test('无灵根在12仍不能用路径标签领取法力或修炼心法',()=>{
+ const s=pending('network_method',{root:'未显灵根',realm:0});assert.ok(!options(s).find(o=>o.id===sectProfile(s).base).enabled);choose(s,'keep');assert.equal(c(s).network.method,null);assert.equal(c(s).progress,0);
+});
+test('返乡从原住处出发，处理家事后实际回程，抵达才恢复',()=>{
+ const s=pending('family_gate');c(s).continent='tide';s.birth.continent='home';s.player.location='tide';s.player.home='听潮港的租屋';c(s).mail={body:'家中请你归来',sentAge:28,delayed:false,sent:s.month,due:s.month};
+ const initial=s.player.home;choose(s,'return');assert.equal(s.player.home,initial);finish(s);assert.equal(c(s).continent,'home');assert.ok(s.player.home.includes(s.birth.address));assert.equal(rules12(s).visit.home,initial);advanceToChoice(s);assert.equal(s.pending.event,'r12_home_resolve');choose(s,'talk');finish(s);advanceToChoice(s);assert.equal(s.pending.event,'r12_home_leave');choose(s,'return');assert.equal(c(s).continent,'home');finish(s);assert.equal(c(s).continent,'tide');assert.equal(s.player.home,initial);assert.equal(rules12(s).visit,null);assert.ok(s.journal.some(j=>j.title==='回到离开时的住处'));validateRun(s);
+});
+test('回程封路不瞬移，给留乡选项',()=>{
+ const s=pending('r12_home_leave');rules12(s).visit={index:0,origin:'tide',home:'潮港',location:'tide',arrived:true,resolved:true,due:s.month};c(s).continent='home';c(s).closed=['home-tide','ember-home'];assert.equal(options(s).find(o=>o.id==='return').enabled,false);choose(s,'stay');assert.equal(c(s).path,'mortal');assert.equal(rules12(s).visit,null);
+});
+test('家事兑换在完成后实际入家中钱账，修屋更新家产状态',()=>{
+ const s=pending('r12_home_resolve');rules12(s).visit={index:0,origin:c(s).continent,home:s.player.home,location:s.player.location,arrived:true,resolved:false,due:s.month};const money=s.life.family.money;choose(s,'money');assert.equal(s.life.family.money,money);finish(s);assert.equal(s.life.family.money,money+1000);assert.equal(rules12(s).visit.resolved,true);
+ const p=pending('r12_home_resolve');rules12(p).visit={index:0,origin:c(p).continent,home:p.player.home,location:p.player.location,arrived:true,resolved:false,due:p.month};p.life.properties.family_home.status='damaged';choose(p,'repair');assert.equal(p.life.properties.family_home.status,'damaged');finish(p);assert.equal(p.life.properties.family_home.status,'kept');
+});
+test('自然样本未到达的第三至第六次返乡有独立ID，实际完成后不重发',()=>{
+ for(let index=2;index<6;index++){const s=pending('r12_home_resolve_'+index);rules12(s).visits=index;rules12(s).visit={index,origin:c(s).continent,home:s.player.home,location:s.player.location,arrived:true,resolved:false,due:s.month};choose(s,'talk');finish(s);advanceToChoice(s);assert.equal(s.pending.event,'r12_home_leave_'+index);choose(s,'return');finish(s);assert.equal(rules12(s).visits,index+1);assert.equal(rules12(s).visit,null);validateRun(s);}
+});
+test('战火取消未完成家事，不重发同一张返乡卡，也不假称修屋完成',()=>{
+ const s=pending('r12_home_resolve');rules12(s).visit={index:0,origin:c(s).continent,home:s.player.home,location:s.player.location,arrived:true,resolved:false,due:s.month};choose(s,'repair');advance(s,2);s.pending={event:'world_raid',month:s.month};s.journey=null;choose(s,'escape');finish(s);assert.equal(rules12(s).visit,null);assert.equal(rules12(s).visits,1);assert.ok(s.journal.some(j=>j.title==='家事被战火打断'));assert.ok(!s.journal.some(j=>j.kind==='choice'&&j.event==='r12_home_resolve'));validateRun(s);
+});
+test('接粮分支后不逼玩家解释泉水刻痕，没有袭击不显示认罪',()=>{
+ const s=pending('sect_feud_2');c(s).story10.facts.feud={grain:true,evidence:false,assault:false};assert.ok(!/刻痕|石槽|分水线/.test(text(s)));assert.ok(!options(s).some(o=>o.id==='selfish'));c(s).story10.facts.feud.assault=true;assert.ok(options(s).some(o=>o.id==='selfish'));assert.match(text(s),/袭击/);
+});
+test('采药救同伴的后续只问堵路和伤势，不讲未发生的死亡越界',()=>{
+ const s=pending('sect_trial_2');rules12(s).facts.trial={entered:true,rescued:true,herbs:true,stolen:false};s.people.trialmate.status='alive';assert.match(text(s),/止血/);assert.ok(!/失踪|越过|失散/.test(text(s)));choose(s,'care');finish(s);assert.ok(!s.journal.at(-1).body.includes('失散'));
+});
+test('买残页不改师承，寻找落款与试学有独立前因',()=>{
+ const s=pending('road_turn');choose(s,'book');assert.equal(c(s).path,'orthodox');advanceToChoice(s);assert.equal(s.pending.event,'r12_bazaar_follow');assert.match(text(s),/幽灯堂/);choose(s,'leave');assert.equal(c(s).path,'orthodox');
+});
+test('拒绝试学后离宗不会残留商谈状态，让往后几十年无事件',()=>{
+ const s=pending('departure_terms');c(s).inquiry='loose';choose(s,'secret');assert.equal(c(s).path,'loose');assert.equal(c(s).inquiry,null);validateRun(s);
+});
+test('普通家庭不会给修士送丹药，世家才显示家传援助',()=>{
+ const s=pending('family_support');s.birth.family='common';assert.ok(!options(s).some(o=>['supplies','notes'].includes(o.id)));assert.match(text(s),/没有能助你/);s.birth.family='clan';assert.ok(options(s).some(o=>o.id==='notes'));
+});
+test('首次引气有概率，杂灵根及受损经脉更难，未完成不授境界',()=>{
+ const s=pending('breakthrough_1_0',{realm:0});const low=options(s).find(o=>o.id==='try').chance;s.player.root='松骨灵根';const high=options(s).find(o=>o.id==='try').chance;assert.ok(high>low);rules12(s).body.damage=10;assert.ok(options(s).find(o=>o.id==='try').chance<high);choose(s,'try');assert.equal(s.player.realm,0);advance(s,11);assert.equal(s.player.realm,0);finish(s);assert.ok(s.player.realm<=1);
+});
+test('突破经历记录实际体质寿限，而非旧版固定88岁',()=>{
+ const s=pending('breakthrough_1_0',{realm:0,root:'松骨灵根'});rules12(s).body.natural=61;rules12(s).body.loss=0;s.random.story.value=1;choose(s,'try');finish(s);assert.equal(s.player.realm,1);const j=s.journal.find(j=>j.kind==='breakthrough');assert.match(j.body,/由61岁增至106岁/);assert.equal(lifespan12(s),106);
+});
+test('亲人均已离世时不向死人送钱，返乡问的是邻人与遗物',()=>{
+ const s=pending('r12_home_resolve');for(const p of s.life.family.members)p.status='dead';c(s).descendants=[];rules12(s).visit={index:0,origin:c(s).continent,home:s.player.home,location:s.player.location,arrived:true,resolved:false,due:s.month};assert.ok(!options(s).some(o=>o.id==='money'));assert.match(text(s),/遗物/);const talk=options(s).find(o=>o.id==='talk');assert.match(talk.label,/邻人/);choose(s,'talk');finish(s);assert.ok(!s.journal.find(j=>j.event==='r12_home_resolve'&&j.kind==='choice').body.includes('家人知道'));
+});
+test('返乡见到活着的晚辈，抵达后才登记家事与亲人死讯',()=>{
+ const s=pending('family_gate');for(const p of s.life.family.members)p.status='dead';c(s).descendants=[{id:'niece',name:'林小禾',relation:'堂亲的孩子',born:20*12,status:'alive',location:'home',known:false,deathAt:115*12}];c(s).mail={body:'家中请你归来',sentAge:28,delayed:false,sent:s.month,due:s.month};c(s).knownDeaths=[];c(s).familyVisited=false;
+ choose(s,'return');assert.equal(c(s).familyVisited,false);finish(s);assert.equal(c(s).familyVisited,true);assert.equal(c(s).descendants[0].known,true);assert.equal(c(s).knownDeaths.length,s.life.family.members.length);assert.match(s.journal.find(j=>j.title==='走到了家中的院门').body,/林小禾/);advanceToChoice(s);assert.match(text(s),/林小禾/);assert.ok(options(s).some(o=>o.id==='money'));validateRun(s);
+});
+test('筑基年龄与实际筑基丹影响检查，用丹消耗但不保证成功',()=>{
+ const s=pending('breakthrough_2_0',{years:40}),young=options(s).find(o=>o.id==='try').chance;s.month=75*12;s.player.practice=s.month;s.pending.month=s.month;const old=options(s).find(o=>o.id==='try').chance;assert.ok(old<young);s.inventory.push('foundation_pill');assert.ok(options(s).find(o=>o.id==='try').chance>old);choose(s,'try');assert.ok(!s.inventory.includes('foundation_pill'));assert.equal(s.player.realm,1);finish(s);assert.ok(s.player.realm<=2);validateRun(s);
+});
+test('低阶换料劳动需多年，高阶没有通用服务捷径',()=>{
+ const s=pending('breakthrough_1_0',{realm:0});s.player.stones=0;choose(s,'service');assert.ok(s.journey.to-s.journey.from>=36);advance(s,12);assert.equal(s.player.realm,0);finish(s);const high=pending('breakthrough_3_0',{realm:2});assert.ok(!options(high).some(o=>o.id==='service'));
+});
+test('闭关使用整程时间，进境加快但不能改重心或插入日常',()=>{
+ const s=pending('r12_direction_0'),base=practiceFactor12(s);choose(s,'retreat');assert.equal(s.journey.to-s.journey.from,48);assert.ok(practiceFactor12(s)>base);assert.throws(()=>setActivity(s,'sword'));advance(s,24);assert.equal(s.pending,null);assert.ok(s.journal.filter(j=>j.month>s.month-24).every(j=>!['selection_1','garden_accident'].includes(j.event)));finish(s);assert.equal(rules12(s).action,null);assert.equal(c(s).context,null);validateRun(s);
+});
+test('长期做工完成前不领取换料奖励，不叠加自由做工收入',()=>{
+ const s=pending('r12_direction_0'),stones=s.player.stones;choose(s,'work');assert.equal(s.player.stones,stones);assert.equal(economyQuote(s).gross,1);advance(s,29);assert.ok(s.player.stones<=stones+3);finish(s);assert.equal(rules12(s).action,null);assert.ok(s.player.stones>=stones+2);
+});
+test('宗门停供提前告知，到期才改变收入，不扣已有财产',()=>{
+ const s=pending('r12_patron',{years:40});rules12(s).patron.until=45;choose(s,'prepare');assert.equal(rules12(s).patron.noticed,true);assert.equal(rules12(s).patron.stopped,false);s.month=45*12;s.player.practice=s.month;s.pending=null;s.journey={open:true,from:s.month,to:12000,target:null,practice:s.player.focus};const stones=s.player.stones;month12(s,{arrive:()=>{},log:()=>{}});assert.equal(rules12(s).patron.stopped,true);assert.equal(s.player.stones,stones);assert.equal(economyQuote(s).gross,0);validateRun(s);
+});
+test('稀有筑基丹先验收，核心传承需要现有授业资格',()=>{
+ const s=pending('r12_foundation_supply');choose(s,'serve');assert.ok(!s.inventory.includes('foundation_pill'));advance(s,5);assert.ok(!s.inventory.includes('foundation_pill'));finish(s);validateRun(s);
+ const a=pending('network_archive');a.flags.learningPermit=false;c(a).rank='外门弟子';assert.ok(!options(a).some(o=>o.id==='river'));a.flags.learningPermit=true;assert.ok(options(a).some(o=>o.id==='river'));
+});
+test('体质寿限与修行阶段由同一状态显示，存档拒绝坏字段',()=>{
+ const s=pending('r12_direction_0');c(s).progress=135;assert.equal(stage12(s),'炼气后期');assert.ok(lifePanels(s).includes('炼气后期'));assert.ok(lifePanels(s).includes('寿元上限 '+lifespan12(s)));const bad=cloneRun(s);rules12(bad).body.natural=1000;assert.throws(()=>validateRun(bad));
+});
+test('当前所有事件选项唯一，重点卡片不堆多个主角概念',()=>{
+ for(const [id,n] of Object.entries(CULTIVATION_EVENTS)){assert.equal(new Set(n.choices.map(o=>o.id)).size,n.choices.length,id);assert.ok(n.choices.length>=2,id);}
+ for(const id of ['sect_feud_0','sect_feud_1','sect_feud_2','sect_trial_2','road_turn','r12_bazaar_follow','r12_home_resolve']){const s=pending(id);assert.ok(text(s).length<=160,id);}
+});

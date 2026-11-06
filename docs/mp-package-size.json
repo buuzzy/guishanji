@@ -1,7 +1,7 @@
 {
   "label": "guishanji",
-  "measuredAt": "2026-11-06T15:22:18.199Z",
-  "sourceFingerprint": "05e52e759392504195682ed706bdab2c9d1baf41f311f48df148a1bcb6d9080a",
+  "measuredAt": "2026-11-06T21:33:54.254Z",
+  "sourceFingerprint": "e159a7fc4d42b9e4319fbb768d04b61fbecce1a2045f6c0cd07be5402718cfbf",
   "sourceFiles": 64,
   "machine": {
     "os": "darwin 25.4.0",
@@ -9,8 +9,8 @@
     "arch": "arm64"
   },
   "code": {
-    "commit": "4f956a919083396b09cb7221c0999a56c35a81fe",
-    "tree": "5b0b96dc16473f6df4159fb58a81999883b80bb4",
+    "commit": "d123e8a140d0df157d743e527552d51f363fde2d",
+    "tree": "263f6a7a7995010c316211c4413ad10b6dab57e2",
     "branch": "main",
     "dirty": false
   },
@@ -42,17 +42,17 @@
     }
   },
   "compiled": {
-    "total": 2010135,
+    "total": 1487945,
     "packages": {
       "main": 32018,
-      "/subpkg/xianxia/": 1978117
+      "/subpkg/xianxia/": 1455927
     },
     "error": null
   },
   "rawBytes": {
     "/": 69056,
-    "/subpkg/xianxia/": 2007168,
-    "total": 2076224
+    "/subpkg/xianxia/": 1512652,
+    "total": 1581708
   },
   "packages": [
     {
@@ -66,10 +66,10 @@
     },
     {
       "name": "/subpkg/xianxia/",
-      "compiledBytes": 1978117,
-      "rawBytes": 2007168,
+      "compiledBytes": 1455927,
+      "rawBytes": 1512652,
       "limitBytes": 2097152,
-      "headroomToLimit": 119035,
+      "headroomToLimit": 641225,
       "withinHardLimit": true,
       "status": "ok"
     }

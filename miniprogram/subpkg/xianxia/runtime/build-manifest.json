@@ -3,8 +3,8 @@
   "source": {
     "repo": "buuzzy/guishanji",
     "branch": "main",
-    "commit": "38b521a79fefc907e57da7db7e884309958230ce",
-    "tree": "37928ae1cab7de2e7350d6479a60411592606807",
+    "commit": "ab5b25eeac10caa81b0243a1bc4286b37635d7b4",
+    "tree": "3d985db3098b7305a9e0bed9fdb0925e9a150e7f",
     "note": "构建那一刻本仓库的 HEAD 身份（快照信息，不参与逐字节复现校验）",
     "paths": [
       "packages/adventure/",
@@ -40,8 +40,8 @@
     },
     {
       "id": "content/cadence-table.js",
-      "bytes": 9412,
-      "sha256": "9f199688fea0b9aa2c1cc2bbc14c9adeb66f2572a63bf858a4a69b22591605dd"
+      "bytes": 13221,
+      "sha256": "385f2b3aa4fb80f7b9baf36bd3a4f3402422d70af08300ad5dcde346455d2669"
     },
     {
       "id": "content/cultivation-daily-v6.js",
@@ -55,18 +55,18 @@
     },
     {
       "id": "content/cultivation-daily.js",
-      "bytes": 31575,
-      "sha256": "3ff6cfa045a1fc9e6e547a87dc259c38933b51fce11b066986639279aed413f7"
+      "bytes": 33228,
+      "sha256": "a72b31c3d83b515e645356cfb4de53a9d2be655c6d5729a2ab1cd24ad115ba9f"
     },
     {
       "id": "content/cultivation-revision.js",
-      "bytes": 20051,
-      "sha256": "63268567247882c5bd0fb8539f81c5bdb95812ba7d11e6eebef31d523117078f"
+      "bytes": 20091,
+      "sha256": "e8f8520203f697e3f0f77a6252f55ac598a84536254d5724a95bfc6ea4027a98"
     },
     {
       "id": "content/cultivation-stories.js",
-      "bytes": 44241,
-      "sha256": "e55afbc5957420350080f64551ee18aef5b34a513c66da70210d4d6beab15a7d"
+      "bytes": 46033,
+      "sha256": "14390ea5599e7f5df55483d38407ff208b9c85e91b6dc62c039e46eacd108957"
     },
     {
       "id": "content/cultivation-world.js",
@@ -160,8 +160,8 @@
     },
     {
       "id": "packages/adventure/cadence.js",
-      "bytes": 4366,
-      "sha256": "02c533fde8ea7008f5439dfeaa835fde1b0ac9f2e4c7797f854b5fa2518706ea"
+      "bytes": 5231,
+      "sha256": "f662f9b30a9a0a8a935b2449cf6e13a19cd2cf2525399f9c02221723f0ea03a8"
     },
     {
       "id": "packages/adventure/context.js",
@@ -210,8 +210,8 @@
     },
     {
       "id": "packages/adventure/cultivation.js",
-      "bytes": 52591,
-      "sha256": "32545194960e829b1ae3d722f168f9542d3233b0c6961e15dc138b88571833c4"
+      "bytes": 53819,
+      "sha256": "172dba47ac62f31a45bdef47e56ec20d2a4976bdbeac2931356e2151f372ec14"
     },
     {
       "id": "packages/adventure/engine.js",
@@ -255,8 +255,8 @@
     },
     {
       "id": "packages/adventure/scheduler.js",
-      "bytes": 4529,
-      "sha256": "1a7d89d26613977677864b004433a8c34a7c69bbb88bddd76be5a9a16730e064"
+      "bytes": 10584,
+      "sha256": "25b5e4ee06c44708c6758f61213f778d4104bd8da550791cd78f68e7d1b725cc"
     },
     {
       "id": "packages/adventure/story-network-v9.js",
@@ -265,18 +265,18 @@
     },
     {
       "id": "packages/adventure/story-network.js",
-      "bytes": 16686,
-      "sha256": "ce4cf2ae2e9c3de6903cab5e30c78738826221439c26364dd92c5014697eeb25"
+      "bytes": 17439,
+      "sha256": "5f6865c1be78529e90a5e0cfc5bb1fa0518ab5c9be941464b2ec6cb038037436"
     },
     {
       "id": "packages/adventure/story-rules10.js",
-      "bytes": 18118,
-      "sha256": "7dc5ecd1b5727db52e748b9651f809ad36ddd081a28689b864c476508a6d21ca"
+      "bytes": 20179,
+      "sha256": "03fc7902267adeb7f78f46649396bdb8346cebdc590b0689135adfcc44b366ad"
     },
     {
       "id": "packages/adventure/story-rules12.js",
-      "bytes": 22861,
-      "sha256": "7d0a9396c644db56b21e8307e9375de41524d78cab0388aae696578daae7d260"
+      "bytes": 23471,
+      "sha256": "9367d08f5f7c22256bdfb6d8bc2ae6465f830db60e510a282dd5415310fc325f"
     },
     {
       "id": "packages/core/random.js",
@@ -286,8 +286,8 @@
   ],
   "output": {
     "file": "engine.js",
-    "bytes": 1227157,
-    "sha256": "3151098194ce2d5c7d20dac0b9e4dceedd444915264a04d8b86e947fe18ecbac"
+    "bytes": 1229301,
+    "sha256": "ba99fb7dcbd076314647eb7b4662033bd59d532b4a47d23a6ff864c837cf7c9a"
   },
   "styleOutput": {
     "file": "pixel-style.js",

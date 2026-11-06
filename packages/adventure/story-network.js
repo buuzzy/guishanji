@@ -30,6 +30,19 @@ export function networkRate(s){
 function offer(s,kind,reason,cb){
  const a=n(s),c=s.life.cultivation;
  if(a.offer||a.arc||a.offerCount>=3||s.month<a.quietUntil||c.path!=='orthodox'||c.continent!==s.birth.continent||!canCultivate(s))return;
+ /*
+  * 年龄门槛（**当前版本规则十二**）：跟炉、巡阵、收录都是**宗门里的基层差事** ——
+  * 跟炉要 36 个月、巡阵要 24 个月（见 `networkAction`）。
+  * 你要是已经结丹了，宗门不会再把你安排去跟炉看火、巡阵守山。
+  * ⇒ 门槛 = **还没结丹**（境界 2 以下）。
+  *
+  * ⚠ 以前没有这道门 ⇒ 一条 20 岁的宗门线拖到 80 岁才走完时，
+  *   「记录在案」能把你变成八十岁的跟炉弟子 —— 不像话。
+  *
+  * ⚠⚠ 这个文件被规则 7 / 8 / 10 / 11 **共用** ⇒ 门槛必须按版本隔开，
+  *   否则旧版本行为会跟着变（逐值全等门禁会报红）。
+  */
+ if(c.rulesVersion===12&&s.player.realm>2)return;
  if(a.offerChecked.includes(kind))return;
  a.offerChecked.push(kind);
  // A deed can lead nowhere; the roll is taken once, never retried each year.

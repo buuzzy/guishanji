@@ -35,6 +35,13 @@ import {mundaneMonth} from './mundane-life.js';
 import {progressionMonth} from './progression.js';
 import {networkMonth} from './story-network.js';
 import {breakthroughDue} from './cadence.js';
+import {ROAD_CHAINS} from '../../content/cultivation-stories.js';
+import {storyOpportunity} from '../../content/cultivation-daily.js';
+import {canCultivate} from './story-rules10.js';
+import {CADENCE,progressNeeded} from '../../content/cadence-table.js';
+
+const age=s=>Math.floor(s.month/12)+(s.birth.startAge||0);
+const seen=(s,id)=>s.decisions.some(d=>d.event===id)||s.pending?.event===id;
 
 /**
  * 里程碑档 —— 「人生节点」优先于日常档。
@@ -71,6 +78,108 @@ export function milestoneMonth(state, callbacks) {
 }
 
 /**
+ * 长线档 —— 「人生的某一段该开始的那件事」。
+ *
+ * ## 为什么长线也要单独一档（2026-11-08 · 世界域）
+ * --------------------------------------------------
+ * 以前长线是**混在候选池里随机抽**的（`packages/adventure/cultivation.js` 里
+ * `possible[Math.floor(random(s,'events')*possible.length)]`）。后果是：
+ *   · 长线在候选池里**排队**，轮不到就永远轮不到 ——
+ *     窗口只有 12 年时，很多人生里一条长线都没能发出来
+ *     （实测：加上年龄上界后，`sect_repair` 40 条人生只触发 2 条）。
+ *   · 抽签结果依赖「这个月还有没有别的卡」，于是**改一处动一处** ——
+ *     内容在不在，成了一件由抽签顺序说了算的事。
+ *
+ * ## 现在的做法
+ * ------------
+ * 长线**不跟别的卡抢**：条件齐了 ⇒ 这个月就发。
+ * 条件全部写在 `longChainDue()` 里，**不含随机数** ⇒
+ * 给定同一条人生，该发哪条长线、什么时候发，**每次都一样**。
+ *
+ * · 「有没有机会」由种子决定（`storyOpportunity` 里，当前版本用哈希而不是随机流）；
+ * · 「发哪一条」按 `age` 升序取第一条满足的 ⇒ 不随机；
+ * · 玩家在长线期间（`activeChain`）不会开新长线 ⇒ 长线之间不会打架。
+ *
+ * ⚠ 只管当前版本（规则十二）：旧规则版本（5–11）各有自己的候选池，一字未动。
+ */
+export function longChainMonth(state, callbacks) {
+  const due = longChainDue(state);
+  if (!due) return false;
+  const cultivation = state.life.cultivation;
+  cultivation.activeChain = due.chain.id;
+  cultivation.context = due.chain.context;
+  if (due.chain.path === 'orthodox') {
+    callbacks.apply({people: {trialmate: {known: true, location: state.player.location}}});
+  }
+  if (due.chain.path === 'loose' && state.people.ally.status === 'alive') {
+    callbacks.apply({people: {ally: {known: true, location: state.player.location}}});
+  }
+  callbacks.arrive(due.chain.id + '_0');
+  return true;
+}
+
+/**
+ * 「下一条该发的长线」—— **纯判断，不含随机数**。
+ *
+ * 条件与原来候选池里那一条一致，另外加了两条：
+ *   · `age(s) <= chain.ageEnd` —— 长线有年龄上界（`content/cultivation-stories.js`）；
+ *   · 机会窗口用 `chain.age ~ chain.ageEnd` —— 窗口由内容定，不随时序漂移。
+ *
+ * @returns {{chain: object}|null} 该发的长线（连同它自己），没有就返回 null
+ */
+export function longChainDue(state) {
+  const cultivation = state.life.cultivation;
+  if (cultivation.activeChain) return null;
+  /*
+   * ⚠⚠ 这几条检查与突破卡档（`cadence.js` 的 `breakthroughDue`）**一模一样** ——
+   *   少了任何一条都会出事：
+   *   · 没有 `journey.open` ⇒ 玩家正在赶路/闭关时，长线卡会插队发出来，
+   *     **打断进行中的行动**（实测：人生从 306 岁掉到 63 岁，一半的人卡在凡身）；
+   *   · 没有 `pending` / `waiting` ⇒ 玩家正要回应某张卡时又被塞一张；
+   *   · 没有 `detained` / `inquiry` ⇒ 看管与查问期间不该开新线；
+   *   · 没有「队列里有事先办」⇒ 长线自己的后续步骤（`_1`、`_2`）还在队列里，
+   *     就会先开一条新的线，两条线打架。
+   */
+  if (!state.journey || !state.journey.open) return null;
+  if (state.pending || state.waiting) return null;
+  if (cultivation.detained || cultivation.inquiry) return null;
+  if (cultivation.queue.some(q => q.due <= state.month)) return null;
+  /* ⚠ `cultivation.continent` 一定是合法的大陆编号（`validateCultivation` 守着），
+     ⇒ 这里直接读它即可，不必绕 `currentContinent`（那会引入循环依赖）。 */
+  const here = cultivation.continent;
+  /*
+   * ⚠⚠ **长线给突破卡让路**（与 S4「修行指导卡给突破卡让路」同向）。
+   *
+   * 为什么必须有这条：
+   *   长线一开，`activeChain` 就占住 ⇒ `breakthroughDue` 里的 `activeChain` 检查会挡住突破卡
+   *   ⇒ 突破卡在长线走完之前发不出来。
+   *   ⇒ 而长线三段要走好几年 ⇒ **窗口会被吞掉**：
+   *   实测炼气突破卡最晚拖到 24 岁，超出 12–22 的窗口。
+   *
+   * ⇒ 玩家已经在某个境界的窗口里、进度也攒够了 ⇒ **先让他突破**，别用长线把他卡住。
+   *   （进度不够、或四次机会用完了的人除外 —— 那种人生本来就该慢下来。）
+   */
+  const nextRealm = state.player.realm + 1;
+  const band = CADENCE.find(w => w.realm === nextRealm);
+  if (band && age(state) >= band.from
+      && cultivation.progress >= progressNeeded(nextRealm)
+      && (cultivation.attempts[nextRealm] || 0) < 4) return null;
+  for (const chain of ROAD_CHAINS) {
+    if (chain.path !== cultivation.path) continue;
+    if (chain.id === 'dark_method' && !cultivation.network.method) continue;
+    if (chain.path === 'orthodox' && chain.id !== 'sect_return' && here !== state.birth.continent) continue;
+    if (!canCultivate(state)) continue;
+    if (age(state) < chain.age || age(state) > chain.ageEnd) continue;
+    if (state.player.realm < chain.realm) continue;
+    if (seen(state, chain.id + '_0')) continue;
+    if (state.month < cultivation.punishmentUntil) continue;
+    if (!storyOpportunity(state, chain.id, chain.age, chain.ageEnd, chain.chance ?? .62)) continue;
+    return {chain};
+  }
+  return null;
+}
+
+/**
  * 跑一遍这个月的调度。
  *
  * @param {object} state 当前人生状态
@@ -83,6 +192,8 @@ export function scheduleMonth(state, callbacks) {
   if (month12(state, callbacks)) return true;
   /* 里程碑档：突破这种人生节点，不跟日常卡抢。 */
   if (milestoneMonth(state, callbacks)) return true;
+  /* 长线档：人生某一段该开始的那件事，也不跟日常卡抢。 */
+  if (longChainMonth(state, callbacks)) return true;
   /* 修订九：只在没有俗世支线时插话。 */
   if (!cultivation.mundane?.arc && revisionMonth(state, callbacks)) return true;
   /* 规则十：能不能修炼、能不能考核。 */

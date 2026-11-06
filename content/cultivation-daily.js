@@ -1,13 +1,38 @@
-import {random} from '../packages/core/random.js';
+import {random,hashText} from '../packages/core/random.js';
 import {ACTIVITIES} from './cultivation-world.js';
 const years=s=>Math.floor(s.month/12)+(s.birth.startAge||0);
+/**
+ * 「这条故事线有没有机会」—— **当前版本（规则十二）由种子决定，不再由随机流决定。**
+ *
+ * ## 为什么改（2026-11-08 · 世界域）
+ * --------------------------------
+ * 原来这里抽签用的是 `random(s,'events')`，而 **events 流同时被「抽候选卡」消耗**
+ * （见 `packages/adventure/cultivation.js` 里 `possible[Math.floor(random(s,'events')*…)]`）。
+ * ⇒ 「哪张卡先发」一变，events 流的消耗次数就变 ⇒ **后面每一次抽签的结果都跟着变**。
+ * ⇒ 后果：任何改动只要动了发卡先后，某些内容线就会**整条消失**或**整条冒出来**
+ *   （实测：S5 改动后 `sect_return` 从 8 条人生掉到 5 条，`loose_portal` 从 8 掉到 4）。
+ *   内容在不在，成了一件「抽签顺序」说了算的事 —— 这正是这次重构要拆掉的泥球。
+ *
+ * ## 现在怎么决定
+ * ----------------
+ * 用 `hashText(种子 + 这条线的编号)` 算出一个稳定的数：
+ *   · 同一条人生里，同一条线**永远**是同一个结果（要么永远有机会，要么永远没有）；
+ *   · 改任何别处的时序，**都不会**再改变这条线有没有机会。
+ * ⇒ 内容覆盖从此只由「内容定义的区间 + 种子」决定。
+ *
+ * ⚠ 历史版本（规则 5–11）**保持原样**（仍用随机流）：
+ *   它们的执行器与事件表必须逐值不变（`eventsfid` / `eventseq` 门禁守着）。
+ */
+function opportunityDraw(s,id,chance){
+ return (hashText(String(s.seed)+':机会:'+id)%10000)/10000<chance;
+}
 // The opportunity is drawn once, with a finite lifetime. Missing it never
 // cancels a stage of a story that has already started.
 export function storyOpportunity(s,id,start,end,chance=.62){
  const c=s.life.cultivation,now=years(s);
  if(now<start||now>end)return false;
  if(!c.opportunities[id]){
-  const occurs=random(s,'events')<chance;
+  const occurs=c.rulesVersion===12?opportunityDraw(s,id,chance):random(s,'events')<chance;
   c.opportunities[id]={occurs,from:s.month,to:(end+1-(s.birth.startAge||0))*12-1};
  }
  const o=c.opportunities[id];return o.occurs&&s.month<=o.to;

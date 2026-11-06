@@ -1,6 +1,6 @@
 import {hashText} from '../core/random.js';
 import {REALMS} from '../../content/adventure.js';
-import {progressNeeded,breakthroughRule,gradeBonus,CADENCE} from '../../content/cadence-table.js';
+import {progressNeeded,breakthroughRule,gradeBonus,CADENCE,supplyUntil} from '../../content/cadence-table.js';
 import {BODY_TYPES,SECT_PROFILES,REGIONAL_METHODS} from '../../content/rules12-world.js';
 import {ROOTS,GEOGRAPHY} from '../../content/cultivation-world.js';
 import {canCultivate,route} from './story-rules10.js';
@@ -17,9 +17,10 @@ export const homeReceiver12=s=>s.life.family.members.find(p=>p.status==='alive')
 export function initialize12(s){
  const b=roll(s,'body')%100,key=b<15?'frail':b<36?'sturdy':b<38?'mighty':'ordinary',type=BODY_TYPES[key];
  const profiles=SECT_PROFILES.filter(p=>p.region===s.birth.continent),sect=profiles[roll(s,'sect')%profiles.length];
- const highest=c(s).progression.sect.highest;
  c(s).v12={format:1,body:{type:key,natural:type.min+roll(s,'span')%type.span,loss:0,damage:0,constitution:type.constitution,illness:false,treated:false,diagnosed:false},sect:sect.id,
-  patron:{until:highest===2?45:highest===3?60:75,noticed:false,stopped:false},
+  /* 供料年限：**按角色自己的进度**算（`supplyUntil`），不再按宗门强弱给 45/60/75。
+     这一行只是初始值；每次判定前会按当前境界重算（见 `month12`）。 */
+  patron:{until:supplyUntil(0),noticed:false,stopped:false},
   childhood:{due:30+roll(s,'childhood')%36,kind:roll(s,'illness')<2000?'fever':'ordinary',done:false},
   practice:{stage:0,offered:[],next:20*12,notes:[],materialsDue:0},action:null,visit:null,visits:0,clue:{checked:false,due:0,accepted:false,lossAt:0},facts:{}};
  s.player.health=type.health;
@@ -164,6 +165,14 @@ export function complete12(s,event,choice,success,cb){
 }
 export function month12(s,cb){
  if(!active12(s))return false;const r=rules12(s),cc=c(s),open=s.journey?.open&&!s.pending;
+ /*
+  * 供料年限跟着**角色自己的进度**走（`supplyUntil`）：
+  * 还没引气 ⇒ 22 岁（炼气窗口上界）；已入炼气 ⇒ 42 岁（筑基窗口上界）。
+  *
+  * ⚠ 只在**还没筑基**时更新 —— 筑基之后这条限制不再适用，
+  *   而文案（`r12_patron`）里写着这个数，中途跳一下会让玩家看到两个不同的年限。
+  */
+ if(s.player.realm<2)r.patron.until=supplyUntil(s.player.realm);
  /*
   * 「虚弱」是**临时状态**：体力低于 40 ⇒ 判定打折扣（见引擎的 `chance()`）。
   * 它不是永久减益 —— 调养几日、吃一枚丹药，体力回来了，虚弱就过去。

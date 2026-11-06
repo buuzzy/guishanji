@@ -74,6 +74,37 @@ export function echoKind(s){
  if(m.herbs||m.teacher_notes||m.teacher_route||m.route_contact)return 'teacher';
  return null;
 }
+/**
+ * 「旧联系人」这条线的状态往前推一步。
+ *
+ * ## 为什么抽成函数（2026-11-08 · 世界域）
+ * ----------------------------------------
+ * 原来这段逻辑只写在**选项结算**里。而「前往旧联系人那里」这个选项带 `echoTravel`
+ * ⇒ 那一程走的是「赶路」分支（`engine.js` 的 `finishJourney` → `finishTravel`），
+ * **不会再走结算那条路** ⇒ 状态卡在「收到消息」，下一次检查会**重复发同一张卡**
+ * ⇒ 而「同一张卡再发一次」的那个事件（`echo_<kind>_resume`）在事件表里**并不存在**
+ * ⇒ 直接报「缺少故事」。
+ *
+ * ⚠ 这个问题一直潜伏着：那个选项要「商路可通」才能选，
+ *   而玩家在旧版本里多半没离开过故乡 ⇒ 商路不通 ⇒ 选不到 ⇒ 碰不到。
+ *   长线改成「该发就发」之后，玩家会真的离开故乡 ⇒ 商路通了 ⇒ 立刻撞上。
+ *
+ * ## 现在怎么算
+ * ------------
+ * **出发时**也推一次（当前版本规则十二），结算那一次保留给旧版本 ——
+ * 旧版本的行为必须逐值不变（`eventsfid` / `eventseq` 门禁守着）。
+ *
+ * @param {object} s 当前人生状态
+ * @param {string} kind 旧联系人的种类（friend / relic / teacher）
+ * @param {string} origin 旧联系人所在的大陆
+ * @param {string} id 玩家选的选项（forget = 记下不去了）
+ */
+export function advanceEcho(s,kind,origin,id){
+ const c=s.life.cultivation,rr=c.story10;
+ if(id==='forget'){rr.echo=null;return;}
+ const hops=Math.max(0,(route(s,origin,c.continent)?.length||1)-1);
+ rr.echo={kind,origin,status:id==='wait'?'deferred':'checking',due:s.month+(id==='wait'?24:hops*36),sent:s.month,stage:0};
+}
 export function choose10(s,event,id,success,cb){
  if(!active10(s))return;
  const cc=c(s),rr=r(s);
@@ -90,10 +121,9 @@ export function choose10(s,event,id,success,cb){
   else add(s,cb,'掌柜把验货的桌子留给你','你核清这批药材与运费，掌柜让你带新学徒认货签、辨毒草。药铺后屋仍留着你的床，验货的事以后先由你经手。');
  }
  if(/^echo_(friend|relic|teacher)$/.test(event)){
-  const kind=event.split('_')[1];
-  if(id==='forget'){rr.echo=null;return;}
-  const origin=rr.echo?.origin||s.birth.continent,hops=Math.max(0,(route(s,origin,cc.continent)?.length||1)-1);
-  rr.echo={kind,origin,status:id==='wait'?'deferred':'checking',due:s.month+(id==='wait'?24:hops*36),sent:s.month,stage:0};
+  const kind=event.split('_')[1],origin=rr.echo?.origin||s.birth.continent;
+  advanceEcho(s,kind,origin,id);
+  if(id==='forget')return;
  }
  if(event==='echo_resume'||event==='echo_resume_after_war'){
   if(id==='forget'){rr.echo=null;return;}
@@ -150,6 +180,13 @@ export function month10(s,cb){
   else if(path&&s.month>=e.due+(e.status==='message'?(path.length-1)*18:0)){
    let id=e.status==='message'?'echo_'+e.kind:e.status==='deferred'?'echo_resume':e.status==='checking'?'echo_'+e.kind+'_check':'echo_'+e.kind+'_visit';
    if(seen(s,id))id=id==='echo_resume'?'echo_resume_after_war':id+'_resume';
+   /*
+    * ⚠ 兜底：`echo_<kind>_resume`（同一张「收到消息」的卡再发一次）在事件表里**并不存在** ——
+    *   只有 `echo_<kind>_check_resume` 与 `echo_<kind>_visit_resume`。
+    *   ⇒ 统一回落到 `echo_resume_after_war`（它的正文按当前 kind 生成，三种 kind 都适用）。
+    *   没有这一层就会报「缺少故事：echo_friend_resume」，整局卡死。
+    */
+   if(id==='echo_'+e.kind+'_resume')id='echo_resume_after_war';
    if(!seen(s,id)){cb.arrive(id);return true;}
   }
  }

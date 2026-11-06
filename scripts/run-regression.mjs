@@ -60,6 +60,12 @@ const commands = [
      这道门禁守的是**时间轴**：突破卡不能等十几年、也不能早到还没入门；
      修士不能 50 岁还卡在炼气；每个人生阶段都得有卡可看。 */
   ['cadence', ['scripts/audit-cadence.mjs', '--count=40', '--check']],
+  /* ── 长线门禁 ─────────────────────────────────────────────────────────
+     实跑一批人生，量「每条长线（宗门试炼、坊市契约、魔道献祭……）发得出来吗」。
+     这道门禁守的是**内容覆盖**：一条长线一次都没发出来 ⇒ 那条内容等于不存在，
+     而玩家不会知道自己错过了什么。
+     它同时守着「年龄区间不许手填」（必须按 `chainAgeEnd` 的规则算出来）。 */
+  ['chains', ['scripts/audit-chains.mjs', '--count=80', '--check']],
 ];
 const report = { startedAt: new Date().toISOString(), node: process.version, platform: process.platform, results: [] };
 await mkdir(join(projectRoot, 'artifacts'), { recursive: true });

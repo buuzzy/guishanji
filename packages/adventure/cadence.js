@@ -56,15 +56,32 @@ export function breakthroughDue(state) {
   if (!cultivation.admissionDone) return null;       /* 还没入门 */
   if (!state.journey || !state.journey.open) return null;
   if (state.pending || state.waiting) return null;
-  if (cultivation.activeChain || cultivation.detained || cultivation.inquiry) return null;
-  /* 排好的事先办（家信、战事、长线步骤）—— 里程碑不插队。 */
-  if (cultivation.queue.some(q => q.due <= state.month)) return null;
 
   const realm = player.realm + 1;
   const window = CADENCE.find(w => w.realm === realm);
   if (!window) return null;
-
   const age = ageOf(state);
+
+  /*
+   * ⚠⚠ **窗口上界时，突破卡可以插队**（寿元不等人）。
+   *
+   * 为什么：
+   *   长线一开，`activeChain` 就占住 ⇒ 突破卡发不出来 ⇒ 而长线三段要走好几年
+   *   ⇒ 窗口会被吞掉（实测炼气突破卡最晚拖到 24 岁，超出 12–22 的窗口）。
+   *   长线那边已经做了「给突破卡让路」（进度够就先突破），
+   *   但**进度不够的人**仍会被卡住 ⇒ 需要这里留一个出口：
+   *   **窗口到上界了 ⇒ 突破卡插队**，哪怕这次冲关大概率失败，
+   *   也比「错过整个窗口、一辈子卡在炼气」强。
+   *
+   * ⚠ 只放宽 `activeChain` 这一条；队列里的事先办（家信、战事、长线步骤）仍然挡着 ——
+   *   插队不能打断别人已经排好的行程。
+   */
+  const urgent = age >= window.to;
+  if (cultivation.activeChain && !urgent) return null;
+  if (cultivation.detained || cultivation.inquiry) return null;
+  /* 排好的事先办（家信、战事、长线步骤）—— 里程碑不插队。 */
+  if (cultivation.queue.some(q => q.due <= state.month)) return null;
+
   if (age < window.from) return null;                /* 还没到岁数 */
   const attempt = cultivation.attempts[realm];
   if (attempt >= 4) return null;                     /* 四次机会用完了 */
@@ -80,7 +97,6 @@ export function breakthroughDue(state) {
   }
 
   /* 进度：攒够了就早突破；没攒够、又快过窗口上界了 ⇒ 强推（寿元不等人）。 */
-  const urgent = age >= window.to;
   if (!urgent && cultivation.progress < progressNeeded(realm)) return null;
 
   const id = 'breakthrough_' + realm + '_' + attempt;

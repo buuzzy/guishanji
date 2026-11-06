@@ -3,7 +3,7 @@ import {initialize12,begin12,complete12,practiceFactor12,validate12,trainConstit
 import * as rules10 from './cultivation-v10.js';
 import {initializeMundane,mundaneComplete,mundaneBegin,validateMundane,mundaneSettlement} from './mundane-life.js';
 import * as rules9 from './cultivation-v9.js';
-import {initialize10,canCultivate,hasMana,choose10,mundaneDaily,introduceText,validate10} from './story-rules10.js';
+import {initialize10,canCultivate,hasMana,choose10,mundaneDaily,introduceText,validate10,advanceEcho} from './story-rules10.js';
 import * as rules8 from './cultivation-v8.js';
 import {initializeRevision9,revisionAction,validateRevision9} from './revision9.js';
 import * as rules7 from './cultivation-v7.js';
@@ -43,7 +43,15 @@ function revised_cultivationActionTrip(s,op={}){
  const c=s.life.cultivation,target=op.return12?c.v12.visit?.origin:op.echoTravel?c.story10.echo.origin:op.familyVisit||op.progression==='rebuild'&&op.route!=='delegate'||op.chain==='sect_return'&&op.step===0&&op.conduct==='care'?s.birth.continent:op.chain==='loose_portal'&&op.step===2?c.chains.loose_portal?.origin:null;
  if(!target)return null;const r=routeOptions(s).find(p=>p.id===target);if(!r?.route)throw Error('没有已确认的返程路线');return {location:target,route:copy(r.route),months:r.months};
 }
-function revised_beginCultivationAction(s,selected){mundaneBegin(s,selected);progressionBegin(s,selected);const c=s.life.cultivation,op=selected.system||{};begin12(s,selected);if(op.punishment){c.punishmentKind=op.confinement?'confinement':'service';c.punishmentUntil=s.month+op.punishment;c.activity='work';s.player.focus=ACTIVITIES.work.skill;}}
+function revised_beginCultivationAction(s,selected){mundaneBegin(s,selected);progressionBegin(s,selected);const c=s.life.cultivation,op=selected.system||{};begin12(s,selected);if(op.punishment){c.punishmentKind=op.confinement?'confinement':'service';c.punishmentUntil=s.month+op.punishment;c.activity='work';s.player.focus=ACTIVITIES.work.skill;}
+/*
+ * 「前往旧联系人」那一程带 `echoTravel` ⇒ 走的是**赶路**分支（`finishJourney` → `finishTravel`），
+ * 不会再走选项结算那条路 ⇒ 「旧联系人」的状态没人推进，卡在「收到消息」，
+ * 下一次检查会重复发同一张卡 ⇒ 而那张卡在事件表里并不存在 ⇒ 整局卡死。
+ * ⇒ **当前版本（规则十二）在出发时就把状态推一步**。
+ * ⚠ 旧版本（7–11）保持原样 —— 它们的行为必须逐值不变。
+ */
+if(op.echoTravel&&c.story10&&c.story10.echo)advanceEcho(s,c.story10.echo.kind,c.story10.echo.origin,selected.id);}
 function revised_cultivationContext(s) {
  const c=s.life.cultivation;
  if(age(s)<16)return 'childhood';
@@ -277,11 +285,29 @@ function revised_cultivationMonth(s,cb){
  if(routeOptions(s).find(r=>r.id===s.birth.continent)?.route&&age(s)>=40&&c.familyPolicy!=='sever'&&!seen(s,'family_dispute')&&storyOpportunity(s,'family_dispute',40,52,.35))possible.push('family_dispute');
  if(routeOptions(s).find(r=>r.id===s.birth.continent)?.route&&age(s)>=35&&c.familyPolicy!=='sever'&&s.life.family.members.some(p=>p.status==='alive')&&!seen(s,'family_support')&&storyOpportunity(s,'family_support',35,48,.7))possible.push('family_support');
  if(routeOptions(s).find(r=>r.id===s.birth.continent)?.route&&age(s)>=83&&!seen(s,'family_grave')&&c.descendants.length&&storyOpportunity(s,'family_grave',83,100,.55))possible.push('family_grave');
- for(const chain of ROAD_CHAINS)if(canCultivate(s)&&chain.path===c.path&&(chain.id!=='dark_method'||c.network.method)&&(chain.path!=='orthodox'||chain.id==='sect_return'||currentContinent(s)===s.birth.continent)&&age(s)>=chain.age&&s.player.realm>=chain.realm&&!seen(s,chain.id+'_0')&&s.month>=c.punishmentUntil&&storyOpportunity(s,chain.id,age(s),age(s)+12,chain.chance??.62))possible.push(chain.id+'_0');
+ /*
+  * 长线的发卡条件（**当前版本规则十二**）：
+  *   · `age >= chain.age && age <= chain.ageEnd` —— 这条线该在哪个年纪出现，由内容说了算
+  *     （`ageEnd` 的算法见 `content/cultivation-stories.js` 的 ROAD_CHAINS 说明）；
+  *   · 机会窗口也用 `chain.age ~ chain.ageEnd` ——
+  *     以前写的是 `age(s) ~ age(s)+12`，也就是「**第一次轮到抽签时**的年龄往后 12 年」，
+  *     那个起点会随时序漂移 ⇒ 同一条线在不同人生里长度与位置都不一样。
+  *     现在窗口直接由内容定 ⇒ 稳定。
+  *   · 「有没有机会」的抽签在 `content/cultivation-daily.js` 里（当前版本由种子决定）。
+  *
+  * ⚠⚠ **长线不再进这个候选池**（2026-11-08 · 世界域）：
+  *   长线改由 `packages/adventure/scheduler.js` 的**长线档**发 ——
+  *   条件齐了就发，不跟别的卡抢，也不用随机抽。
+  *   （原来在这里随机抽 ⇒ 长线在池里排队，轮不到就永远轮不到，
+  *     实测加上年龄上界后 `sect_repair` 40 条人生只触发 2 条。）
+  *
+  * ⚠ 历史版本（5–11）各有自己的执行器（`cultivation-v5.js` … `cultivation-v11.js`），
+  *   那些文件一个字都没动 ⇒ 旧档行为逐值不变。
+  */
  // Offer a conclusion after a settled period, without cutting off a promised task.
  const settled=!c.network.offer&&!c.network.arc&&!c.network.next&&!c.queue.length&&!c.mail&&!c.story10.echo&&s.month-(s.decisions.at(-1)?.month||0)>=60;
  if(settled&&(!canCultivate(s)&&age(s)>=70||c.path==='mortal'&&age(s)>=45||c.worldDone&&age(s)>=100&&s.player.realm>=1||s.player.realm>=3&&Object.values(c.chains).filter(a=>a.step===2).length>=3&&age(s)>=100||age(s)>=180)){if(!seen(s,'system_final'))possible.push('system_final');}
- if(possible.length){const id=possible[Math.floor(random(s,'events')*possible.length)];if(id==='system_warrant'||id==='system_pursuit')c.trackedEvidence=copy(evidence);const chain=ROAD_CHAINS.find(a=>id===a.id+'_0');if(chain){c.activeChain=chain.id;c.context=chain.context;if(chain.path==='orthodox')cb.apply({people:{trialmate:{known:true,location:s.player.location}}});if(chain.path==='loose'&&s.people.ally.status==='alive')cb.apply({people:{ally:{known:true,location:s.player.location}}});}cb.arrive(id);}else c.choiceAt=s.month+12;
+ if(possible.length){const id=possible[Math.floor(random(s,'events')*possible.length)];if(id==='system_warrant'||id==='system_pursuit')c.trackedEvidence=copy(evidence);cb.arrive(id);}else c.choiceAt=s.month+12;
  s.life.activity=cultivationActivity(s);
 }
 function revised_validateCultivation(s,fail){

@@ -1,7 +1,7 @@
 import { spawn } from 'node:child_process';
-import { mkdir, mkdtemp, readFile, writeFile, access } from 'node:fs/promises';
+import { mkdir, mkdtemp, readFile, writeFile, access, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { projectRoot } from '../serve.mjs';
 
 export const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 export async function findChrome() {
@@ -48,7 +48,19 @@ export async function launchBrowser() {
 }
 
 async function launchOnce(portWaitMs) {
-  const local = join(projectRoot, '.local'); await mkdir(local, { recursive: true });
+  /* ⚠ 临时档案**必须放在系统临时目录**，不能放在仓库里。
+   *
+   * 踩过的坑（2026-11-06）：原来写在 `<repo>/.local/browser-XXXX/`。
+   * 每次门禁跑一次浏览器就留一个 profile（Chromium 会往里写上百个文件），
+   * 跑几十次就攒出**五万多个文件、32 GB**。
+   * ⇒ 微信开发者工具打开这个项目时会遍历整个仓库目录（它要算文件指纹、
+   *   建文件监听），被这堆文件压垮 ⇒ 编译子进程 `spawn EBADF` 崩掉，
+   *   表现为「编译进程崩溃」或「模拟器长时间没有响应」——
+   *   **看起来像 IDE 的毛病，其实是仓库自己太胖。**
+   * ⇒ 现在：profile 放 `os.tmpdir()`，关掉浏览器后**连目录一起删**。
+   */
+  const local = join(tmpdir(), 'guishanji-browser');
+  await mkdir(local, { recursive: true });
   const profile = await mkdtemp(join(local, 'browser-'));
   const child = spawn(await findChrome(), ['--headless=new', '--remote-debugging-port=0', '--remote-debugging-address=127.0.0.1', '--user-data-dir=' + profile, '--no-first-run', '--no-default-browser-check', '--disable-background-networking', '--disable-component-update', '--disable-sync', '--disable-features=MediaRouter', '--password-store=basic', 'about:blank'], { windowsHide: true, stdio: ['ignore', 'ignore', 'pipe'] });
   let browserLog = ''; child.stderr.on('data', data => { browserLog += data.toString(); });
@@ -106,5 +118,5 @@ async function launchOnce(portWaitMs) {
     const screenshot = async path => { const { data } = await command('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false }); await writeFile(path, Buffer.from(data, 'base64')); };
     return { targetId, sessionId, send: command, eval: evaluate, waitFor, navigate, click, screenshot, errors, requests, responses, close: () => send('Target.closeTarget', { targetId }) };
   }
-  return { profile, send, on, page, version: await send('Browser.getVersion'), close: async () => { try { await send('Browser.close'); } catch { /* owned process fallback */ } socket.close(); if (child.exitCode === null) { await Promise.race([new Promise(resolve => child.once('exit', resolve)), delay(3000)]); if (child.exitCode === null) child.kill(); } await writeFile(join(profile, 'browser.log'), browserLog); } };
+  return { profile, send, on, page, version: await send('Browser.getVersion'), close: async () => { try { await send('Browser.close'); } catch { /* owned process fallback */ } socket.close(); if (child.exitCode === null) { await Promise.race([new Promise(resolve => child.once('exit', resolve)), delay(3000)]); if (child.exitCode === null) child.kill(); } await writeFile(join(profile, 'browser.log'), browserLog); /* ⚠ 连 profile 一起删，别再攒垃圾。 */ await rm(profile, { recursive: true, force: true }); } };
 }

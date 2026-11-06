@@ -1,0 +1,82 @@
+{
+  "label": "guishanji",
+  "measuredAt": "2026-11-06T08:20:42.205Z",
+  "sourceFingerprint": "05e52e759392504195682ed706bdab2c9d1baf41f311f48df148a1bcb6d9080a",
+  "sourceFiles": 64,
+  "machine": {
+    "os": "darwin 25.4.0",
+    "node": "v22.22.2",
+    "arch": "arm64"
+  },
+  "code": {
+    "commit": "0b7173a86d0c86a85bae82e0cad0de21a40bebb4",
+    "tree": "0b938cad480756adae905a223ba995ef64ca1cf2",
+    "branch": "main",
+    "dirty": true
+  },
+  "tool": {
+    "cli": "/Applications/wechatwebdevtools.app/Contents/MacOS/cli",
+    "version": "electron 36.6.0",
+    "ideVersion": "unknown"
+  },
+  "config": {
+    "appid": "wx0675a9d47174331e",
+    "appidSource": "project.config.json",
+    "libVersion": "3.5.5",
+    "miniprogramRoot": "miniprogram/",
+    "compileType": "miniprogram",
+    "effectiveSettings": {
+      "es6": true,
+      "enhance": true,
+      "minified": true,
+      "postcss": true,
+      "ignoreUploadUnusedFiles": false,
+      "ignoreDevUnusedFiles": false,
+      "bigPackageSizeSupport": true,
+      "useMultiFrameRuntime": true,
+      "useIsolateContext": true,
+      "bundle": false,
+      "minifyWXSS": true,
+      "useCompilerModule": true,
+      "packNpmManually": false
+    }
+  },
+  "compiled": {
+    "total": 2010135,
+    "packages": {
+      "main": 32018,
+      "/subpkg/xianxia/": 1978117
+    },
+    "error": null
+  },
+  "rawBytes": {
+    "/": 69056,
+    "/subpkg/xianxia/": 2007168,
+    "total": 2076224
+  },
+  "packages": [
+    {
+      "name": "main",
+      "compiledBytes": 32018,
+      "rawBytes": null,
+      "limitBytes": 2097152,
+      "headroomToLimit": 2065134,
+      "withinHardLimit": true,
+      "status": "ok"
+    },
+    {
+      "name": "/subpkg/xianxia/",
+      "compiledBytes": 1978117,
+      "rawBytes": 2007168,
+      "limitBytes": 2097152,
+      "headroomToLimit": 119035,
+      "withinHardLimit": true,
+      "status": "ok"
+    }
+  ],
+  "limits": {
+    "packageLimit": 2097152,
+    "totalLimit": 20971520
+  },
+  "passed": true
+}

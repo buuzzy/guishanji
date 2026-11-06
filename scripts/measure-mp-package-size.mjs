@@ -81,9 +81,24 @@ function toolVersion() {
     try {
       const out = spawnSync('/usr/libexec/PlistBuddy', ['-c', 'Print :CFBundleShortVersionString', plist], { encoding: 'utf8' });
       const v = (out.stdout || '').trim();
-      if (v) return v;
+      /* ⚠ Info.plist 里这两个键写的是 **Electron 版本**（36.x），不是微信开发者工具版本。
+         工具版本要从 app.asar 里的 package.json 读（形如 2.02.2608080）。 */
+      if (v) return `electron ${v}`;
     } catch { /* 读不到就算了 */ }
   }
+  return 'unknown';
+}
+
+/** 微信开发者工具自己的版本号（从 app.asar 的 package.json 读）。 */
+function ideVersion() {
+  if (process.platform !== 'darwin') return 'unknown';
+  const asar = '/Applications/wechatwebdevtools.app/Contents/Resources/app.asar';
+  try {
+    const buf = fs.readFileSync(asar);
+    const text = buf.toString('utf8');
+    const m = /"name"\s*:\s*"[^"]*"\s*,\s*"version"\s*:\s*"(\d+\.\d+\.\d+)"/.exec(text.slice(0, 4 * 1024 * 1024));
+    if (m) return m[1];
+  } catch { /* 读不到就算了 */ }
   return 'unknown';
 }
 
@@ -239,7 +254,7 @@ function sourceFingerprint() {
 
 log(`▸ 测量目标：${PROJECT}`);
 log(`▸ 标签：${LABEL}`);
-log(`▸ IDE CLI：${CLI}（版本 ${toolVersion()}）`);
+log(`▸ IDE CLI：${CLI}（微信开发者工具 ${ideVersion()} / ${toolVersion()}）`);
 
 const git = gitInfo(PROJECT);
 const cfg = projectConfig();
@@ -326,7 +341,7 @@ const report = {
   sourceFiles: fingerprint.files,
   machine: { os: `${os.platform()} ${os.release()}`, node: process.version, arch: process.arch },
   code: git,
-  tool: { cli: CLI, version: toolVersion() },
+  tool: { cli: CLI, version: toolVersion(), ideVersion: ideVersion() },
   config: cfg,
   compiled: { total: totalCompiled, packages: compiled ? compiled.packages : null, error: compileError },
   rawBytes: { ...raw, total: totalRaw },

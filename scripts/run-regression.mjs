@@ -43,6 +43,7 @@ const commands = [
   ['xianxiamp', ['scripts/test-xianxia-mp.mjs']],
   ['xianxiastyle', ['scripts/test-xianxia-style.mjs']],
   ['xianxiastandalone', ['scripts/test-xianxia-standalone.mjs']],
+  ['repohygiene', ['scripts/test-repo-hygiene.mjs']],
 ];
 const report = { startedAt: new Date().toISOString(), node: process.version, platform: process.platform, results: [] };
 await mkdir(join(projectRoot, 'artifacts'), { recursive: true });

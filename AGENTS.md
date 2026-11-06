@@ -60,10 +60,31 @@ node scripts/run-regression.mjs        # 全量回归
 | `xianxiaart` | `scripts/test-xianxia-art.mjs` | 画面与参考实现**逐笔一致** + 反向验证 |
 | `xianxiamp` | `scripts/test-xianxia-mp.mjs` | 三页跑得动、分包与入口接线正确、七条真机问题逐条断言 |
 | `xianxiastyle` | `scripts/test-xianxia-style.mjs` | 与官方**对齐**：样式逐字节一致、倍速/转盘/雕版同源、字号口径 |
+| `xianxiastandalone` | `scripts/test-xianxia-standalone.mjs` | 独立产品：运行代码不碰 1in8b 任何路径与存档键 |
+| `repohygiene` | `scripts/test-repo-hygiene.mjs` | 仓库不许长胖到把微信开发者工具压垮（文件数 / 体积 / 浏览器临时档案） |
 
 - 门禁必须是**真门禁**：每条关键断言都要做**反向验证**（注入一个坏值，必须报红）。
 - 孤儿门禁 = 假门禁 ⇒ 新增门禁要挂进 `scripts/run-regression.mjs`。
 - 门禁只依赖**跟着源码走的文件**；被 `.gitignore` 忽略的本机文件不得进指纹。
+
+## 3.1 ⚠ 仓库不许长胖（会把微信开发者工具压垮）
+
+**微信开发者工具打开项目时会遍历整个项目目录**（算文件指纹、建文件监听）。
+仓库里一旦堆了几万个临时文件 ⇒ IDE 编译子进程 `spawn EBADF` 崩掉 ⇒
+弹「**编译进程崩溃**」或「**模拟器长时间没有响应**」——
+**这两种报错长得像 IDE 的毛病，其实是仓库自己太胖**。
+
+2026-11-06 实测：浏览器门禁每次跑都往 `<repo>/.local/browser-XXXX/` 留一个 Chromium profile，
+跑几十次攒到 **50,422 个文件 / 32 GB** ⇒ 归山记在 IDE 里编译必崩；
+而**同一个 IDE 打开一个空白小程序却秒过**。清掉 `.local/` 后（32 GB → 43.9 MB），
+同一个 IDE、同一份代码，**模拟器一次就起来**。
+
+⇒ 规矩：
+
+- 浏览器临时档案**必须**放 `os.tmpdir()`，**跑完就删**（`scripts/lib/browser.mjs` 已改好）。
+- 仓库文件数 ≤ 20,000、总大小 ≤ 512 MB ⇒ 由 `repohygiene` 门禁盯着。
+- **以后再看到「编译崩溃 / 模拟器无响应」，先量仓库大小和文件数**，
+  别一上来就怀疑 IDE 版本、网络或代码。
 
 ## 4. 跨平台一致性契约
 

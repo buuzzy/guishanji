@@ -3,8 +3,8 @@
   "source": {
     "repo": "buuzzy/guishanji",
     "branch": "main",
-    "commit": "3beb5889e7d24468cbb870d9e57466ebdfbde9c1",
-    "tree": "e0c58ea1539e4ab73f7639ce3dccc5f98fe9df4d",
+    "commit": "675f6221068a555d12db0648d8438a2ba928bccc",
+    "tree": "2dcfb2c2118578628f7157e2bf272181f2765f44",
     "note": "构建那一刻本仓库的 HEAD 身份（快照信息，不参与逐字节复现校验）",
     "paths": [
       "packages/adventure/",
@@ -21,7 +21,7 @@
     "note": "同一批字节的两个来源之一：本仓库的 packages/ + content/ 与上游那个提交逐字节相同（门禁 scripts/test-xianxia-build.mjs 逐个核对）；vendor/xianxia-r12 是当时锁下的历史证据。"
   },
   "rulesVersion": 12,
-  "moduleCount": 49,
+  "moduleCount": 50,
   "inputs": [
     {
       "id": "content/adventure.js",
@@ -200,8 +200,8 @@
     },
     {
       "id": "packages/adventure/cultivation.js",
-      "bytes": 52549,
-      "sha256": "c04c9381583444dd8689c132dc832d827cd9954566b8fb6353604848e0a515d9"
+      "bytes": 52356,
+      "sha256": "947b0d3f4575151afe4eda331f700d28997ac69a326d5cc88a22978968c457d5"
     },
     {
       "id": "packages/adventure/engine.js",
@@ -244,6 +244,11 @@
       "sha256": "953bde7ebe8479f1549d2f1788c08b0574b948bdcc37f2918f5565b5e569d4d6"
     },
     {
+      "id": "packages/adventure/scheduler.js",
+      "bytes": 2888,
+      "sha256": "6a3d931e571c06cbad3ad18247d7e03136682016e2d09fb55bd0a883a5dd8931"
+    },
+    {
       "id": "packages/adventure/story-network-v9.js",
       "bytes": 16239,
       "sha256": "570860d61ee4405b7bba85e41790fc0ee4f2c0dcb9f164716c83760d979e28a9"
@@ -271,8 +276,8 @@
   ],
   "output": {
     "file": "engine.js",
-    "bytes": 1220247,
-    "sha256": "afbaaccc9b7cae4c9630576a89cc614f5721e71617fbb869beb3fe07ed5e6750"
+    "bytes": 1220699,
+    "sha256": "4548d43353e70c5f46e882d62720882d8ab9b21c04df2cbfccec00cf2ab9c294"
   },
   "styleOutput": {
     "file": "pixel-style.js",

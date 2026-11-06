@@ -1,16 +1,17 @@
 import * as rules11 from './cultivation-v11.js';
-import {initialize12,month12,begin12,complete12,practiceFactor12,validate12} from './story-rules12.js';
+import {initialize12,begin12,complete12,practiceFactor12,validate12} from './story-rules12.js';
 import * as rules10 from './cultivation-v10.js';
-import {initializeMundane,mundaneMonth,mundaneComplete,mundaneBegin,validateMundane,mundaneSettlement} from './mundane-life.js';
+import {initializeMundane,mundaneComplete,mundaneBegin,validateMundane,mundaneSettlement} from './mundane-life.js';
 import * as rules9 from './cultivation-v9.js';
-import {initialize10,canCultivate,hasMana,month10,choose10,mundaneDaily,introduceText,validate10} from './story-rules10.js';
+import {initialize10,canCultivate,hasMana,choose10,mundaneDaily,introduceText,validate10} from './story-rules10.js';
 import * as rules8 from './cultivation-v8.js';
-import {initializeRevision9,revisionAction,revisionMonth,validateRevision9} from './revision9.js';
+import {initializeRevision9,revisionAction,validateRevision9} from './revision9.js';
 import * as rules7 from './cultivation-v7.js';
-import {initializeProgression,progressionMonth,progressionAction,progressionBegin,progressionText,progressionChoice,validateProgression,materialSlots} from './progression.js';
+import {initializeProgression,progressionAction,progressionBegin,progressionText,progressionChoice,validateProgression,materialSlots} from './progression.js';
 import * as previousRules from './cultivation-v5.js';
 import * as rules6 from './cultivation-v6.js';
-import {initializeNetwork,networkMonth,networkAction,validateNetwork,networkRate} from './story-network.js';
+import {initializeNetwork,networkAction,validateNetwork,networkRate} from './story-network.js';
+import {scheduleMonth} from './scheduler.js';
 import {automaticStory,storyOpportunity,familyMessage} from '../../content/cultivation-daily.js';
 import {economyQuote,settleEconomy} from './cultivation-economy.js';
 import {random,hashText} from '../core/random.js';
@@ -252,12 +253,7 @@ function revised_cultivationMonth(s,cb){
   c.queue=c.queue.filter(q=>q!==alert&&!ROAD_CHAINS.some(a=>q.event.startsWith(a.id+'_')));c.context=null;c.activeChain=null;
   record(s,cb,'中转者送来战事急讯','争夺灵泉的战事波及住处，可靠的中转者带来了具体位置。','world');cb.arrive('world_raid');return;
  }
- if(month12(s,cb))return;
- if(!c.mundane?.arc&&revisionMonth(s,cb))return;
- if(month10(s,cb))return;
- if(mundaneMonth(s,cb))return;
- if(progressionMonth(s,cb))return;
- if(networkMonth(s,cb))return;
+ if(scheduleMonth(s,cb))return;
  if(!s.journey?.open)return;
  const due=c.queue.filter(q=>q.due<=s.month&&(!c.detained||q.event.startsWith('custody_'))&&(!c.inquiry||['dark_invitation','dark_oath','beast_invitation','beast_acceptance','departure_terms'].includes(q.event))&&(!c.activeChain||q.event.startsWith(c.activeChain+'_'))&&(!q.event.startsWith('selection_')||!q.event.endsWith('_result')||c.path!=='orthodox'||currentContinent(s)===s.birth.continent)).sort((a,b)=>a.due-b.due);
  if(due.length){const next=due[0];c.queue=c.queue.filter(q=>q!==next);if(!seen(s,next.event))cb.arrive(next.event);return;}

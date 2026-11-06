@@ -1,98 +1,38 @@
 {
   "purpose": "本仓库的修仙规则源码与 vendor/xianxia-r12/ 那份「迁移时快照」之间的差异台账。",
   "why": "2026-11-06 起的内容架构重构是**有意**改写源码的，所以「本仓库源码 ≡ 迁移时快照」这句话不再成立。拆成两半：(1) 快照本身没被人手改过（门禁核哈希）；(2) 本仓库与快照之间的**每一处差异都登记在案**，未登记的差异一律报红 —— 门禁的牙齿没有松。",
-  "how": "scripts/test-xianxia-build.mjs 的「本仓库源码与 vendor 历史快照逐字节一致」一节，改成核对本台账：快照里的文件若与本仓库不同（或已删除），必须在台账里登记，且登记的「改动类型」要一致；台账里登记了但实际没改的条目 ⇒ 报红（防止台账发霉）。",
-  "behaviorProof": "「重构没改行为」由另外两道门禁证明：scripts/verify-events-fidelity.mjs（九个历史版本的事件表逐值全等）、scripts/verify-event-sequence.mjs（24 条固定人生的决策序列逐条全等），以及 scripts/test-xianxia-build.mjs 里的「迁移等价性（逐月对拍）」——把迁移时那份产物与现在这份产物同时装进同一个进程，用同一个种子逐月对拍。",
-  "entries": [
+  "how": "scripts/test-xianxia-build.mjs 的「本仓库源码与 vendor 历史快照逐字节一致」一节，改成核对本台账：快照里的文件若与本仓库不同（或已从本仓库删掉），必须在台账里登记，且登记的「改动类型」要一致（改了 / 删了）；台账里登记了但实际没改的条目 ⇒ 报红（防止台账发霉）。",
+  "behaviorProof": "「重构没改行为」由另外几道门禁证明：scripts/verify-events-fidelity.mjs（九个历史版本的事件表逐值全等）、scripts/verify-event-sequence.mjs（24 条固定人生的决策序列逐条全等），以及 scripts/test-xianxia-build.mjs 里的「迁移等价性（逐月对拍）」——把迁移时那份产物与现在这份产物同时装进同一个进程，用同一个种子逐月对拍。",
+  "changes": [
     {
-      "path": "content/cultivation-stories.js",
-      "change": "changed",
-      "since": "S1",
-      "reason": "事件表归一：表字面量从 8 份副本收敛成这一份，九个历史版本改由同一条装配链在九个时点拍快照得到。内容逐值不变（见 eventsfid 门禁）。"
+      "id": "S1",
+      "title": "事件表归一",
+      "why": "表字面量从 8 份副本收敛成 1 份，九个历史版本改由同一条装配链在九个时点拍快照得到。旧规则执行器一个没删，只改 import。内容逐值不变（见 eventsfid 门禁）。",
+      "files": {
+        "content/cultivation-stories.js": "changed",
+        "content/cultivation-stories-v5.js": "removed",
+        "content/cultivation-stories-v6.js": "removed",
+        "content/cultivation-stories-v7.js": "removed",
+        "content/cultivation-stories-v8.js": "removed",
+        "content/cultivation-stories-v9.js": "removed",
+        "content/cultivation-stories-v10.js": "removed",
+        "content/cultivation-stories-v11.js": "removed",
+        "packages/adventure/cultivation-v5.js": "changed",
+        "packages/adventure/cultivation-v6.js": "changed",
+        "packages/adventure/cultivation-v7.js": "changed",
+        "packages/adventure/cultivation-v8.js": "changed",
+        "packages/adventure/cultivation-v9.js": "changed",
+        "packages/adventure/cultivation-v10.js": "changed",
+        "packages/adventure/cultivation-v11.js": "changed"
+      }
     },
     {
-      "path": "content/cultivation-stories-v5.js",
-      "change": "removed",
-      "since": "S1",
-      "reason": "事件表副本，已归一进 content/cultivation-stories.js。旧规则 5 的执行器改从归一后的文件取它的历史版本。"
-    },
-    {
-      "path": "content/cultivation-stories-v6.js",
-      "change": "removed",
-      "since": "S1",
-      "reason": "事件表副本，已归一进 content/cultivation-stories.js。"
-    },
-    {
-      "path": "content/cultivation-stories-v7.js",
-      "change": "removed",
-      "since": "S1",
-      "reason": "事件表副本，已归一进 content/cultivation-stories.js。"
-    },
-    {
-      "path": "content/cultivation-stories-v8.js",
-      "change": "removed",
-      "since": "S1",
-      "reason": "事件表副本，已归一进 content/cultivation-stories.js。"
-    },
-    {
-      "path": "content/cultivation-stories-v9.js",
-      "change": "removed",
-      "since": "S1",
-      "reason": "事件表副本，已归一进 content/cultivation-stories.js。"
-    },
-    {
-      "path": "content/cultivation-stories-v10.js",
-      "change": "removed",
-      "since": "S1",
-      "reason": "事件表副本，已归一进 content/cultivation-stories.js。"
-    },
-    {
-      "path": "content/cultivation-stories-v11.js",
-      "change": "removed",
-      "since": "S1",
-      "reason": "事件表副本，已归一进 content/cultivation-stories.js。"
-    },
-    {
-      "path": "packages/adventure/cultivation-v5.js",
-      "change": "changed",
-      "since": "S1",
-      "reason": "只改 import：事件表改从归一后的文件取「规则 5 的历史版本」。执行逻辑一个字没动。"
-    },
-    {
-      "path": "packages/adventure/cultivation-v6.js",
-      "change": "changed",
-      "since": "S1",
-      "reason": "只改 import：事件表改从归一后的文件取「规则 6 的历史版本」。执行逻辑一个字没动。"
-    },
-    {
-      "path": "packages/adventure/cultivation-v7.js",
-      "change": "changed",
-      "since": "S1",
-      "reason": "只改 import：事件表改从归一后的文件取「规则 7 的历史版本」。执行逻辑一个字没动。"
-    },
-    {
-      "path": "packages/adventure/cultivation-v8.js",
-      "change": "changed",
-      "since": "S1",
-      "reason": "只改 import：事件表改从归一后的文件取「规则 8 的历史版本」。执行逻辑一个字没动。"
-    },
-    {
-      "path": "packages/adventure/cultivation-v9.js",
-      "change": "changed",
-      "since": "S1",
-      "reason": "只改 import：事件表改从归一后的文件取「规则 9 的历史版本」。执行逻辑一个字没动。"
-    },
-    {
-      "path": "packages/adventure/cultivation-v10.js",
-      "change": "changed",
-      "since": "S1",
-      "reason": "只改 import：事件表改从归一后的文件取「规则 10 的历史版本」。执行逻辑一个字没动。"
-    },
-    {
-      "path": "packages/adventure/cultivation-v11.js",
-      "change": "changed",
-      "since": "S1",
-      "reason": "只改 import：事件表改从归一后的文件取「规则 11 的历史版本」。执行逻辑一个字没动。"
+      "id": "S3",
+      "title": "调度器合一",
+      "why": "每个月「谁先说话」的顺序，从 cultivation.js 的函数体里收进 packages/adventure/scheduler.js 一个列表。顺序逐条照搬，行为不变（见 eventseq 门禁）。",
+      "files": {
+        "packages/adventure/cultivation.js": "changed"
+      }
     }
   ]
 }

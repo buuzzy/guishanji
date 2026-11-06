@@ -121,7 +121,8 @@
     "packages/adventure/story-network.js": "cause",
     "packages/adventure/story-rules10.js": "cause",
     "packages/adventure/story-rules12.js": "pace",
-    "packages/core/random.js": "infra"
+    "packages/core/random.js": "infra",
+    "packages/adventure/scheduler.js": "pace"
   },
   "presentRoots": [
     "apps/",

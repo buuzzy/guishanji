@@ -177,8 +177,14 @@ section('本仓库源码与 vendor 历史快照的差异必须登记在案');
    * ⇒ 门禁的牙齿没有松：**任何没登记的改动照样报红。**
    */
   const ledgerFile = path.join(ROOT, 'docs', 'refactor-divergence.json');
-  const ledger = fs.existsSync(ledgerFile) ? JSON.parse(fs.readFileSync(ledgerFile, 'utf8')) : {entries: []};
-  const declared = new Map((ledger.entries || []).map(e => [e.path, e.change]));
+  const ledger = fs.existsSync(ledgerFile) ? JSON.parse(fs.readFileSync(ledgerFile, 'utf8')) : {changes: []};
+  /* 台账按「一次改动」分组，每组写清「为什么改」，组下列出具体文件与改动类型。 */
+  const declared = new Map();
+  const declaredGroups = [];
+  for (const change of ledger.changes || []) {
+    if (!change.why || !String(change.why).trim()) declaredGroups.push(`${change.id || change.title || '（没写标题）'} 没写为什么改`);
+    for (const [file, kind] of Object.entries(change.files || {})) declared.set(file, kind);
+  }
 
   const lock = fs.existsSync(LOCK) ? JSON.parse(fs.readFileSync(LOCK, 'utf8')) : {files: []};
   let same = 0;
@@ -218,6 +224,9 @@ section('本仓库源码与 vendor 历史快照的差异必须登记在案');
   ok(stale.length === 0,
     `差异台账没有发霉（docs/refactor-divergence.json 登记 ${declared.size} 条）`
     + (stale.length ? `；登记了但实际没改：${stale.join('、')}` : ''));
+  ok(declaredGroups.length === 0,
+    '差异台账每一组都写清了「为什么改」'
+    + (declaredGroups.length ? `；缺理由：${declaredGroups.join('、')}` : ''));
 }
 
 /* ══════════════════════════════════════════════ ②c 迁移等价性 */

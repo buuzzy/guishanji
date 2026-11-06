@@ -66,6 +66,13 @@ const commands = [
      而玩家不会知道自己错过了什么。
      它同时守着「年龄区间不许手填」（必须按 `chainAgeEnd` 的规则算出来）。 */
   ['chains', ['scripts/audit-chains.mjs', '--count=80', '--check']],
+  /* ── 表达门禁 ─────────────────────────────────────────────────────────
+     这道门禁守的是**说法**：事件的话不许留「还没定稿」的（voice:'pending'），
+     表达域不许有孤儿条目（说了一条不存在的内容），
+     每条内容的选项提示语数量必须和规则层对得上，
+     表达域的输出必须与基线逐值全等（改一个字就报红）。
+     它还核对「专有名词总表」：表达域不许发明内容。 */
+  ['expressions', ['scripts/verify-expressions.mjs']],
 ];
 const report = { startedAt: new Date().toISOString(), node: process.version, platform: process.platform, results: [] };
 await mkdir(join(projectRoot, 'artifacts'), { recursive: true });

@@ -10,7 +10,7 @@ import { WORLD_ERAS, BIRTHPLACES, FAMILIES, LIFE_GOALS, TRAINING_GROUNDS } from 
 import { regionInfo, activityLabel, monthSeconds, income, practiceRate, trainingOptions } from '../../packages/adventure/life.js';
 import { activityContext, presentPeople } from '../../packages/adventure/context.js';
 import { registerScene, drawScene } from './cultivation-pixel.js';
-import { PEOPLE_BACKGROUNDS } from '../../content/readable-stories.js';
+import { PEOPLE_BACKGROUNDS } from '../../content/expressions/people.js';
 import { REALM_ABILITIES } from '../../packages/adventure/realm.js';
 import { PATHS,ROOTS,ACTIVITIES,GEOGRAPHY } from '../../content/cultivation-world.js';
 import { activityOptions,routeOptions,currentContinent } from '../../packages/adventure/cultivation.js';

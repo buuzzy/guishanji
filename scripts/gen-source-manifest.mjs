@@ -111,6 +111,9 @@ const CHANGED_REASON = {
   'miniprogram/subpkg/xianxia/bridge/page-model.js': 'S5 角色域：登记卡的「预期寿元」改读规则层算好的实际寿元（state.life.cultivation.lifespanLimit），不再读境界表的基础数字',
   'miniprogram/subpkg/xianxia/bridge/view-model.js': 'S5 角色域：修行本事面板加「体魄」（只增不减的能力），体质行补「力竭」提示',
   'miniprogram/subpkg/xianxia/pages/life/life.wxml': 'S5 角色域：修行本事面板加「体魄」一行',
+  'content/cultivation-stories.js': 'S7 表达域：事件条目统一带上 voice 字段（表达成熟度：inline=已定稿 / pending=未定稿），在装配链末尾补一次，保证每个条目都有',
+  'content/readable-stories.js': 'S7 表达域：内容按故事线拆到 content/expressions/ 下，本文件改成门面转发（旧路径还有人在用）',
+  'packages/adventure/engine.js': 'S7 表达域：makeReadable 改读新的表达域入口 content/expressions/index.js',
 };
 
 
@@ -337,6 +340,14 @@ const ADDED = [
   'AGENTS.md', 'README.md',
   'docs/migration/ledger.md', 'docs/migration/plan.md', 'docs/migration/storage-migration.md',
   'docs/migration/web-cleanup.md', 'docs/migration/miniprogram-standalone.md',
+  /* 2026-11-08：S7 表达域 —— 说法按故事线拆到 content/expressions/ 下 */
+  'content/expressions/index.js', 'content/expressions/people.js',
+  'content/expressions/mainline.js', 'content/expressions/tide.js', 'content/expressions/ember.js',
+  'content/expressions/sky.js', 'content/expressions/journey.js', 'content/expressions/homecoming.js',
+  'content/expressions/demonic.js', 'content/expressions/trial.js', 'content/expressions/cavern.js',
+  'content/expressions/outer.js', 'content/expressions/beast.js', 'content/expressions/cultivation.js',
+  'scripts/verify-expressions.mjs',
+  'docs/expression-vocabulary.json',
 ];
 const added = [];
 for (const p of ADDED) {

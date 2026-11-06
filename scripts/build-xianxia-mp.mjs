@@ -138,7 +138,7 @@ const EXPORTS = {
     'longAction', 'prose', 'sceneFor', 'materialSlots', 'progressionText',
   ],
   'packages/adventure/birth.js': ['birthFacts'],
-  'content/readable-stories.js': ['PEOPLE_BACKGROUNDS'],
+  'content/expressions/people.js': ['PEOPLE_BACKGROUNDS'],
   /* 规则12 的专用模块：体质 / 寿限 / 炼气阶段 / 宗门 —— 小程序端要显示它们，
      不能拿 REALMS[].lifespan 顶（那只是旧规则与境界基础值）。 */
   'packages/adventure/story-rules12.js': [

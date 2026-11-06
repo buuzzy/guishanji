@@ -68,6 +68,15 @@
         "packages/adventure/story-network.js": "changed",
         "packages/adventure/story-rules12.js": "changed"
       }
+    },
+    {
+      "id": "S7",
+      "title": "表达域：事件带 voice + 说法按故事线分文件 + 表达域门禁",
+      "why": "表达域（⑤）原来是一个 111 行的单文件（content/readable-stories.js），所有故事线的说法挤在一起，加一条线就得翻一个几百行的文件；而且「这件事的话到底定了没」没有任何标记 —— 半成品的文案会和定稿的内容混在一起，玩家看不出来。这一轮做三件事：① 事件条目统一带上 voice 字段（inline = 已定稿，pending = 还没定稿），在装配链末尾补一次，保证每个条目都有、不会漏；② 说法按故事线拆成 12 个分片文件（content/expressions/），老文件留作门面转发，内容一字未改（与基线逐值全等）；③ 新增 scripts/verify-expressions.mjs 门禁：不许留 pending、不许有孤儿条目、选项提示语数量必须对得上、输出必须与基线逐值全等，并核对「专有名词总表」防止表达域发明内容。纯重构 ⇒ 行为一个字都没变（tests/fixtures/expressions.json 是搬迁前生成的基线，66 条 × 3 个状态逐值全等）。",
+      "files": {
+        "content/readable-stories.js": "changed",
+        "packages/adventure/engine.js": "changed"
+      }
     }
   ],
   "currentVersion": {

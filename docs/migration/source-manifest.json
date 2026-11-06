@@ -1219,8 +1219,8 @@
         "sourceBytes": 11494,
         "sourceSha256": "66026f8b72b80fc179a98f3f31fe2c736ff0d8c96a74e4c8ad26cde58edd5875",
         "path": "miniprogram/subpkg/xianxia/runtime/build-manifest.json",
-        "currentBytes": 9804,
-        "currentSha256": "9e63cd4c13dd6484cd4796c84b3f9963ea8dfabfbeb238e0bf2241d6c6c08476",
+        "currentBytes": 11914,
+        "currentSha256": "071197aa4633e08189696f8555eae4b78e2895707de86894990e4ede3a38c8a8",
         "reason": "生成物：来源改为本仓库源码，并新增 upstreamOrigin 段"
       },
       {
@@ -1230,8 +1230,8 @@
         "sourceBytes": 1738614,
         "sourceSha256": "ba0720f2c21c1babe39c605739e90243d7de00db5f920bd5078704d6952fed3f",
         "path": "miniprogram/subpkg/xianxia/runtime/engine.js",
-        "currentBytes": 1229301,
-        "currentSha256": "ba99fb7dcbd076314647eb7b4662033bd59d532b4a47d23a6ff864c837cf7c9a",
+        "currentBytes": 1233855,
+        "currentSha256": "efee31fb9bd0d16546d108b5246ce706952247fd3a737f9a44b48122ba45dc7b",
         "reason": "生成物：由本仓库源码重新构建（除文件头注释外与迁移进来的那份逐字节一致，见 reference/migrated-runtime/）"
       },
       {
@@ -1252,8 +1252,8 @@
         "sourceBytes": 20247,
         "sourceSha256": "d48d08f49db0a696826670bc1395f2d894091aa747cbe1494e9078f765d16883",
         "path": "scripts/build-xianxia-mp.mjs",
-        "currentBytes": 32461,
-        "currentSha256": "de066f2f3612844d038af938da07e27498068dc748aea7aa0fa9ad63853fd651",
+        "currentBytes": 32463,
+        "currentSha256": "30dc9b53c234dea3c8fcd541ace3414765bb55786f61be894fd073bbf16932a7",
         "reason": "构建来源改为本仓库自己的源码（vendor 快照降级为历史证据），新增 app.wxss 生成；2026-11-07 补充说明「上游 xianxia-life 已删除，门禁现在核对仓库内的 vendor 锁定快照」"
       },
       {
@@ -1506,8 +1506,8 @@
       },
       {
         "path": "scripts/gen-source-manifest.mjs",
-        "bytes": 20582,
-        "sha256": "782e75c02d4fd079453b08d9c43ad5ffe83ba7302ef10c9762cd4fb1d6879a5a"
+        "bytes": 21713,
+        "sha256": "880e08b8486cd2ab1401ae22d4d7cf10220d81541af77cefd0df961c92dcdf78"
       },
       {
         "path": "scripts/test-xianxia-standalone.mjs",

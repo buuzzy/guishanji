@@ -330,6 +330,23 @@ const stage11=stageCopy(CULTIVATION_EVENTS);
 
 installRules12(CULTIVATION_EVENTS);
 
+/**
+ * 表达成熟度：每个事件条目都带上 `voice`。
+ *
+ *   · 'inline'  —— 这条话已经定稿，就用事件表里的原文。
+ *   · 'pending' —— 还没定稿，表达域得补写法。
+ *
+ * ⚠ 正式内容里不许留 'pending'（门禁 `scripts/verify-expressions.mjs` 盯着）：
+ *   留一个 'pending' 就是「这句话还没想好」⇒ 玩家会看到半成品。
+ * ⚠ 为什么在装配链末尾统一补，而不是在每处创建事件时写：
+ *   事件条目分散在九份内容文件里（还有不少是直接写的对象字面量），
+ *   逐处写必然漏掉几个 ⇒ **漏掉的那个会永远没有 voice**。
+ *   在这里补一次 ⇒ 每个条目都有，一处不漏。
+ * ⚠ 这个字段**不参与内容保真比对**（`scripts/serialize-content.mjs` 的 IGNORED_FIELDS）：
+ *   它标的是「成熟度」，不是「内容」⇒ 加它不该让历史版本的基线变红。
+ */
+for(const node of Object.values(CULTIVATION_EVENTS))if(!node.voice)node.voice='inline';
+
 /** 把「人脉网络」那批共享节点换回活对象：它们在 v7 / v8 里与最终链是同一份，
  *  后来的装配对它们的改写会同时反映到那两个版本（与归一前一致）。 */
 const withShared=stage=>{const out={...stage};for(const [id,node] of sharedNodes)if(id in stage)out[id]=node;return out;};

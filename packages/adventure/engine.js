@@ -9,7 +9,7 @@ import { birthConfiguration } from './birth.js';
 import { initializeLife, regionInfo, contextualText, openJourney, livingMonth, beginAction, completeAction, continuation, markEvent, respondToCrisis, emergencyArrival, income, practiceRate, trainingOptions } from './life.js';
 import { activityContext, personHere } from './context.js';
 
-import { makeReadable } from '../../content/readable-stories.js';
+import { makeReadable } from '../../content/expressions/index.js';
 import { EXPEDITION_CHANGES, CLUE_EVENTS } from '../../content/expedition-changes.js';
 import { FAMILY_EVENTS, familyState, familyAvailable } from './family.js';
 import { breakthroughRecord } from './realm.js';

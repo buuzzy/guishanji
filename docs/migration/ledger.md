@@ -37,6 +37,26 @@
 | 小程序锁的输入 vs 上游基线逐文件一致 | ✅ `vendor/xianxia-r12` **67/67**、`vendor/xianxia-r12-art` **3/3** 个模块，逐字节等于本仓库 `packages/`+`content/`+`apps/preview/` 的同路径源文件 |
 | 来源清单 | ✅ `docs/migration/source-manifest.json`，按「未改动 / 有意改动 / 换位置 / 新增」四组登记 |
 
+### 2.1 清单的两种刷新方式（两台机器各用一种）
+
+清单里锁着每个文件的哈希 ⇒ **改了本轮自己写的文件**（`added` / `changed` / `moved` 组）后，
+`import` 门禁会报红，必须刷新清单。两种刷新方式：
+
+| 方式 | 命令 | 什么时候用 |
+| --- | --- | --- |
+| **完整模式** | `node scripts/gen-source-manifest.mjs --xianxia-life=<目录> --one8b=<目录>` | macOS（本机有那两个来源仓库）⇒ 顺便**重新核对来源** |
+| **离线模式** | `node scripts/gen-source-manifest.mjs --offline` | Windows（**只有本仓库**）⇒ 只刷新本轮自己写的文件的哈希 |
+
+⚠ **离线模式故意不刷新 `unchanged` 组**：那一组的哈希含义是
+「**与来源逐字节一致**」，凭据来自来源仓库 ⇒ 只有真的比对过来源才能刷新。
+（第一版犯了这个错：改坏迁入的文件后跑一次离线就把证据抹了，门禁再也查不出来。已修正并做了反向验证。）
+
+⇒ 也就是说：**在 Windows 上改了「本轮自己写的文件」，离线刷新即可；
+   改了「迁进来的文件」，必须回 macOS 跑完整模式** —— 这是刻意的，
+   不是漏洞。
+
+⇒ 门禁报红时会**直接把该敲的命令打出来**，不用猜。
+
 ## 3. 阶段 1：创建新仓库并迁入共享源码
 
 | 项 | 结果 |
@@ -129,8 +149,19 @@ xianxiastore:0 xianxiaart:0 xianxiamp:0 xianxiastyle:0 xianxiastandalone:0
 ```sh
 git clone git@github.com:buuzzy/guishanji.git   # 或 git pull
 cd guishanji && npm ci
-node scripts/run-regression.mjs                  # 期望：REGRESSION PASS · 37 道全 0
+node scripts/run-regression.mjs                  # 期望：REGRESSION PASS · 38 道全 0
 ```
+
+⚠ **Windows 上如果 `import` 门禁报红**（说「新增文件与清单不一致」）：
+那多半是你在 Windows 上改了**本轮自己写的文件** ⇒ 跑一次离线刷新即可：
+
+```sh
+node scripts/gen-source-manifest.mjs --offline
+node scripts/run-regression.mjs
+```
+
+⚠ 但如果报的是「**未改动的 119 个文件**与来源不一致」⇒ 那是「迁进来的文件被动过」，
+离线模式**查不出来**（这是刻意的，见 §2.1）⇒ **必须回 macOS 跑完整模式**核对。
 
 ### 6.2 macOS 这一档怎么办：**本机就是 macOS，本机跑就算**
 

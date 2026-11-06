@@ -1,0 +1,3 @@
+/* 版式全部用官方那套类名（.panel / .hint / .note / .ghost），样式在 app.wxss 里
+   （从 reference/official/app.wxss 提取，见 scripts/test-xianxia-style.mjs）。
+   ⇒ 这一页**不需要**自己的样式文件。 */

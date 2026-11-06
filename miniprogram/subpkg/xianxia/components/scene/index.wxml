@@ -1,0 +1,3 @@
+<view class="scene-box">
+  <canvas id="cv" type="2d" class="scene-cv"></canvas>
+</view>

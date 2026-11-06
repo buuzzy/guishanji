@@ -1,0 +1,41 @@
+<view class="wrap {{theme}}" style="padding-top:{{topPad}}px">
+  <view class="panel">
+    <view class="panel-h">
+      <text class="t">隐私说明</text>
+      <text class="lbl">占位</text>
+    </view>
+
+    <view class="hint">归山记是<text class="wx-strong">完全单机</text>的小程序：不注册账号、不联网、不上传任何数据、不收集设备标识与个人信息。你在游戏里度过的每一段人生，只保存在这台手机的本地存储里。</view>
+
+    <view style="height:24rpx"></view>
+    <view class="note">⚠ 本页是占位内容，正式发布前需按归山记这个新产品的实际情况核对并改写；若以后接入任何统计、客服或广告，必须先更新本页。</view>
+  </view>
+
+  <view class="panel">
+    <view class="panel-h">
+      <text class="t">我们存了什么</text>
+      <text class="lbl">本地</text>
+    </view>
+    <view class="hint">只有你自己走出来的游戏进度：以 <text class="mono">xianxia.v1.</text> 开头的键，记录命盘、境界、经历与往期人生清单。它们不出这台设备。</view>
+  </view>
+
+  <view class="panel">
+    <view class="panel-h">
+      <text class="t">你能做什么</text>
+      <text class="lbl">控制</text>
+    </view>
+    <view class="hint">在「往期人生」里可以回看每一段人生；清理小程序缓存或卸载小程序即可删除全部本地数据。</view>
+  </view>
+
+  <view class="panel">
+    <view class="panel-h">
+      <text class="t">联系我们</text>
+      <text class="lbl">占位</text>
+    </view>
+    <view class="hint">⚠ 正式发布前需按实际情况填写：运营主体名称与客服邮箱。</view>
+  </view>
+
+  <button class="ghost" bindtap="goBack">返回</button>
+
+  <view style="height:48rpx"></view>
+</view>

@@ -1,0 +1,40 @@
+name: Cross-platform regression
+on:
+  pull_request:
+  push:
+    branches: [main, 'migration/**']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  regression:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .node-version
+      - name: Record the checked-out commit and complete Git tree
+        run: node -e "const cp=require('node:child_process'); console.log('CHECKOUT_COMMIT '+cp.execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim()); console.log('CHECKOUT_TREE '+cp.execFileSync('git',['rev-parse','HEAD^{tree}'],{encoding:'utf8'}).trim())"
+      - name: Install dependencies
+        run: npm ci
+      - name: Migration import check (imported bytes vs source manifest)
+        run: node scripts/verify-migration-import.mjs
+      - name: Mini-program runtime is reproducible
+        run: node scripts/build-xianxia-mp.mjs --check
+      - name: Full regression
+        run: node scripts/run-regression.mjs
+      - name: Preserve test evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: regression-${{ matrix.os }}
+          path: artifacts/
+          if-no-files-found: ignore

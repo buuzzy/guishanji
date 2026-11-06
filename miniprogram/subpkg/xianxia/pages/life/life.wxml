@@ -1,0 +1,554 @@
+<view class="wrap {{theme}}" style="padding-top:{{statusBarHeight}}px">
+
+  <!-- 顶栏（官方 header.topbar > .topbar-inner：brand / agebox / speed）
+       ⚠ **不再给顶栏加胶囊让位**（2026-11-04 真机反馈）：
+       官方生命页的 `.topbar-inner` 没有 padding-right，
+       倍速组本来就在第二行（落在胶囊下方），第一行右侧是空白。
+       之前修仙给整条顶栏加了 ~102px 的右内边距 ⇒ 倍速组被挤到第三行（顶栏变成两栏）。 -->
+  <view class="topbar" style="top:{{statusBarHeight}}px">
+    <view class="topbar-inner">
+      <text class="brand"><text class="em">归山</text>记</text>
+      <view class="agebox">
+        <view class="age-num">{{top.age}}<text class="wx-small">岁</text></view>
+        <view class="age-yr">
+          <text class="t">{{top.year}} 年 · {{top.name}} · 1月≈{{top.monthSec}}秒</text>
+          <view class="prog"><view style="width:{{top.prog}}%"></view></view>
+        </view>
+      </view>
+      <view class="speed" id="lSpeed">
+        <button class="pause {{paused ? 'on' : ''}}" bindtap="togglePause" aria-label="暂停">{{paused ? '▶' : '❚❚'}}</button>
+        <view class="sps">
+          <button
+            wx:for="{{speeds}}"
+            wx:key="*this"
+            class="sps-b {{speed === item ? 'on' : ''}} {{index === 0 ? 'first' : ''}} {{index === speeds.length - 1 ? 'last' : ''}}"
+            data-v="{{item}}"
+            bindtap="setSpeed"
+          >{{item}}<text class="x">×</text></button>
+        </view>
+        <button class="exitbtn" bindtap="exitLife" aria-label="离开">离开</button>
+        <button class="morebtn morebtn-w {{moreOpen ? 'on' : ''}}" bindtap="toggleMore" aria-label="更多">⋯</button>
+
+        <!-- 官方 moreMenu（官方 .more 是 display:contents，按钮直接排在 .speed 这一行里） -->
+        <view class="more" wx:if="{{moreOpen}}">
+          <button class="ff {{auto ? 'on' : ''}}" bindtap="toggleAuto">自动抉择</button>
+          <button class="ff {{ff ? 'on' : ''}}" bindtap="toggleFf">下一个<text> »</text></button>
+          <button class="ff" bindtap="openSheet" data-sheet="people">人物近况</button>
+          <button class="ff" bindtap="openSheet" data-sheet="details">授业与记录</button>
+          <button class="ff" bindtap="openSheet" data-sheet="world">世界地图</button>
+          <button class="ff" bindtap="cycleTheme">{{themeIcon}} {{themeTxt}}</button>
+          <button class="ff" bindtap="goPast">往期人生</button>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 终局回顾（照上游 apps/preview/app.js:232-237 的 renderEnding；壳用官方 .panel） -->
+  <block wx:if="{{ended}}">
+    <view class="panel p-ending">
+      <view class="panel-h">
+        <text class="t">{{top.name}}的一生 · 终章</text>
+        <text class="lbl">有了回响</text>
+      </view>
+      <view class="d-h2">{{ending.title}}</view>
+      <text class="d-p" wx:if="{{ending.final}}">{{ending.final}}</text>
+      <text class="d-p" wx:if="{{ending.text}}">{{ending.text}}</text>
+      <view class="statbars">
+        <view class="stat" wx:for="{{ending.metrics}}" wx:key="k">
+          <text class="n">{{item.k}}</text>
+          <view class="bar"><view style="width:100%;background:var(--stamp)"></view></view>
+          <text class="v">{{item.v}}</text>
+        </view>
+      </view>
+      <view class="panel p-scene" style="padding:0;overflow:hidden;margin-top:20rpx">
+        <x-scene version="{{version}}" theme="{{theme === 'theme-dark' ? 'dark' : 'light'}}" />
+        <view class="scene-cap">
+          <text class="meta">{{top.place}} · {{ending.visited}}</text>
+        </view>
+      </view>
+      <view class="fam">
+        <view class="row"><text class="fk">有些选择留了下来</text></view>
+      </view>
+      <text class="hint">{{ending.consequences}}</text>
+      <view class="chips">
+        <text class="chip" wx:for="{{inventory.items}}" wx:key="id">{{item.name}}</text>
+      </view>
+      <view class="fam">
+        <view class="row"><text class="fk">这一生的人</text></view>
+      </view>
+      <view class="person-list">
+        <view class="person-row" wx:for="{{people}}" wx:key="id">
+          <view class="person-initial">{{item.initial}}</view>
+          <view class="person-text">
+            <text class="person-name">{{item.name}}</text>
+            <text class="person-role">{{item.role}}</text>
+            <text class="person-note" wx:if="{{item.desc}}">{{item.desc}}</text>
+            <text class="person-note">{{item.note}}</text>
+          </view>
+        </view>
+      </view>
+      <button class="ghost sm" bindtap="openFullLog">展开完整经历</button>
+      <view class="hint">再走一条不同的路 →<text class="wx-small" bindtap="newLife">（重新抽一次命盘）</text></view>
+    </view>
+    <view style="height:40rpx"></view>
+  </block>
+
+  <block wx:else>
+    <!-- 场景（官方 .panel.p-scene + .scene-cap） -->
+    <view class="panel p-scene" style="padding:0;overflow:hidden;margin-top:20rpx">
+      <x-scene version="{{version}}" theme="{{theme === 'theme-dark' ? 'dark' : 'light'}}" />
+      <view class="scene-cap">
+        <text class="meta">{{top.place}} · {{focus}} · {{top.realm}}</text>
+      </view>
+    </view>
+
+    <!-- 官方 #miniBar：状态条（四格：体力 / 心境 / 悟性 / 胆识 —— 照修仙网页端） -->
+    <view class="minibar">
+      <view class="mb-st">
+        <view class="mb-i" wx:for="{{stats}}" wx:key="k">
+          <text class="mb-n">{{item.n}}</text>
+          <text class="mb-v">{{item.v}}</text>
+          <view class="mb-b"><view style="width:{{item.bar}}%;background:{{item.c}}"></view></view>
+        </view>
+      </view>
+      <button class="mb-fo" wx:if="{{canFocus}}" bindtap="openSheet" data-sheet="focus">
+        <text class="mb-fl">重心</text>
+        <text class="mb-fon">{{focus}}</text>
+        <text class="mb-ar">▾</text>
+      </button>
+      <button class="mb-sh" bindtap="openSheet" data-sheet="world">地图</button>
+    </view>
+
+    <!-- 人生纪录（官方 #feed：默认 6 条 + 加星 + 「人生记录 全部」弹层） -->
+    <view class="panel p-feed">
+      <view class="panel-h">
+        <text class="t">这一生的经历</text>
+        <text class="lbl">{{feedMeta.label}} · <text class="sth">点选一行即可加☆</text></text>
+      </view>
+      <view class="feed-item kind-{{item.k}}{{item.star ? ' starred' : ''}}"
+            wx:for="{{feed}}" wx:key="li" data-li="{{item.li}}" bindtap="toggleFeedRow">
+        <text class="age">{{item.ageText}}<text class="ym">{{item.ym}}</text></text>
+        <view class="txt">
+          <text>{{item.t}}</text>
+          <text user-select="true" class="f" wx:if="{{item.f}}">{{item.f}}</text>
+          <text user-select="true" class="chg" wx:if="{{item.chg}}">{{item.chg}}</text>
+        </view>
+        <button class="stb" wx:if="{{item.op}}" data-li="{{item.li}}" catchtap="toggleStar"
+                aria-pressed="{{item.star}}">{{item.star ? starOn : starOff}}</button>
+      </view>
+      <view class="note" wx:if="{{!feed.length}}">还没有值得记下的事。日子还长。</view>
+      <button class="ghost sm" bindtap="openFullLog">人生记录 全部</button>
+    </view>
+
+    <!-- 修行有成（上游 apps/preview/app.js:148-152 的 breakthrough-announcement） -->
+    <view class="panel p-breakthrough" wx:if="{{breakthrough}}">
+      <view class="panel-h">
+        <text class="t">修行有成</text>
+      </view>
+      <text class="d-h2">{{breakthrough.title}}</text>
+      <text class="d-p">{{breakthrough.body}}</text>
+    </view>
+
+    <!-- 当前处境（上游 apps/preview/app.js:104-109 的 passageMarkup）
+         ⚠ 2026-11-05（用户拍板）：上游那行「日子正在过去 / 人生已暂停」已删
+            （原本在「当前处境」与「重心卡」各出现一次，纯冗余）。 -->
+    <view class="panel p-passage">
+      <text class="d-p" wx:if="{{passage.label}}">{{passage.label}}</text>
+      <view class="prog" wx:if="{{passage.journey}}"><view style="width:{{passage.journey.progress}}%"></view></view>
+      <text class="hint" wx:if="{{passage.actionLabel}}">{{passage.actionLabel}}中 · 这一程还没走完</text>
+      <view class="journey-meta" wx:if="{{passage.journey}}">
+        <text>已过 {{passage.journey.elapsed}}</text>
+        <text>此程原定 {{passage.journey.total}}</text>
+      </view>
+      <text class="hint" wx:if="{{passage.exam}}">{{passage.exam}}</text>
+    </view>
+
+    <!-- 状态（官方 .p-stats：0–100 条 + 折叠） -->
+    <view class="panel p-stats {{fold['p-stats'] ? 'folded' : ''}}">
+      <view class="panel-h">
+        <text class="t">状态</text>
+        <text class="lbl">0–100</text>
+        <button class="foldbtn" catchtap="toggleFold" data-k="p-stats"
+                aria-label="{{fold['p-stats'] ? foldOpen : foldClose}}">{{fold['p-stats'] ? '▸' : '▾'}}</button>
+      </view>
+      <block wx:if="{{!fold['p-stats']}}">
+        <view class="statbars">
+          <view class="stat" wx:for="{{statusPanel.bars}}" wx:key="k">
+            <text class="n">{{item.n}}</text>
+            <view class="bar"><view style="width:{{item.bar}}%;background:{{item.c}}"></view></view>
+            <text class="v">{{item.v}}</text>
+          </view>
+        </view>
+        <view class="hr"></view>
+        <view class="row" wx:for="{{statusPanel.rows}}" wx:key="k">
+          <text class="fk">{{item.k}}</text>
+          <text class="fv mono">{{item.v}}</text>
+        </view>
+        <view class="hint">{{statusPanel.note}}</view>
+      </block>
+    </view>
+
+    <!-- 山海行籍（官方 .panel.idcard.p-id 结构 + 像素肖像；内容照修仙网页端 identity(s)） -->
+    <view class="panel idcard p-id" wx:if="{{identity}}">
+      <view class="id-top">
+        <text class="mono">{{identity.top[0]}}</text>
+        <text class="mono">{{identity.top[1]}}</text>
+      </view>
+      <view class="id-in">
+        <canvas type="2d" id="idPortrait" class="id-portrait"></canvas>
+        <view class="id-right">
+          <view class="id-name">{{identity.name}}</view>
+          <view class="id-dl">
+            <view class="id-row" wx:for="{{identity.rows}}" wx:key="k">
+              <text class="id-dt">{{item.k}}</text>
+              <view class="id-dd">
+                <block wx:for="{{item.v}}" wx:for-item="p" wx:key="index">
+                  <text user-select="true" wx:if="{{p.t}}" class="id-t">{{p.t}}</text>
+                  <text user-select="true" wx:elif="{{p.small}}" class="id-small">{{p.small}}</text>
+                  <text user-select="true" wx:elif="{{p.b}}" class="id-b">{{p.b}}</text>
+                  <view wx:elif="{{p.dots}}" class="qdots">
+                    <view wx:for="{{p.dots}}" wx:for-item="d" wx:key="index" class="wx-i {{d ? 'on' : ''}}"></view>
+                  </view>
+                </block>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+      <view class="mrz">
+        <text class="mono">{{identity.mrz[0]}}</text>
+        <text class="mono">{{identity.mrz[1]}}</text>
+      </view>
+    </view>
+
+    <!-- 修行本事（官方 .panel 版式） -->
+    <view class="panel p-practice {{fold['p-practice'] ? 'folded' : ''}}" wx:if="{{practice}}">
+      <view class="panel-h">
+        <text class="t">修行本事</text>
+        <text class="lbl">{{practice.realm}}</text>
+        <button class="foldbtn" catchtap="toggleFold" data-k="p-practice"
+                aria-label="{{fold['p-practice'] ? foldOpen : foldClose}}">{{fold['p-practice'] ? '▸' : '▾'}}</button>
+      </view>
+      <block wx:if="{{!fold['p-practice']}}">
+        <!-- 体质（规则12 才有）：常人体质 / 先天孱弱 / 筋骨健壮 / 天生神力 -->
+        <text class="hint" wx:if="{{practice.body}}">{{practice.body}}</text>
+        <view class="fam">
+          <view class="row"><text class="fk">境界积累</text><text class="fv mono">{{practice.progressText}}</text></view>
+        </view>
+        <view class="prog"><view style="width:{{practice.progress}}%"></view></view>
+        <!-- ⚠ 2026-11-05（用户拍板）：五个境界阶梯已删
+             （标题右侧「{{practice.realm}}」已经是当前境界）。 -->
+        <view class="statbars">
+          <view class="stat" wx:for="{{practice.skills}}" wx:key="key">
+            <text class="n">{{item.label}}</text>
+            <view class="bar"><view style="width:{{item.pct}}%;background:var(--accent)"></view></view>
+            <text class="v mono">{{item.text}}</text>
+          </view>
+        </view>
+        <x-radar player="{{axes}}" theme="{{theme === 'theme-dark' ? 'dark' : 'light'}}" />
+        <text class="hint">{{practice.radarHint}}</text>
+        <view class="fam" wx:if="{{practice.method}}">
+          <view class="row"><text class="fk">主修心法</text><text class="fv mono">{{practice.method.name}}</text></view>
+        </view>
+        <view class="hint" wx:if="{{practice.method}}">{{practice.method.detail}} 实际练习 {{practice.method.months}} 个月 · {{practice.method.note}}</view>
+        <view class="hint" wx:if="{{practice.methodRole}}">{{practice.methodRole}}</view>
+        <view class="hint" wx:if="{{practice.methodArc}}">{{practice.methodArc}}</view>
+        <view class="fam" wx:if="{{practice.advancement.length}}">
+          <view class="row" wx:for="{{practice.advancement}}" wx:key="label"><text class="fk">{{item.label}}</text><text class="fv mono">{{item.ready ? '已备' : '尚缺'}}</text></view>
+        </view>
+        <view class="hint">{{practice.hint}}</view>
+      </block>
+    </view>
+
+    <!-- 宗门（官方 .panel 版式） -->
+    <view class="panel p-sect {{fold['p-sect'] ? 'folded' : ''}}" wx:if="{{sect}}">
+      <view class="panel-h">
+        <text class="t">{{sect.name}}</text>
+        <text class="lbl">{{sect.phase}}</text>
+        <button class="foldbtn" catchtap="toggleFold" data-k="p-sect"
+                aria-label="{{fold['p-sect'] ? foldOpen : foldClose}}">{{fold['p-sect'] ? '▸' : '▾'}}</button>
+      </view>
+      <block wx:if="{{!fold['p-sect']}}">
+        <!-- 宗门法门（规则12 才有）：这一片地方的门派是什么路数 -->
+        <text class="hint" wx:if="{{sect.style}}">{{sect.style}}</text>
+        <view class="fam">
+          <view class="row"><text class="fk">你的差事</text><text class="fv mono">{{sect.role}}</text></view>
+          <view class="row"><text class="fk">公库</text><text class="fv mono">{{sect.treasury}}</text></view>
+          <view class="row"><text class="fk">安置与营建</text><text class="fv mono">{{sect.development}}</text></view>
+        </view>
+        <view class="prog" wx:if="{{sect.showBar}}"><view style="width:{{sect.barPercent}}%"></view></view>
+      </block>
+    </view>
+
+    <!-- 灵石与家产 -->
+    <view class="panel p-wealth {{fold['p-wealth'] ? 'folded' : ''}}" wx:if="{{wealth}}">
+      <view class="panel-h">
+        <text class="t">灵石与家产</text>
+        <text class="lbl">收支有数</text>
+        <button class="foldbtn" catchtap="toggleFold" data-k="p-wealth"
+                aria-label="{{fold['p-wealth'] ? foldOpen : foldClose}}">{{fold['p-wealth'] ? '▸' : '▾'}}</button>
+      </view>
+      <block wx:if="{{!fold['p-wealth']}}">
+        <view class="fam">
+          <view class="row"><text class="fk">随身灵石</text><text class="fv mono">{{wealth.stones}}</text></view>
+          <view class="row"><text class="fk">当前每年收支</text><text class="fv mono">{{wealth.netText}}</text></view>
+          <view class="row" wx:if="{{wealth.debt}}"><text class="fk">未还路费</text><text class="fv mono">{{wealth.debt}}</text></view>
+        </view>
+        <view class="fam" wx:if="{{wealth.ledger.length}}">
+          <view class="row" wx:for="{{wealth.ledger}}" wx:key="k"><text class="fk">{{item.k}}</text><text class="fv mono">{{item.v}}</text></view>
+        </view>
+        <view class="hint" wx:if="{{wealth.ledgerNote}}">{{wealth.ledgerNote}}</view>
+        <view class="hint" wx:if="{{wealth.lastText}}">{{wealth.lastText}}</view>
+        <view class="fam" wx:if="{{wealth.properties.length}}">
+          <view class="row" wx:for="{{wealth.properties}}" wx:key="name"><text class="fk">{{item.name}}</text><text class="fv mono">{{item.statusText}} · {{item.place}}</text></view>
+        </view>
+      </block>
+    </view>
+
+    <!-- 随身行囊 -->
+    <view class="panel p-inv">
+      <view class="panel-h">
+        <text class="t">随身行囊</text>
+        <text class="lbl">{{inventory.count}} 件</text>
+      </view>
+      <view class="chips">
+        <text class="chip" wx:for="{{inventory.items}}" wx:key="id">{{item.name}}</text>
+      </view>
+      <view class="hint" wx:if="{{!inventory.items.length}}">行囊暂空。</view>
+      <view class="hint" wx:if="{{inventory.alliesLabel}}">{{inventory.alliesLabel}}</view>
+      <view class="chips" wx:if="{{inventory.allies.length}}">
+        <text class="chip" wx:for="{{inventory.allies}}" wx:key="*this">{{item}}</text>
+      </view>
+    </view>
+
+    <!-- 人物与牵挂（⚠ 2026-11-05：「全部 →」从标题行收进卡片底部） -->
+    <view class="panel p-people {{fold['p-people'] ? 'folded' : ''}}" wx:if="{{people.length}}">
+      <view class="panel-h">
+        <text class="t">那些和你走过这一生的人</text>
+        <button class="foldbtn" catchtap="toggleFold" data-k="p-people"
+                aria-label="{{fold['p-people'] ? foldOpen : foldClose}}">{{fold['p-people'] ? '▸' : '▾'}}</button>
+      </view>
+      <block wx:if="{{!fold['p-people']}}">
+        <view class="person-list">
+          <view class="person-row" wx:for="{{people}}" wx:key="id">
+            <view class="person-initial">{{item.initial}}</view>
+            <view class="person-text">
+              <text class="person-name">{{item.name}}</text>
+              <text class="person-role">{{item.role}}</text>
+              <text class="person-note" wx:if="{{item.desc}}">{{item.desc}}</text>
+              <text class="person-note">{{item.note}}</text>
+            </view>
+          </view>
+        </view>
+        <button class="ghost sm" style="margin-top:24rpx" bindtap="openSheet" data-sheet="people">全部 →</button>
+      </block>
+    </view>
+
+    <!-- ⚠ 2026-11-05（用户拍板）：「人生地图」卡片已删
+         （点阵地图在手机上没细节，「放大地图」鸡肋）。
+         大陆与路线改由状态条「地图」按钮进入弹层 → 那里只讲「去哪、代价多少」。 -->
+
+    <view style="height:40rpx"></view>
+  </block>
+</view>
+
+<!-- 决策卡（官方 .scrim > .dec） -->
+<view class="scrim" style="padding-top:{{sheetPadTop}}px" wx:if="{{dec}}">
+  <view class="dec">
+    <view class="hd">
+      <text>{{dec.cat}}</text>
+      <view class="hd-r">
+        <text>{{dec.age}}岁 · {{dec.year}}年</text>
+        <button class="decmin" bindtap="decMin" aria-label="可以先看看后面的画面，再展开来选择">先收起来 ▾</button>
+      </view>
+    </view>
+    <view class="bd">
+      <text class="d-h2">{{dec.title}}</text>
+      <text user-select="true" class="d-p" wx:if="{{dec.body}}">{{dec.body}}</text>
+      <view class="fact" wx:if="{{dec.fact}}">{{dec.fact}}</view>
+      <view class="ch">
+        <button
+          wx:for="{{dec.choices}}"
+          wx:key="k"
+          disabled="{{!item.enabled}}"
+          data-k="{{item.k}}"
+          bindtap="onChoose"
+        >
+          <text class="k">{{item.no}}</text>
+          <text class="b">{{item.label}}</text>
+          <text user-select="true" class="wx-small" wx:if="{{item.sub}}">{{item.sub}}</text>
+        </button>
+      </view>
+      <view class="sheet-note">{{dec.note}}</view>
+    </view>
+  </view>
+</view>
+
+<!-- 决策卡「先收起来」之后底部常驻的那条（官方 #decPeek） -->
+<view class="decpeek" wx:if="{{decPeek}}">
+  <view class="dp-t">
+    <text class="b">有一个抉择正在等你</text>
+    <text class="s">{{decPeek.title}}</text>
+  </view>
+  <button class="cta" bindtap="decOpen">重新展开</button>
+</view>
+
+<!-- 人生记录 全部（官方 .scrim > .dec.log：标题 + 年代分组 + 全量记录） -->
+<view class="scrim" style="padding-top:{{sheetPadTop}}px" wx:if="{{fullLog}}">
+  <view class="dec log">
+    <view class="hd">
+      <text>{{fullLog.title}}</text>
+      <button class="sheet-x" bindtap="closeFullLog">关闭</button>
+    </view>
+    <!-- ⚠ 2026-11-05 修复：这个弹层原来没带 sheet-bd，
+         而官方 .dec .feed.full 只有 62vh 高度上限、没有滚动条
+         ⇒ 长记录被裁掉且够不着（官方人生页同病，这里只修修仙这一侧）。 -->
+    <view class="bd sheet-bd">
+      <view class="lbl">{{fullLog.sub}}</view>
+      <view class="decs" wx:if="{{fullLog.groups.length > 1}}">
+        <button
+          wx:for="{{fullLog.groups}}"
+          wx:key="d"
+          class="{{logYear === item.d ? 'on' : ''}}"
+          data-d="{{item.d}}"
+          bindtap="jumpDec"
+        >{{item.label}}</button>
+      </view>
+      <view class="feed full">
+        <view class="feed-item kind-{{item.k}}{{item.star ? ' starred' : ''}}" wx:for="{{fullLog.items}}" wx:key="li">
+          <text class="age">{{item.ageText}}<text class="ym">{{item.ym}}</text></text>
+          <view class="txt">
+            <text>{{item.t}}</text>
+            <text user-select="true" class="f" wx:if="{{item.f}}">{{item.f}}</text>
+            <text user-select="true" class="chg" wx:if="{{item.chg}}">{{item.chg}}</text>
+          </view>
+          <button class="stb" data-li="{{item.li}}" catchtap="toggleStar"
+                  aria-pressed="{{item.star}}">{{item.star ? starOn : starOff}}</button>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
+
+<!-- 重心（官方 .scrim > .dec） -->
+<view class="scrim" style="padding-top:{{sheetPadTop}}px" wx:if="{{sheet === 'focus'}}" bindtap="closeSheet">
+  <view class="dec" catchtap="noop">
+    <view class="hd">
+      <text>重心</text>
+      <view class="hd-r"><button class="sheet-x" bindtap="closeSheet">关闭</button></view>
+    </view>
+    <view class="bd sheet-bd">
+      <text class="d-h2">接下来的日子，以什么为重？</text>
+      <text class="d-p">重心决定平日如何度过。实际本事与身体变化见「修行本事」；赶路、探险和禁闭期间不能自由安排。</text>
+      <view class="ch">
+        <button wx:for="{{activities}}" wx:key="id"
+                disabled="{{!item.enabled}}"
+                data-id="{{item.id}}" bindtap="setActivity">
+          <text class="k">▸</text>
+          <text class="b">{{item.name}}</text>
+          <text user-select="true" class="wx-small">{{item.line}}</text>
+        </button>
+      </view>
+    </view>
+  </view>
+</view>
+
+<!-- 大陆与路线（⚠ 2026-11-05：原「人生地图」弹层；
+     点阵画布与「放大地图」已删，手机上那张图没有细节，只讲「去哪、代价多少」） -->
+<view class="scrim" style="padding-top:{{sheetPadTop}}px" wx:if="{{sheet === 'world'}}" bindtap="closeSheet">
+  <view class="dec" catchtap="noop">
+    <view class="hd">
+      <text>大陆与路线</text>
+      <view class="hd-r"><button class="sheet-x" bindtap="closeSheet">关闭</button></view>
+    </view>
+    <view class="bd sheet-bd">
+      <text class="d-h2">{{map.era}}</text>
+      <text class="d-p" wx:if="{{map.eraText}}">{{map.eraText}}</text>
+      <view class="ch" style="margin-top:24rpx">
+        <button wx:for="{{places}}" wx:key="id"
+                disabled="{{!item.enabled}}"
+                data-id="{{item.id}}" bindtap="travel">
+          <text class="k">▸</text>
+          <text class="b">{{item.name}}</text>
+          <text user-select="true" class="wx-small">{{item.line}}</text>
+        </button>
+      </view>
+    </view>
+  </view>
+</view>
+
+<!-- 修炼场（官方 .scrim > .dec） -->
+<view class="scrim" style="padding-top:{{sheetPadTop}}px" wx:if="{{sheet === 'training'}}" bindtap="closeSheet">
+  <view class="dec" catchtap="noop">
+    <view class="hd">
+      <text>修炼场</text>
+      <view class="hd-r"><button class="sheet-x" bindtap="closeSheet">关闭</button></view>
+    </view>
+    <view class="bd sheet-bd">
+      <view class="hint" wx:if="{{!grounds.length}}">新的历练会从来信、旧图和人物邀请中出现。先过好眼前的日子。</view>
+      <view class="ch">
+        <button wx:for="{{grounds}}" wx:key="id"
+                disabled="{{!item.enabled}}"
+                data-id="{{item.id}}" bindtap="seekTraining">
+          <text class="k">▸</text>
+          <text class="b">{{item.name}}</text>
+          <text class="wx-small">{{item.realm}} · {{item.sub}}</text>
+        </button>
+      </view>
+    </view>
+  </view>
+</view>
+
+<!-- 人物近况（上游 showPeople） -->
+<view class="scrim" style="padding-top:{{sheetPadTop}}px" wx:if="{{sheet === 'people'}}" bindtap="closeSheet">
+  <view class="dec" catchtap="noop">
+    <view class="hd">
+      <text>那些和你走过这一生的人</text>
+      <view class="hd-r"><button class="sheet-x" bindtap="closeSheet">关闭</button></view>
+    </view>
+    <view class="bd sheet-bd">
+      <text class="d-h2">名字仍在</text>
+      <text class="d-p">获救、被困、失踪与离世会持续影响故事。这里记录{{top.age}}岁这一刻的状态。</text>
+      <view class="person-list">
+        <view class="person-row" wx:for="{{people}}" wx:key="id">
+          <view class="person-initial">{{item.initial}}</view>
+          <view class="person-text">
+            <text class="person-name">{{item.name}}</text>
+            <text class="person-role">{{item.role}}</text>
+            <text class="person-note" wx:if="{{item.desc}}">{{item.desc}}</text>
+            <text class="person-note">{{item.note}}</text>
+          </view>
+        </view>
+      </view>
+      <view class="fact">当前同行与已安置者：{{review.survivors}}人。离散者不自动计为死亡。</view>
+    </view>
+  </view>
+</view>
+
+<!-- 授业与记录（上游 lifeDetails） -->
+<view class="scrim" style="padding-top:{{sheetPadTop}}px" wx:if="{{sheet === 'details'}}" bindtap="closeSheet">
+  <view class="dec" catchtap="noop">
+    <view class="hd">
+      <text>{{details.title}}</text>
+      <view class="hd-r"><button class="sheet-x" bindtap="closeSheet">关闭</button></view>
+    </view>
+    <view class="bd sheet-bd">
+      <text class="d-h2">{{details.path}}</text>
+      <text class="d-p" wx:if="{{details.rootText}}">{{details.rootText}}</text>
+      <text class="d-p">{{details.abilityText}}</text>
+      <view class="fam">
+        <view class="row" wx:for="{{details.rows}}" wx:key="k">
+          <text class="fk">{{item.k}}</text>
+          <text class="fv mono">{{item.v}}</text>
+        </view>
+      </view>
+      <text class="hint" wx:if="{{details.punishment}}">{{details.punishment}}</text>
+      <view class="fam" wx:if="{{details.officers.length}}">
+        <view class="row" wx:for="{{details.officers}}" wx:key="name">
+          <text class="fk">{{item.name}} · {{item.role}}</text>
+          <text class="fv">{{item.desc}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

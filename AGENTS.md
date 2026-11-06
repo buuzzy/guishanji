@@ -1,162 +1,88 @@
-# 山海一生 · 开发约定
+# 归山记 · 开发约定
 
-## 2026-11-05 GitHub规则12交付授权
+> 本仓库是「归山记 · 修仙人生」的**独立产品仓库**：一套共享剧情与规则源码，
+> 两端界面（网页端 + 微信小程序端）。
+> 2026-11-06 从 `buuzzy/1in8b` 与 `buuzzy/xianxia-life` 迁出独立。
+> 迁移前的开发约定原文保留在 [docs/history/AGENTS-xianxia-life.md](docs/history/AGENTS-xianxia-life.md)，
+> 那份里的「只做 HTML 试玩」「另机接入」等约定**已随迁移作废**，其余历史记录仍可查。
 
-- 用户已要求提交PR，授权发布规则12完整源码、设计、接入手册及验收台账，覆盖下方实施阶段“不发布”的限制。
-- 更新buuzzy/xianxia-life的feature/adventure-preview-v01与现有PR #2；提交后按全部受管路径、模式、blob与子树读回核验。不自动合并、部署或实施小程序。
+## 1. 仓库结构与唯一来源
 
-## 当前本地候选：规则12体质、地域师承与剧情因果
+| 位置 | 是什么 |
+| --- | --- |
+| `packages/adventure/`、`packages/core/`、`content/` | **当前剧情与规则的唯一编辑来源** |
+| `apps/preview/` | 网页端源码（`apps/preview/pixel-style.js` 等三个画面文件同时是小程序画面的构建输入，**逐字节冻结**） |
+| `miniprogram/` | 微信小程序端（主包 + `subpkg/xianxia/` 分包） |
+| `miniprogram/subpkg/xianxia/runtime/engine.js` | **生成物**，由 `node scripts/build-xianxia-mp.mjs` 生成，禁止手改 |
+| `vendor/xianxia-r12/`、`vendor/xianxia-r12-art/` | 迁移时从上游带来的**锁定快照**，作为历史证据保留，**不再是构建输入** |
+| `reference/` | 官方对照源（1in8b 官方小程序样式与实现）+ 哈希锁；本仓库的「对齐基准」 |
+| `docs/migration/` | 迁移台账、来源清单、路径映射 |
 
-- 用户授权先完成九张截图对应的完整内容/计划，再实施大迭代。设计与顺序见docs/adventure-rules12-design.md。范围仅独立HTML，不修改生产Web、小程序，不发布、合并或部署。
-- 新人生默认12；旧11执行器、事件表与共享可变安装器另存v11文件。tests/fixtures/adventure-rules11-baseline.json是修改前生成的继续执行合同，不能重写来消除失败。
-- story-rules12.js（content/runtime）与rules12-world.js维护体质寿限、地域功法、资助期限、多年低阶行动和返乡前因。未进入师承的选项隐藏；资源不足的实际机会仍可展示原因。查询不写状态、不抽随机数。
-- 返乡保存原住处与实际回程；多次返乡用稳定的独立事件ID。争水、采药后续读取实际事实；买残页不直接转阵营。首次引气也有风险，筑基读取实际丹药/年龄/伤损，材料在完成或消耗时结算。
-- 历史浏览器门禁显式rules=11并采用rules11-engine辅助入口；规则10门禁继续10；新12另做专项单位测试、自然人生审查及源码/静态实际浏览器门禁。不得用旧记录替代12证据，或把自动策略称为真人留存。
-- 浏览器期间冻结运行源码。源码/静态、自然抽样/受控分支、小程序/HTML的验证分别记录。
+**硬规矩：**
 
-## 2026-11-05 GitHub规则11交付
+- 改规则 = 改 `packages/adventure/` 或 `content/`，然后重新构建产物。
+  **不许在生成物里改剧情**（下次构建会被覆盖，且「小程序里的规则 = 源码里那份」就不成立了）。
+- 本仓库**不依赖** `../1in8b`、`../xianxia-life` 之类相邻目录，也不依赖任何远程 git / 网络资源。
+  凡是引用这两个仓库的路径，都是**门禁会报红**的错误（CI 上那些目录不存在 ⇒ 假门禁）。
+- 历史规则版本（rules8 / rules9 / rules10 / rules11 / rules12 的执行器）**在证明某个版本不再被
+  任何支持版本使用之前不许删除**。旧档按它自己那一版继续跑。
 
-- 用户已授权提交完整当前试玩成果、验收记录与接入手册到GitHub，覆盖下方此前本地实施阶段的“不发布”限制。
-- 更新`buuzzy/xianxia-life`的`feature/adventure-preview-v01`分支及现有PR，读回核对交付树；不自动合并、不部署、不在本机实施小程序。
-- 接收方在另一系统拉取该分支即可，规则11台账记的是发布前真实HTML验收；小程序构建、包体、真机验收仍需接收方执行。
+## 2. 小程序端硬约束
 
-## 当前约定：规则11凡俗人生与迟来仙缘
+- ES2019 可解析；**禁** `?.` / `??`；禁 ES2018 正则特性（`\p{...}`、`s` 标志）；**禁** `wx.request`（完全单机）。
+- ⚠ **「Node 里跑得通」≠「微信里跑得通」** —— 微信转译会**改变作用域边界**。
+  典型：`for (const t of …)` 的循环体里有闭包引用循环变量时，IDE 会把循环体抽成独立函数
+  ⇒ 循环体里的 `var` 声明被「关进去」，而循环**头部**引用不到 ⇒ 运行时 `ReferenceError`（白屏）。
+  降级 `?.` 时 babel 恰好会把临时变量 `var` 塞进 for-of 的循环体 ⇒ **必然踩到**。
+  守卫口径见 `scripts/lib/es2015-downlevel.mjs::scanForOfVarScope`（四个条件同时成立才算命中）。
+- WXML 的 `{{}}` **不支持字符串拼接**（`+` 是算术 ⇒ `NaN`）⇒ 整句在 JS 侧拼好。
+- 选项按钮的直接子元素 ≤ 3（官方 `.dec .ch button` 是两列 grid，第一列只有 1.6em 宽，
+  第 4 个直接子元素会掉进窄列被压成竖排）。
+- 顶栏**不许**给微信胶囊让位（不许出现 `padding-right` / `topPadRight`）；
+  弹层顶部让位只用 `sheetPadTop()`（胶囊底边 + 8px，兜底状态栏 + 44）。
+- canvas 上的字体必须与 `app.wxss` 的变量同源（canvas 读不到 CSS 变量 ⇒ 字体族只能写死，
+  但必须与 `--f-body` / `--f-mono` 逐字同源）。
+- 视觉只用官方那套类名（`.topbar` / `.agebox` / `.speed .sps .sps-b` / `.panel` / `.dec` /
+  `.ch` / `.cert` / `.roller` / `.shf` / `.idcard` …），**不许自造 `x-xxx` 视觉类**。
 
-- 用户于2026-11-05授权开始实施凡人人生设计。范围仍仅为独立HTML试玩，不修改生产Web或小程序，不发布、合并或部署。
-- 新人生使用rulesVersion=11；旧10执行器与事件表冻结于cultivation-v10.js、cultivation-stories-v10.js，涉及共享可变内容的安装器另隔离。规则10基线为修改前引擎生成的继续执行合同，非玩家原档。
-- mundane-life.js与mundane-stories.js维护凡俗钱粮、谋生、人物、地方变局、遗物追查与植灵。家中财物、个人铜钱、宗门公产与灵石分别结算；完成前不发未得报酬。
-- 不使用44／56／67固定年龄补经历。平静生活与长故事按实际处境接续，人生抉择次序按种子稳定抽排；地图、卡片、人物与简化行囊沿用原有外壳。
-- 无灵根仍不能普通引气；罕见植灵必须有实际尸体遗物、核实和已获得材料，身体改变与基础引气分开。临终微光不是复活或无条件续命。
-- 追查依据取物、见证和销货等实际渠道；逃亡与伤亡读取人物所在地。收殓而未取物者不会强制进入夺宝追查。
-- 新增mundane-life.test.mjs、audit-mundane-life.mjs和源码／静态verify-mundane-browser.mjs。浏览器期间冻结运行源码；自然抽样、受控分支与人工阅读分别报告，不将事件数量或自动策略等同真人留存。
+## 3. 门禁
 
-下方历史约定如有冲突，以本节与用户最新要求为准。
+```sh
+node scripts/run-regression.mjs        # 全量回归
+```
 
-## 当前约定：规则10剧情因果与修炼资格
+| 名字 | 脚本 | 守什么 |
+| --- | --- | --- |
+| `import` | `scripts/verify-migration-import.mjs` | 迁移进来的每个文件与来源**逐字节一致** |
+| `xianxiabuild` | `scripts/test-xianxia-build.mjs` | 生成物可复现、ES2019、无 `?.`/`??`、无浏览器全局 |
+| `xianxiaeq` | `scripts/test-xianxia-equivalence.mjs` | 本仓库源码规则 vs 小程序产物**逐值全等** |
+| `xianxiastore` | `scripts/test-xianxia-storage.mjs` | 分片 / 双槽 / 配额错误，且不碰官方键 |
+| `xianxiaart` | `scripts/test-xianxia-art.mjs` | 画面与参考实现**逐笔一致** + 反向验证 |
+| `xianxiamp` | `scripts/test-xianxia-mp.mjs` | 三页跑得动、分包与入口接线正确、七条真机问题逐条断言 |
+| `xianxiastyle` | `scripts/test-xianxia-style.mjs` | 与官方**对齐**：样式逐字节一致、倍速/转盘/雕版同源、字号口径 |
 
-- 用户要求审查全部当前剧情、形成计划并直接实施；本轮仍只修改独立 HTML 试玩，生产 Web、小程序、部署与合并不在范围。
-- 新人生采用 rulesVersion=10；旧9冻结在 cultivation-v9.js、cultivation-stories-v9.js、story-network-v9.js、revision9-v9.js 及独立内容安装器。adventure-rules9-baseline.json 是修改前引擎生成的继续执行基线，不是玩家导出。历史测试明确创建旧9，新10另有专项测试及自然人生审查。
-- content/story-rules10.js 与 packages/adventure/story-rules10.js 管理引气／法力资格、凡俗谋生、童年三类消息、可继续的暂缓、已接触人物及长事件前因。魔道或妖修路径标签不能给无灵根者凭空补出能力；出生妖身另有实际来源。
-- 重要人物正文说明职责，接触后进入人物与牵挂；外门执事的姓氏称呼与人物全名需对应同一记录。事件、选项与结果读取实际证据、去向与服药状态。
-- 验证入口增加 story-rules10.test.mjs、audit-story-rules10.mjs 和源码／静态 verify-story-rules10-browser.mjs。浏览器验证期间冻结运行源码。审查台账分开记录自然到达、受控验证及未覆盖事件，不能声称自动策略证明真人留存。
+- 门禁必须是**真门禁**：每条关键断言都要做**反向验证**（注入一个坏值，必须报红）。
+- 孤儿门禁 = 假门禁 ⇒ 新增门禁要挂进 `scripts/run-regression.mjs`。
+- 门禁只依赖**跟着源码走的文件**；被 `.gitignore` 忽略的本机文件不得进指纹。
 
-以下历史约定如有冲突，以本节和用户最新要求为准。
+## 4. 跨平台一致性契约
 
-## 当前约定：规则9师承、资源与自动抉择
+- **单一代码路径**：不为某个平台写第二份实现；差异收敛到一个适配层。
+- **路径大小写严格一致**（macOS/Windows 默认不区分大小写，写错了两端都不报错，只在 Linux 炸）。
+- 行尾统一 LF（`.gitattributes` 已钉死）。
+- 所有入口走 `node scripts/xxx.mjs`；`.sh` 只是 macOS/Linux 的薄包装。
+- Node ≥ 22.4（锁定 22.22.2，见 `.node-version`）。
 
-- 用户已同意方案并要求直接开始。本轮只实施独立 HTML 试玩；不编写小程序，不修改官方 Web，不合并或部署。
-- 新人生 rulesVersion=9，旧8冻结在 cultivation-v8.js、cultivation-stories-v8.js、cultivation-revision-v8.js；真实原档 adventure-rules8-original.json 不重写。旧档保留原规则与随机流。
-- revision9.js 与 revision9-stories.js 管理出生资产、借卷辞师、证据追责、全卷交换与实际修炼、杂灵根矿役和禁术后续。凡俗富户没有出生灵石；世家赠予单列来源。辞师返回用独立事件，不放宽重复抉择校验。
-- 自动抉择默认关闭，菜单开关。仅按有效选项独立抽取，不读取概率或后果，不推进事件随机流。稍后回应、Esc、后台及存档冲突停止，再打开抉择恢复；保留结果阅读时间。
-- 移除独立实时活动说明面板，进度、经历及原有组件保留。考核作弊读取真实专业与持有工具；矿役期间不能跨大陆或自由改重心，战乱撤离取消未得报酬。
-- 回归新增 revision9.test.mjs 和源码／静态 verify-revision9-browser.mjs，实际鼠标、触控和自然人生，不注入角色状态。自动模拟不代表真人留存；新证据记为 rules9，不沿用 rules8 通过记录。
+## 5. 发布前置（尚未完成，别当成已完成）
 
-以下为历史约定；冲突时以本节和用户最新要求为准。
+- [ ] 新小程序 **AppID**（`project.config.json` 现在是占位值 `touristappid`，上传前必须换）
+- [ ] 新网页正式域名与部署目标
+- [ ] 产品说明与隐私声明的正式文案（`miniprogram/pages/legal/` 现在是占位内容）
+- [ ] 玩家存档导出 / 导入协议（**目前未实现**，见 [docs/migration/storage-migration.md](docs/migration/storage-migration.md)）
+- [ ] 微信开发者工具真编译的包体台账（微信真编译体积与仓库字节无关）
 
-## 2026-11-03 GitHub 交付与小程序接入手册
+## 6. 协作
 
-- 用户明确授权提交当前 HTML 试玩成果与详细微信接入手册到 GitHub，覆盖下文历史“不推送／不写小程序文档”限制。此次仅交付源码、证据及手册，不实施小程序接入，不合并或部署。
-- 归山记源在 buuzzy/xianxia-life 的 feature/adventure-preview-v01；接入手册另交付到 buuzzy/1in8b 的 docs/xianxia-mini-program-integration 分支。以当前 GitHub main 的 v0.9.8 小程序代码作为接入基线，不以本机旧 checkout 代替。
-- 现有 1in8b 内新增入口，使用独立模式/分包/存档；优先复用界面交互与纯视觉外壳，修仙逻辑、地图和 Canvas 另作适配。实施说明见 docs/xianxia-mini-program-integration.md。
-- 当前 rules8 源码交付保留用户最新8条反馈为下一轮待办；不得把提交源码表述为反馈已修复。提交必须读回核验；私有仓库仅走官方 GitHub MCP，不走公共镜像。
-
-## 当前约定：规则8高阶修行与宗门后续
-
-- 新人生 rulesVersion=8，preview.4 封套保留；规则7已冻结为 cultivation-v7.js、cultivation-stories-v7.js、cultivation-daily-v7.js、cultivation-revision-v7.js，真实原档 tests/fixtures/adventure-rules7-original.json 不重写。旧5、6及更早分派保留。
-- progression.js 与 progression-stories.js 管理稳定随机名册、六岁前生活、实际包裹运输、宗门规模与公库、战后重建、高阶材料与多年行动。公产不能成为个人报酬；未完成奖励取消；普通回信出关才读，紧急传话按真实地点与进度中断。
-- 金丹、元婴要求法门与材料，高阶不再做基础选拔；最终引劫要求元婴与完整护法阵药准备。多年行动顶部显示整程进度，内部逐月结算，记录与危机立即打断。
-- 保持现有1in8b主题、点阵地图、192×108像素网格与人物比例，增加像素场景；不重新设计前端。
-- 完整门禁新增 tests/progression.test.mjs 和 progression 源码/静态浏览器；运行浏览器期间冻结运行源码。只有独立HTML范围，不推送GitHub、不部署、不编写小程序。自动策略不代表真人可玩性或留存。
-
-以下历史约定保留，冲突时以本节和用户最新要求为准。
-
-## 当前约定：规则7事件网络与阅读节奏
-
-- 新人生 rulesVersion=7，preview.4 存档封套不变。规则6冻结在 cultivation-v6.js、cultivation-stories-v6.js、cultivation-daily-v6.js、cultivation-revision-v6.js；真实原档 tests/fixtures/adventure-rules6-original.json 不改写。规则5及更早分派保留。修改事件后的存档校验应按人生的事件表核对。
-- story-network.js（content 与 packages/adventure）管理童年前因、功法熟练、有限邀请、试任和晋升。角色责任、行动权限和信息来源须成立；凡人家庭的粮钱不凭空变为修炼灵石。月结算、实际运输、取消未完成奖励仍统一。
-- 日常池耗尽不循环；长故事使用相关插叙。取消“每年必须一条”的验收。平静练习可形成有限心得，但不能用空泛句子或无关练剑填任务间隔。机会只抽一次，承诺兑现或明确失效。
-- 五轴能力图读取实际属性，专业技能单独刻度。默认阅读停留、查看旧经历暂停；重要结果不随倍速一闪而过。保持现有1in8b主题与组件语言，不另造前端。
-- 全回归包含 tests/story-network.test.mjs、400次模拟、源码/静态 story-network 浏览器门禁。运行浏览器门禁期间冻结运行源码；读取模型和自动策略不代表真人留存。范围仍只有独立HTML，不提交GitHub、不部署、不写小程序。
-
-以下历史记录保留；冲突时以本节与用户最新要求为准。
-
-## 当前约定：2026-11-03 本轮叙事与界面修订
-
-- 本轮新人生采用 `rulesVersion=6`，存档封套仍为 preview.4。旧规则5走冻结的 `cultivation-v5.js`、`cultivation-stories-v5.js`；无规则字段的旧 preview.4 继续使用原事件。真实规则5原档为 `tests/fixtures/adventure-rules5-original.json`，不得重写。
-- `cultivation-daily.js` 管理具体日常、6–12月间隔、一次发生机会和有限窗口；已开启的长故事不能因窗口过期被取消。新增四条原创长故事与四类故乡线索，固定剧情不得靠无限月抽样变成必经事件。
-- `cultivation-economy.js` 是新规则收支唯一来源，收入、实际耗材、欠账偿还与不足时减少修行均需一致。出生凡家没有灵石预算；做工可筹材料，劳作换闭关材料必须实际消耗一年，再完成闭关。
-- 真正禁闭不能继续刷技能或领月例、外出；人物与像素场景要对应当前看管状态。考核必须根据报名本事叙述和结算，避免多段行政式结果。
-- 用户最新要求：七项重心仅弹窗选择，主页面保留真实属性反馈；家人并入“人物与牵挂”，行囊只展示不可点击的标签，不再单列“家中人与来信”。地图采用现有 1in8b 点阵语言，省略地形细节；下方旧山海地图及七项大卡片约定不再适用。
-- 验收包含 `tests/life-richness.test.mjs`、`scripts/verify-life-richness.mjs`、源码/静态浏览器与所有旧产品回归。自动试玩不能表述为真人可玩性、粘性或小程序真机验收。运行浏览器门禁期间冻结运行源码，避免导入预期与页面版本不一致。
-
-以下为保留的上一轮约定；冲突时以上方和用户最新要求为准。
-
-## 历史约定：2026-11-03 preview.4
-
-- 最新试玩反馈修订：新人生采用 `life.cultivation.rulesVersion=5`，旧 preview.4 人生没有此字段，必须经 `LEGACY_CULTIVATION_EVENTS` 保留旧决策与完成规则，不补抽出生或随机流。真实旧浏览器导出原文为 `tests/fixtures/adventure-preview4-original.json`。
-- `decision-details.js` 为 108 个长事件选择逐项描述行为与风险；`allegiance-stories.js` 将买书、试学、正式登记拆开，关押与逃脱有后续阶段。追查只依据已暴露的证据及开放路线的送达时序，私藏副本不得自动通缉。
-- 主页面视觉组件在 `life-panels.js`，七项重心显示实际练习月数和增长。交游不训练阵法、调养不训练丹术；被看管或商谈拜师期间不可自由安排重心、旅行或领取日常净结余。
-- 运行地图为 `continent-atlas.js`，海岸、地形与聚落保持现有纸面配色，跨大陆边和封锁来自 `GEOGRAPHY` 与当前状态；不使用地图绘图修改模拟随机流。手机支持局部放大与横向查看。
-- 新增 `decision-clarity.test.mjs` 和 `verify-decision-clarity-browser.mjs`，完整回归包含源码/静态三条真实鼠标与触屏分支、主页面组件、地图放大与旧 preview.4 原档检查。
-
-- 用户已确认九步调整方案，本轮范围仍只有独立 HTML 试玩，版本 `0.1.0-preview.4`。原项目、生产 Web、小程序和 GitHub 均不在实施范围。
-- 新人生由 `cultivation.js`、`cultivation-world.js`、`cultivation-stories.js` 驱动：随机出生、测灵根、授业、处分、专业考核、七种日常重心、五条道路和十二条长事件链。地图以 `cultivation.continent` 为实际所在地；旧 `home` 地址别名不得用于判断新人生的当前大陆。
-- 用户最新要求覆盖下面旧版绘图约定：复用现有主题、生活、卡片、命盘样式；`cultivation-pixel.js` 使用已有的色板、人物像素比例和 192×108 网格，修仙场景独立绘制。旧简化 `cultivation-scene.js` 仅保留历史，不参与运行或构建。素材原件需通过 provenance 哈希核验。
-- 开始按钮一次点击后随机出生并自动开局，无心愿、改名或种子输入表单；内部 `?replay=` 仅用于可复现的浏览器验收。
-- 长事件取消未完成结果；继续战事前经历保留剩余月份；突破中止必须登记本次尝试，不能重复已经决定的事件。突破结果按原决定结算，不能错误读取最近另一事件的决定。
-- 家人讣告经过中转后才成为角色已知信息，家中积蓄有限，援助按实际交付月份结算。新人生不得用静态简介替代家庭的后续变化。
-- 维护真实 preview.1、.2、.3 存档原件，旧档不强行植入新道路状态。升级只在副本进行，首次写入单独保留原始字节。
-- 验收入口 `scripts/run-regression.mjs` 包含旧 Web 门禁、新旧故事规则、新 `verify-cultivation-browser.mjs` 的源码及静态完整人生、移动操作和存档检查。正常等待与快进必须使用相同整数月规则；真实浏览器自动策略不代称真人留存。
-- 已读回《凡人修仙传》《诛仙》的公开作品介绍，参考入门、师承层级与身份转变。未通读全书；无法读取的作品不得声称已研究。叙事和数值由本作设计。
-
-以下 preview.3 / preview.2 记录为历史，冲突时以上述当前约定和用户最新要求为准。
-
-## 2026-11-03 用户试玩反馈实施
-
-- 本轮只改独立 HTML 试玩，候选版本 `0.1.0-preview.3`。用户确认 V0.1 后再编写小程序；没有推送、合并或部署授权。
-- 玩家选项只展示行动、已知线索、明确支付与生命危险提示，不展示成功率、后台收益和未发生的后果；内部概率继续用于真实结算与回归。
-- `content/readable-stories.js`、`readable-automatic.js` 管理易读叙述；试炼须有任务线索和准备，境界本身不能自动报名。新元婴闭关取消固定第三年急报，既有旧档承诺保留。
-- `content/expedition-changes.js` 管理补给、埋伏、同伴受伤与路线事故；恢复应保留原阶段剩余时间，撤退取消尚未得到的奖励，死亡影响后续叙述，严禁复活。
-- 家族存亡、来往、积蓄与援助在 `packages/adventure/family.js`，不可只写开局加成。突破在 `realm.js` 独立记录，能力描述必须对应现有境界门槛、斗法和寿元规则。
-- 用户明确要求 Canvas 与 1in8b 剥离：运行绘图改为本项目的 `apps/preview/cultivation-scene.js`。卡片、布局与命盘仍参考现有前端；绘图不读写模拟随机流。
-- `content/novel-names.js` 的角色全名含实际核对的公开来源；出生姓名、外观与轮盘一致，已有存档不得重新取名。未确认名称不入库。
-- 进度按帧插值，模拟仍为整数月；日常选择默认立即继续，经历从新到旧排列并保持旧记录阅读位置。
-- 维护真实 `tests/fixtures/adventure-preview2.json`：读取升级不写原文，第一次写入保留 `.preserved.preview2.*`，不重算出生、往事、随机状态与当前行程。
-- 完整回归包含 `tests/adventure-feedback.test.mjs` 与源码、静态产物的真实浏览器人生。不能将读速估算当作真人体验或留存。
-
-## 2026-11-02 修仙人生 V0.1 HTML 试玩工作树
-
-- 用户授权独立设计事件、节奏并完成 HTML 试玩；确认 V0.1 后才编写小程序代码。
-- 本工作树位于 `C:/Users/CaiYiyang/1in8b/xianxia-adventure-preview`，分支 `feature/adventure-preview-v01`。原 `xianxia-life` 工作区、1in8b Web 产品与小程序均保持原状。
-- 新试玩入口 `/preview/`，规则与剧情放在 `packages/adventure/`、`content/adventure.js`，界面沿用现有 1in8b 的配色、布局、卡片与交互；小说类型桥段以原创人物和分支编写。
-- 用户明确要求复用已有前端，因此本轮允许在 `apps/preview/reference/` 保存现有 1in8b CSS 与像素模块，并按 `provenance.json` 中的哈希构建；下方旧 0.2.0 的“仅研究参考、不复制前端”约定对本独立试玩不适用。旧 Web 的原创实现继续保留。
-- 原 Web 0.2.0 入口与回归保留。新增试玩采用独立存档命名空间，模拟推进、正常播放、快速推进共用一个月结算函数；读取/绘图不改变随机状态。
-- 修行、做工与迁徙按实际整数月完成，再发放境界、物品与获救结果；求援期限会实际执行，派遣援军延期也有月数。修改剧情时不得让文案提前确认未完成的修行或复活死者。
-- 必须实际完成多条浏览器人生、保存恢复、移动视口与有失败后果的分支验收。自动策略与时间估算不能表述为真人留存或小程序真机验收。
-- `content/living-world.js`、`living-episodes.js`、`automatic-life.js` 分别维护出生世界、条件长事件与非决策经历；`packages/adventure/context.js` 的纯查询同时限制日常事件、传讯与画面同行者。
-- 当前生活按出生起的整数月自动推进，年进度表示当年月份，不能展示后台开放行程的上限为一万余月计划。重要抉择暂停；结果进入年表并自动继续，不要求每次确认。
-- 闭关、跨界与探险禁止触发当地普通日常；域外消息须有传音物和定位条件。继续急讯前的经历应原样恢复行程和阶段队列，中断只取消未得奖励，援军延期只作用于本次危机。
-- 旧 `preview.1` 存档先验证再复制升级，出生年龄仍为十六岁，保留五条旧随机流、既有年月与未完成行程承诺；第一次实际写入另存原始字节。维护 `tests/fixtures/adventure-preview1.json`。
-- GitHub 远端仅官方 MCP；本轮没有推送、部署或小程序编译授权。
-
-本项目根目录为 C:/Users/CaiYiyang/xianxia-life。用户于 2026-10-25 明确要求仅做 Web，开始实施；之前双端方案的微信任务已撤销。本项目采用原生 JavaScript、Canvas 2D、HTML/CSS，无第三方运行依赖。
-
-- 先读 README.md、docs/delivery.md、docs/world-bible.md、docs/web-roadmap.md、docs/provenance.md 和 docs/feedback-research.md。当前版本 0.2.0，旧版交付在 docs/delivery-v0.1.0.md。
-- 1in8b 是玩法和工程方法的研究参考；不复制其官方源码、文案、图像、音乐或生产数据。本项目的实现和内容独立编写。
-- 一份可序列化人物与世界状态驱动全部画面、抉择、回顾和存档。渲染/查询不修改状态、不消耗模拟随机数。
-- 逻辑时间为整数月；普通推进、快转与闭关共用 advance。剧情自动融入开启一世后的流程。
-- 人物、地点、物品实例、故事都有稳定 ID。人物死亡、迁居、离宗和关系变化必须更新后续条件。
-- 入道使用常驻指引和整数月练习；悟性不替代学习、练习与材料。第一次进入炼气确定成功，之后大境界突破保留风险。
-- 新内容直接进入同一人生；迁居定期提出但由用户选择。地域活动、收入、费用、修炼倍率的展示须与实际查询相同。
-- 丧亲中断闭关，按月返乡、治丧、守丧、周年与期满。照顾家人、修故乡房屋必须查在世及所在地；亲自探望和修屋的收益在抵达后结算。
-- 丧礼资料是有地域与时代范围的参考，24/6 月、费用、收入折扣和素服表现是本作规则。不能把特定礼俗当作所有中国人的统一事实。
-- 存档使用独立 xianxia 命名空间。容量、损坏、并发写入和版本失败保留原数据并返回明确错误，不自动删除其他人生。
-- 存档格式仍为 1，键为 shanhai.life.v1。旧 0.1.0 档先按 legacy-v1 校验，再在副本升级；加载不写原文，首次保存另存升级前原文。维护 tests/fixtures/v0.1.0-archive.json 与迁移回归。
-- 规则、概率和寿元是原创游戏设定，不表述成真实历史、宗教或科学结论。
-- Node 底线 22.4，推荐 22.22.2；所有工具用 Node，路径/大小写/UTF-8/LF 和进程生命周期需兼容 Windows/macOS/Linux。
-- 使用 Node 内置测试和独立浏览器验证。测试使用临时存储/独立 Chrome profile，不碰实际玩家存档和 1in8b 项目。
-- 完整入口为 node scripts/run-regression.mjs，包含引擎/存档/试玩反馈、原浏览器、新反馈浏览器与实际静态构建。遇到待选连发必须先回应；导入验收等待文件采用完成，不能只读到上一笔的“已保存”。
-- 本地提交使用独立分支。GitHub、合并、部署和生产服务需对应的任务授权，历史 1in8b 授权不自动转移。
-- Web-only 不引入小程序目录、SDK、分包检查或微信验收。
-
-本机 Node/Git 可能未入 PATH，已知路径在 C:/Users/CaiYiyang/AGENTS.md。不要因为 PATH 缺失误判安装状态。
+- 两台电脑（macOS / Windows 11）改同一个仓库：本地 commit 允许；
+  **推送、合并、公开部署需要用户明确授权**。
+- 跨端交接用「分支 + 提交 SHA + 文件树 SHA」核对，不各写一份。

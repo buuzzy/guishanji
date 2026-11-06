@@ -6,7 +6,7 @@ import { projectRoot } from './serve.mjs';
 const commands = [
   ['preview-assets', ['scripts/build-preview-assets.mjs']],
   ['check', ['scripts/check.mjs']],
-  ['engine-storage', ['--test', 'tests/engine.test.mjs', 'tests/storage.test.mjs', 'tests/feedback.test.mjs', 'tests/adventure.test.mjs', 'tests/adventure-feedback.test.mjs','tests/cultivation.test.mjs','tests/decision-clarity.test.mjs','tests/life-richness.test.mjs','tests/story-network.test.mjs','tests/progression.test.mjs','tests/revision9.test.mjs','tests/story-rules10.test.mjs']],
+  ['unit', ['--test', 'tests/adventure.test.mjs', 'tests/adventure-feedback.test.mjs','tests/cultivation.test.mjs','tests/decision-clarity.test.mjs','tests/life-richness.test.mjs','tests/story-network.test.mjs','tests/progression.test.mjs','tests/revision9.test.mjs','tests/story-rules10.test.mjs']],
   ['mundane-unit', ['--test','tests/mundane-life.test.mjs']],
   ['rules12-unit', ['--test','tests/story-rules12.test.mjs']],
   ['rules12-audit', ['scripts/audit-story-rules12.mjs','--count=600']],
@@ -14,8 +14,6 @@ const commands = [
   ['story-audit', ['scripts/audit-story-rules10.mjs']],
   ['life-simulation', ['scripts/verify-life-richness.mjs']],
   ['build', ['scripts/build.mjs']],
-  ['browser', ['scripts/verify-browser.mjs']],
-  ['feedback-browser', ['scripts/verify-feedback-browser.mjs']],
   ['adventure-browser', ['scripts/verify-cultivation-browser.mjs']],
   ['decision-browser', ['scripts/verify-decision-clarity-browser.mjs']],
   ['network-browser', ['scripts/verify-story-network-browser.mjs']],
@@ -35,6 +33,16 @@ const commands = [
   ['mundane-static', ['scripts/verify-mundane-browser.mjs', '--built']],
   ['rules12-static', ['scripts/verify-story-rules12-browser.mjs', '--built']],
   ['family-static', ['scripts/verify-family-transfer-browser.mjs', '--built']],
+  /* ── 小程序端（微信）门禁 ────────────────────────────────────────────
+     孤儿门禁 = 假门禁 ⇒ 这七道必须挂在这里，不能只靠手动跑。 */
+  ['import', ['scripts/verify-migration-import.mjs']],
+  ['xianxiabuild', ['scripts/test-xianxia-build.mjs']],
+  ['xianxiaeq', ['scripts/test-xianxia-equivalence.mjs']],
+  ['xianxiastore', ['scripts/test-xianxia-storage.mjs']],
+  ['xianxiaart', ['scripts/test-xianxia-art.mjs']],
+  ['xianxiamp', ['scripts/test-xianxia-mp.mjs']],
+  ['xianxiastyle', ['scripts/test-xianxia-style.mjs']],
+  ['xianxiastandalone', ['scripts/test-xianxia-standalone.mjs']],
 ];
 const report = { startedAt: new Date().toISOString(), node: process.version, platform: process.platform, results: [] };
 await mkdir(join(projectRoot, 'artifacts'), { recursive: true });

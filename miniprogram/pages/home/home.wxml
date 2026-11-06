@@ -1,0 +1,71 @@
+<!-- 首页版式全部用**官方那套类名**（.hero / .kicker / .panel / .cta / .ghost …），
+     样式来自 app.wxss（从 reference/official/app.wxss 提取，见 scripts/test-xianxia-style.mjs）。
+     ⚠ 不用任何自造的 `x-` 类。 -->
+<view class="wrap {{theme}}" style="padding-top:{{topPad}}px">
+
+  <!-- 主题按钮：绝对定位贴在微信胶囊左边（照官方首页的写法，不占行）。 -->
+  <button class="themebtn navbtn" style="top:{{navTop}}px;right:{{navRight}}px"
+          bindtap="cycleTheme">{{themeIcon}}</button>
+
+  <view class="hero">
+    <view class="kicker">归山记 · 修仙人生</view>
+    <view class="hero-title">一命一<text class="em">山海</text></view>
+    <view class="lede">转盘抽一位出身，落一张山海行籍登记卡。抽定即此生，没有重来。</view>
+  </view>
+
+  <!-- 读存档失败：说清原因，并给一个重试。 -->
+  <view class="panel" wx:if="{{error}}">
+    <view class="panel-h">
+      <text class="t">读不到存档</text>
+      <text class="lbl">存档</text>
+    </view>
+    <view class="note">{{error}}</view>
+    <view style="height:24rpx"></view>
+    <button class="cta" bindtap="retry">重试</button>
+  </view>
+
+  <!-- 开始 -->
+  <view class="panel" wx:else>
+    <view class="panel-h">
+      <text class="t">开始</text>
+      <text class="lbl">命盘</text>
+    </view>
+    <view class="hint">出生由转盘抽定：出身、门派、资质都随缘。抽到的人就是你这一世的起点。</view>
+    <view style="height:24rpx"></view>
+    <button class="cta" bindtap="startNew">进入命盘</button>
+  </view>
+
+  <!-- 继续人生（只有这台手机上真的留下过人生时才出现） -->
+  <view class="panel" wx:if="{{!error && latest}}">
+    <view class="panel-h">
+      <text class="t">继续人生</text>
+      <text class="lbl">{{latest.realm}}</text>
+    </view>
+    <view class="row">
+      <text class="flex1">{{latest.name}}</text>
+      <text class="mono num">{{latest.age}}岁</text>
+    </view>
+    <view class="note">走到第 {{latest.months}} 个月 · 第 {{latest.rulesVersion}} 版规则</view>
+    <view style="height:24rpx"></view>
+    <button class="cta" bindtap="continueLife">接着往下走</button>
+  </view>
+
+  <!-- 往期人生 -->
+  <view class="panel" wx:if="{{!error}}">
+    <view class="panel-h">
+      <text class="t">往期人生</text>
+      <text class="lbl">{{count}}段</text>
+    </view>
+    <view class="hint">这台手机上活过的每一段人生，按活过的顺序摆在那里。点开可以回看，也可以接着走。</view>
+    <view style="height:24rpx"></view>
+    <button class="ghost" bindtap="openPast">往期人生</button>
+  </view>
+
+  <view class="row">
+    <button class="ghost sm" bindtap="openAbout">这是什么</button>
+    <button class="ghost sm ml-4" bindtap="openPrivacy">隐私说明</button>
+  </view>
+  <view class="note">归山记完全单机：没有账号、没有服务器、没有联网。人生只留在这台手机上，卸载即消失。</view>
+
+  <view style="height:48rpx"></view>
+</view>

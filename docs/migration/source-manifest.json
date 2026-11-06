@@ -1,0 +1,1560 @@
+{
+  "label": "归山记 · 迁移导入来源清单",
+  "generatedAt": "2026-11-06",
+  "sources": [
+    {
+      "repo": "buuzzy/1in8b",
+      "commit": "10fb833ed86b27e48718ccac94757445dccc9515",
+      "path": "（小程序适配代码与锁定快照的来源）"
+    },
+    {
+      "repo": "buuzzy/xianxia-life",
+      "commit": "b519ac066a3499e0aced0fd9b5bd15ae855c3c49",
+      "path": "feature/adventure-preview-v01（本仓库 Git 历史的来源）"
+    }
+  ],
+  "note": "unchanged：迁进来后未改动，必须仍与来源逐字节一致。\nchanged：本轮有意改过，记来源哈希与现哈希 + 改动原因。\nmoved：本轮换了位置。\nadded：本轮新增的文件（不是迁入的）。\n核对用 scripts/verify-migration-import.mjs。",
+  "groups": {
+    "unchanged": [
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "miniprogram/subpkg/xianxia/art/atlas.js",
+        "sourceBytes": 6827,
+        "sourceSha256": "54c54b28925aeaf0afa10a6c82e31fe8b6648404a26d22d9b774241fba4631a1",
+        "path": "miniprogram/subpkg/xianxia/art/atlas.js",
+        "bytes": 6827,
+        "sha256": "54c54b28925aeaf0afa10a6c82e31fe8b6648404a26d22d9b774241fba4631a1"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "miniprogram/subpkg/xianxia/art/guilloche.js",
+        "sourceBytes": 2009,
+        "sourceSha256": "d49f3fb14bd0464a74e0daab3edfcdd36a53de96b9c44a0f65499473af719ae5",
+        "path": "miniprogram/subpkg/xianxia/art/guilloche.js",
+        "bytes": 2009,
+        "sha256": "d49f3fb14bd0464a74e0daab3edfcdd36a53de96b9c44a0f65499473af719ae5"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "miniprogram/subpkg/xianxia/art/radar.js",
+        "sourceBytes": 4885,
+        "sourceSha256": "100150dd391a1a94f50bfc2d30d85612a6ddbb623cd38929475ad00044c3e80f",
+        "path": "miniprogram/subpkg/xianxia/art/radar.js",
+        "bytes": 4885,
+        "sha256": "100150dd391a1a94f50bfc2d30d85612a6ddbb623cd38929475ad00044c3e80f"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "miniprogram/subpkg/xianxia/art/scene.js",
+        "sourceBytes": 21514,
+        "sourceSha256": "a603aa1daf767f5ae842afd7511f7b021694868987344b00849ad262651c5445",
+        "path": "miniprogram/subpkg/xianxia/art/scene.js",
+        "bytes": 21514,
+        "sha256": "a603aa1daf767f5ae842afd7511f7b021694868987344b00849ad262651c5445"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "miniprogram/subpkg/xianxia/bridge/clock.js",
+        "sourceBytes": 7398,
+        "sourceSha256": "5659adbaf19e62edafc5314bcfaaafdf071251c9af4005cd764f59d038037981",
+        "path": "miniprogram/subpkg/xianxia/bridge/clock.js",
+        "bytes": 7398,
+        "sha256": "5659adbaf19e62edafc5314bcfaaafdf071251c9af4005cd764f59d038037981"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "miniprogram/subpkg/xianxia/bridge/page-model.js",
+        "sourceBytes": 15560,
+        "sourceSha256": "6066d06f5368a0de077cf8afbe5c8c46480125eb2d4d4fe249283fc7643109f4",
+        "path": "miniprogram/subpkg/xianxia/bridge/page-model.js",
+        "bytes": 15560,
+        "sha256": "6066d06f5368a0de077cf8afbe5c8c46480125eb2d4d4fe249283fc7643109f4"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "miniprogram/subpkg/xianxia/bridge/portrait.js",
+        "sourceBytes": 4005,
+        "sourceSha256": "ad4283c8617f1ebbb6602c692227101c99e95bb79ef7be90b1b5733aca0b6dc2",
+        "path": "miniprogram/subpkg/xianxia/bridge/portrait.js",
+        "bytes": 4005,
+        "sha256": "ad4283c8617f1ebbb6602c692227101c99e95bb79ef7be90b1b5733aca0b6dc2"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "miniprogram/subpkg/xianxia/bridge/prefs.js",
+        "sourceBytes": 2670,
+        "sourceSha256": "c493108ba9a583e8d3b602bd2ab7c38e16ed1a458a77f875fc0434179df1b8c4",
+        "path": "miniprogram/subpkg/xianxia/bridge/prefs.js",
+        "bytes": 2670,
+        "sha256": "c493108ba9a583e8d3b602bd2ab7c38e16ed1a458a77f875fc0434179df1b8c4"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "miniprogram/subpkg/xianxia/bridge/roller.js",
+        "sourceBytes": 2971,
+        "sourceSha256": "f897b6b4db1b81d272f18d3e7f72ccfe13e7e56ed3cdbf84af6eb82ba2ffecec",
+        "path": "miniprogram/subpkg/xianxia/bridge/roller.js",
+        "bytes": 2971,
+        "sha256": "f897b6b4db1b81d272f18d3e7f72ccfe13e7e56ed3cdbf84af6eb82ba2ffecec"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "miniprogram/subpkg/xianxia/bridge/view-model.js",
+        "sourceBytes": 40479,
+        "sourceSha256": "e1c5c6ce21837c8bb0c518a23eab2362b33c8abc70fe132d77440c71b6edcaca",
+        "path": "miniprogram/subpkg/xianxia/bridge/view-model.js",
+        "bytes": 40479,
+        "sha256": "e1c5c6ce21837c8bb0c518a23eab2362b33c8abc70fe132d77440c71b6edcaca"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "miniprogram/subpkg/xianxia/components/map/index.js",
+        "sourceBytes": 3229,
+        "sourceSha256": "a8ed1480ba7eb1f9279ca1b0c52baba9dfb803760418076c18ae501819940b6a",
+        "path": "miniprogram/subpkg/xianxia/components/map/index.js",
+        "bytes": 3229,
+        "sha256": "a8ed1480ba7eb1f9279ca1b0c52baba9dfb803760418076c18ae501819940b6a"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "miniprogram/subpkg/xianxia/components/map/index.json",
+        "sourceBytes": 85,
+        "sourceSha256": "1abd7a519afa4585ed62780b4c4a044efb2930d21f1bfcd09d822b9b4868aef7",
+        "path": "miniprogram/subpkg/xianxia/components/map/index.json",
+        "bytes": 85,
+        "sha256": "1abd7a519afa4585ed62780b4c4a044efb2930d21f1bfcd09d822b9b4868aef7"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "miniprogram/subpkg/xianxia/components/map/index.wxml",
+        "sourceBytes": 107,
+        "sourceSha256": "267fd1964973f607c2bcea8240de1cdc07a98bf17ee5ecb12c5d606a8c607e77",
+        "path": "miniprogram/subpkg/xianxia/components/map/index.wxml",
+        "bytes": 107,
+        "sha256": "267fd1964973f607c2bcea8240de1cdc07a98bf17ee5ecb12c5d606a8c607e77"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "miniprogram/subpkg/xianxia/components/map/index.wxss",
+        "sourceBytes": 618,
+        "sourceSha256": "43a35e7e355d287578b330505d80ea7c8123dedca1ae4a935b4d5d3f6caee826",
+        "path": "miniprogram/subpkg/xianxia/components/map/index.wxss",
+        "bytes": 618,
+        "sha256": "43a35e7e355d287578b330505d80ea7c8123dedca1ae4a935b4d5d3f6caee826"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "miniprogram/subpkg/xianxia/components/radar/index.js",
+        "sourceBytes": 2752,
+        "sourceSha256": "addbacd69705a7ad67d532497c7f17bd6d65cb452e7209046026630b6bbfbecb",
+        "path": "miniprogram/subpkg/xianxia/components/radar/index.js",
+        "bytes": 2752,
+        "sha256": "addbacd69705a7ad67d532497c7f17bd6d65cb452e7209046026630b6bbfbecb"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "miniprogram/subpkg/xianxia/components/radar/index.json",
+        "sourceBytes": 85,
+        "sourceSha256": "1abd7a519afa4585ed62780b4c4a044efb2930d21f1bfcd09d822b9b4868aef7",
+        "path": "miniprogram/subpkg/xianxia/components/radar/index.json",
+        "bytes": 85,
+        "sha256": "1abd7a519afa4585ed62780b4c4a044efb2930d21f1bfcd09d822b9b4868aef7"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "miniprogram/subpkg/xianxia/components/radar/index.wxml",
+        "sourceBytes": 88,
+        "sourceSha256": "204c5acf0daf013e28978ac302c8416b4039637be3c01a5ec6f4b2149d5d9982",
+        "path": "miniprogram/subpkg/xianxia/components/radar/index.wxml",
+        "bytes": 88,
+        "sha256": "204c5acf0daf013e28978ac302c8416b4039637be3c01a5ec6f4b2149d5d9982"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "miniprogram/subpkg/xianxia/components/radar/index.wxss",
+        "sourceBytes": 184,
+        "sourceSha256": "1bf1fe0c15afa43252fc491b7bda74c24c5a13b896e7300e649a62a10c818b3f",
+        "path": "miniprogram/subpkg/xianxia/components/radar/index.wxss",
+        "bytes": 184,
+        "sha256": "1bf1fe0c15afa43252fc491b7bda74c24c5a13b896e7300e649a62a10c818b3f"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "miniprogram/subpkg/xianxia/components/scene/index.js",
+        "sourceBytes": 4746,
+        "sourceSha256": "0a1692821d50151b894b596200f9acce86404291eeac69d000f58b00c26875da",
+        "path": "miniprogram/subpkg/xianxia/components/scene/index.js",
+        "bytes": 4746,
+        "sha256": "0a1692821d50151b894b596200f9acce86404291eeac69d000f58b00c26875da"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "miniprogram/subpkg/xianxia/components/scene/index.json",
+        "sourceBytes": 85,
+        "sourceSha256": "1abd7a519afa4585ed62780b4c4a044efb2930d21f1bfcd09d822b9b4868aef7",
+        "path": "miniprogram/subpkg/xianxia/components/scene/index.json",
+        "bytes": 85,
+        "sha256": "1abd7a519afa4585ed62780b4c4a044efb2930d21f1bfcd09d822b9b4868aef7"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "miniprogram/subpkg/xianxia/components/scene/index.wxml",
+        "sourceBytes": 88,
+        "sourceSha256": "be10d60795281d94c149b7766fb6280b667e27e81cb1891eafbcf1d1d7a5a825",
+        "path": "miniprogram/subpkg/xianxia/components/scene/index.wxml",
+        "bytes": 88,
+        "sha256": "be10d60795281d94c149b7766fb6280b667e27e81cb1891eafbcf1d1d7a5a825"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "miniprogram/subpkg/xianxia/components/scene/index.wxss",
+        "sourceBytes": 324,
+        "sourceSha256": "0db24146d9f3824b65440b95232e337e686e3ba34e2e420b3b3805c060e052e4",
+        "path": "miniprogram/subpkg/xianxia/components/scene/index.wxss",
+        "bytes": 324,
+        "sha256": "0db24146d9f3824b65440b95232e337e686e3ba34e2e420b3b3805c060e052e4"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "miniprogram/subpkg/xianxia/pages/life/life.json",
+        "sourceBytes": 155,
+        "sourceSha256": "c946a7c88ac4d2cff81a4651a3688cadd81cc63251a8bf2c501ffd0269abdf6f",
+        "path": "miniprogram/subpkg/xianxia/pages/life/life.json",
+        "bytes": 155,
+        "sha256": "c946a7c88ac4d2cff81a4651a3688cadd81cc63251a8bf2c501ffd0269abdf6f"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "miniprogram/subpkg/xianxia/pages/life/life.wxml",
+        "sourceBytes": 27403,
+        "sourceSha256": "9cf05497ca24b2e7aba1ad64c81c267ddc198202935f4c8c796df12b4856b4b6",
+        "path": "miniprogram/subpkg/xianxia/pages/life/life.wxml",
+        "bytes": 27403,
+        "sha256": "9cf05497ca24b2e7aba1ad64c81c267ddc198202935f4c8c796df12b4856b4b6"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "miniprogram/subpkg/xianxia/pages/life/life.wxss",
+        "sourceBytes": 5152,
+        "sourceSha256": "9805f4cd37ddf654f71ebb21ddeed4ee4c31e18120926352c8258b7eb9ebaa64",
+        "path": "miniprogram/subpkg/xianxia/pages/life/life.wxss",
+        "bytes": 5152,
+        "sha256": "9805f4cd37ddf654f71ebb21ddeed4ee4c31e18120926352c8258b7eb9ebaa64"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "miniprogram/subpkg/xianxia/pages/past/past.json",
+        "sourceBytes": 59,
+        "sourceSha256": "204c86efbc4ac213796e127efecf36fa593b5160d3c62cd032e4c3e1bff402ba",
+        "path": "miniprogram/subpkg/xianxia/pages/past/past.json",
+        "bytes": 59,
+        "sha256": "204c86efbc4ac213796e127efecf36fa593b5160d3c62cd032e4c3e1bff402ba"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "miniprogram/subpkg/xianxia/pages/past/past.wxml",
+        "sourceBytes": 2108,
+        "sourceSha256": "97a32528ae9ca59eab5782395b2098870f145f254864eb4dcae71522b7890469",
+        "path": "miniprogram/subpkg/xianxia/pages/past/past.wxml",
+        "bytes": 2108,
+        "sha256": "97a32528ae9ca59eab5782395b2098870f145f254864eb4dcae71522b7890469"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "miniprogram/subpkg/xianxia/pages/past/past.wxss",
+        "sourceBytes": 180,
+        "sourceSha256": "0478c5f7eabed2790e51aa853cf67b8ce90d48eeb78fd02eba7caea310635c0f",
+        "path": "miniprogram/subpkg/xianxia/pages/past/past.wxss",
+        "bytes": 180,
+        "sha256": "0478c5f7eabed2790e51aa853cf67b8ce90d48eeb78fd02eba7caea310635c0f"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "miniprogram/subpkg/xianxia/pages/roll/roll.json",
+        "sourceBytes": 104,
+        "sourceSha256": "c5614c38feedc116a5cf8e5ea52ae9f06f9281ab31b424b225a3711b04d5371b",
+        "path": "miniprogram/subpkg/xianxia/pages/roll/roll.json",
+        "bytes": 104,
+        "sha256": "c5614c38feedc116a5cf8e5ea52ae9f06f9281ab31b424b225a3711b04d5371b"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "miniprogram/subpkg/xianxia/pages/roll/roll.wxml",
+        "sourceBytes": 3067,
+        "sourceSha256": "0513a21ffafd68d89e3d9658f0a280c470191ac49a5ed80a26fa1f683c5d55ca",
+        "path": "miniprogram/subpkg/xianxia/pages/roll/roll.wxml",
+        "bytes": 3067,
+        "sha256": "0513a21ffafd68d89e3d9658f0a280c470191ac49a5ed80a26fa1f683c5d55ca"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "miniprogram/subpkg/xianxia/pages/roll/roll.wxss",
+        "sourceBytes": 675,
+        "sourceSha256": "7e965599ab70b5c6f64faa2456990869c0369180420b75e9cda9e73bb15f6a46",
+        "path": "miniprogram/subpkg/xianxia/pages/roll/roll.wxss",
+        "bytes": 675,
+        "sha256": "7e965599ab70b5c6f64faa2456990869c0369180420b75e9cda9e73bb15f6a46"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "miniprogram/subpkg/xianxia/styles/official-life.wxss",
+        "sourceBytes": 27306,
+        "sourceSha256": "e769666977f94492e9ec5d526ae10971748d4735f7edd8c69b888d61a072446b",
+        "path": "miniprogram/subpkg/xianxia/styles/official-life.wxss",
+        "bytes": 27306,
+        "sha256": "e769666977f94492e9ec5d526ae10971748d4735f7edd8c69b888d61a072446b"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "miniprogram/subpkg/xianxia/styles/official-roll.wxss",
+        "sourceBytes": 12059,
+        "sourceSha256": "04243b6593fb5060ca364edfdcaf1f3b1387084009e3d6907f6ef90841d974e6",
+        "path": "miniprogram/subpkg/xianxia/styles/official-roll.wxss",
+        "bytes": 12059,
+        "sha256": "04243b6593fb5060ca364edfdcaf1f3b1387084009e3d6907f6ef90841d974e6"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "miniprogram/subpkg/xianxia/styles/official-sheet.wxss",
+        "sourceBytes": 4747,
+        "sourceSha256": "c950ada37f8858bd8758ba17e8d7ce8cb680b3137ed5b77fe5bdcf99c716f994",
+        "path": "miniprogram/subpkg/xianxia/styles/official-sheet.wxss",
+        "bytes": 4747,
+        "sha256": "c950ada37f8858bd8758ba17e8d7ce8cb680b3137ed5b77fe5bdcf99c716f994"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "miniprogram/subpkg/xianxia/styles/official-shelf.wxss",
+        "sourceBytes": 8941,
+        "sourceSha256": "a2fabf775aa95b74cb718f6823f7759ea2b6d445d5eec1276e7371f790a764fe",
+        "path": "miniprogram/subpkg/xianxia/styles/official-shelf.wxss",
+        "bytes": 8941,
+        "sha256": "a2fabf775aa95b74cb718f6823f7759ea2b6d445d5eec1276e7371f790a764fe"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/baseline.lock.json",
+        "sourceBytes": 11358,
+        "sourceSha256": "8d9eb77bc5d1f7a9a278af66ab220956721aaf8a4e1cc705bec75a1767f93757",
+        "path": "vendor/xianxia-r12/baseline.lock.json",
+        "bytes": 11358,
+        "sha256": "8d9eb77bc5d1f7a9a278af66ab220956721aaf8a4e1cc705bec75a1767f93757"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/content/adventure.js",
+        "sourceBytes": 94240,
+        "sourceSha256": "6b150c7a2b4a9dfc05c1b5b757fae3ed4ea49bd1605dd32e51c2fcd872a12af8",
+        "path": "vendor/xianxia-r12/content/adventure.js",
+        "bytes": 94240,
+        "sha256": "6b150c7a2b4a9dfc05c1b5b757fae3ed4ea49bd1605dd32e51c2fcd872a12af8"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/content/allegiance-stories.js",
+        "sourceBytes": 15079,
+        "sourceSha256": "9905dc390ade6b2412e155293611b64b9ffebe4f55ab8c28ecd7d5eb5c4b2dda",
+        "path": "vendor/xianxia-r12/content/allegiance-stories.js",
+        "bytes": 15079,
+        "sha256": "9905dc390ade6b2412e155293611b64b9ffebe4f55ab8c28ecd7d5eb5c4b2dda"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/content/automatic-life.js",
+        "sourceBytes": 19360,
+        "sourceSha256": "cf7bb63f20b469759e89760ce37c952af93556ec39494932c8613f1532a6d7dd",
+        "path": "vendor/xianxia-r12/content/automatic-life.js",
+        "bytes": 19360,
+        "sha256": "cf7bb63f20b469759e89760ce37c952af93556ec39494932c8613f1532a6d7dd"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/content/cultivation-daily-v6.js",
+        "sourceBytes": 24438,
+        "sourceSha256": "a33e8bc04b77fa5bdb39ad99af8b5e17ec7ea568dba0b28221107a8a5b136e5e",
+        "path": "vendor/xianxia-r12/content/cultivation-daily-v6.js",
+        "bytes": 24438,
+        "sha256": "a33e8bc04b77fa5bdb39ad99af8b5e17ec7ea568dba0b28221107a8a5b136e5e"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/content/cultivation-daily-v7.js",
+        "sourceBytes": 31575,
+        "sourceSha256": "3ff6cfa045a1fc9e6e547a87dc259c38933b51fce11b066986639279aed413f7",
+        "path": "vendor/xianxia-r12/content/cultivation-daily-v7.js",
+        "bytes": 31575,
+        "sha256": "3ff6cfa045a1fc9e6e547a87dc259c38933b51fce11b066986639279aed413f7"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/content/cultivation-daily.js",
+        "sourceBytes": 31575,
+        "sourceSha256": "3ff6cfa045a1fc9e6e547a87dc259c38933b51fce11b066986639279aed413f7",
+        "path": "vendor/xianxia-r12/content/cultivation-daily.js",
+        "bytes": 31575,
+        "sha256": "3ff6cfa045a1fc9e6e547a87dc259c38933b51fce11b066986639279aed413f7"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/content/cultivation-revision-v10.js",
+        "sourceBytes": 20051,
+        "sourceSha256": "63268567247882c5bd0fb8539f81c5bdb95812ba7d11e6eebef31d523117078f",
+        "path": "vendor/xianxia-r12/content/cultivation-revision-v10.js",
+        "bytes": 20051,
+        "sha256": "63268567247882c5bd0fb8539f81c5bdb95812ba7d11e6eebef31d523117078f"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/content/cultivation-revision-v11.js",
+        "sourceBytes": 20051,
+        "sourceSha256": "63268567247882c5bd0fb8539f81c5bdb95812ba7d11e6eebef31d523117078f",
+        "path": "vendor/xianxia-r12/content/cultivation-revision-v11.js",
+        "bytes": 20051,
+        "sha256": "63268567247882c5bd0fb8539f81c5bdb95812ba7d11e6eebef31d523117078f"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/content/cultivation-revision-v6.js",
+        "sourceBytes": 20051,
+        "sourceSha256": "63268567247882c5bd0fb8539f81c5bdb95812ba7d11e6eebef31d523117078f",
+        "path": "vendor/xianxia-r12/content/cultivation-revision-v6.js",
+        "bytes": 20051,
+        "sha256": "63268567247882c5bd0fb8539f81c5bdb95812ba7d11e6eebef31d523117078f"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/content/cultivation-revision-v7.js",
+        "sourceBytes": 20051,
+        "sourceSha256": "63268567247882c5bd0fb8539f81c5bdb95812ba7d11e6eebef31d523117078f",
+        "path": "vendor/xianxia-r12/content/cultivation-revision-v7.js",
+        "bytes": 20051,
+        "sha256": "63268567247882c5bd0fb8539f81c5bdb95812ba7d11e6eebef31d523117078f"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/content/cultivation-revision-v8.js",
+        "sourceBytes": 20051,
+        "sourceSha256": "63268567247882c5bd0fb8539f81c5bdb95812ba7d11e6eebef31d523117078f",
+        "path": "vendor/xianxia-r12/content/cultivation-revision-v8.js",
+        "bytes": 20051,
+        "sha256": "63268567247882c5bd0fb8539f81c5bdb95812ba7d11e6eebef31d523117078f"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/content/cultivation-revision-v9.js",
+        "sourceBytes": 20051,
+        "sourceSha256": "63268567247882c5bd0fb8539f81c5bdb95812ba7d11e6eebef31d523117078f",
+        "path": "vendor/xianxia-r12/content/cultivation-revision-v9.js",
+        "bytes": 20051,
+        "sha256": "63268567247882c5bd0fb8539f81c5bdb95812ba7d11e6eebef31d523117078f"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/content/cultivation-revision.js",
+        "sourceBytes": 20051,
+        "sourceSha256": "63268567247882c5bd0fb8539f81c5bdb95812ba7d11e6eebef31d523117078f",
+        "path": "vendor/xianxia-r12/content/cultivation-revision.js",
+        "bytes": 20051,
+        "sha256": "63268567247882c5bd0fb8539f81c5bdb95812ba7d11e6eebef31d523117078f"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/content/cultivation-stories-v10.js",
+        "sourceBytes": 38960,
+        "sourceSha256": "8aba79100a53419c51b6714c4e8ecab6389ca66c496f941a97adc67bb73d7240",
+        "path": "vendor/xianxia-r12/content/cultivation-stories-v10.js",
+        "bytes": 38960,
+        "sha256": "8aba79100a53419c51b6714c4e8ecab6389ca66c496f941a97adc67bb73d7240"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/content/cultivation-stories-v11.js",
+        "sourceBytes": 39173,
+        "sourceSha256": "77dcd51b9695033eeada50f9f4ee928b9970dd844d4972cfcc8415051d81162b",
+        "path": "vendor/xianxia-r12/content/cultivation-stories-v11.js",
+        "bytes": 39173,
+        "sha256": "77dcd51b9695033eeada50f9f4ee928b9970dd844d4972cfcc8415051d81162b"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/content/cultivation-stories-v5.js",
+        "sourceBytes": 37424,
+        "sourceSha256": "2cee3b93be42d90c0c60bed9a36ee1e51f614d2dfcbf74fa35cd27d4f897431c",
+        "path": "vendor/xianxia-r12/content/cultivation-stories-v5.js",
+        "bytes": 37424,
+        "sha256": "2cee3b93be42d90c0c60bed9a36ee1e51f614d2dfcbf74fa35cd27d4f897431c"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/content/cultivation-stories-v6.js",
+        "sourceBytes": 37741,
+        "sourceSha256": "aed42cf5aabf96aff90a8321977f9ad3d72dcba3217600042df91f5e69d4b4f8",
+        "path": "vendor/xianxia-r12/content/cultivation-stories-v6.js",
+        "bytes": 37741,
+        "sha256": "aed42cf5aabf96aff90a8321977f9ad3d72dcba3217600042df91f5e69d4b4f8"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/content/cultivation-stories-v7.js",
+        "sourceBytes": 38368,
+        "sourceSha256": "81970efb438d95954eac59e2263701d7eaec4b460f0ab60d3dd9cbd0d5655084",
+        "path": "vendor/xianxia-r12/content/cultivation-stories-v7.js",
+        "bytes": 38368,
+        "sha256": "81970efb438d95954eac59e2263701d7eaec4b460f0ab60d3dd9cbd0d5655084"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/content/cultivation-stories-v8.js",
+        "sourceBytes": 38574,
+        "sourceSha256": "aeb628cfb0609815bf1ad29c50da8b58a9a4ba52e43d1f0fc0c82fb01d03a9da",
+        "path": "vendor/xianxia-r12/content/cultivation-stories-v8.js",
+        "bytes": 38574,
+        "sha256": "aeb628cfb0609815bf1ad29c50da8b58a9a4ba52e43d1f0fc0c82fb01d03a9da"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/content/cultivation-stories-v9.js",
+        "sourceBytes": 38766,
+        "sourceSha256": "1543aed4311e1c670565095b64e40c8e371971ab4e3483ced2697746a88c3d67",
+        "path": "vendor/xianxia-r12/content/cultivation-stories-v9.js",
+        "bytes": 38766,
+        "sha256": "1543aed4311e1c670565095b64e40c8e371971ab4e3483ced2697746a88c3d67"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/content/cultivation-stories.js",
+        "sourceBytes": 39332,
+        "sourceSha256": "313dce398df462a8cb3595c213ec82409b5a5050e1c3638a80302d0c53f2249a",
+        "path": "vendor/xianxia-r12/content/cultivation-stories.js",
+        "bytes": 39332,
+        "sha256": "313dce398df462a8cb3595c213ec82409b5a5050e1c3638a80302d0c53f2249a"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/content/cultivation-world.js",
+        "sourceBytes": 6319,
+        "sourceSha256": "5b5aaa5141b62a2c8d5f80d1195ffd8c43dbdab58600e83210e617b6ef00364f",
+        "path": "vendor/xianxia-r12/content/cultivation-world.js",
+        "bytes": 6319,
+        "sha256": "5b5aaa5141b62a2c8d5f80d1195ffd8c43dbdab58600e83210e617b6ef00364f"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/content/decision-details.js",
+        "sourceBytes": 13229,
+        "sourceSha256": "7d1d41251b8bea36bf9b551d4c8c0dd75048655fde25a1c4ee5e1b4ae029a17e",
+        "path": "vendor/xianxia-r12/content/decision-details.js",
+        "bytes": 13229,
+        "sha256": "7d1d41251b8bea36bf9b551d4c8c0dd75048655fde25a1c4ee5e1b4ae029a17e"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/content/expedition-changes.js",
+        "sourceBytes": 6372,
+        "sourceSha256": "da649a89571a19bd33f87af9357baaa10efec3f10747e7aec0a4595608446843",
+        "path": "vendor/xianxia-r12/content/expedition-changes.js",
+        "bytes": 6372,
+        "sha256": "da649a89571a19bd33f87af9357baaa10efec3f10747e7aec0a4595608446843"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/content/living-episodes.js",
+        "sourceBytes": 39886,
+        "sourceSha256": "cbb3277634f930c28582f6f800e3d6bac35246485b14571e00f3521e136a302f",
+        "path": "vendor/xianxia-r12/content/living-episodes.js",
+        "bytes": 39886,
+        "sha256": "cbb3277634f930c28582f6f800e3d6bac35246485b14571e00f3521e136a302f"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/content/living-world.js",
+        "sourceBytes": 5356,
+        "sourceSha256": "41182ded897d32198e2bfbd1d9d91d147526b18085d7425fffa43626a7250250",
+        "path": "vendor/xianxia-r12/content/living-world.js",
+        "bytes": 5356,
+        "sha256": "41182ded897d32198e2bfbd1d9d91d147526b18085d7425fffa43626a7250250"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/content/mundane-stories-v11.js",
+        "sourceBytes": 39447,
+        "sourceSha256": "b587471bba3fb3ec2d38c7abf010bc9463ec8ef3a97d7db7939cb1b552a114b7",
+        "path": "vendor/xianxia-r12/content/mundane-stories-v11.js",
+        "bytes": 39447,
+        "sha256": "b587471bba3fb3ec2d38c7abf010bc9463ec8ef3a97d7db7939cb1b552a114b7"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/content/mundane-stories.js",
+        "sourceBytes": 39447,
+        "sourceSha256": "b587471bba3fb3ec2d38c7abf010bc9463ec8ef3a97d7db7939cb1b552a114b7",
+        "path": "vendor/xianxia-r12/content/mundane-stories.js",
+        "bytes": 39447,
+        "sha256": "b587471bba3fb3ec2d38c7abf010bc9463ec8ef3a97d7db7939cb1b552a114b7"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/content/novel-names.js",
+        "sourceBytes": 15555,
+        "sourceSha256": "dc17411d1d7b32e40825a30015fb21560a510c069c212c2900b223e7f24fe5c7",
+        "path": "vendor/xianxia-r12/content/novel-names.js",
+        "bytes": 15555,
+        "sha256": "dc17411d1d7b32e40825a30015fb21560a510c069c212c2900b223e7f24fe5c7"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/content/progression-stories-v11.js",
+        "sourceBytes": 21704,
+        "sourceSha256": "2a23d89e02375122906a56a879498ae01524f8eb15b72edd5773ff1f53a5dcbf",
+        "path": "vendor/xianxia-r12/content/progression-stories-v11.js",
+        "bytes": 21704,
+        "sha256": "2a23d89e02375122906a56a879498ae01524f8eb15b72edd5773ff1f53a5dcbf"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/content/progression-stories.js",
+        "sourceBytes": 21704,
+        "sourceSha256": "2a23d89e02375122906a56a879498ae01524f8eb15b72edd5773ff1f53a5dcbf",
+        "path": "vendor/xianxia-r12/content/progression-stories.js",
+        "bytes": 21704,
+        "sha256": "2a23d89e02375122906a56a879498ae01524f8eb15b72edd5773ff1f53a5dcbf"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/content/readable-automatic.js",
+        "sourceBytes": 6773,
+        "sourceSha256": "7fb5d2306b9793fe2e00c6a4ef17d53a4047d574c5d0f0e65bf18817c7c08a59",
+        "path": "vendor/xianxia-r12/content/readable-automatic.js",
+        "bytes": 6773,
+        "sha256": "7fb5d2306b9793fe2e00c6a4ef17d53a4047d574c5d0f0e65bf18817c7c08a59"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/content/readable-stories.js",
+        "sourceBytes": 27542,
+        "sourceSha256": "7e15161ffdf8c39d3816988d082c5be9fc133c59d9de9661ab7f8ec55b5372db",
+        "path": "vendor/xianxia-r12/content/readable-stories.js",
+        "bytes": 27542,
+        "sha256": "7e15161ffdf8c39d3816988d082c5be9fc133c59d9de9661ab7f8ec55b5372db"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/content/revision9-stories-v11.js",
+        "sourceBytes": 15697,
+        "sourceSha256": "7928757afc26bcb5e27dd835abaafeabd3c5c924e3cbe5e6a3aab4a662d50658",
+        "path": "vendor/xianxia-r12/content/revision9-stories-v11.js",
+        "bytes": 15697,
+        "sha256": "7928757afc26bcb5e27dd835abaafeabd3c5c924e3cbe5e6a3aab4a662d50658"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/content/revision9-stories.js",
+        "sourceBytes": 15697,
+        "sourceSha256": "7928757afc26bcb5e27dd835abaafeabd3c5c924e3cbe5e6a3aab4a662d50658",
+        "path": "vendor/xianxia-r12/content/revision9-stories.js",
+        "bytes": 15697,
+        "sha256": "7928757afc26bcb5e27dd835abaafeabd3c5c924e3cbe5e6a3aab4a662d50658"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/content/rules12-world.js",
+        "sourceBytes": 2974,
+        "sourceSha256": "297e6a0a1ce8addd4d7e761ea68715da25fdbb74a9e04745cf23d3b379f0fb5e",
+        "path": "vendor/xianxia-r12/content/rules12-world.js",
+        "bytes": 2974,
+        "sha256": "297e6a0a1ce8addd4d7e761ea68715da25fdbb74a9e04745cf23d3b379f0fb5e"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/content/story-network-v10.js",
+        "sourceBytes": 40946,
+        "sourceSha256": "2bc61abd96414eaf6ae5bdcd06b573e5ae203dcbe94ecabd865201a7e51c8c9e",
+        "path": "vendor/xianxia-r12/content/story-network-v10.js",
+        "bytes": 40946,
+        "sha256": "2bc61abd96414eaf6ae5bdcd06b573e5ae203dcbe94ecabd865201a7e51c8c9e"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/content/story-network-v11.js",
+        "sourceBytes": 41021,
+        "sourceSha256": "43718b15e70faa0c6437fc39937421d4247208120b1f7a8957a2f0e76e896317",
+        "path": "vendor/xianxia-r12/content/story-network-v11.js",
+        "bytes": 41021,
+        "sha256": "43718b15e70faa0c6437fc39937421d4247208120b1f7a8957a2f0e76e896317"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/content/story-network-v9.js",
+        "sourceBytes": 40946,
+        "sourceSha256": "2bc61abd96414eaf6ae5bdcd06b573e5ae203dcbe94ecabd865201a7e51c8c9e",
+        "path": "vendor/xianxia-r12/content/story-network-v9.js",
+        "bytes": 40946,
+        "sha256": "2bc61abd96414eaf6ae5bdcd06b573e5ae203dcbe94ecabd865201a7e51c8c9e"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/content/story-network.js",
+        "sourceBytes": 41021,
+        "sourceSha256": "43718b15e70faa0c6437fc39937421d4247208120b1f7a8957a2f0e76e896317",
+        "path": "vendor/xianxia-r12/content/story-network.js",
+        "bytes": 41021,
+        "sha256": "43718b15e70faa0c6437fc39937421d4247208120b1f7a8957a2f0e76e896317"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/content/story-rules10-v11.js",
+        "sourceBytes": 27876,
+        "sourceSha256": "06cd92402d76de5b8530fc4814a093c7aeb8c8bf617c65393bc5b586c94d0516",
+        "path": "vendor/xianxia-r12/content/story-rules10-v11.js",
+        "bytes": 27876,
+        "sha256": "06cd92402d76de5b8530fc4814a093c7aeb8c8bf617c65393bc5b586c94d0516"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/content/story-rules10.js",
+        "sourceBytes": 27876,
+        "sourceSha256": "06cd92402d76de5b8530fc4814a093c7aeb8c8bf617c65393bc5b586c94d0516",
+        "path": "vendor/xianxia-r12/content/story-rules10.js",
+        "bytes": 27876,
+        "sha256": "06cd92402d76de5b8530fc4814a093c7aeb8c8bf617c65393bc5b586c94d0516"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/content/story-rules12.js",
+        "sourceBytes": 26338,
+        "sourceSha256": "28b212ffc4b6c4acf4961cb835972fefbbcd9ea2886193853846635181bfcf11",
+        "path": "vendor/xianxia-r12/content/story-rules12.js",
+        "bytes": 26338,
+        "sha256": "28b212ffc4b6c4acf4961cb835972fefbbcd9ea2886193853846635181bfcf11"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/packages/adventure/birth.js",
+        "sourceBytes": 1933,
+        "sourceSha256": "13aa745d957ed0715bd16edf4647d9162fdfd185cd9681c1ac88ef3c36662c8f",
+        "path": "vendor/xianxia-r12/packages/adventure/birth.js",
+        "bytes": 1933,
+        "sha256": "13aa745d957ed0715bd16edf4647d9162fdfd185cd9681c1ac88ef3c36662c8f"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/packages/adventure/context.js",
+        "sourceBytes": 2149,
+        "sourceSha256": "da043e10177aadc1fb4dbb7735d1c6c3cea43bb895c418615b36a71d7cca99d7",
+        "path": "vendor/xianxia-r12/packages/adventure/context.js",
+        "bytes": 2149,
+        "sha256": "da043e10177aadc1fb4dbb7735d1c6c3cea43bb895c418615b36a71d7cca99d7"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/packages/adventure/cultivation-economy.js",
+        "sourceBytes": 3104,
+        "sourceSha256": "413247e496366c26df42fdc150efa937791ce582bd845ecafc10dade856afa05",
+        "path": "vendor/xianxia-r12/packages/adventure/cultivation-economy.js",
+        "bytes": 3104,
+        "sha256": "413247e496366c26df42fdc150efa937791ce582bd845ecafc10dade856afa05"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/packages/adventure/cultivation-v10.js",
+        "sourceBytes": 50286,
+        "sourceSha256": "f25ea9cc056055e1910de606eab2dea813535219ad286bd083def981c9024d99",
+        "path": "vendor/xianxia-r12/packages/adventure/cultivation-v10.js",
+        "bytes": 50286,
+        "sha256": "f25ea9cc056055e1910de606eab2dea813535219ad286bd083def981c9024d99"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/packages/adventure/cultivation-v11.js",
+        "sourceBytes": 51419,
+        "sourceSha256": "5c0ad87a6b15545c0a8d5ed5cd16c4ccfb686b70c80987783e9981149a2ac7b3",
+        "path": "vendor/xianxia-r12/packages/adventure/cultivation-v11.js",
+        "bytes": 51419,
+        "sha256": "5c0ad87a6b15545c0a8d5ed5cd16c4ccfb686b70c80987783e9981149a2ac7b3"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/packages/adventure/cultivation-v5.js",
+        "sourceBytes": 37871,
+        "sourceSha256": "bf8f93d5ef60b778cd390110b16590c3de28c127e3379f9de83a13c35e67c476",
+        "path": "vendor/xianxia-r12/packages/adventure/cultivation-v5.js",
+        "bytes": 37871,
+        "sha256": "bf8f93d5ef60b778cd390110b16590c3de28c127e3379f9de83a13c35e67c476"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/packages/adventure/cultivation-v6.js",
+        "sourceBytes": 43693,
+        "sourceSha256": "755f4285b73218598c24f296c41f1b310c0e416d1b0894ceff7b126804e0b87d",
+        "path": "vendor/xianxia-r12/packages/adventure/cultivation-v6.js",
+        "bytes": 43693,
+        "sha256": "755f4285b73218598c24f296c41f1b310c0e416d1b0894ceff7b126804e0b87d"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/packages/adventure/cultivation-v7.js",
+        "sourceBytes": 46129,
+        "sourceSha256": "01b152b5234b31ec256cf796567d1ad4d544ecb69f6ad3632133de0c46044a9a",
+        "path": "vendor/xianxia-r12/packages/adventure/cultivation-v7.js",
+        "bytes": 46129,
+        "sha256": "01b152b5234b31ec256cf796567d1ad4d544ecb69f6ad3632133de0c46044a9a"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/packages/adventure/cultivation-v8.js",
+        "sourceBytes": 48756,
+        "sourceSha256": "cca481607055ae928c4468cb227edaaaf97089260878431bd4ba8dbedc652184",
+        "path": "vendor/xianxia-r12/packages/adventure/cultivation-v8.js",
+        "bytes": 48756,
+        "sha256": "cca481607055ae928c4468cb227edaaaf97089260878431bd4ba8dbedc652184"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/packages/adventure/cultivation-v9.js",
+        "sourceBytes": 48927,
+        "sourceSha256": "1cd7650595fdaa0a86a1eb570323e0efe8e13f4dd99f7d2596b686c21db28d7e",
+        "path": "vendor/xianxia-r12/packages/adventure/cultivation-v9.js",
+        "bytes": 48927,
+        "sha256": "1cd7650595fdaa0a86a1eb570323e0efe8e13f4dd99f7d2596b686c21db28d7e"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/packages/adventure/cultivation.js",
+        "sourceBytes": 52549,
+        "sourceSha256": "c04c9381583444dd8689c132dc832d827cd9954566b8fb6353604848e0a515d9",
+        "path": "vendor/xianxia-r12/packages/adventure/cultivation.js",
+        "bytes": 52549,
+        "sha256": "c04c9381583444dd8689c132dc832d827cd9954566b8fb6353604848e0a515d9"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/packages/adventure/engine.js",
+        "sourceBytes": 55200,
+        "sourceSha256": "52fcc598bf2ad284b0e80dccecd1c085ad95e6619fe09080efc9846250875061",
+        "path": "vendor/xianxia-r12/packages/adventure/engine.js",
+        "bytes": 55200,
+        "sha256": "52fcc598bf2ad284b0e80dccecd1c085ad95e6619fe09080efc9846250875061"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/packages/adventure/family.js",
+        "sourceBytes": 3506,
+        "sourceSha256": "9a6f0699486cacbb4677c143e16d4a98f4905e941e59a8a1b3b88f6020debb4f",
+        "path": "vendor/xianxia-r12/packages/adventure/family.js",
+        "bytes": 3506,
+        "sha256": "9a6f0699486cacbb4677c143e16d4a98f4905e941e59a8a1b3b88f6020debb4f"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/packages/adventure/life.js",
+        "sourceBytes": 34200,
+        "sourceSha256": "d4c1bc31239f54fa81f406a5de80469e44d8fe35a7ff535141aff165e8cfa35d",
+        "path": "vendor/xianxia-r12/packages/adventure/life.js",
+        "bytes": 34200,
+        "sha256": "d4c1bc31239f54fa81f406a5de80469e44d8fe35a7ff535141aff165e8cfa35d"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/packages/adventure/mundane-life.js",
+        "sourceBytes": 31859,
+        "sourceSha256": "a4ecbd46a1cc12c6bee10109e0e100f7f433c291932a76c46ddb35aced9b0a2b",
+        "path": "vendor/xianxia-r12/packages/adventure/mundane-life.js",
+        "bytes": 31859,
+        "sha256": "a4ecbd46a1cc12c6bee10109e0e100f7f433c291932a76c46ddb35aced9b0a2b"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/packages/adventure/progression.js",
+        "sourceBytes": 25883,
+        "sourceSha256": "453c3732966e9d6fbc43f5d18e8cf5e7c0b49d0696f49fdc727e4152241ca457",
+        "path": "vendor/xianxia-r12/packages/adventure/progression.js",
+        "bytes": 25883,
+        "sha256": "453c3732966e9d6fbc43f5d18e8cf5e7c0b49d0696f49fdc727e4152241ca457"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/packages/adventure/realm.js",
+        "sourceBytes": 1163,
+        "sourceSha256": "66f680e2c6e01dabc90d75f898d37f56073ca1bc3f1703c85b2f47871698f4d4",
+        "path": "vendor/xianxia-r12/packages/adventure/realm.js",
+        "bytes": 1163,
+        "sha256": "66f680e2c6e01dabc90d75f898d37f56073ca1bc3f1703c85b2f47871698f4d4"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/packages/adventure/revision9-v9.js",
+        "sourceBytes": 12218,
+        "sourceSha256": "4ad2cf6803ceda9d4d6e341460afe8f63ebb6adff67422dceeafe32a43e5c4be",
+        "path": "vendor/xianxia-r12/packages/adventure/revision9-v9.js",
+        "bytes": 12218,
+        "sha256": "4ad2cf6803ceda9d4d6e341460afe8f63ebb6adff67422dceeafe32a43e5c4be"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/packages/adventure/revision9.js",
+        "sourceBytes": 12297,
+        "sourceSha256": "953bde7ebe8479f1549d2f1788c08b0574b948bdcc37f2918f5565b5e569d4d6",
+        "path": "vendor/xianxia-r12/packages/adventure/revision9.js",
+        "bytes": 12297,
+        "sha256": "953bde7ebe8479f1549d2f1788c08b0574b948bdcc37f2918f5565b5e569d4d6"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/packages/adventure/story-network-v9.js",
+        "sourceBytes": 16239,
+        "sourceSha256": "570860d61ee4405b7bba85e41790fc0ee4f2c0dcb9f164716c83760d979e28a9",
+        "path": "vendor/xianxia-r12/packages/adventure/story-network-v9.js",
+        "bytes": 16239,
+        "sha256": "570860d61ee4405b7bba85e41790fc0ee4f2c0dcb9f164716c83760d979e28a9"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/packages/adventure/story-network.js",
+        "sourceBytes": 16686,
+        "sourceSha256": "ce4cf2ae2e9c3de6903cab5e30c78738826221439c26364dd92c5014697eeb25",
+        "path": "vendor/xianxia-r12/packages/adventure/story-network.js",
+        "bytes": 16686,
+        "sha256": "ce4cf2ae2e9c3de6903cab5e30c78738826221439c26364dd92c5014697eeb25"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/packages/adventure/story-rules10.js",
+        "sourceBytes": 18118,
+        "sourceSha256": "7dc5ecd1b5727db52e748b9651f809ad36ddd081a28689b864c476508a6d21ca",
+        "path": "vendor/xianxia-r12/packages/adventure/story-rules10.js",
+        "bytes": 18118,
+        "sha256": "7dc5ecd1b5727db52e748b9651f809ad36ddd081a28689b864c476508a6d21ca"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/packages/adventure/story-rules12.js",
+        "sourceBytes": 17624,
+        "sourceSha256": "51fc86ae06d2d04014b26a08a9dd8d584f091c5975e4117352992918d756be80",
+        "path": "vendor/xianxia-r12/packages/adventure/story-rules12.js",
+        "bytes": 17624,
+        "sha256": "51fc86ae06d2d04014b26a08a9dd8d584f091c5975e4117352992918d756be80"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12/packages/core/random.js",
+        "sourceBytes": 1427,
+        "sourceSha256": "5cc65b632c86293fdb1e45515c1fa9e9fed2b3b21e34bccfa0c449c9326ada68",
+        "path": "vendor/xianxia-r12/packages/core/random.js",
+        "bytes": 1427,
+        "sha256": "5cc65b632c86293fdb1e45515c1fa9e9fed2b3b21e34bccfa0c449c9326ada68"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12-art/apps/preview/continent-atlas.js",
+        "sourceBytes": 3951,
+        "sourceSha256": "3f3cebe14d0ad9ee8d3d5f249a6ba38a19dd478f7f4862cc435a9b2af666a347",
+        "path": "vendor/xianxia-r12-art/apps/preview/continent-atlas.js",
+        "bytes": 3951,
+        "sha256": "3f3cebe14d0ad9ee8d3d5f249a6ba38a19dd478f7f4862cc435a9b2af666a347"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12-art/apps/preview/cultivation-pixel.js",
+        "sourceBytes": 12691,
+        "sourceSha256": "1fc33265a3e016c095957e511906d0adc682f5395ee1845de8bd50eb66491d78",
+        "path": "vendor/xianxia-r12-art/apps/preview/cultivation-pixel.js",
+        "bytes": 12691,
+        "sha256": "1fc33265a3e016c095957e511906d0adc682f5395ee1845de8bd50eb66491d78"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12-art/apps/preview/pixel-style.js",
+        "sourceBytes": 4044,
+        "sourceSha256": "78791ceb46d10e352e06272e01a97cf41f3cfb48fa3447c45ff819a6589979d6",
+        "path": "vendor/xianxia-r12-art/apps/preview/pixel-style.js",
+        "bytes": 4044,
+        "sha256": "78791ceb46d10e352e06272e01a97cf41f3cfb48fa3447c45ff819a6589979d6"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "vendor/xianxia-r12-art/baseline.lock.json",
+        "sourceBytes": 834,
+        "sourceSha256": "91f26ac510206b620d516630e67185b28111247bb829fa27b98faa151194f377",
+        "path": "vendor/xianxia-r12-art/baseline.lock.json",
+        "bytes": 834,
+        "sha256": "91f26ac510206b620d516630e67185b28111247bb829fa27b98faa151194f377"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "scripts/lib/xianxia-bundle.mjs",
+        "sourceBytes": 19773,
+        "sourceSha256": "dddc1c7101ef83b6c9d4d2e5b60de74fd430f1a0482975acb48898db077ee43f",
+        "path": "scripts/lib/xianxia-bundle.mjs",
+        "bytes": 19773,
+        "sha256": "dddc1c7101ef83b6c9d4d2e5b60de74fd430f1a0482975acb48898db077ee43f"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "scripts/lib/es2015-downlevel.mjs",
+        "sourceBytes": 17005,
+        "sourceSha256": "9957c501fbf6fe74f108f4e38d2aa248e1602d37c09db4f8f76243c025d4a740",
+        "path": "scripts/lib/es2015-downlevel.mjs",
+        "bytes": 17005,
+        "sha256": "9957c501fbf6fe74f108f4e38d2aa248e1602d37c09db4f8f76243c025d4a740"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "docs/miniprogram-xianxia-integration.md",
+        "sourceBytes": 61050,
+        "sourceSha256": "85ec52486de95a41305565b25923d6f7c3c66700a476b5ef6c9fe297ca2dc4d1",
+        "path": "docs/miniprogram-xianxia-integration.md",
+        "bytes": 61050,
+        "sha256": "85ec52486de95a41305565b25923d6f7c3c66700a476b5ef6c9fe297ca2dc4d1"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "docs/xianxia-device-checklist.md",
+        "sourceBytes": 10904,
+        "sourceSha256": "40de1002d7f850a8dfee57259230dd3568ec5efeabe8b7879b891a6f34e7b50b",
+        "path": "docs/xianxia-device-checklist.md",
+        "bytes": 10904,
+        "sha256": "40de1002d7f850a8dfee57259230dd3568ec5efeabe8b7879b891a6f34e7b50b"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "miniprogram/app.wxss",
+        "sourceBytes": 34280,
+        "sourceSha256": "af1f372fb3cac1296ec6c5ea985dafa8942a89ccc7843d622cbddab0dffe75d5",
+        "path": "reference/official/app.wxss",
+        "bytes": 34280,
+        "sha256": "af1f372fb3cac1296ec6c5ea985dafa8942a89ccc7843d622cbddab0dffe75d5"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "miniprogram/roll.js",
+        "sourceBytes": 4169,
+        "sourceSha256": "e6018beb3aa85309e9e681132a90c724559ab4f2d500e19d57fecf5795985f99",
+        "path": "reference/official/sources/roll.js",
+        "bytes": 4169,
+        "sha256": "e6018beb3aa85309e9e681132a90c724559ab4f2d500e19d57fecf5795985f99"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "miniprogram/idcard.js",
+        "sourceBytes": 19808,
+        "sourceSha256": "1d847b95c7191daa5a7e6eddcf283321e8c249e8a5bf34ff803ccd9b9105a9fd",
+        "path": "reference/official/sources/idcard.js",
+        "bytes": 19808,
+        "sha256": "1d847b95c7191daa5a7e6eddcf283321e8c249e8a5bf34ff803ccd9b9105a9fd"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "miniprogram/subpkg/engine/pages/life/life.js",
+        "sourceBytes": 56508,
+        "sourceSha256": "4d23369fb03a4a7b25c57a54b45eb59b466efc0c9e81a92f7b97552d0e9c71bb",
+        "path": "reference/official/sources/life.js",
+        "bytes": 56508,
+        "sha256": "4d23369fb03a4a7b25c57a54b45eb59b466efc0c9e81a92f7b97552d0e9c71bb"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "miniprogram/subpkg/engine/styles/life.wxss",
+        "sourceBytes": 27306,
+        "sourceSha256": "e769666977f94492e9ec5d526ae10971748d4735f7edd8c69b888d61a072446b",
+        "path": "reference/official/styles/life.wxss",
+        "bytes": 27306,
+        "sha256": "e769666977f94492e9ec5d526ae10971748d4735f7edd8c69b888d61a072446b"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "miniprogram/subpkg/engine/styles/roll.wxss",
+        "sourceBytes": 12059,
+        "sourceSha256": "04243b6593fb5060ca364edfdcaf1f3b1387084009e3d6907f6ef90841d974e6",
+        "path": "reference/official/styles/roll.wxss",
+        "bytes": 12059,
+        "sha256": "04243b6593fb5060ca364edfdcaf1f3b1387084009e3d6907f6ef90841d974e6"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "miniprogram/subpkg/engine/styles/sheet.wxss",
+        "sourceBytes": 4747,
+        "sourceSha256": "c950ada37f8858bd8758ba17e8d7ce8cb680b3137ed5b77fe5bdcf99c716f994",
+        "path": "reference/official/styles/sheet.wxss",
+        "bytes": 4747,
+        "sha256": "c950ada37f8858bd8758ba17e8d7ce8cb680b3137ed5b77fe5bdcf99c716f994"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "miniprogram/subpkg/engine/styles/shelf.wxss",
+        "sourceBytes": 8941,
+        "sourceSha256": "a2fabf775aa95b74cb718f6823f7759ea2b6d445d5eec1276e7371f790a764fe",
+        "path": "reference/official/styles/shelf.wxss",
+        "bytes": 8941,
+        "sha256": "a2fabf775aa95b74cb718f6823f7759ea2b6d445d5eec1276e7371f790a764fe"
+      }
+    ],
+    "changed": [
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "miniprogram/subpkg/xianxia/bridge/session.js",
+        "sourceBytes": 6847,
+        "sourceSha256": "fb1eb5ad28a1f1c1af25520da95516d71b582d8d50a8947f0e9509ea2a23f30a",
+        "path": "miniprogram/subpkg/xianxia/bridge/session.js",
+        "currentBytes": 6861,
+        "currentSha256": "e2d502a0b9f10c1dcae366e31219be57a552e6e5ea24c834a53641d17e2caa1e",
+        "reason": "首页「继续人生」改为接最近动过的那一段人生（原来接最老那段），并支持 ?resume=<编号> 点名"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "miniprogram/subpkg/xianxia/pages/life/life.js",
+        "sourceBytes": 19905,
+        "sourceSha256": "66fdcd029b48e2843ea4fc90463440d00bcbc37fe5b9f0a1b2ce6e911de0a48c",
+        "path": "miniprogram/subpkg/xianxia/pages/life/life.js",
+        "currentBytes": 20818,
+        "currentSha256": "f122f3aae41074b706e01b8037c24088d1e43ed92fb053f3ef9c05e737ee0bd2",
+        "reason": "失败兜底不再跳 1in8b 的 /subpkg/engine/pages/index/index，改跳新产品首页；续档参数与上面一致"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "miniprogram/subpkg/xianxia/pages/past/past.js",
+        "sourceBytes": 5170,
+        "sourceSha256": "365c4cb6e145196e719a8ec3c09a4cde5d1a34e7d6f2491c958a860312be623e",
+        "path": "miniprogram/subpkg/xianxia/pages/past/past.js",
+        "currentBytes": 5166,
+        "currentSha256": "ab7e31bca29e2a8654003f4a95d953a40ae0f33320ec7093f788682ba66fb9f3",
+        "reason": "失败兜底不再跳 1in8b 的 /subpkg/engine/pages/index/index，改跳新产品首页"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "miniprogram/subpkg/xianxia/pages/roll/roll.js",
+        "sourceBytes": 5723,
+        "sourceSha256": "702cb0ef3b524e1d92bb5efc07effb4edc7340a8cac6f18e483a46f246f2c188",
+        "path": "miniprogram/subpkg/xianxia/pages/roll/roll.js",
+        "currentBytes": 5735,
+        "currentSha256": "88602ff36bb1681f1dd1db4b52689b9c66229ea2dd58d7854257a44d7bca177b",
+        "reason": "命盘页适配独立启动层（首页进入路径）"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "miniprogram/subpkg/xianxia/runtime/build-manifest.json",
+        "sourceBytes": 11494,
+        "sourceSha256": "66026f8b72b80fc179a98f3f31fe2c736ff0d8c96a74e4c8ad26cde58edd5875",
+        "path": "miniprogram/subpkg/xianxia/runtime/build-manifest.json",
+        "currentBytes": 12338,
+        "currentSha256": "072b46cb171a39d94a96380d8073f13cd4cd68f792f85bfd5cc84fab5a52090b",
+        "reason": "生成物：来源改为本仓库源码，并新增 upstreamOrigin 段"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "miniprogram/subpkg/xianxia/runtime/engine.js",
+        "sourceBytes": 1738614,
+        "sourceSha256": "ba0720f2c21c1babe39c605739e90243d7de00db5f920bd5078704d6952fed3f",
+        "path": "miniprogram/subpkg/xianxia/runtime/engine.js",
+        "currentBytes": 1738682,
+        "currentSha256": "180a56709d6df95daaf3d5680c24590c964e7a81d35956b16ce7bc17c578b09d",
+        "reason": "生成物：由本仓库源码重新构建（除文件头注释外与迁移进来的那份逐字节一致，见 reference/migrated-runtime/）"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "miniprogram/subpkg/xianxia/runtime/pixel-style.js",
+        "sourceBytes": 4995,
+        "sourceSha256": "f853fa5e4ce6e286eb09967871baea57e8c431e45cec9fc502fec331b0e7b11f",
+        "path": "miniprogram/subpkg/xianxia/runtime/pixel-style.js",
+        "currentBytes": 4903,
+        "currentSha256": "d06637a5a934e9c2faefee25d438ee379616236b1bfe4315fe85bffd5d443bd2",
+        "reason": "生成物：由本仓库源码重新构建（与迁移进来的那份逐字节一致）"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "scripts/build-xianxia-mp.mjs",
+        "sourceBytes": 20247,
+        "sourceSha256": "d48d08f49db0a696826670bc1395f2d894091aa747cbe1494e9078f765d16883",
+        "path": "scripts/build-xianxia-mp.mjs",
+        "currentBytes": 32245,
+        "currentSha256": "35ad37cbabbed93d9b7e95a1c3e08c346b5fbfb716f36f134cb05933726dfc19",
+        "reason": "构建来源改为本仓库自己的源码（vendor 快照降级为历史证据），新增 app.wxss 生成"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "scripts/test-xianxia-build.mjs",
+        "sourceBytes": 15897,
+        "sourceSha256": "eeb8547fbd5ea65fbfdaa967b6089af28db984494b529365a86e438badcf8955",
+        "path": "scripts/test-xianxia-build.mjs",
+        "currentBytes": 20427,
+        "currentSha256": "72622d2bff1cb5e8e9fa0764057511abd02aa95cdd72d5aa0ba9c159e6adfd98",
+        "reason": "新增「与迁移进来的产物逐字节一致」断言；不再依赖 1in8b 的 frozen-baseline"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "scripts/test-xianxia-mp.mjs",
+        "sourceBytes": 49291,
+        "sourceSha256": "69b09f587ba41e73ad2b46c3a75bb931f9434b3f25bb2862d94b51b11a7f9d87",
+        "path": "scripts/test-xianxia-mp.mjs",
+        "currentBytes": 53807,
+        "currentSha256": "0ec21099be94a56cd822d8b1e6a492ceba75b4dcdb86e4b26f1cbc2f5b6a5da6",
+        "reason": "新增首页仿真断言；路径层级按独立启动层调整"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "scripts/test-xianxia-storage.mjs",
+        "sourceBytes": 13192,
+        "sourceSha256": "743c93f1904127203c026f4ddd79f4a69cd38323fcacc6d86f107e7d6dc25108",
+        "path": "scripts/test-xianxia-storage.mjs",
+        "currentBytes": 14040,
+        "currentSha256": "3c6264c04b9c5535168a7c44952c513cd6d9360105f633b59818cc6f3ca78beb",
+        "reason": "不再依赖 1in8b 的 frozen-baseline，改用本仓库自己的哈希校验"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "scripts/test-xianxia-style.mjs",
+        "sourceBytes": 22391,
+        "sourceSha256": "4983781049c5949efe6385ba573bc219c311415b66714a0cdf0e609ef22fbfd9",
+        "path": "scripts/test-xianxia-style.mjs",
+        "currentBytes": 26503,
+        "currentSha256": "acde40d9c3bc3470defcfa24d88f20ef988f724c3697ce543f635f2e1e7588df",
+        "reason": "官方对照源改读 reference/official/（本仓库内的锁定副本）+ 新的 app.wxss"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "scripts/test-xianxia-art.mjs",
+        "sourceBytes": 20657,
+        "sourceSha256": "1c37a2ab89a56e007fcb257870384956c6e5ce7d0982e292bfa2ed3f0c6b8c74",
+        "path": "scripts/test-xianxia-art.mjs",
+        "currentBytes": 22170,
+        "currentSha256": "952a04771892849edeecbb9f5904780835fae50b397cedd8f51f0a5c487a771f",
+        "reason": "对照基准改为本仓库 reference/ 与 apps/preview/，不再依赖 1in8b 的 frozen-baseline"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "scripts/test-xianxia-equivalence.mjs",
+        "sourceBytes": 7669,
+        "sourceSha256": "d61670d8d3eeb765782f6d9a1ef8fcd5336925ff03381aa8d3796f8c2cd21dee",
+        "path": "scripts/test-xianxia-equivalence.mjs",
+        "currentBytes": 8282,
+        "currentSha256": "51e38df57fdb95c4208de4f3f93faa3d03eeb7f81b9046c074721fe4007cc81c",
+        "reason": "对照源改为本仓库 packages/ + content/（源码 vs 产物逐值全等）"
+      }
+    ],
+    "moved": [
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "miniprogram/subpkg/xianxia/bridge/hash.js",
+        "sourceBytes": 5379,
+        "sourceSha256": "18bb8a7413d785698675f8e17443f4b3dfaa8b58c74226bfcc0a8f47321fa60b",
+        "path": "miniprogram/bridge/hash.js",
+        "currentBytes": 5587,
+        "currentSha256": "48a19a5b38bdd05698b69824f2bebf828d83e435977cf0df9d81ac1ddc7d6597",
+        "note": "换到主包（微信规矩：主包不能同步引用分包代码，分包可以引用主包）；仅补了说明性注释，代码未改"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "miniprogram/subpkg/xianxia/bridge/safe-area.js",
+        "sourceBytes": 2951,
+        "sourceSha256": "1d36ff960eb26295e8d4eadee39ea01c8d84319da83ee7ebd1f26eeb20338dd7",
+        "path": "miniprogram/bridge/safe-area.js",
+        "currentBytes": 3159,
+        "currentSha256": "213cbb5417ac807551c59b97e1db57f7be37aa9daf6082e30d3b977e8a1b1fbd",
+        "note": "换到主包（微信规矩：主包不能同步引用分包代码，分包可以引用主包）；仅补了说明性注释，代码未改"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "miniprogram/subpkg/xianxia/bridge/storage.js",
+        "sourceBytes": 16102,
+        "sourceSha256": "94260925745b8ac30d66a9927483862283c068daecbc8d365b6af4f11bf93421",
+        "path": "miniprogram/bridge/storage.js",
+        "currentBytes": 16856,
+        "currentSha256": "174d618adf6903e88799daee90c9b61df1a9459a82fe8c664f8867191ddaa3dd",
+        "note": "换到主包（微信规矩：主包不能同步引用分包代码，分包可以引用主包）；仅补了说明性注释，代码未改"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "miniprogram/subpkg/xianxia/bridge/theme.js",
+        "sourceBytes": 2261,
+        "sourceSha256": "4c36e9a8f5648490f78e7fbd925bf1516070914a47aa01063951864baa81e263",
+        "path": "miniprogram/bridge/theme.js",
+        "currentBytes": 2469,
+        "currentSha256": "a76864e49e05556e58ee7ae6252c6eb80b3037defc8961581290942ff2214172",
+        "note": "换到主包（微信规矩：主包不能同步引用分包代码，分包可以引用主包）；仅补了说明性注释，代码未改"
+      }
+    ],
+    "added": [
+      {
+        "path": "miniprogram/app.js",
+        "bytes": 1470,
+        "sha256": "d1dab2581227ec3f604b9df3528cd8ed42302e6739e363b79bc9541e4fc28880"
+      },
+      {
+        "path": "miniprogram/app.json",
+        "bytes": 554,
+        "sha256": "e205121bb7154f313a4433aa816d6c07a7650db28ba5509ba4e6ff582efcb38e"
+      },
+      {
+        "path": "miniprogram/app.wxss",
+        "bytes": 23298,
+        "sha256": "d8335cba85739e820e93fa1ad8be5796077bf9b65911005607dfd97914e2f2bc"
+      },
+      {
+        "path": "miniprogram/sitemap.json",
+        "bytes": 221,
+        "sha256": "a7e068a9d7264b5d4853ba525e8869f80273d91c3e0bbf21c2375e15219b2e61"
+      },
+      {
+        "path": "miniprogram/pages/home/home.js",
+        "bytes": 4684,
+        "sha256": "936d76bd2f72fb4050fa77fca63673206eaa8bd3b0f8732452f4519105bbc5ca"
+      },
+      {
+        "path": "miniprogram/pages/home/home.json",
+        "bytes": 34,
+        "sha256": "ee29d7e47ea708cc023368fa9d84276ce47ea7ae8ec888d33f674227cd03a571"
+      },
+      {
+        "path": "miniprogram/pages/home/home.wxml",
+        "bytes": 3105,
+        "sha256": "63d189b3b35de24c062a2e63e3ae7d8e85898573da40ecea558abdc984a6d325"
+      },
+      {
+        "path": "miniprogram/pages/home/home.wxss",
+        "bytes": 271,
+        "sha256": "825be7f20632d700d254b7746680e6b9807b275e75bf65a329e48ef3121d835d"
+      },
+      {
+        "path": "miniprogram/pages/legal/about/about.js",
+        "bytes": 1618,
+        "sha256": "d79ad3d7401f129f537a14de268750ca12f2130498b78540aa514c77cb915244"
+      },
+      {
+        "path": "miniprogram/pages/legal/about/about.json",
+        "bytes": 34,
+        "sha256": "ee29d7e47ea708cc023368fa9d84276ce47ea7ae8ec888d33f674227cd03a571"
+      },
+      {
+        "path": "miniprogram/pages/legal/about/about.wxml",
+        "bytes": 1786,
+        "sha256": "d354a3d6fe74832c67127c0379cfd61fc9ec4e7d5a7a44a5dbe8361bb7069778"
+      },
+      {
+        "path": "miniprogram/pages/legal/about/about.wxss",
+        "bytes": 244,
+        "sha256": "f2100a4ef4ec014a8b393e8b3c95e43c834a356f4d262de61e1f62fe076b11a4"
+      },
+      {
+        "path": "miniprogram/pages/legal/privacy/privacy.js",
+        "bytes": 1589,
+        "sha256": "0dbeb41efda7f3da347a37e68c42df9e8bd73e9453ff9d095b2817c1b96da606"
+      },
+      {
+        "path": "miniprogram/pages/legal/privacy/privacy.json",
+        "bytes": 34,
+        "sha256": "ee29d7e47ea708cc023368fa9d84276ce47ea7ae8ec888d33f674227cd03a571"
+      },
+      {
+        "path": "miniprogram/pages/legal/privacy/privacy.wxml",
+        "bytes": 1799,
+        "sha256": "2e757413dfb576a8de0442789130af1f38c0383abf6ed04e85b9b5e6b52b5860"
+      },
+      {
+        "path": "miniprogram/pages/legal/privacy/privacy.wxss",
+        "bytes": 244,
+        "sha256": "f2100a4ef4ec014a8b393e8b3c95e43c834a356f4d262de61e1f62fe076b11a4"
+      },
+      {
+        "path": "project.config.json",
+        "bytes": 2722,
+        "sha256": "bd1311988faaf1ba96103665358e4a79812ee64bf65de154f629624592e5ef93"
+      },
+      {
+        "path": "scripts/verify-migration-import.mjs",
+        "bytes": 6114,
+        "sha256": "de5d283fc47dd600b8c7bbb4ca91883e3bad29014bea293212820ed264678cb9"
+      },
+      {
+        "path": "scripts/gen-source-manifest.mjs",
+        "bytes": 9799,
+        "sha256": "b48ece2450f1515fc2ff6c0e2d786b71c417c7ee8f4ac737c09cc7ec713f7947"
+      },
+      {
+        "path": "scripts/test-xianxia-standalone.mjs",
+        "bytes": 12979,
+        "sha256": "12e6ce353eed11c6a7851427d3e3b0e8db9b7b2ecf8091858244ee251bf060d6"
+      },
+      {
+        "path": ".github/workflows/ci.yml",
+        "bytes": 1474,
+        "sha256": "87b10348d825f52b7ddf1961f26350c53be227a2e811cb6e4fc80735c8f05a1e"
+      },
+      {
+        "path": "AGENTS.md",
+        "bytes": 6241,
+        "sha256": "82b13cef67c49c90728c29d865a78757a09c4c6eeac8c59a10e9f09501f0beaa"
+      },
+      {
+        "path": "README.md",
+        "bytes": 2335,
+        "sha256": "0098d69a619bf74f09bc1e7a1f83da4bbbfc09f76e5ee276a09a22b68b93c4dd"
+      },
+      {
+        "path": "docs/migration/ledger.md",
+        "bytes": 8695,
+        "sha256": "cd678588c1cda7dc5a5938ef2093baee42128c51169af0bf107fd464aac2c900"
+      },
+      {
+        "path": "docs/migration/plan.md",
+        "bytes": 33147,
+        "sha256": "91b003c366177a6bd17d2c7072665c7caeb455f42682fec5fa48e70babae29ba"
+      },
+      {
+        "path": "docs/migration/storage-migration.md",
+        "bytes": 3522,
+        "sha256": "26ad99c5ecb8f3cb7fbe476a632b0d105cc80f4f58f338752289bc12376c3e56"
+      },
+      {
+        "path": "docs/migration/web-cleanup.md",
+        "bytes": 14797,
+        "sha256": "d77bac8a4e1fb4eee42e28f4a68a99d44035439693afb8e36ee91b35c7fe5858"
+      },
+      {
+        "path": "docs/migration/miniprogram-standalone.md",
+        "bytes": 15337,
+        "sha256": "e295e01d2e6c90ab77d3414676019529ebd4f28b7bd3429e3dbc1d64a6f39f33"
+      },
+      {
+        "path": "legacy/old-web/README.md",
+        "bytes": 2813,
+        "sha256": "451a214279ee2fcdf267fcc3c08b7861f59562dabe3f8c20f728e1cb67f4f592"
+      }
+    ]
+  }
+}

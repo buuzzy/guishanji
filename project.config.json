@@ -1,0 +1,113 @@
+{
+  "description": "归山记 · 修仙人生（单机微信小程序）",
+  "packOptions": {
+    "ignore": [
+      {
+        "value": ".DS_Store",
+        "type": "suffix"
+      },
+      {
+        "value": ".git",
+        "type": "folder"
+      },
+      {
+        "value": "node_modules",
+        "type": "folder"
+      }
+    ],
+    "include": []
+  },
+  "setting": {
+    "urlCheck": false,
+    "es6": true,
+    "enhance": true,
+    "postcss": true,
+    "minified": true,
+    "newFeature": true,
+    "coverView": true,
+    "nodeModules": false,
+    "autoAudits": false,
+    "showShadowRootInWxmlPanel": true,
+    "scopeDataCheck": false,
+    "uglifyFileName": false,
+    "checkInvalidKey": true,
+    "checkSiteMap": true,
+    "uploadWithSourceMap": true,
+    "compileHotReLoad": false,
+    "lazyloadPlaceholderEnable": false,
+    "useMultiFrameRuntime": true,
+    "useApiHook": true,
+    "useApiHostProcess": true,
+    "enableEngineNative": false,
+    "bundle": false,
+    "useIsolateContext": true,
+    "useCompilerModule": true,
+    "userConfirmedUseCompilerModuleSwitch": false,
+    "packNpmManually": false,
+    "packNpmRelationList": [],
+    "minifyWXSS": true,
+    "useCompilerPlugins": false,
+    "ignoreUploadUnusedFiles": false,
+    "ignoreDevUnusedFiles": false,
+    "bigPackageSizeSupport": true,
+    "compileWorklet": false,
+    "minifyWXML": true,
+    "localPlugins": false,
+    "disableUseStrict": false,
+    "condition": false,
+    "babelSetting": {
+      "ignore": [],
+      "disablePlugins": [],
+      "outputPath": ""
+    }
+  },
+  "compileType": "miniprogram",
+  "miniprogramRoot": "miniprogram/",
+  "libVersion": "3.5.5",
+  "appid": "touristappid",
+  "projectname": "归山记",
+  "condition": {
+    "miniprogram": {
+      "list": [
+        {
+          "name": "首页",
+          "pathName": "pages/home/home",
+          "query": "",
+          "scene": null
+        },
+        {
+          "name": "命盘",
+          "pathName": "subpkg/xianxia/pages/roll/roll",
+          "query": "",
+          "scene": null
+        },
+        {
+          "name": "人生",
+          "pathName": "subpkg/xianxia/pages/life/life",
+          "query": "",
+          "scene": null
+        },
+        {
+          "name": "往期人生",
+          "pathName": "subpkg/xianxia/pages/past/past",
+          "query": "",
+          "scene": null
+        },
+        {
+          "name": "说明",
+          "pathName": "pages/legal/about/about",
+          "query": "",
+          "scene": null
+        },
+        {
+          "name": "隐私",
+          "pathName": "pages/legal/privacy/privacy",
+          "query": "",
+          "scene": null
+        }
+      ]
+    }
+  },
+  "simulatorPluginLibVersion": {},
+  "editorSetting": {}
+}

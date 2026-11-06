@@ -1,0 +1,9 @@
+{
+  "desc": "关于本文件的说明见 docs/migration/miniprogram-standalone.md。归山记完全单机、不联网、不收集用户信息。",
+  "rules": [
+    {
+      "action": "allow",
+      "page": "*"
+    }
+  ]
+}

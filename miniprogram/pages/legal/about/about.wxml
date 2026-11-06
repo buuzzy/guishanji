@@ -1,0 +1,41 @@
+<view class="wrap {{theme}}" style="padding-top:{{topPad}}px">
+  <view class="panel">
+    <view class="panel-h">
+      <text class="t">这是什么</text>
+      <text class="lbl">说明</text>
+    </view>
+
+    <view class="hint">归山记是一款<text class="wx-strong">单机</text>修仙人生模拟小游戏：转盘抽一位出身，落一张山海行籍登记卡，然后由你一步步把这一世走完。规则由本仓库的源码生成，版本号随玩法更新而变。</view>
+
+    <view style="height:24rpx"></view>
+    <view class="note">⚠ 本页是占位内容，正式发布前需按归山记这个新产品的实际情况改写。</view>
+  </view>
+
+  <view class="panel">
+    <view class="panel-h">
+      <text class="t">怎么玩</text>
+      <text class="lbl">玩法</text>
+    </view>
+    <view class="hint">一、进入命盘，转盘抽出你的出身；二、在人生页推进日子，做出选择；三、走到尽头，这一世就留在「往期人生」里，可以回看。</view>
+  </view>
+
+  <view class="panel">
+    <view class="panel-h">
+      <text class="t">数据在哪</text>
+      <text class="lbl">存档</text>
+    </view>
+    <view class="hint">所有人生只保存在这台手机上（键名前缀 <text class="mono">xianxia.v1.</text>），不上传、不同步、不跨设备。清理小程序缓存或卸载即会消失。</view>
+  </view>
+
+  <view class="panel">
+    <view class="panel-h">
+      <text class="t">联系方式</text>
+      <text class="lbl">占位</text>
+    </view>
+    <view class="hint">⚠ 正式发布前需按实际情况填写：运营主体名称、客服邮箱、备案号与生效日期。</view>
+  </view>
+
+  <button class="ghost" bindtap="goBack">返回</button>
+
+  <view style="height:48rpx"></view>
+</view>

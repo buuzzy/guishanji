@@ -1,0 +1,3 @@
+/* 官方往期人生页样式（逐字副本，见 scripts/test-xianxia-style.mjs）。 */
+@import "../../styles/official-sheet.wxss";
+@import "../../styles/official-shelf.wxss";

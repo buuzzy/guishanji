@@ -1,0 +1,134 @@
+/* 官方人生页样式（逐字副本，见 scripts/test-xianxia-style.mjs）。 */
+@import "../../styles/official-life.wxss";
+/* 官方弹层卡片（.dec / .hd / .bd）——官方把它抽到单独一份，各页面自己 @import。 */
+@import "../../styles/official-sheet.wxss";
+
+/* ── 修仙自己新增的少量版式（1in8b 官方没有的东西）────────────────────
+ * 只加「修仙才有」的零件，**不另立一套视觉**：
+ * 字体、颜色、圆角、间距全部取官方那套变量与写法。 */
+
+/* 官方 life.wxss 的字号规则写的是 **标签选择器** `button b` / `button .wx-small`，
+ * 而小程序的 WXML 里没有 <b>（scripts/check.mjs 明令禁止 HTML 标签），
+ * 官方那两条在小程序端实际是：
+ *   · `.dec .ch button b { font-size:30rpx }` ⇒ **匹配不上 `<text class="b">`**；
+ *   · `.dec .ch button .wx-small { font-size:25rpx }` ⇒ 匹配得上。
+ * ⇒ 选项正文 `.b` 在小程序端会落到父级 button 的 30rpx，
+ *   副行若用 `.s` 则**完全没有规则**（`.s` 只在 `.ch-control` 里有）⇒ 两行一样大。
+ * 这里补上正文那条，数值与官方 HTML 端一致（`.dec .ch button b { font-size:15px }`
+ * ⇒ 30rpx = 15px）；副行改用官方已有的 `.wx-small`（25rpx = 12.5px）。 */
+.dec .ch button .b {
+  font-weight: 600;
+  font-size: 30rpx;
+}
+
+/* 境界阶梯：2026-11-05 已删。
+   标题右侧「{{practice.realm}}」已经是当前境界，再列五个境界是重复
+   （上游网页端那种带连线的阶梯，小程序端也没有）。 */
+
+/* ── 人生记录「全部」弹层：让长记录能滑到底 ─────────────────────────
+ * ⚠ 官方 `official-life.wxss:611` 是 `.dec .feed.full { max-height: 62vh; }`
+ *   —— **只有高度上限、没有 `overflow-y:auto`**，而外层 `.dec` 是
+ *   `overflow:hidden` ⇒ 超过 62vh 的记录被裁掉，既看不到也够不着
+ *   （用户 2026-11-05 真机反馈：「人生记录 全部」的弹窗无法上下移动）。
+ *   官方人生页（`subpkg/engine/pages/life/life.wxml:581`）是同一个写法，
+ *   同样有这个毛病；**官方文件一个字不动**，这里只修修仙这一侧。
+ * 做法：记录弹层的正文带 `.sheet-bd`（官方 `#sheet .bd` 的口径：高度上限 +
+ *   内部滚动），并把这一张卡片里的 62vh 上限去掉 ⇒ 整张卡片内部滚动，
+ *   与页面上其它弹层（重心 / 人物近况 / 授业与记录）一致。 */
+.dec.log .feed.full {
+  max-height: none;
+}
+
+/* 决策卡底注（上游网页端 `.sheet-note { font-size:11px }`） */
+.sheet-note {
+  display: block;
+  margin-top: 20rpx;
+  font-size: 11px;
+  color: var(--ink3);
+}
+
+/* 五轴能力图的容器（上游修仙 HTML 的 .ability-radar） */
+.ability-radar {
+  margin: 20rpx 0;
+}
+
+/* ── 人生纪录：官方 .feed-item 的两段（年龄 + 正文）加上下游的两处内容 ──
+ * ① 官方 `.f::before{content:'资料 '}` 是**官方人生的文案**（那条是「资料」行），
+ *    修仙这边 `.f` 放的是**正文** ⇒ 覆盖掉前缀。
+ * ② 正文下面的「变化清单」与年龄旁边的「年.月」是上游 timelineMarkup 的内容
+ *    （上游 apps/preview/app.js:130-136），官方那套没有 ⇒ 页面自己加两行。 */
+.p-feed .feed-item .txt .f::before {
+  content: none;
+}
+.p-feed .feed-item .txt .chg {
+  display: block;
+  font-family: var(--f-mono);
+  font-size: 23rpx;
+  color: var(--stamp);
+  margin-top: 6rpx;
+  line-height: 1.45;
+}
+.p-feed .feed-item .age .ym {
+  display: block;
+  font-family: var(--f-mono);
+  font-size: 22rpx;
+  color: var(--ink3);
+  margin-top: 4rpx;
+}
+
+/* ── 人物行（上游 apps/preview/style.css 的 .person-row 一族）────────────
+ * 官方 1in8b 没有对应组件（官方用 .fam / .row 那种两列行），
+ * 但修仙的人物要显示「姓名 · 角色 · 背景 · 近况」四段 ⇒ 用上游那一行结构，
+ * 颜色 / 字号 / 圆角全部取官方那套变量。 */
+.person-list {
+  margin: 0;
+}
+.person-row {
+  display: flex;
+  gap: 12rpx;
+  padding: 14rpx 0;
+  border-top: 1px solid var(--rule2);
+}
+.person-row:first-child {
+  border-top: none;
+}
+.person-initial {
+  flex: none;
+  width: 60rpx;
+  height: 60rpx;
+  line-height: 60rpx;
+  text-align: center;
+  background: var(--accent-soft);
+  color: var(--ink);
+  font-size: 26rpx;
+}
+.person-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+.person-name {
+  font-size: 29rpx;
+  font-weight: 600;
+  color: var(--ink);
+}
+.person-role,
+.person-note {
+  font-size: 23rpx;
+  line-height: 1.6;
+  color: var(--ink3);
+}
+
+/* 地图图例：2026-11-05 已删（主页地图卡片与弹层里的画布/图例一起去掉了）。 */
+
+/* ── 长行动的进度条与时长（上游 apps/preview/style.css 的 .journey-meta）─ */
+.journey-meta {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--f-mono);
+  font-size: 22rpx;
+  color: var(--ink3);
+  margin-top: 8rpx;
+}

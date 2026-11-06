@@ -1,21 +1,32 @@
 {
-  "name": "xianxia-life",
+  "name": "guishanji",
   "version": "0.2.0",
   "private": true,
   "type": "module",
-  "description": "山海一生 · 原创修仙世界的人生模拟器",
+  "description": "归山记 · 修仙人生（网页端 + 微信小程序端 · 独立产品）",
   "engines": { "node": ">=22.4.0" },
   "scripts": {
     "dev": "node scripts/serve.mjs",
     "start": "node scripts/serve.mjs",
     "build": "node scripts/build.mjs",
     "check": "node scripts/check.mjs",
-    "test": "node --test tests/engine.test.mjs tests/storage.test.mjs tests/feedback.test.mjs tests/adventure.test.mjs",
-    "dev:preview": "node scripts/serve.mjs --port=8877",
-    "test:preview": "node scripts/verify-adventure-browser.mjs",
-    "test:browser": "node scripts/verify-browser.mjs",
-    "test:feedback-browser": "node scripts/verify-feedback-browser.mjs",
-    "test:build": "node scripts/verify-build.mjs",
-    "regression": "node scripts/run-regression.mjs"
+    "test": "node --test tests/",
+    "regression": "node scripts/run-regression.mjs",
+    "build:mp": "node scripts/build-xianxia-mp.mjs",
+    "check:mp": "node scripts/build-xianxia-mp.mjs --check",
+    "test:mp:build": "node scripts/test-xianxia-build.mjs",
+    "test:mp:mp": "node scripts/test-xianxia-mp.mjs",
+    "test:mp:storage": "node scripts/test-xianxia-storage.mjs",
+    "test:mp:style": "node scripts/test-xianxia-style.mjs",
+    "test:mp:art": "node scripts/test-xianxia-art.mjs",
+    "test:mp:equivalence": "node scripts/test-xianxia-equivalence.mjs",
+    "verify:import": "node scripts/verify-migration-import.mjs"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.29.7",
+    "@babel/plugin-transform-nullish-coalescing-operator": "^7.29.7",
+    "@babel/plugin-transform-optional-chaining": "^7.29.7",
+    "acorn": "8.19.0",
+    "terser": "5.51.2"
   }
 }

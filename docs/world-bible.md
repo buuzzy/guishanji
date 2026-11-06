@@ -1,5 +1,11 @@
 # 山海一生 · 世界与规则 2
 
+> 本文是旧 0.2.0 产品「山海一生」的规则设定表。2026-11-06 网页端独立化后，本文描述的数据定义
+> （`content/world.js`、`content/stories.js`、`content/expansion.js`）、效果引擎（`packages/core/engine.js`）
+> 与世局（`packages/core/world-events.js`）已整体移入 [`legacy/old-web/`](../legacy/old-web/)，属历史材料；
+> 当前产品「归山记」的规则设定见 [`docs/adventure-rules12-design.md`](adventure-rules12-design.md)。
+> 本文正文保持原样，不回改历史。
+
 本作是原创架空修仙世界。灵根分布、境界门槛、寿元、收入、相遇与风险均为游戏设计参数。叙事围绕人的来处、修行资源、技艺、师承、牵挂与年月展开。
 
 此界暂称山海。开局纪年在 162–190 年之间生成，出生月份另行生成。纪年与人物年龄按同一个整数月时钟换算；每过 12 个生命月结算一年。

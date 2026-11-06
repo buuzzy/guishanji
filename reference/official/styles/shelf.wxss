@@ -1,0 +1,306 @@
+/* ── 「내 전생들」陈列架（官方 .shf 家族）+ 「내가 바라는 삶」入口卡 ──────
+ *
+ * 官方 CSS 原文（vendor/official/page.zh-hans.html / 官方 UI 包内联 <style>）：
+ *
+ *   .shf        { display:grid; grid-template-columns:repeat(auto-fill, minmax(78px,1fr));
+ *                 column-gap:0; row-gap:14px; margin:4px 0 14px; }
+ *   .shf-i      { display:flex; flex-direction:column; align-items:center; min-width:0;
+ *                 padding:0 0 2px; border:0; background:none; color:var(--ink); font:inherit; }
+ *   .shf-f      { position:relative; display:flex; align-items:flex-end; justify-content:center;
+ *                 width:100%; height:96px; padding-top:6px; border-bottom:6px solid var(--shelf);
+ *                 box-shadow:0 3px 0 var(--shelf2); border-radius:6px 6px 0 0; }
+ *   .shf-i[aria-pressed="true"] .shf-f { background:var(--stamp-soft); }
+ *   .shf-mk     { position:absolute; top:6px; left:6px; width:13px; height:12px; fill:var(--gold); }
+ *   .shf-leg    { white-space:nowrap; color:var(--ink2); }
+ *   .shf-leg .shf-mk { position:static; display:inline-block; vertical-align:-1px; margin:0 4px 0 2px; }
+ *   .shf-n      { display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2;
+ *                 margin-top:9px; max-width:100%; padding:0 4px; font-size:12.5px;
+ *                 line-height:1.3; overflow:hidden; overflow-wrap:anywhere; }
+ *   .shf-s      { max-width:100%; padding:0 4px; font-size:11.5px; line-height:1.3;
+ *                 color:var(--ink3); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+ *   .shf-card   { display:flex; gap:14px; align-items:flex-start; margin:0 0 14px;
+ *                 padding:12px 14px; border:1px solid var(--rule2); border-radius:8px;
+ *                 background:var(--card); }
+ *   .shf-card > img { image-rendering:pixelated; flex:none; }
+ *   .shf-card > div { display:flex; flex-direction:column; gap:2px; min-width:0; }
+ *   .shf-c1     { font-size:13.5px; color:var(--ink2); }
+ *   .shf-c2     { font-size:13px; color:var(--ink3); word-break:keep-all; }
+ *   .shf-card .kp-row { margin-top:8px; }
+ *   .hm-shf     { margin:0 0 18px; }
+ *   .hm-shf .shf-f { height:74px; }
+ *   .pl-q       { display:block; margin-top:4px; font-family:var(--f-display); font-size:14px;
+ *                 color:var(--stamp); quotes:'“' '”'; word-break:keep-all; }
+ *
+ * ── 两处平台差异（形态差，不是值差） ────────────────────────────────────
+ * ① **grid → flex**：官方 .shf 用 `repeat(auto-fill, minmax(78px,1fr))`。
+ *    小程序 WXSS **不支持 @media**、且 Android 内核会把 grid 的 repeat() 塌成单列
+ *    ⇒ 改用 flex + 定宽。
+ *    换算：内容宽 = 视口 390 − 左右各 16 = 358px；358 ÷ 78 = 4.59 ⇒ 官方取 **4 列**。
+ *    每列 358 ÷ 4 = 89.5px（官方 column-gap:0，所以正好 25%）。
+ * ② **SVG 房子标记 → CSS 三角形 + 方块**：官方 .shf-mk 是一段内联 SVG 路径
+ *    `M5 0 0 4.5h1.5V9h7V4.5H10z`（13×12px，fill: var(--gold)）。
+ *    小程序 <image> 对 SVG data-URI 支持不稳 ⇒ 用「上三角 + 下方块」拼出同一形状，
+ *    尺寸与颜色逐值相同（屋顶 13×6px，屋身 9.1×6px）。
+ */
+
+/* 官方 :root 里的 --shelf / --shelf2（浅色 / 深色两套） */
+.wrap {
+  --shelf: #C49A6C;
+  --shelf2: #9E764C;
+}
+.wrap.theme-dark {
+  --shelf: #8C6A48;
+  --shelf2: #5E4630;
+}
+
+/* ── 陈列架网格 ───────────────────────────────────────────────────── */
+
+.shf {
+  display: flex;
+  flex-wrap: wrap;
+  row-gap: 28rpx;
+  margin: 8rpx 0 28rpx;
+}
+
+.shf-i {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 25%;
+  min-width: 0;
+  padding: 0 0 4rpx;
+  color: var(--ink);
+}
+
+.shf-f {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  width: 100%;
+  height: 192rpx;
+  padding-top: 12rpx;
+  border-bottom: 12rpx solid var(--shelf);
+  box-shadow: 0 6rpx 0 var(--shelf2);
+  border-radius: 12rpx 12rpx 0 0;
+}
+
+/* 官方 .shf-i[aria-pressed="true"] .shf-f —— WXSS 不支持属性选择器 ⇒ 显式类 */
+.shf-f.on {
+  background: var(--stamp-soft);
+}
+
+/* 官方 .shf-f 里的像素小人（<img width=w*4 height=h*4>） */
+.shf-cv {
+  display: block;
+  flex: none;
+}
+
+.shf-mk {
+  position: absolute;
+  top: 12rpx;
+  left: 12rpx;
+  width: 26rpx;
+  height: 24rpx;
+}
+
+/* 房子标记：上三角（屋顶）+ 方块（屋身） */
+.mk-roof {
+  width: 0;
+  height: 0;
+  border-left: 13rpx solid transparent;
+  border-right: 13rpx solid transparent;
+  border-bottom: 12rpx solid var(--gold);
+}
+
+.mk-body {
+  width: 18rpx;
+  height: 12rpx;
+  margin: 0 auto;
+  background: var(--gold);
+}
+
+.shf-leg {
+  white-space: nowrap;
+  color: var(--ink2);
+}
+
+/* 官方 .shf-leg .shf-mk：图例里的小房子是行内的 */
+.shf-leg .shf-mk {
+  position: static;
+  display: inline-block;
+  vertical-align: -1px;
+  margin: 0 8rpx 0 4rpx;
+}
+
+/* 官方 .shf-n：12.5px 用 rpx 会被渲染层取整 ⇒ 直接写 px */
+.shf-n {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  margin-top: 18rpx;
+  max-width: 100%;
+  padding: 0 8rpx;
+  font-size: 12.5px;
+  line-height: 1.3;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+
+/* 官方 .shf-s：11.5px 同理 */
+.shf-s {
+  max-width: 100%;
+  padding: 0 8rpx;
+  font-size: 11.5px;
+  line-height: 1.3;
+  color: var(--ink3);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── 选中那张人生的卡片 ───────────────────────────────────────────── */
+
+.shf-card {
+  display: flex;
+  gap: 28rpx;
+  align-items: flex-start;
+  margin: 0 0 28rpx;
+  padding: 24rpx 28rpx;
+  border: 2rpx solid var(--rule2);
+  border-radius: 16rpx;
+  background: var(--card);
+}
+
+.shf-card-cv {
+  flex: none;
+  display: block;
+}
+
+.shf-card-tx {
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+  min-width: 0;
+}
+
+/* 官方 .shf-card b：font-family:var(--f-display)（官方没写 font-weight，b 默认 700） */
+.shf-card-tx .shf-nm {
+  font-family: var(--f-display);
+  font-size: 34rpx;
+  font-weight: 700;
+}
+
+/* 官方 .shf-c1：13.5px ⇒ 直接写 px */
+.shf-c1 {
+  font-size: 13.5px;
+  color: var(--ink2);
+}
+
+.shf-c2 {
+  font-size: 26rpx;
+  color: var(--ink3);
+  word-break: normal; /* ⚠ 中文断行：见 styles/sheet.wxss 的 keep-all 说明 */
+}
+
+/* 官方 .pl-q */
+.pl-q {
+  display: block;
+  margin-top: 8rpx;
+  font-family: var(--f-display);
+  font-size: 28rpx;
+  color: var(--stamp);
+  word-break: normal; /* ⚠ 中文断行：见 styles/sheet.wxss 的 keep-all 说明 */
+}
+
+.shf-card .kp-row {
+  margin-top: 16rpx;
+}
+
+/* ── 前世之家的房间架（官方 .hm-shf） ─────────────────────────────── */
+
+.hm-shf {
+  margin: 0 0 36rpx;
+}
+
+.hm-shf .shf-f {
+  height: 148rpx;
+}
+
+/* ── 「내가 바라는 삶」入口卡（官方 .wsh-in） ─────────────────────────
+   官方 .wsh-in：gap:14px; width:100%; margin:0 0 16px;
+   padding:14px 14px 14px 16px; border:1.5px solid var(--stamp); border-radius:10px;
+   background:linear-gradient(120deg, var(--stamp-soft), var(--card)); box-shadow:var(--shadow) */
+.wsh-in {
+  display: flex;
+  align-items: center;
+  gap: 28rpx;
+  width: 100%;
+  margin: 0 0 32rpx;
+  padding: 28rpx 28rpx 28rpx 32rpx;
+  border: 3rpx solid var(--stamp);
+  border-radius: 20rpx;
+  background: linear-gradient(120deg, var(--stamp-soft), var(--card));
+  box-shadow: var(--shadow);
+  color: var(--ink);
+  text-align: left;
+}
+
+.wsh-in-fig {
+  display: flex;
+  align-items: flex-end;
+  gap: 6rpx;
+  flex: none;
+  color: var(--stamp);
+}
+
+.wsh-in-fig canvas {
+  display: block;
+}
+
+/* 官方 .wsh-in-fig img:last-child { transform:scaleX(-1) } */
+.wsh-in-fig .flip {
+  transform: scaleX(-1);
+}
+
+.wsh-in-tx {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6rpx;
+  flex: 1;
+  min-width: 0;
+}
+
+/* 官方 .wsh-in b：font-size:16px; color:var(--stamp) */
+.wsh-in-t {
+  font-size: 32rpx;
+  color: var(--stamp);
+  font-weight: 700;
+}
+
+/* 官方 .wsh-in-d：font-size:13px; line-height:1.5; color:var(--ink2) */
+.wsh-in-d {
+  font-size: 26rpx;
+  line-height: 1.5;
+  color: var(--ink2);
+}
+
+.wsh-new {
+  margin-bottom: 4rpx;
+  padding: 4rpx 16rpx;
+  border-radius: 999rpx;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-size: 23rpx;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+/* 官方 .wsh-in-go：font-size:28px; line-height:1; color:var(--stamp) */
+.wsh-in-go {
+  flex: none;
+  font-size: 56rpx;
+  line-height: 1;
+  color: var(--stamp);
+}

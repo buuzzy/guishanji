@@ -104,8 +104,26 @@ rules12-static:0 family-static:0 import:0 xianxiabuild:0 xianxiaeq:0
 xianxiastore:0 xianxiaart:0 xianxiamp:0 xianxiastyle:0 xianxiastandalone:0
 ```
 
-**36 / 36 全绿**（网页 28 道 + 小程序 7 道 + 导入核对 1 道）。
+**37 / 37 全绿**（快组 18 道 + 浏览器组 19 道）。
 浏览器门禁跑在 **Microsoft Edge（Chromium）** 上（本机没有 Google Chrome）。
+
+## 6.1 CI 上踩到的三件事（都不是代码 bug）
+
+| 现象 | 真因 | 处理 |
+| --- | --- | --- |
+| Windows 上只有第一道浏览器门禁红，报「独立 Chrome 调试入口未启动」，同一台机器后面 17 道全过 | Chrome **冷启动慢**（首次建 profile + 杀软扫描），10 秒等待不够 | `scripts/lib/browser.mjs`：等待 10 → 30 秒，且失败时换新 profile **重试一次** |
+| macOS 连续两轮「被取消」 | 撞了 45 分钟 job 超时（`The operation was canceled.`），不是失败 | 超时放宽；更重要的是把回归**拆成快组 / 浏览器组两个独立 job** |
+| macOS runner 跑不完 18 道浏览器门禁 | macOS runner 约比本机慢一倍 | 见下：CI 改成两个 job |
+
+**CI 现在的结构（解决「盲等」）**：
+
+- `fast` job（18 道：单元测试 / 静态检查 / 七道小程序门禁）—— 几分钟出结果；
+- `browser` job（19 道浏览器门禁）—— 独立跑、独立超时；
+- 回归脚本现在**实时打印每一道门禁的 PASS/FAIL 与耗时**，GitHub 网页端边跑边看；
+- 还能单跑一道：`node scripts/run-regression.mjs --only=<名字>`；列清单：`--list`。
+
+⚠ **实测不要用 `--parallel`**：两路 Chromium 抢 CPU，单道门禁从 1–3 分钟变成 6–12 分钟，
+整体反而更慢（本地并行 40 分钟没跑完，串行只要 28 分钟）。
 
 ## 7. 本轮**未执行**的项
 

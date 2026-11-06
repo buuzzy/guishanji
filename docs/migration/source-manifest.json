@@ -1512,8 +1512,8 @@
       },
       {
         "path": ".github/workflows/ci.yml",
-        "bytes": 1664,
-        "sha256": "03ffb943aaea8aaae03c5e5d68c3bdb55d6ca9bb28375f7c332c58ad46a45f43"
+        "bytes": 2960,
+        "sha256": "217132aabd3fecf029874756321d2bc4bef36e9118c96914d1f4ea4d8cce653e"
       },
       {
         "path": "AGENTS.md",
@@ -1527,8 +1527,8 @@
       },
       {
         "path": "docs/migration/ledger.md",
-        "bytes": 8695,
-        "sha256": "cd678588c1cda7dc5a5938ef2093baee42128c51169af0bf107fd464aac2c900"
+        "bytes": 10071,
+        "sha256": "3b27b9dad73eb5712a26fa695af4cb82cbed49294719eb906d5c84e27e13af4e"
       },
       {
         "path": "docs/migration/plan.md",

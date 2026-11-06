@@ -16,6 +16,11 @@ npm run build        # 静态构建
 npm run regression   # 全量回归（网页 + 小程序门禁）
 ```
 
+> ⚠ **没有自动检查了**（2026-11-07 删除了 GitHub Actions 配置）⇒
+> **合并进 main 前手动跑一遍回归，并确认退出码是 0**：
+> `node scripts/run-regression.mjs --group=fast`（小程序端相关，约几分钟）
+> ／ `node scripts/run-regression.mjs`（全量 38 道，网页端上线前必须跑）。
+
 小程序端：
 
 ```sh

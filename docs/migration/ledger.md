@@ -278,6 +278,46 @@ IDE 后端日志里的真错是：`TaskService.runTask failed Error: spawn EBADF
 
 ---
 
+## 10. 2026-11-07：移除 GitHub Actions（网页端暂不上线）
+
+### 10.1 为什么删
+
+| 理由 | 说明 |
+| --- | --- |
+| **网页端暂不上线** | 浏览器组 19 道门禁验的全是 `apps/preview`（实测 `verify-build` 明确读 `apps/preview`）⇒ 暂时用不上 |
+| **额度/付费一直失败** | GitHub 原话：`The job was not started because recent account payments have failed…` ⇒ 任务 0 步 2 秒结束，CI 实际没在跑 |
+| **小程序端覆盖一点不丢** | 小程序端 9 道门禁（`xianxiabuild` / `eq` / `store` / `art` / `mp` / `style` / `standalone` + `import` + `repohygiene`）**全在快组**，与浏览器组无关 |
+
+### 10.2 删了之后，谁来保证
+
+⚠ **没有 PR 自动闸门了** ⇒ **合并进 main 前必须手动跑**，并**确认退出码是 0**：
+
+```sh
+node scripts/run-regression.mjs --group=fast   # 小程序端相关 19 道（约几分钟）
+node scripts/run-regression.mjs                # 全量 38 道（网页端上线前必须跑）
+```
+
+⚠ 测退出码别用管道：`node … > log 2>&1; echo $?`（管道后面 `$?` 取到的是 `tail` 的码，不是 node 的）。
+
+### 10.3 ⚠ 这件事**证明不了**什么（必须如实说）
+
+**CI 与门禁都证明不了「小程序能在微信里跑起来」。** 它们证明的是「代码在别的机器上算出来一样」。
+
+- 小程序能不能真跑起来 ⇒ 只有 **IDE 真编译 → 预览码 → 真机扫码** 能证明；
+- 包体多大 ⇒ 只有**本地 IDE 真编译**的数才准；
+- 真机显示效果 ⇒ 只能真机看。
+
+⇒ **网页端不上线时，真正该盯的是真机那一步**，不是 CI。
+
+### 10.4 顺带清理
+
+- `.github/workflows/ci.yml` 已删（`.github/` 目录随之清空）；
+- 清单里 `.github/workflows/ci.yml` 的登记同步移除（`added` 组 30 → 29）；
+- 文档与脚本注释里「CI 上不存在 ⇒ 假门禁」的说法改成「别的机器上不存在」——
+  意思不变，但不再依赖一个已经不存在的 CI。
+
+---
+
 ## 9. 2026-11-07：来源仓库下线与旧产物清理
 
 > 目标：**本仓库自足** —— 网页版 + 小程序端都在这里，构建与门禁不依赖任何相邻目录。

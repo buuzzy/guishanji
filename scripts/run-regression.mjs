@@ -49,8 +49,10 @@ const report = { startedAt: new Date().toISOString(), node: process.version, pla
 await mkdir(join(projectRoot, 'artifacts'), { recursive: true });
 
 /* ── 单门禁模式与门禁清单 ──────────────────────────────────────────────
-   CI 要「每道门禁一个任务、实时可见、并行跑」，就需要能：
-     --list           打印门禁清单（JSON），供 CI 生成矩阵
+   没有自动闸门了（2026-11-07 删除了 GitHub Actions 配置）⇒
+   合并前要**手动**跑，并确认退出码是 0。
+   为了能单独跑某一道、或只跑一组，这里提供：
+     --list           打印门禁清单（JSON）
      --only=<名字>    只跑这一道门禁
      --group=<组>     跑某一组（fast / browser）
    组是按「要不要开浏览器」分的：fast 那组几分钟就完，browser 那组才是慢的。 */

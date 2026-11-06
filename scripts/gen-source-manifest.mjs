@@ -250,7 +250,7 @@ const ADDED = [
   'scripts/test-xianxia-standalone.mjs',
   /* 2026-11-06：仓库卫生门禁（防仓库长胖把微信 IDE 压垮）+ 量包体脚本 */
   'scripts/test-repo-hygiene.mjs', 'scripts/measure-mp-package-size.mjs',
-  '.github/workflows/ci.yml', 'AGENTS.md', 'README.md',
+  'AGENTS.md', 'README.md',
   'docs/migration/ledger.md', 'docs/migration/plan.md', 'docs/migration/storage-migration.md',
   'docs/migration/web-cleanup.md', 'docs/migration/miniprogram-standalone.md',
 ];

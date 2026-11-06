@@ -13,7 +13,7 @@
       "path": "feature/adventure-preview-v01（本仓库 Git 历史的来源；该仓库已于 2026-11-07 删除，字节已完整迁入本仓库）"
     }
   ],
-  "note": "unchanged：迁进来后未改动，必须仍与来源逐字节一致。\nchanged：本轮有意改过，记来源哈希与现哈希 + 改动原因。\nmoved：本轮换了位置。\nadded：本轮新增的文件（不是迁入的）。\n核对用 scripts/verify-migration-import.mjs。\n（本次用 --offline 生成：只刷新了本轮自己写的文件（added/changed/moved）的哈希；unchanged 组保持不变（它的凭据来自来源仓库，只能靠完整模式重新核对）。）",
+  "note": "unchanged：迁进来后未改动，必须仍与来源逐字节一致。\nchanged：本轮有意改过，记来源哈希与现哈希 + 改动原因。\nmoved：本轮换了位置。\nadded：本轮新增的文件（不是迁入的）。\n核对用 scripts/verify-migration-import.mjs。",
   "groups": {
     "unchanged": [
       {
@@ -1498,13 +1498,13 @@
       },
       {
         "path": "scripts/verify-migration-import.mjs",
-        "bytes": 9311,
-        "sha256": "b978dfca52cfea33559a2928a56b6f5776ec6dd48cee908d0363393a0f28d422"
+        "bytes": 9320,
+        "sha256": "4f34934bf6f40d35d257e9553272d9f23146fa76bdc9ea13c79034cc60d59093"
       },
       {
         "path": "scripts/gen-source-manifest.mjs",
-        "bytes": 16252,
-        "sha256": "2411b43d1fadef1a1c6a3f12147ff5783b920dc533096649c6a8cacbdcf83886"
+        "bytes": 16224,
+        "sha256": "d31a27a7b82de1de2223fc1eb613ff7c3b9f90a6526de27d9c71907a5439f288"
       },
       {
         "path": "scripts/test-xianxia-standalone.mjs",
@@ -1522,24 +1522,19 @@
         "sha256": "c5bffb82dc1c7c05a95a8f457c04295e74087aeaf46b0788e4a6819e99f37c86"
       },
       {
-        "path": ".github/workflows/ci.yml",
-        "bytes": 2960,
-        "sha256": "217132aabd3fecf029874756321d2bc4bef36e9118c96914d1f4ea4d8cce653e"
-      },
-      {
         "path": "AGENTS.md",
-        "bytes": 8039,
-        "sha256": "e59eed1387edeab32eeb48b98021992277e75f185b2d7ad79a82b1472b37d85b"
+        "bytes": 8920,
+        "sha256": "7d89193e0de074c9a11e370ee06a6c1cb6920edb991708a349785702feb6f8d3"
       },
       {
         "path": "README.md",
-        "bytes": 2687,
-        "sha256": "0eb06cf0d255b2a037dab2656b9e7f091a66ecb794b93329deeb1711077cbe56"
+        "bytes": 3026,
+        "sha256": "8f6a9ca21edfc04f5de3aaa460f0b3723fc6f9af3a7ab87667b475c9813d1111"
       },
       {
         "path": "docs/migration/ledger.md",
-        "bytes": 21048,
-        "sha256": "d59d9690f354036c22330270840e2c6591850da686a462d1a6a8e5c7c5d88bc8"
+        "bytes": 23076,
+        "sha256": "f93f0853f9620651ae1d198c8cdc279fe5849a6cf27c1226d540bd5895bd5fea"
       },
       {
         "path": "docs/migration/plan.md",

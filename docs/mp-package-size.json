@@ -1,6 +1,6 @@
 {
   "label": "guishanji",
-  "measuredAt": "2026-11-06T08:42:10.282Z",
+  "measuredAt": "2026-11-06T15:17:07.201Z",
   "sourceFingerprint": "05e52e759392504195682ed706bdab2c9d1baf41f311f48df148a1bcb6d9080a",
   "sourceFiles": 64,
   "machine": {
@@ -9,10 +9,10 @@
     "arch": "arm64"
   },
   "code": {
-    "commit": "5d6ce0bb78d8074ccba15feb065da012d6b2099d",
-    "tree": "a060b32bd1e4a2a9807de2299507c8dcda9a04a3",
+    "commit": "734b869c7d99944cd229ec1b4502111058fb9c75",
+    "tree": "c6618004b698032615ed1301f86be2ebca381a81",
     "branch": "main",
-    "dirty": true
+    "dirty": false
   },
   "tool": {
     "cli": "/Applications/wechatwebdevtools.app/Contents/MacOS/cli",

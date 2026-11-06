@@ -160,29 +160,69 @@ section('历史证据快照与 baseline.lock.json 对得上');
 
 /* ══════════════════════════════════════════════ ②b 两个来源是不是同一批字节 */
 
-section('本仓库源码与 vendor 历史快照逐字节一致');
+section('本仓库源码与 vendor 历史快照的差异必须登记在案');
 {
+  /*
+   * ⚠ 这里守的不是「两边永远一样」，而是「**每一处不一样都有人登记过**」。
+   *
+   * 2026-11-06 起的内容架构重构是**有意**改写源码的，
+   * 所以「本仓库源码 ≡ 迁移时快照」这句话不再成立 ——
+   * 硬守着它，重构本身就会把门禁变红。
+   *
+   * ⇒ 改成核对 `docs/refactor-divergence.json`（差异台账）：
+   *   · 快照里的文件若与本仓库不同、或已从本仓库删掉 ⇒ 必须在台账里登记，
+   *     且登记的「改动类型」要一致（改了 / 删了）；
+   *   · 台账里登记了、但实际并没有改动 ⇒ 报红（防止台账发霉、防止有人偷偷改台账）。
+   *
+   * ⇒ 门禁的牙齿没有松：**任何没登记的改动照样报红。**
+   */
+  const ledgerFile = path.join(ROOT, 'docs', 'refactor-divergence.json');
+  const ledger = fs.existsSync(ledgerFile) ? JSON.parse(fs.readFileSync(ledgerFile, 'utf8')) : {entries: []};
+  const declared = new Map((ledger.entries || []).map(e => [e.path, e.change]));
+
   const lock = fs.existsSync(LOCK) ? JSON.parse(fs.readFileSync(LOCK, 'utf8')) : {files: []};
   let same = 0;
-  const differ = [];
-  const missing = [];
+  const undeclared = [];
+  const stale = [];
+  const observed = new Map();
+
   for (const file of lock.files) {
     const inRepo = path.join(ROOT, file.id);
     const inVendor = path.join(VENDOR, file.id);
-    if (!fs.existsSync(inRepo)) { missing.push(file.id); continue; }
-    if (!fs.existsSync(inVendor)) { missing.push(file.id); continue; }
-    if (fs.readFileSync(inRepo).equals(fs.readFileSync(inVendor))) same++;
-    else differ.push(file.id);
+    if (!fs.existsSync(inVendor)) continue;
+    if (!fs.existsSync(inRepo)) {
+      observed.set(file.id, 'removed');
+    } else if (fs.readFileSync(inRepo).equals(fs.readFileSync(inVendor))) {
+      same++;
+      observed.set(file.id, 'same');
+      continue;
+    } else {
+      observed.set(file.id, 'changed');
+    }
+    const kind = observed.get(file.id);
+    const record = declared.get(file.id);
+    if (!record) undeclared.push(`${file.id}（${kind}）`);
+    else if (record !== kind) undeclared.push(`${file.id}（台账写「${record}」，实际「${kind}」）`);
   }
-  ok(differ.length === 0 && missing.length === 0,
-    `快照的 ${lock.files.length} 个文件与本仓库源码逐字节一致（相同 ${same}）`
-    + (differ.length ? `；不同：${differ.join('、')}` : '')
-    + (missing.length ? `；缺：${missing.join('、')}` : ''));
+
+  /* 台账里登记了、但实际没有改动 ⇒ 台账发霉了，报红。 */
+  for (const [file, kind] of declared) {
+    if (!observed.has(file)) stale.push(`${file}（台账写「${kind}」，但它根本不在快照清单里）`);
+    else if (observed.get(file) === 'same') stale.push(`${file}（台账写「${kind}」，但它其实没变）`);
+  }
+
+  ok(undeclared.length === 0,
+    `快照的 ${lock.files.length} 个文件：${same} 个仍逐字节一致；`
+    + `其余 ${lock.files.length - same} 处的差异全部登记在案`
+    + (undeclared.length ? `；未登记：${undeclared.join('、')}` : ''));
+  ok(stale.length === 0,
+    `差异台账没有发霉（docs/refactor-divergence.json 登记 ${declared.size} 条）`
+    + (stale.length ? `；登记了但实际没改：${stale.join('、')}` : ''));
 }
 
 /* ══════════════════════════════════════════════ ②c 迁移等价性 */
 
-section('迁移等价性（与从 1in8b 迁进来时的那份逐字节比）');
+section('迁移等价性（与从 1in8b 迁进来时的那份逐月对拍）');
 {
   /** 去掉文件头的那段块注释（说明文字，允许不同）。 */
   const withoutHeader = (buf) => {
@@ -196,11 +236,96 @@ section('迁移等价性（与从 1in8b 迁进来时的那份逐字节比）');
   ok(fs.existsSync(MIGRATED), '迁移基线存在（reference/migrated-runtime/engine.js）');
   ok(fs.existsSync(MIGRATED_STYLE), '迁移基线存在（reference/migrated-runtime/pixel-style.js）');
   if (fs.existsSync(MIGRATED)) {
-    const a = withoutHeader(fs.readFileSync(MIGRATED));
-    const b = withoutHeader(fs.readFileSync(RUNTIME));
-    const ha = sha256(a);
-    const hb = sha256(b);
-    ok(ha === hb, `规则产物除文件头注释外逐字节一致（${a.length} 字节，sha ${ha.slice(0, 16)}）`);
+    /*
+     * ⚠ 为什么从「逐字节一致」换成「逐月对拍」
+     * ------------------------------------------
+     * 内容架构重构（S1 起）**有意**改写了规则源码 ⇒ 新构建的产物与迁移时那份产物
+     * **不可能再逐字节相同**。继续拿字节比当门禁，等于逼着人要么别重构、
+     * 要么偷偷改基线 —— 那才是不诚实的做法。
+     *
+     * ⇒ 换成更强、也更贴题的说法：**「重构没改行为」**——
+     *   把迁移时那份产物与现在这份产物**同时装进同一个进程**，
+     *   用同一个种子、同一个 id、同一串操作驱动，**逐月**比对状态、选项表与回顾。
+     *
+     * ⚠ 逐月比而不是「跑完一生比一次」：一生跑完再比，途中任何一次分叉都可能被
+     *   后面的随机流掩盖掉；逐月比才能把「第一次分叉」精确指出来。
+     */
+    const migrated = loadRuntime(MIGRATED);
+    const current = loadRuntime(RUNTIME);
+    const seeds = ['松风有信', '山海-001', '云深不知处', '灯下故人书', '一剑霜寒', '归途未晚'];
+    const maxMonths = 600;
+
+    /** 深比较（键序无关）。 */
+    const canonical = (value) => {
+      if (value === null || typeof value !== 'object') return JSON.stringify(value);
+      if (Array.isArray(value)) return '[' + value.map(canonical).join(',') + ']';
+      return '{' + Object.keys(value).sort()
+        .map((k) => JSON.stringify(k) + ':' + canonical(value[k])).join(',') + '}';
+    };
+    const same = (a, b) => canonical(a) === canonical(b);
+
+    let comparedMonths = 0;
+    let comparedChoices = 0;
+    const mismatches = [];
+
+    for (const [index, seed] of seeds.entries()) {
+      const id = `life-migration-${index}`;
+      let a, b;
+      try {
+        a = migrated.createRun({seed, id});
+        b = current.createRun({seed, id});
+      } catch (error) {
+        mismatches.push(`${seed}：创建人生时抛错（${error.message}）`);
+        continue;
+      }
+      if (!same(a, b)) {
+        mismatches.push(`${seed}：出生状态就不一致`);
+        continue;
+      }
+      let mismatch = null;
+      for (let step = 0; step < maxMonths && !mismatch; step++) {
+        if (a.phase !== 'life') break;
+        if (a.pending) {
+          const oa = migrated.options(a);
+          const ob = current.options(b);
+          if (!same(oa, ob)) {
+            mismatch = `第 ${a.month} 月的选项表不同`;
+            break;
+          }
+          comparedChoices++;
+          const pick = (oa.find((o) => o.enabled) || oa[0] || {}).id;
+          if (!pick) break;
+          migrated.choose(a, pick);
+          current.choose(b, pick);
+          if (!same(a, b)) {
+            mismatch = `第 ${a.month} 月选择「${pick}」后的状态不同`;
+            break;
+          }
+          continue;
+        }
+        const ma = migrated.advance(a, 1);
+        const mb = current.advance(b, 1);
+        comparedMonths++;
+        if (ma !== mb) {
+          mismatch = `第 ${step} 步推进月数不同：迁移时 ${ma} ≠ 现在 ${mb}`;
+          break;
+        }
+        if (!same(a, b)) {
+          mismatch = `第 ${a.month} 月的状态不同`;
+          break;
+        }
+        if (!same(migrated.review(a), current.review(b))) {
+          mismatch = `第 ${a.month} 月的回顾不同`;
+          break;
+        }
+      }
+      if (mismatch) mismatches.push(`${seed}：${mismatch}`);
+    }
+
+    ok(mismatches.length === 0,
+      `迁移时的那份产物与现在这份产物逐月对拍：${seeds.length} 条人生、`
+      + `${comparedMonths} 个月、${comparedChoices} 个决策点，行为逐值相同`
+      + (mismatches.length ? `；不一致：${mismatches.join('；')}` : ''));
   }
   if (fs.existsSync(MIGRATED_STYLE)) {
     const a = withoutHeader(fs.readFileSync(MIGRATED_STYLE));

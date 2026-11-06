@@ -11,7 +11,7 @@ import {automaticStory,storyOpportunity,familyMessage} from '../../content/culti
 import {economyQuote,settleEconomy} from './cultivation-economy.js';
 import {random,hashText} from '../core/random.js';
 import {PATHS,ROOTS,ACTIVITIES,GEOGRAPHY,OFFICERS} from '../../content/cultivation-world.js';
-import {ROAD_CHAINS,CULTIVATION_EVENTS,LEGACY_CULTIVATION_EVENTS} from '../../content/cultivation-stories-v10.js';
+import {ROAD_CHAINS,RULES10_CULTIVATION_EVENTS as CULTIVATION_EVENTS,LEGACY_CULTIVATION_EVENTS} from '../../content/cultivation-stories.js';
 const copy=x=>JSON.parse(JSON.stringify(x));
 const clamp=(v,min=0,max=100)=>Math.max(min,Math.min(max,v));
 const age=s=>Math.floor(s.month/12)+(s.birth.startAge||0);

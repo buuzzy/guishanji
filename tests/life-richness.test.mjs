@@ -6,7 +6,8 @@ import {activityOptions,routeOptions} from '../packages/adventure/cultivation.js
 import {economyQuote} from '../packages/adventure/cultivation-economy.js';
 import {storyOpportunity,familyMessage} from '../content/cultivation-daily.js';
 import {RULES5_CULTIVATION_EVENTS,ROAD_CHAINS} from '../content/cultivation-stories.js';
-import {CULTIVATION_EVENTS as FROZEN_EVENTS} from '../content/cultivation-stories-v5.js';
+// 规则 5 的事件表：归一后由同一条装配链拍快照得到，内容与归一前逐值一致。
+const FROZEN_EVENTS=RULES5_CULTIVATION_EVENTS;
 import {decide,playCultivation} from './helpers/rules9-play.mjs';
 const resolve=s=>{while(s.phase==='life'&&!s.pending&&s.journey&&!s.journey.open)advance(s,1);};
 function find(id,filter=()=>true,policy={path:'orthodox'}){

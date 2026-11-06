@@ -1,18 +1,47 @@
-export {CULTIVATION_EVENTS as RULES11_CULTIVATION_EVENTS} from './cultivation-stories-v11.js';
-import {installRules12} from './story-rules12.js';
-export {CULTIVATION_EVENTS as RULES10_CULTIVATION_EVENTS} from './cultivation-stories-v10.js';
-import {installMundaneEvents} from './mundane-stories.js';
-export {CULTIVATION_EVENTS as RULES9_CULTIVATION_EVENTS} from './cultivation-stories-v9.js';
-export {CULTIVATION_EVENTS as RULES8_CULTIVATION_EVENTS} from './cultivation-stories-v8.js';
-import {installRules10} from './story-rules10.js';
-import {installRevision9} from './revision9-stories.js';
-export {CULTIVATION_EVENTS as RULES7_CULTIVATION_EVENTS} from './cultivation-stories-v7.js';
-import {installProgressionEvents} from './progression-stories.js';
-import {installStoryNetwork} from './story-network.js';
-import {installLifeRevision} from './cultivation-revision.js';
+/**
+ * 事件表 —— 全仓库唯一的一份剧情事件来源（2026-11-07 起归一）
+ * ============================================================================
+ *
+ * ## 归一前是什么样
+ * --------------------
+ * 这里曾经有 8 份几乎一样的副本：`cultivation-stories.js` 加
+ * `cultivation-stories-v5.js` … `-v11.js`（7 份）。
+ * 每一份自带一张完整的表字面量 + 一段越来越长的装配尾巴，
+ * 于是「改一个事件条件」要改 8 处 —— 这是内容越滚越僵的根源之一。
+ *
+ * ## 归一后是什么样
+ * --------------------
+ * **表字面量只有这一份。** 九个历史版本由同一条装配链在九个时点拍快照得到，
+ * 每个快照的**内容与归一前逐值一致**（门禁 `scripts/verify-events-fidelity.mjs` 盯着这件事）。
+ *
+ * 装配顺序（快照点 = 旧版本当时的状态）：
+ *   表字面量 → 考核与突破生成 → 长线生成
+ *   → LEGACY（更早的存档）→ 决策细节 → 门派忠诚
+ *   → RULES5 → 生涯修订
+ *   → RULES6 → 人脉网络
+ *   → RULES7 → 长线推进
+ *   → RULES8 → 修订九
+ *   → RULES9 → 规则十
+ *   → RULES10 → 俗世生活
+ *   → RULES11 → 规则十二
+ *   → CULTIVATION_EVENTS（当前版本）
+ *
+ * ## 改内容只改这里
+ * --------------------
+ * 上面的表字面量、考核与突破、长线三段就是全部可编辑内容。
+ * 下面这一段是**装配**，不是内容：改事件只改上面三段，别在装配里塞剧情。
+ */
 import {PATHS,ROOTS} from './cultivation-world.js';
 import {installDecisionDetails} from './decision-details.js';
 import {installAllegianceStories} from './allegiance-stories.js';
+import {installLifeRevision} from './cultivation-revision.js';
+import {installStoryNetwork,NETWORK_EVENTS} from './story-network.js';
+import {installProgressionEvents} from './progression-stories.js';
+import {installRevision9} from './revision9-stories.js';
+import {installRules10} from './story-rules10.js';
+import {installMundaneEvents} from './mundane-stories.js';
+import {installRules12} from './story-rules12.js';
+
 const c=(id,label,hint,reply,data={})=>({id,label,hint,reply,...data});
 const n=(id,title,text,choices,data={})=>({id,act:0,title,text,choices,...data});
 const pay=stones=>({cost:{stones}});
@@ -204,22 +233,88 @@ for(const chain of ROAD_CHAINS) for(let step=0;step<chain.stages.length;step++) 
  }
  if(chain.id==='loose_portal'&&step===0)CULTIVATION_EVENTS[id].choices[0].effects={items:['gate_anchor']};
 }
+/* ── 九个历史版本：同一条装配链，在九个时点拍快照 ────────────────────────
+ *
+ * 归一前每个版本是一个独立文件、各自跑自己的装配尾巴；归一后是一条链。
+ * 快照的语义必须与归一前**逐值一致**，否则旧存档会看到不一样的内容。
+ *
+ * 两类快照，语义不同，不能混用：
+ *   · copy1 / copy2 —— 与旧文件里的写法逐字相同（浅层拷贝，嵌套对象仍然共享）。
+ *     归一前主文件就是这么拍的，照抄即可。
+ *   · stageCopy —— 深层拷贝，把「当时的值」定格下来。
+ *     归一前 RULES7..RULES11 来自另外几个文件，那些文件里的表字面量各自一份，
+ *     基础节点不会再被后来的装配改写；只有「装配器带来的共享节点」会跟着一起变。
+ *     ⇒ 基础节点深层定格，共享节点最后换回活对象，两边就对上了。
+ */
+const copy1=table=>Object.fromEntries(Object.entries(table).map(([id,node])=>[id,{...node,choices:node.choices.map(c=>({...c}))}]));
+const copy2=table=>Object.fromEntries(Object.entries(table).map(([id,n])=>[id,{...n,choices:n.choices.map(c=>({...c,system:c.system?{...c.system}:undefined}))}]));
+const deepCopy=value=>{
+ if(Array.isArray(value))return value.map(deepCopy);
+ if(value&&typeof value==='object'&&Object.getPrototypeOf(value)===Object.prototype){const out={};for(const key of Object.keys(value))out[key]=deepCopy(value[key]);return out;}
+ return value;
+};
+const stageCopy=table=>Object.fromEntries(Object.entries(table).map(([id,node])=>[id,deepCopy(node)]));
+
+/**
+ * 「人脉网络」那批节点是**全版本共用同一份对象**（`installStoryNetwork` 直接把
+ * `NETWORK_EVENTS` 挂进表里，没有拷贝）。
+ * 后来「规则十二」就地改写它们时，共享同一份的那些版本也会跟着变 —— 归一前就是这样，
+ * 这里如实保留，不趁机改变旧存档看到的内容。
+ *
+ * ⚠ 归一前 v7 / v8 用的是 `story-network.js`（与最终链同一份模块 ⇒ 同一份对象），
+ *   v9 / v10 / v11 各用各的模块副本（`story-network-v9/-v10/-v11.js`）⇒ 各自一份，
+ *   「规则十二」改不到它们。
+ *   ⇒ v7 / v8 的网络节点取活对象，v9 / v10 / v11 的网络节点取当时的定格副本。
+ *
+ * 其余安装器（决策细节、门派忠诚、生涯修订、长线推进、修订九、规则十、俗世生活、
+ * 规则十二）都是**各自新建节点**，归一前每个版本各有一份 ⇒ 快照深层拷贝即可。
+ */
+const sharedNodes=new Map(Object.entries(NETWORK_EVENTS));
+
 // Existing lives retain their pending choices and action rules. New lives use
 // the reviewed decisions without redrawing births or resetting random streams.
-export const LEGACY_CULTIVATION_EVENTS=Object.fromEntries(Object.entries(CULTIVATION_EVENTS).map(([id,node])=>[id,{...node,choices:node.choices.map(c=>({...c}))}]));
+export const LEGACY_CULTIVATION_EVENTS=copy1(CULTIVATION_EVENTS);
 installDecisionDetails(CULTIVATION_EVENTS,ROAD_CHAINS);
 installAllegianceStories(CULTIVATION_EVENTS);
 
-export const RULES5_CULTIVATION_EVENTS=Object.fromEntries(Object.entries(CULTIVATION_EVENTS).map(([id,n])=>[id,{...n,choices:n.choices.map(c=>({...c,system:c.system?{...c.system}:undefined}))}]));
+/**
+ * 规则 5 用的长线表只有 12 条 —— 后 4 条是「生涯修订」才加进去的。
+ * 旧规则 5 的执行器必须按它自己那 12 条走：否则它会派发
+ * `sect_feud_0` 这类在规则 5 的事件表里根本不存在的长线。
+ * ⇒ 在「生涯修订」动手之前先把当时那份长线表留下来。
+ */
+export const LEGACY_ROAD_CHAINS=ROAD_CHAINS.slice();
+
+export const RULES5_CULTIVATION_EVENTS=copy2(CULTIVATION_EVENTS);
 installLifeRevision(CULTIVATION_EVENTS,ROAD_CHAINS);
 
-export const RULES6_CULTIVATION_EVENTS=Object.fromEntries(Object.entries(CULTIVATION_EVENTS).map(([id,n])=>[id,{...n,choices:n.choices.map(c=>({...c,system:c.system?{...c.system}:undefined}))}]));
+export const RULES6_CULTIVATION_EVENTS=copy2(CULTIVATION_EVENTS);
 installStoryNetwork(CULTIVATION_EVENTS);
+const stage7=stageCopy(CULTIVATION_EVENTS);
+
 installProgressionEvents(CULTIVATION_EVENTS);
+const stage8=stageCopy(CULTIVATION_EVENTS);
 
 installRevision9(CULTIVATION_EVENTS);
+const stage9=stageCopy(CULTIVATION_EVENTS);
+
 installRules10(CULTIVATION_EVENTS,ROAD_CHAINS);
+const stage10=stageCopy(CULTIVATION_EVENTS);
 
 installMundaneEvents(CULTIVATION_EVENTS);
+const stage11=stageCopy(CULTIVATION_EVENTS);
 
 installRules12(CULTIVATION_EVENTS);
+
+/** 把「人脉网络」那批共享节点换回活对象：它们在 v7 / v8 里与最终链是同一份，
+ *  后来的装配对它们的改写会同时反映到那两个版本（与归一前一致）。 */
+const withShared=stage=>{const out={...stage};for(const [id,node] of sharedNodes)if(id in stage)out[id]=node;return out;};
+
+// v7 / v8：网络节点取活对象（归一前它们与最终链共用同一份「人脉网络」模块）。
+export const RULES7_CULTIVATION_EVENTS=withShared(stage7);
+export const RULES8_CULTIVATION_EVENTS=withShared(stage8);
+// v9 / v10 / v11：网络节点保持当时的定格副本（归一前它们各用各的模块副本，
+// 「规则十二」改不到它们）。
+export const RULES9_CULTIVATION_EVENTS=stage9;
+export const RULES10_CULTIVATION_EVENTS=stage10;
+export const RULES11_CULTIVATION_EVENTS=stage11;

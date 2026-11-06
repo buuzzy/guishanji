@@ -143,16 +143,31 @@ ok(bad === 0, `${gMoved.length} 个换了位置的文件：新位置哈希一致
 
 const gAdded = g.added || [];
 bad = 0;
+const staleAdded = [];
 for (const e of gAdded) {
   const abs = path.join(ROOT, e.path);
   if (!fs.existsSync(abs)) { bad++; console.error(`  ✗ 新增文件缺失：${e.path}`); continue; }
   const d = digest(abs);
   if (d.sha256 !== e.sha256 || d.bytes !== e.bytes) {
     bad++;
+    staleAdded.push(e.path);
     console.error(`  ✗ 新增文件与清单不一致：${e.path}`);
   }
 }
 ok(bad === 0, `${gAdded.length} 个本轮新增的文件：哈希一致`);
+
+/* ⚠ 改了「本轮新增」的文件却忘了重生成清单 ⇒ 门禁报红，但**人不知道该做什么**。
+ *   ⇒ 直接把命令打出来（这是最常见的场景：本轮新写/新改的文件）。 */
+if (staleAdded.length) {
+  console.error('');
+  console.error('  ⇒ 这几个文件本轮被改过，清单的哈希跟不上。');
+  console.error('    重新生成清单即可（需要那两个来源仓库在本机）：');
+  console.error('      node scripts/gen-source-manifest.mjs \\');
+  console.error('        --xianxia-life=<xianxia-life 目录> --one8b=<1in8b 目录>');
+  console.error('    ⚠ 若来源仓库不在本机：清单只依赖仓库内的文件，');
+  console.error('      可用 --offline 只重算仓库内文件的哈希（见脚本用法）。');
+  console.error('');
+}
 
 /* ── 包体实测台账：只查「存在且字段齐全」，**不锁哈希** ──────────────
  *

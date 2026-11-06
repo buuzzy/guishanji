@@ -58,6 +58,12 @@ async function launchOnce(portWaitMs) {
    *   表现为「编译进程崩溃」或「模拟器长时间没有响应」——
    *   **看起来像 IDE 的毛病，其实是仓库自己太胖。**
    * ⇒ 现在：profile 放 `os.tmpdir()`，关掉浏览器后**连目录一起删**。
+   *
+   * ⚠ 跨平台注意：
+   *   · `os.tmpdir()` 在 Windows 上是 `%LOCALAPPDATA%\Temp` ⇒ **不在仓库里**，
+   *     所以 IDE 不会扫到它；
+   *   · Windows 上 Chrome 退出后可能还占着几个文件 ⇒ 删不掉要**忽略错误**
+   *     （`force: true`），不能让「删临时目录失败」把整道门禁搞红。
    */
   const local = join(tmpdir(), 'guishanji-browser');
   await mkdir(local, { recursive: true });
@@ -118,5 +124,5 @@ async function launchOnce(portWaitMs) {
     const screenshot = async path => { const { data } = await command('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false }); await writeFile(path, Buffer.from(data, 'base64')); };
     return { targetId, sessionId, send: command, eval: evaluate, waitFor, navigate, click, screenshot, errors, requests, responses, close: () => send('Target.closeTarget', { targetId }) };
   }
-  return { profile, send, on, page, version: await send('Browser.getVersion'), close: async () => { try { await send('Browser.close'); } catch { /* owned process fallback */ } socket.close(); if (child.exitCode === null) { await Promise.race([new Promise(resolve => child.once('exit', resolve)), delay(3000)]); if (child.exitCode === null) child.kill(); } await writeFile(join(profile, 'browser.log'), browserLog); /* ⚠ 连 profile 一起删，别再攒垃圾。 */ await rm(profile, { recursive: true, force: true }); } };
+  return { profile, send, on, page, version: await send('Browser.getVersion'), close: async () => { try { await send('Browser.close'); } catch { /* owned process fallback */ } socket.close(); if (child.exitCode === null) { await Promise.race([new Promise(resolve => child.once('exit', resolve)), delay(3000)]); if (child.exitCode === null) child.kill(); } try { await writeFile(join(profile, 'browser.log'), browserLog); } catch { /* 目录没了也无所谓 */ } /* ⚠ 连 profile 一起删，别再攒垃圾。 ⚠ 删不掉（Windows 上文件还被占用）也**不能把门禁搞红** —— 那是清理问题，不是产品问题。 */ try { await rm(profile, { recursive: true, force: true, maxRetries: 3, retryDelay: 200 }); } catch { /* 留给系统临时目录清理 */ } } };
 }

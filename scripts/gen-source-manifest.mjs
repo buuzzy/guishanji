@@ -29,14 +29,38 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const args = Object.fromEntries(
   process.argv.slice(2).map((a) => {
     const m = /^--([^=]+)=(.+)$/.exec(a);
-    return m ? [m[1], m[2]] : [a, true];
+    /* ⚠ 无值参数（`--offline`）要**去掉开头的两个横线**才是键名 ——
+       否则键会变成 "--offline"，`args['offline']` 永远取不到。 */
+    return m ? [m[1], m[2]] : [a.replace(/^--/, ''), true];
   })
 );
 
 const XL = args['xianxia-life'];
 const ONE = args['one8b'];
-if (!XL || !ONE) {
-  console.error('用法：node scripts/gen-source-manifest.mjs --xianxia-life=<目录> --one8b=<目录>');
+const OFFLINE = args['offline'] === true || args['offline'] === 'true';
+
+/**
+ * ⚠ `--offline` 模式（2026-11-06 加）
+ * ---------------------------------------------------------------------------
+ * 完整模式需要 `xianxia-life` 与 `1in8b` 两个来源仓库都在本机。
+ * 但**另一台电脑（Windows）通常只有本仓库** ⇒ 改了本轮新增的文件后，
+ * 清单的哈希跟不上 ⇒ `import` 门禁报红，而**没法在 Windows 上重新生成**。
+ *
+ * ⇒ offline 模式：**只重算仓库内文件的哈希**，
+ *   来源信息（source / 来源哈希 / 换位置记录）**原样保留**。
+ *   ⚠ 这**不是**「重新核对来源」——
+ *     它只解决「本轮自己写的文件改了哈希」这一种情况。
+ *     「迁进来的文件被动过」这类问题，offline 模式**查不出来**
+ *     （那需要真的比对来源仓库）⇒ 那种情况仍然必须回 macOS 上跑完整模式。
+ *
+ * 用法：node scripts/gen-source-manifest.mjs --offline
+ */
+if (!OFFLINE && (!XL || !ONE)) {
+  console.error('用法：');
+  console.error('  完整模式（重新核对来源，需要两个来源仓库）：');
+  console.error('    node scripts/gen-source-manifest.mjs --xianxia-life=<目录> --one8b=<目录>');
+  console.error('  离线模式（只重算本仓库文件的哈希，不碰来源）：');
+  console.error('    node scripts/gen-source-manifest.mjs --offline');
   process.exit(2);
 }
 
@@ -45,6 +69,62 @@ const digest = (file) => {
   return {bytes: b.length, sha256: crypto.createHash('sha256').update(b).digest('hex')};
 };
 const headOf = (dir) => execFileSync('git', ['-C', dir, 'rev-parse', 'HEAD'], {encoding: 'utf8'}).trim();
+
+/* ═══════════════════════════ 离线模式 ═══════════════════════════
+ *
+ * 只重算**本仓库内文件**的哈希，来源信息（source / 来源哈希 / 换位置记录）原样保留。
+ * 用途：另一台电脑（Windows）通常只有本仓库，改了本轮自己写的文件后
+ *      清单哈希跟不上 ⇒ 没法重新生成清单 ⇒ `import` 门禁红。
+ *
+ * ⚠ 它**不能**发现「迁进来的文件被动了」——
+ *   那需要真的比对来源仓库 ⇒ 那种情况必须回 macOS 跑完整模式。
+ *
+ * ⚠⚠ **因此 offline 模式绝不更新 `unchanged` 组的哈希**：
+ *   那一组的哈希含义是「**与来源逐字节一致**」，
+ *   凭据来自来源仓库 ⇒ 只有真的比对过来源才能刷新。
+ *   若 offline 也刷新它 ⇒ 有人改了迁入的文件，跑一次 offline 就把证据抹掉了
+ *   ⇒ 门禁再也查不出来（实测：改坏 guilloche.js 后跑 offline，仍报「全部一致」）。
+ *   ⇒ offline 只刷新 `added`（本轮自己写的文件）、`changed`、`moved`
+ *     —— 这三组的哈希含义是「现哈希」，本来就该跟着工作区走。
+ *
+ * ⚠ 这段必须放在**构建 MAP 之前**：MAP 依赖两个来源仓库，
+ *   离线模式下它们根本不在本机 ⇒ 早退才不会炸。
+ */
+if (OFFLINE) {
+  const MANIFEST = path.join(ROOT, 'docs', 'migration', 'source-manifest.json');
+  if (!fs.existsSync(MANIFEST)) {
+    console.error('离线模式需要已存在的清单（本仓库内）：' + MANIFEST);
+    process.exit(2);
+  }
+  const old = JSON.parse(fs.readFileSync(MANIFEST, 'utf8'));
+  const g = old.groups || {};
+  let refreshed = 0, missing = 0;
+  const refresh = (entry, hashField, bytesField) => {
+    const abs = path.join(ROOT, entry.path);
+    if (!fs.existsSync(abs)) { missing++; console.error(`  ⚠ 文件不在了：${entry.path}`); return; }
+    const d = digest(abs);
+    if (entry[hashField] !== d.sha256) { refreshed++; }
+    entry[hashField] = d.sha256;
+    entry[bytesField] = d.bytes;
+  };
+  /* ⚠ unchanged 组**不刷新**（见上面的说明）。 */
+  for (const e of g.added || []) refresh(e, 'sha256', 'bytes');
+  for (const e of g.changed || []) refresh(e, 'currentSha256', 'currentBytes');
+  for (const e of g.moved || []) refresh(e, 'currentSha256', 'currentBytes');
+
+  old.generatedAt = new Date().toISOString().slice(0, 10);
+  /* ⚠ note 只追加一次（重复跑 offline 不会堆成一长串）。 */
+  const OFFLINE_NOTE = '（本次用 --offline 生成：只刷新了本轮自己写的文件（added/changed/moved）的哈希；' +
+    'unchanged 组保持不变（它的凭据来自来源仓库，只能靠完整模式重新核对）。）';
+  old.note = String(old.note || '').split('\n').filter(line => !line.startsWith('（本次用 --offline 生成')).join('\n');
+  old.note = old.note + '\n' + OFFLINE_NOTE;
+  fs.writeFileSync(MANIFEST, JSON.stringify(old, null, 2) + '\n');
+  console.log(`已离线刷新 ${path.relative(ROOT, MANIFEST)}`);
+  console.log(`  刷新了 ${refreshed} 个文件的哈希${missing ? `，${missing} 个文件不在了` : ''}`);
+  console.log('  ⚠ 离线模式**没有**重新比对来源仓库 ⇒ 「迁进来的文件被动过」这类问题查不出来');
+  console.log('    （unchanged 组的哈希**故意没刷新**，好让门禁仍然报红）。');
+  process.exit(0);
+}
 
 /* 来源路径 → 本仓库路径。 */
 const MAP = [];
@@ -174,6 +254,9 @@ for (const p of ADDED) {
   added.push({path: p, bytes: d.bytes, sha256: d.sha256});
 }
 
+const out = path.join(ROOT, 'docs', 'migration', 'source-manifest.json');
+
+/* 完整模式：写清单。 */
 const manifest = {
   label: '归山记 · 迁移导入来源清单',
   generatedAt: new Date().toISOString().slice(0, 10),
@@ -191,7 +274,6 @@ const manifest = {
   groups: {unchanged, changed, moved, added},
 };
 
-const out = path.join(ROOT, 'docs', 'migration', 'source-manifest.json');
 fs.mkdirSync(path.dirname(out), {recursive: true});
 fs.writeFileSync(out, JSON.stringify(manifest, null, 2) + '\n');
 console.log(`已写出 ${path.relative(ROOT, out)}`);

@@ -13,7 +13,7 @@
       "path": "feature/adventure-preview-v01（本仓库 Git 历史的来源）"
     }
   ],
-  "note": "unchanged：迁进来后未改动，必须仍与来源逐字节一致。\nchanged：本轮有意改过，记来源哈希与现哈希 + 改动原因。\nmoved：本轮换了位置。\nadded：本轮新增的文件（不是迁入的）。\n核对用 scripts/verify-migration-import.mjs。",
+  "note": "unchanged：迁进来后未改动，必须仍与来源逐字节一致。\nchanged：本轮有意改过，记来源哈希与现哈希 + 改动原因。\nmoved：本轮换了位置。\nadded：本轮新增的文件（不是迁入的）。\n核对用 scripts/verify-migration-import.mjs。\n（本次用 --offline 生成：只刷新了本轮自己写的文件（added/changed/moved）的哈希；unchanged 组保持不变（它的凭据来自来源仓库，只能靠完整模式重新核对）。）",
   "groups": {
     "unchanged": [
       {
@@ -1497,13 +1497,13 @@
       },
       {
         "path": "scripts/verify-migration-import.mjs",
-        "bytes": 8339,
-        "sha256": "cc134df15a24563dc3eb6a3340a256a1225ca2bf66b32c24b123bb19240aa4e1"
+        "bytes": 9212,
+        "sha256": "777579df5e29bc9a55cbb191383e84742b281ef7be9047ea5e29680a0f769dd1"
       },
       {
         "path": "scripts/gen-source-manifest.mjs",
-        "bytes": 9971,
-        "sha256": "6e6155b58b49aa32fd449af5f93a02b8fbeec3890f5150e0bd9c319c9846135b"
+        "bytes": 15019,
+        "sha256": "ad4f5da7f4eb5f7b8e8c48e423143693a355580b8a7c4770b8c0057767589740"
       },
       {
         "path": "scripts/test-xianxia-standalone.mjs",
@@ -1517,8 +1517,8 @@
       },
       {
         "path": "scripts/measure-mp-package-size.mjs",
-        "bytes": 15531,
-        "sha256": "522000fd9a96d4d4d703775b17ee2e5843912bf525b1792b32dade9b063ad0d5"
+        "bytes": 16182,
+        "sha256": "c5bffb82dc1c7c05a95a8f457c04295e74087aeaf46b0788e4a6819e99f37c86"
       },
       {
         "path": ".github/workflows/ci.yml",

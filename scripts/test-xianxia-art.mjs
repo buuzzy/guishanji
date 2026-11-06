@@ -267,6 +267,15 @@ function makeLives() {
   const mine = engine.createRun({seed: '地火矿夜', id: 'art-life-mine'});
   mine.life.cultivation.revision9 = Object.assign({}, mine.life.cultivation.revision9, {arc: 'mine'});
   lives.push(mine);
+  /**
+   * 「走过两个大陆」的：地图上才有**通路**可画。
+   * ⚠ 随机模拟几乎走不到跨大陆那条分支（实测 5 段人生全都只在一块大陆上）
+   *   ⇒ 这里**直接摆**出那个状态，保证「通路条数」那条断言不是空跑。
+   */
+  const traveled = engine.createRun({seed: '走过山海', id: 'art-life-traveled'});
+  traveled.life.cultivation.continent = 'tide';
+  traveled.life.cultivation.visited = ['home', 'tide'];
+  lives.push(traveled);
   return lives;
 }
 
@@ -354,6 +363,11 @@ let mapOps = 0;
  *   这比「> 5000」严得多：漏画一块、多画一块、把半径改一下，都会报红。 */
 let mapDots = 0;
 let mapDotsExpected = 0;
+/* ⚠ 同样地，**通路条数**也不能写死：
+ *   地图只画「当前所在 + 走过的大陆」⇒ 两条端点都在「已解锁」里的路才会画出来。
+ *   ⇒ 这里从存档独立算一遍（不调用 mapView），跟画出来的笔数比对。 */
+let mapRoutes = 0;
+let mapRoutesExpected = 0;
 
 for (const run of lives) {
   for (const theme of ['light', 'dark']) {
@@ -379,6 +393,22 @@ for (const run of lives) {
       if (view.unlocked.indexOf(g.id) >= 0) expect += g.points.length;
     }
     mapDotsExpected += expect;
+    /* 通路条数：每画一条路就 lineTo 一次（当前大陆的圆圈是 arc+stroke，不算路）。 */
+    mapRoutes += our.ops.filter(op => op[0] === 'line').length;
+    {
+      /* ⚠ 独立算一遍「已解锁大陆之间的通路条数」（不用 mapView，免得自己跟自己比）。 */
+      const c = (run.life && run.life.cultivation) || {};
+      const here = c.continent || (['home', 'refuge'].indexOf(run.player && run.player.location) >= 0
+        ? (run.birth && run.birth.continent) : (run.player && run.player.location));
+      const unlocked = [];
+      if (here && unlocked.indexOf(here) < 0) unlocked.push(here);
+      for (const id of (c.visited || [])) if (unlocked.indexOf(id) < 0) unlocked.push(id);
+      const set = new Set(unlocked), edges = new Set();
+      for (const g of (engine.GEOGRAPHY || [])) {
+        for (const b of (g.connections || [])) if (set.has(g.id) && set.has(b)) edges.add([g.id, b].sort().join('-'));
+      }
+      mapRoutesExpected += edges.size;
+    }
     mapCompared++;
   }
 }
@@ -387,6 +417,8 @@ ok(mapDots === mapDotsExpected,
   `地图画出的点阵一个不多一个不少（${mapDots} / 期望 ${mapDotsExpected}）`);
 ok(mapDotsExpected > 0,
   `地图确实画出了东西（本次该画 ${mapDotsExpected} 个点，不是空跑）`);
+ok(mapRoutes === mapRoutesExpected,
+  `地图画出的通路条数 = 已解锁大陆之间的通路条数（${mapRoutes} / 期望 ${mapRoutesExpected}）`);
 
 /* ══════════════════════════════════════════════ ③ 像素肖像逐笔比对 */
 

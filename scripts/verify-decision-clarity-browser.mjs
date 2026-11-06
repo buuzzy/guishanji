@@ -7,17 +7,45 @@ import {launchBrowser} from './lib/browser.mjs';
 import {createRun,choose,advanceToChoice,options,validateRun,setActivity} from '../tests/helpers/rules11-engine.mjs';
 import {decide} from './play-cultivation.mjs';
 import {activityOptions} from '../packages/adventure/cultivation.js';
+import {GEOGRAPHY} from '../content/cultivation-world.js';
 const built=process.argv.includes('--built'),out=join(projectRoot,'artifacts',built?'decision-browser-static':'decision-browser-source');
 await mkdir(out,{recursive:true});const report={built,checks:[],flows:[],scope:'Real Chrome mouse/touch, no injected player state'};
 let server,browser;
 const snapshot=p=>p.eval('adventurePreview.snapshot()');
+/**
+ * 地图上「已经解锁的大陆」= 当前所在 + 走过的大陆。
+ *
+ * ⚠ 这里**故意不调用规则层的 mapView()**：
+ *   地图画什么由 mapView 决定，若门禁也用它算期望值 ⇒ 两边同源 ⇒ 地图画错了也看不出来。
+ *   ⇒ 门禁从**存档本身**（ continent + visited）独立算一遍，再跟地图画出来的比对。
+ */
+function unlockedOf(st){
+  const c=(st&&st.life&&st.life.cultivation)||{};
+  const here=c.continent||(['home','refuge'].includes(st?.player?.location)?st?.birth?.continent:st?.player?.location);
+  const out=[];
+  if(here&&!out.includes(here))out.push(here);
+  for(const id of (c.visited||[]))if(!out.includes(id))out.push(id);
+  return out;
+}
+/** 两端都在「已解锁大陆」里的通路条数。 */
+function routeCount(unlocked){
+  const set=new Set(unlocked),edges=new Set();
+  for(const g of GEOGRAPHY)for(const b of (g.connections||[]))if(set.has(g.id)&&set.has(b))edges.add([g.id,b].sort().join('-'));
+  return edges.size;
+}
 async function stop(p){if(await p.eval('adventurePreview.status().screen==="life"&&adventurePreview.status().intendsToPlay'))await p.click('#play-control');await p.waitFor('adventurePreview.status().saved');}
 async function begin(p,seed){await p.navigate(server.url+'preview/?rules=11&replay='+encodeURIComponent(seed));await p.waitFor('!!window.adventurePreview');await p.click('[data-action=new]');await p.waitFor('adventurePreview.status().screen==="life"');await stop(p);}
 async function next(p){if((await snapshot(p)).pending)return;await p.click('[data-action=menu]');await p.waitFor('!!document.querySelector("dialog[open] [data-action=next]")');await p.click('[data-action=next]');await p.waitFor('!!adventurePreview.snapshot().pending||adventurePreview.snapshot().phase==="ended"');await p.waitFor('adventurePreview.status().saved');}
 async function select(p,id,touch=false){await p.click('[data-action=choose][data-choice='+id+']',touch);await p.waitFor('!document.querySelector("dialog[open]")');if((await snapshot(p)).phase!=='ended')await stop(p);}
 async function reach(p,id,policy={}){for(let i=0;i<110;i++){await next(p);const s=await snapshot(p);if(s.pending?.event===id)return s;if(s.phase==='ended')throw Error('Died before '+id);await select(p,decide(s,policy).id);if(policy.activity&&activityOptions(await snapshot(p)).find(a=>a.id===policy.activity)?.enabled){await p.click('[data-action=menu]');await p.waitFor('!!document.querySelector("dialog[open] [data-action=focus]")');await p.click('dialog[open] [data-action=focus]');await p.waitFor('document.querySelectorAll("dialog[open] [data-action=activity]").length===7');await p.click('[data-action=activity][data-activity='+policy.activity+']');await p.waitFor('!document.querySelector("dialog[open]")');await stop(p);}}throw Error('Did not reach '+id);}
 function seedFor(id,policy,filter=()=>true){for(let i=0;i<400;i++){const seed='决策查验-'+i,s=createRun({seed});for(let j=0;j<130&&s.phase==='life';j++){if(!s.pending)advanceToChoice(s);if(s.pending?.event===id){if(filter(s))return seed;break;}if(!s.pending)break;choose(s,decide(s,policy).id);if(policy.activity&&activityOptions(s).find(a=>a.id===policy.activity)?.enabled)setActivity(s,policy.activity);}}throw Error('No natural seed '+id);}
-async function layout(p){const x=await p.eval('({w:innerWidth,scroll:document.documentElement.scrollWidth,tiles:document.querySelectorAll(".main-column .activity-tile").length,atlas:document.querySelector("#life-map")?.dataset.renderer,links:document.querySelector("#life-map")?.dataset.connections})');assert.ok(x.scroll<=x.w+1,JSON.stringify(x));assert.equal(x.tiles,0);assert.equal(x.atlas,'cultivation-dot-map');assert.equal(await p.eval('document.querySelectorAll(".main-column [data-value]").length'),5);assert.equal(await p.eval('document.querySelectorAll(".ability-radar .radar-label").length'),5);assert.equal(await p.eval('document.querySelectorAll(".main-column .family-panel,.main-column [data-action=item]").length'),0);assert.equal(x.links,'4');}
+async function layout(p){const x=await p.eval('({w:innerWidth,scroll:document.documentElement.scrollWidth,tiles:document.querySelectorAll(".main-column .activity-tile").length,atlas:document.querySelector("#life-map")?.dataset.renderer,links:document.querySelector("#life-map")?.dataset.connections,here:document.querySelector("#life-map")?.dataset.current})');assert.ok(x.scroll<=x.w+1,JSON.stringify(x));assert.equal(x.tiles,0);assert.equal(x.atlas,'cultivation-dot-map');assert.equal(await p.eval('document.querySelectorAll(".main-column [data-value]").length'),5);assert.equal(await p.eval('document.querySelectorAll(".ability-radar .radar-label").length'),5);assert.equal(await p.eval('document.querySelectorAll(".main-column .family-panel,.main-column [data-action=item]").length'),0);
+/* 地图只画「当前所在 + 走过的大陆」（S8 起的设计）⇒ 通路条数不是固定值，而是随存档变的。
+   ⇒ 这里不写死数字，而是**从存档独立算一遍**再比对：地图多画/少画一条都报红。
+   ⚠ 顺带守住「当前所在」：地图标的位置必须跟存档一致。 */
+const st=await snapshot(p),unlocked=unlockedOf(st),expect=routeCount(unlocked);
+assert.equal(x.here,unlocked[0]||'',"地图标出的「当前所在」与存档一致（"+(unlocked[0]||'（没有）')+"）");
+assert.equal(x.links,String(expect),"地图上的通路条数 = 已解锁大陆之间的通路条数（"+expect+" 条）");}
 async function screenshotSection(p,selector,file){await p.eval('document.querySelector('+JSON.stringify(selector)+').scrollIntoView({block:"start",behavior:"instant"})');await p.screenshot(join(out,file));}
 try{
  server=await startServer({root:built?join(projectRoot,'dist'):projectRoot,port:0});report.servedRoot=built?'dist':'source';if(built){const manifest=JSON.parse(await readFile(join(projectRoot,'dist/xianxia-build.json'),'utf8')),asset=manifest.files.find(f=>f.path==='apps/preview/app.js'),response=await fetch(server.url+'apps/preview/app.js');assert.equal(response.status,200);assert.equal(createHash('sha256').update(Buffer.from(await response.arrayBuffer())).digest('hex'),asset.sha256);report.build=manifest.builtAt;}browser=await launchBrowser();const p=await browser.page();

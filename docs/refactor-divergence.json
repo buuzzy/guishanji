@@ -77,6 +77,15 @@
         "content/readable-stories.js": "changed",
         "packages/adventure/engine.js": "changed"
       }
+    },
+    {
+      "id": "S8",
+      "title": "呈现域：剩余年限常驻显示 + 地图只画当前所在的大陆",
+      "why": "两件事：① 「还能活多久」以前只有登记卡上一个孤零零的「预期寿元」，玩家在人生页看不到自己还剩多少年 ⇒ 寿元的数据本来就由规则层算好了（state.life.cultivation.lifespanLimit），这一轮补一个 lifespanPlan12()（寿元上限 / 现在几岁 / 还剩几年 / 下一境界的死线），顶栏与角色卡各显示一句，句子归表达域（content/expressions/lifespan.js）。② 地图一次画四块大陆，但玩家关心的是「我现在在哪、能去哪」⇒ 改成只画当前所在的大陆 + 真正走过的大洲，并把这几块挪到画布中间；「该显示哪几块」改由规则层给（mapView），呈现层不自己判断 ⇒ 网页端与小程序端画出来的东西必然一样（画面门禁逐笔比对）。",
+      "files": {
+        "packages/adventure/cultivation.js": "changed",
+        "packages/adventure/story-rules12.js": "changed"
+      }
     }
   ],
   "currentVersion": {

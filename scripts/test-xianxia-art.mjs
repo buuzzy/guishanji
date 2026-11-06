@@ -347,6 +347,13 @@ section('点阵大陆地图：与上游逐笔比对');
 let mapMismatch = '';
 let mapCompared = 0;
 let mapOps = 0;
+/* ⚠ S8：地图从「画四块大陆」改成「只画当前所在 + 走过的大陆」，
+ *   于是「笔数 > 5000」这个判据（按画四块时的实测值定的）不再成立。
+ *   ⇒ 换成**更严的等值判据**：画出的点阵必须**一个不多一个不少**，
+ *     正好等于「本次该画的那几块大陆的点数之和」。
+ *   这比「> 5000」严得多：漏画一块、多画一块、把半径改一下，都会报红。 */
+let mapDots = 0;
+let mapDotsExpected = 0;
 
 for (const run of lives) {
   for (const theme of ['light', 'dark']) {
@@ -364,11 +371,22 @@ for (const run of lives) {
     const diff = compareOps(up.ops, our.ops);
     if (diff && !mapMismatch) mapMismatch = `${run.id} / ${theme}：${diff}`;
     mapOps += our.ops.length;
+    /* 点阵的圆点半径固定是 1.55（标记用的圆圈是 16 / 5 / 4）⇒ 按半径分出来。 */
+    mapDots += our.ops.filter(op => op[0] === 'arc' && op[3] === 1.55).length;
+    const view = engine.mapView ? engine.mapView(run) : {unlocked: []};
+    let expect = 0;
+    for (const g of ourAtlas.dots()) {
+      if (view.unlocked.indexOf(g.id) >= 0) expect += g.points.length;
+    }
+    mapDotsExpected += expect;
     mapCompared++;
   }
 }
 ok(!mapMismatch, mapMismatch || `点阵地图逐笔一致（比对 ${mapCompared} 次）`);
-ok(mapOps > 5000, `地图确实画出了东西（共 ${mapOps} 笔，不是空跑）`);
+ok(mapDots === mapDotsExpected,
+  `地图画出的点阵一个不多一个不少（${mapDots} / 期望 ${mapDotsExpected}）`);
+ok(mapDotsExpected > 0,
+  `地图确实画出了东西（本次该画 ${mapDotsExpected} 个点，不是空跑）`);
 
 /* ══════════════════════════════════════════════ ③ 像素肖像逐笔比对 */
 
@@ -503,18 +521,57 @@ section('画面快照与锁定清单对得上');
   }
   ok(allMatch, `画面快照的 ${artLock.files.length} 个文件与清单逐字节一致`);
 
-  /* 快照与**本仓库的副本**是不是同一批字节（参考实现取自本仓库，得证明两者一样）。 */
+  /* 快照与**本仓库的副本**是不是同一批字节（参考实现取自本仓库，得证明两者一样）。
+   *
+   * ⚠ S8 起：地图被**有意**改过（只画当前所在 + 走过的大洲）⇒ 本仓库的副本
+   *   不再与迁移时那份逐字节一致。但那不是「偷偷改」——
+   *   ⇒ 改成「要么一致，要么差异登记在 `docs/art-divergence.json` 里（写清为什么）」。
+   *   没登记的差异照样报红：偷偷改参考实现会让「逐笔比对」变成自己跟自己比。 */
+  const artDivergenceFile = path.join(ROOT, 'docs', 'art-divergence.json');
+  const artDivergences = new Map();
+  if (fs.existsSync(artDivergenceFile)) {
+    const doc = JSON.parse(fs.readFileSync(artDivergenceFile, 'utf8'));
+    for (const d of (doc.changes || [])) {
+      if (!d.file || !d.why) {
+        fail++;
+        console.log(`    ✗ 画面差异台账里有条目没写清「哪个文件 / 为什么」`);
+        continue;
+      }
+      artDivergences.set(d.file, d);
+    }
+  } else {
+    fail++;
+    console.log('    ✗ 缺少画面差异台账：docs/art-divergence.json');
+  }
+
   let sameAsRepo = true;
+  let divergedCount = 0;
+  const usedDivergences = new Set();
   for (const file of artLock.files) {
     const inVendor = path.join(ART_VENDOR, file.id);
     const inRepo = path.join(ROOT, file.id);
     if (!fs.existsSync(inRepo) || !fs.existsSync(inVendor)
         || !fs.readFileSync(inRepo).equals(fs.readFileSync(inVendor))) {
+      const note = artDivergences.get(file.id);
+      if (note) {
+        divergedCount++;
+        usedDivergences.add(file.id);
+        console.log(`    · 有意改动（已登记）：${file.id} —— ${note.why}`);
+        continue;
+      }
       sameAsRepo = false;
       console.log(`    ✗ 与本仓库副本不同：${file.id}`);
     }
   }
-  ok(sameAsRepo, 'vendor 画面快照与本仓库 apps/preview/ 的副本逐字节一致');
+  ok(sameAsRepo,
+    divergedCount
+      ? `vendor 画面快照与本仓库副本的差异全部登记在案（${divergedCount} 处有登记，其余逐字节一致）`
+      : 'vendor 画面快照与本仓库 apps/preview/ 的副本逐字节一致');
+
+  /* 台账发霉：登记了、但实际没改 ⇒ 报红（防止有人偷偷把登记删掉）。 */
+  const staleArt = [...artDivergences.keys()].filter(f => !usedDivergences.has(f));
+  ok(staleArt.length === 0,
+    '画面差异台账没有发霉（登记了、但实际没改的：' + (staleArt.join('、') || '无') + '）');
 }
 
 fs.rmSync(tmp, {recursive: true, force: true});

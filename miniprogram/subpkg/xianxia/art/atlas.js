@@ -87,6 +87,36 @@ function dots() {
 }
 
 /**
+ * 把要画的那几块大陆挪到画布中间。
+ *
+ * ⚠ 只画当前所在 + 走过的大陆 ⇒ 不挪的话，画面会偏在一角、一大半是空的。
+ * ⚠ 挪动只改**画到哪里**，不改画什么（笔序、笔数不变）⇒ 画面门禁照样逐笔可比。
+ * ⚠ 别把内容推出画布：先居中，推出去就拉回来。
+ * ⚠ 这段必须与网页端 `apps/preview/continent-atlas.js` 的同名函数**逐字对应**。
+ */
+function offsetFor(shown) {
+  if (!shown.length) return {x: 0, y: 0};
+  var minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+  for (var gi = 0; gi < shown.length; gi++) {
+    var pts = shown[gi].points;
+    for (var pi = 0; pi < pts.length; pi++) {
+      if (pts[pi][0] < minX) minX = pts[pi][0];
+      if (pts[pi][0] > maxX) maxX = pts[pi][0];
+      if (pts[pi][1] < minY) minY = pts[pi][1];
+      if (pts[pi][1] > maxY) maxY = pts[pi][1];
+    }
+  }
+  var margin = 24;
+  var ox = (W - (minX + maxX)) / 2;
+  var oy = (H - (minY + maxY)) / 2;
+  if (ox < margin - minX) ox = margin - minX;
+  if (ox > W - margin - maxX) ox = W - margin - maxX;
+  if (oy < margin - minY) oy = margin - minY;
+  if (oy > H - margin - maxY) oy = H - margin - maxY;
+  return {x: ox, y: oy};
+}
+
+/**
  * 画地图。
  * @param {object} c 画布上下文
  * @param {object} s  人生状态（可为空）
@@ -96,9 +126,13 @@ function dots() {
 function drawMap(c, s, theme, clientWidth) {
   var dark = theme === 'dark';
   var cultivation = s && s.life ? s.life.cultivation : null;
-  var current = s ? engine.currentContinent(s) : null;
+  /* ⚠ 「现在在哪 + 已解锁哪些地方」由**规则层**给（engine.mapView），
+     呈现层不自己判断 ⇒ 网页端与小程序端画出来的东西必然一样。 */
+  var view = s && engine.mapView ? engine.mapView(s) : {current: null, visited: [], unlocked: []};
+  var current = view.current;
+  var visited = view.visited;
+  var unlocked = view.unlocked;
   var closed = (cultivation && cultivation.closed) || [];
-  var visited = (cultivation && cultivation.visited) || [];
   var geography = engine.GEOGRAPHY || [];
 
   var p = dark
@@ -107,15 +141,21 @@ function drawMap(c, s, theme, clientWidth) {
 
   c.clearRect(0, 0, W, H);
 
+  /* 只画「当前所在 + 走过」的大陆：没去过、也没在的地方不占画面。 */
   var all = dots();
-  for (var i = 0; i < all.length; i++) {
-    var g = all[i];
+  var shown = [];
+  for (var si = 0; si < all.length; si++) {
+    if (unlocked.indexOf(all[si].id) >= 0) shown.push(all[si]);
+  }
+  var off = offsetFor(shown);
+  for (var i = 0; i < shown.length; i++) {
+    var g = shown[i];
     var hot = g.id === current || visited.indexOf(g.id) >= 0;
     c.fillStyle = hot ? p.hot : p.land;
     c.globalAlpha = hot ? 0.52 : 0.25;
     for (var j = 0; j < g.points.length; j++) {
       c.beginPath();
-      c.arc(g.points[j][0], g.points[j][1], 1.55, 0, Math.PI * 2);
+      c.arc(g.points[j][0] + off.x, g.points[j][1] + off.y, 1.55, 0, Math.PI * 2);
       c.fill();
     }
   }
@@ -123,10 +163,13 @@ function drawMap(c, s, theme, clientWidth) {
   c.globalAlpha = 1;
   var edges = {};
   var walked = {};
-  for (var gi = 0; gi < geography.length; gi++) {
-    var conns = geography[gi].connections || [];
+  for (var gi2 = 0; gi2 < geography.length; gi2++) {
+    var conns = geography[gi2].connections || [];
     for (var ci = 0; ci < conns.length; ci++) {
-      edges[[geography[gi].id, conns[ci]].sort().join('-')] = true;
+      /* 两端都在「已解锁」里才画这条通路。 */
+      if (unlocked.indexOf(geography[gi2].id) >= 0 && unlocked.indexOf(conns[ci]) >= 0) {
+        edges[[geography[gi2].id, conns[ci]].sort().join('-')] = true;
+      }
     }
   }
   var routes = (cultivation && cultivation.routes) || [];
@@ -149,8 +192,8 @@ function drawMap(c, s, theme, clientWidth) {
     c.lineWidth = done ? 2.2 : 1.4;
     c.setLineDash(done ? [] : [5, 6]);
     c.beginPath();
-    c.moveTo(A[0] * K, A[1] * K);
-    c.lineTo(B[0] * K, B[1] * K);
+    c.moveTo(A[0] * K + off.x, A[1] * K + off.y);
+    c.lineTo(B[0] * K + off.x, B[1] * K + off.y);
     c.stroke();
     c.setLineDash([]);
     c.globalAlpha = 1;
@@ -158,37 +201,38 @@ function drawMap(c, s, theme, clientWidth) {
       c.fillStyle = p.accent;
       c.textAlign = 'center';
       c.font = '20px sans-serif';
-      c.fillText('×', ((A[0] + B[0]) * K) / 2, ((A[1] + B[1]) * K) / 2);
+      c.fillText('×', ((A[0] + B[0]) * K) / 2 + off.x, ((A[1] + B[1]) * K) / 2 + off.y);
     }
   }
 
   var width = clientWidth || W;
   for (var mi = 0; mi < geography.length; mi++) {
     var land = geography[mi];
+    if (unlocked.indexOf(land.id) < 0) continue;
     var pin = land.pin || [0, 0];
     var x = pin[0] * K;
     var y = pin[1] * K;
     c.fillStyle = land.id === current ? p.hot : p.ink;
     c.textAlign = 'center';
     c.font = Math.max(18, Math.round((W / Math.max(320, width)) * 12)) + 'px sans-serif';
-    c.fillText(land.name, x, y - 30);
+    c.fillText(land.name, x + off.x, y + off.y - 30);
     if (land.id === current) {
       c.strokeStyle = p.hot;
       c.lineWidth = 2;
       c.beginPath();
-      c.arc(x, y, 16, 0, Math.PI * 2);
+      c.arc(x + off.x, y + off.y, 16, 0, Math.PI * 2);
       c.stroke();
       c.beginPath();
-      c.arc(x, y, 5, 0, Math.PI * 2);
+      c.arc(x + off.x, y + off.y, 5, 0, Math.PI * 2);
       c.fill();
     } else if (visited.indexOf(land.id) >= 0) {
       c.beginPath();
-      c.arc(x, y, 4, 0, Math.PI * 2);
+      c.arc(x + off.x, y + off.y, 4, 0, Math.PI * 2);
       c.fill();
     }
     if (s && s.birth && s.birth.continent === land.id) {
       c.font = Math.max(12, Math.round((W / Math.max(320, width)) * 9)) + 'px sans-serif';
-      c.fillText('出生地', x, y + 32);
+      c.fillText('出生地', x + off.x, y + off.y + 32);
     }
   }
   return edgeKeys.length;

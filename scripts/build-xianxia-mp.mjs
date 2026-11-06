@@ -131,7 +131,7 @@ const EXPORTS = {
     'regionInfo', 'activityLabel', 'monthSeconds', 'income', 'practiceRate', 'trainingOptions',
   ],
   'packages/adventure/context.js': ['activityContext', 'presentPeople'],
-  'packages/adventure/cultivation.js': ['activityOptions', 'routeOptions', 'currentContinent'],
+  'packages/adventure/cultivation.js': ['activityOptions', 'routeOptions', 'currentContinent', 'mapView'],
   'packages/adventure/cultivation-economy.js': ['economyQuote'],
   'content/story-network.js': ['METHODS'],
   'packages/adventure/progression.js': [
@@ -142,8 +142,9 @@ const EXPORTS = {
   /* 规则12 的专用模块：体质 / 寿限 / 炼气阶段 / 宗门 —— 小程序端要显示它们，
      不能拿 REALMS[].lifespan 顶（那只是旧规则与境界基础值）。 */
   'packages/adventure/story-rules12.js': [
-    'rules12', 'lifespan12', 'stage12', 'sectProfile', 'active12',
+    'rules12', 'lifespan12', 'lifespanPlan12', 'stage12', 'sectProfile', 'active12',
   ],
+  'content/expressions/lifespan.js': ['LIFESPAN_TEXT', 'fillLifespan'],
   'content/rules12-world.js': ['BODY_TYPES', 'REGIONAL_METHODS'],
 };
 

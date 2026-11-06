@@ -82,6 +82,45 @@ function geoName(id) {
 
 /* ───────────────────────────── 顶栏 ───────────────────────────── */
 
+/**
+ * 寿元计划 —— **只读规则层算好的数字**（`lifespanPlan12`），呈现层不自己算。
+ *
+ * ⚠ 规则层没带这个函数时（老存档 / 老版本）⇒ 返回 null ⇒ 那一行就不显示，
+ *   宁可少一行，也不要显示一个编出来的数。
+ */
+function lifespanPlan(run) {
+  if (!engine.lifespanPlan12) return null;
+  try {
+    return engine.lifespanPlan12(run);
+  } catch (error) {
+    return null;
+  }
+}
+
+/**
+ * 顶栏那一行：寿尽 X 岁 · 还能活 Y 年。
+ * ⚠ **整句在 JS 侧拼好**（WXML 的 {{}} 不支持字符串拼接）。
+ */
+function lifespanLine(run) {
+  var plan = lifespanPlan(run);
+  if (!plan) return '';
+  var template = (engine.LIFESPAN_TEXT && engine.LIFESPAN_TEXT.line) || '寿尽 {limit} 岁 · 还能活 {left} 年';
+  if (engine.fillLifespan) return engine.fillLifespan(template, plan);
+  return template.replace('{limit}', String(plan.limit)).replace('{left}', String(plan.left));
+}
+
+/**
+ * 下一境界的「死线」：不突破到下一境，这一世最多活到那一年。
+ */
+function lifespanNext(run) {
+  var plan = lifespanPlan(run);
+  if (!plan) return '';
+  if (plan.next === null || plan.next === undefined) return (engine.LIFESPAN_TEXT && engine.LIFESPAN_TEXT.last) || '';
+  var template = (engine.LIFESPAN_TEXT && engine.LIFESPAN_TEXT.next) || '下一境（{nextRealm}）最多活到 {next} 岁';
+  if (engine.fillLifespan) return engine.fillLifespan(template, plan);
+  return template.replace('{nextRealm}', String(plan.nextRealm)).replace('{next}', String(plan.next));
+}
+
 /** 官方 `.agebox`：年龄大字 + 「年 · 名 · 1月≈N秒」+ 进度条。 */
 function topbar(run) {
   var seconds = 12;
@@ -97,6 +136,8 @@ function topbar(run) {
     monthSec: Math.round(seconds * 100) / 100,
     /* 官方 yearProgress()：((month % 12 + fraction) / 12 * 100) */
     prog: Math.round(((run.month % 12) / 12) * 100),
+    /* ⚠ 还能活多久（整句在 JS 侧拼好，WXML 不支持字符串拼接）。 */
+    lifespanText: lifespanLine(run),
   };
 }
 
@@ -313,6 +354,10 @@ function certPage(run) {
   fields.push({k: '起始境界', v: [{t: realm.name}]});
   fields.push({k: '山历', v: [{t: String(birth.year)}]});
   fields.push({k: '预期寿元', v: [{t: lifespanLimit + ' 岁'}]});
+  /* ⚠ 下一境界的「死线」：不突破到下一境，这一世最多活到那一年。
+     ⚠ 出生命盘那一刻还不算「还能活多久」（那是出生就定了的数）⇒ 这里给的是**目标**。 */
+  var nextLine = lifespanNext(run);
+  if (nextLine) fields.push({k: '下一境死线', v: [{t: nextLine}]});
 
   var seconds = 12;
   try {

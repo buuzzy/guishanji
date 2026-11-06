@@ -29,6 +29,7 @@ import {NODES} from '../content/adventure.js';
 import {EPISODES} from '../content/living-episodes.js';
 import {CULTIVATION_EVENTS} from '../content/cultivation-stories.js';
 import {ROWS, DYNAMIC, makeReadable} from '../content/expressions/index.js';
+import {LIFESPAN_TEXT, fillLifespan} from '../content/expressions/lifespan.js';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const BASELINE = path.join(ROOT, 'tests/fixtures/expressions.json');
@@ -248,6 +249,21 @@ if (!fs.existsSync(VOCAB_FILE)) {
     console.log(`  ⚠ 警告级：总表里有 ${notInExpr.length} 个词表达域一次都没用（多半是修仙线的人名地名，确认是不是过期登记）`);
   }
 }
+
+/* ── 7. 句式里的占位符必须都填得上 ────────────────────────────────────── */
+
+/* ⚠ 这条是踩过坑才加的：句式里写「{realm}」、而规则层给的字段叫「nextRealm」
+ *   ⇒ 填的时候对不上 ⇒ 玩家看到的是一句带花括号的怪话。
+ *   ⇒ 每个句式都拿一份「规则层会给的字段」去填一遍，**填完不许还留着 {…}**。 */
+const PLAN_FIELDS = {limit: 120, age: 30, left: 90, next: 210, nextRealm: '筑基'};
+const badTemplates = [];
+for (const [key, template] of Object.entries(LIFESPAN_TEXT)) {
+  if (typeof template !== 'string') continue;
+  const filled = fillLifespan(template, PLAN_FIELDS);
+  if (/[{}]/.test(filled)) badTemplates.push(`${key}：填完还留着 ${filled}`);
+}
+ok(badTemplates.length === 0, `寿元句式里的占位符都填得上（${Object.keys(LIFESPAN_TEXT).length} 条句式，填不上的 ${badTemplates.length} 条）`);
+for (const line of badTemplates) console.error(`      ${line}`);
 
 if (failures) {
   console.error(`\n${failures} 处硬伤。`);

@@ -86,6 +86,7 @@
     "content/expressions/homecoming.js": "voice",
     "content/expressions/index.js": "voice",
     "content/expressions/journey.js": "voice",
+    "content/expressions/lifespan.js": "voice",
     "content/expressions/mainline.js": "voice",
     "content/expressions/outer.js": "voice",
     "content/expressions/people.js": "voice",
@@ -132,13 +133,13 @@
     "packages/adventure/realm.js": "role",
     "packages/adventure/revision9-v9.js": "cause",
     "packages/adventure/revision9.js": "cause",
+    "packages/adventure/scheduler.js": "pace",
     "packages/adventure/store.js": "entry",
     "packages/adventure/story-network-v9.js": "cause",
     "packages/adventure/story-network.js": "cause",
     "packages/adventure/story-rules10.js": "cause",
     "packages/adventure/story-rules12.js": "pace",
-    "packages/core/random.js": "infra",
-    "packages/adventure/scheduler.js": "pace"
+    "packages/core/random.js": "infra"
   },
   "presentRoots": [
     "apps/",

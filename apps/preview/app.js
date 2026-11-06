@@ -1,4 +1,4 @@
-import {lifespan12} from '../../packages/adventure/story-rules12.js';
+import {lifespan12,lifespanPlan12} from '../../packages/adventure/story-rules12.js';
 import {mundanePeople,mundane,activeMundane} from '../../packages/adventure/mundane-life.js';
 import {autoChoice} from '../../packages/adventure/auto-choice.js';
 import {storyPeople,rootLabel,rootDescription,canCultivate,active10} from '../../packages/adventure/story-rules10.js';
@@ -11,6 +11,7 @@ import { regionInfo, activityLabel, monthSeconds, income, practiceRate, training
 import { activityContext, presentPeople } from '../../packages/adventure/context.js';
 import { registerScene, drawScene } from './cultivation-pixel.js';
 import { PEOPLE_BACKGROUNDS } from '../../content/expressions/people.js';
+import { LIFESPAN_TEXT, fillLifespan } from '../../content/expressions/lifespan.js';
 import { REALM_ABILITIES } from '../../packages/adventure/realm.js';
 import { PATHS,ROOTS,ACTIVITIES,GEOGRAPHY } from '../../content/cultivation-world.js';
 import { activityOptions,routeOptions,currentContinent } from '../../packages/adventure/cultivation.js';
@@ -49,7 +50,7 @@ function toolbar() {
   return `<div class="topbar-inner"><div class="brand">归<em class="em">山</em>记</div><span class="eyebrow">修仙人生</span><div class="nav-spacer"></div><button class="small-btn" data-action="theme">${ui.theme === 'light' ? '夜读' : '日读'}</button><button class="small-btn" data-action="history">往期人生</button></div>`;
 }
 function lifeToolbar() {
- return '<div class="topbar-inner"><div class="brand">归<em class="em">山</em>记</div><div class="agebox"><div class="age-num"><span id="life-age"></span><small>岁</small></div><div class="age-yr"><span class="t" id="life-date"></span><div class="prog"><div id="year-progress"></div></div></div></div><div class="speed"><button class="pause" data-action="play" id="play-control" aria-label="暂停"></button><div class="sps">'+[1,2,4].map((v,i)=>'<button class="sps-b '+(i===0?'first':i===2?'last':'')+'" data-action="set-speed" data-speed="'+v+'">'+v+'<small>×</small></button>').join('')+'</div><button class="exitbtn" data-action="home">离开</button><button class="morebtn" data-action="menu" aria-label="更多">⋯</button></div><span class="save-label" id="save-status"></span></div>';
+ return '<div class="topbar-inner"><div class="brand">归<em class="em">山</em>记</div><div class="agebox"><div class="age-num"><span id="life-age"></span><small>岁</small></div><div class="age-yr"><span class="t" id="life-date"></span><div class="t" id="life-span"></div><div class="prog"><div id="year-progress"></div></div></div></div><div class="speed"><button class="pause" data-action="play" id="play-control" aria-label="暂停"></button><div class="sps">'+[1,2,4].map((v,i)=>'<button class="sps-b '+(i===0?'first':i===2?'last':'')+'" data-action="set-speed" data-speed="'+v+'">'+v+'<small>×</small></button>').join('')+'</div><button class="exitbtn" data-action="home">离开</button><button class="morebtn" data-action="menu" aria-label="更多">⋯</button></div><span class="save-label" id="save-status"></span></div>';
 }
 function updateBar() {
   const life = ui.screen === 'life' && state;
@@ -62,6 +63,9 @@ function updateBar() {
   const block=longAction(state),d = date(state,block?.from??state.month), pending = Boolean(state.pending);
   document.querySelector('#life-age').textContent = d.age;
   document.querySelector('#life-date').textContent = `山历 ${d.year} 年${block?'起':''} · ${state.player.name}${block?' · 此程 '+duration(block.months):''}`;
+  /* ⚠ 寿元只有规则层能算（`lifespanPlan12`），呈现层只把数字填进表达域的句式。 */
+  const plan = lifespanPlan12(state);
+  document.querySelector('#life-span').textContent = fillLifespan(LIFESPAN_TEXT.line, plan);
   document.querySelector('#year-progress').style.width = yearProgress() + '%';
 
   const control = document.querySelector('#play-control');
@@ -126,9 +130,15 @@ function groundsMarkup() {
 }
 function familyStatus(p){const c=state.life.cultivation;return c?(c.knownDeaths.includes(p.id)?'已逝':age(state)<16?'在身边':'最近来信时在世 · '+regionInfo(state,p.location).name):statusNames[p.status];}
 
+/* 下一境界的「死线」：不突破到下一境，这一世最多活到那一年。 */
+function lifespanNextText(s){
+  const plan = lifespanPlan12(s);
+  if (plan.next == null) return LIFESPAN_TEXT.last;
+  return fillLifespan(LIFESPAN_TEXT.next, plan);
+}
 function sidebarMarkup() {
   const p = state.player, allies = aid(state), grown = age(state) >= 16;
-  return `<section class="panel"><span class="lbl">这一生的你</span><div class="identity-name">${escape(p.name)}</div><p class="identity-caption">${FAMILIES[state.birth.family].name} · ${rootLabel(state)}</p><div class="stat-line"><span>境界</span><b>${REALMS[p.realm].name}</b></div><p class="sidebar-note realm-benefits">${REALM_ABILITIES[p.realm]}寿元上限 ${lifespan12(state)} 岁。</p><div class="stat-line"><span>灵石</span><b id="stone-count">${Math.round(p.stones)}</b></div>${state.flags.debt ? `<div class="stat-line"><span>未还路费</span><b>${state.flags.debt}</b></div>` : ''}<div class="stat-line"><span>仁心</span><b>${Math.round(p.empathy)}</b></div><div class="stat-line"><span>世界</span><b>${WORLD_ERAS[state.birth.era].name}</b></div><p class="sidebar-note">${grown ? '每年净结余 +' + income(state) + ' 灵石，先还路费欠账。当前灵脉的修行倍率 ' + practiceRate(state) + '×。' : '幼年先经历成长与启蒙；十六岁后才开始修行与日常结余。'}</p></section><section class="panel"><h3 class="panel-h"><span>修行本事</span><span class="lbl">${SKILLS[p.focus]}为重</span></h3>${Object.entries(p.skills).map(([key, v]) => `<div class="skill-row ${key === p.focus ? 'active' : ''}"><strong>${SKILLS[key]}</strong><div class="meter"><div style="width:${v}%"></div></div><span class="mono">${Math.round(v)}</span></div>`).join('')}<p class="sidebar-note">平日练习会自动积累；大境界突破与危险经历仍由你决定。</p></section><section class="panel"><h3 class="panel-h"><span>随身行囊</span><span class="lbl">${state.inventory.length}件</span></h3><div class="inventory">${state.inventory.length ? state.inventory.map(id => `<span class="chip" data-item="${id}">${ITEMS[id].name}</span>`).join('') : '<span class="hint">行囊暂空，故事仍可继续。</span>'}</div>${allies.length ? `<p class="sidebar-note">已建立的援手与承诺</p><div class="inventory">${allies.map(promise => `<span class="chip positive">${promise}</span>`).join('')}</div>` : ''}</section><section class="panel"><h3 class="panel-h">家产与住处</h3>${Object.values(state.life.properties).map(p => `<div class="property-row ${p.status}"><strong>${escape(p.name)}</strong><small>${p.continent?GEOGRAPHY.find(g=>g.id===p.continent).name:regionInfo(state,p.location).name} · ${({ kept: '保有', damaged: '损坏', lost: '已失去' })[p.status]}</small></div>`).join('')}</section><section class="panel"><h3 class="panel-h">收到的历练消息</h3>${groundsMarkup()}</section><section class="panel people-panel"><h3 class="panel-h"><span>人物与牵挂</span><button class="sheet-close" data-action="people">全部 →</button></h3><div class="people-list">${personRows() || '<p class="hint">还没有遇见山门与异乡的人。</p>'}</div></section>`;
+  return `<section class="panel"><span class="lbl">这一生的你</span><div class="identity-name">${escape(p.name)}</div><p class="identity-caption">${FAMILIES[state.birth.family].name} · ${rootLabel(state)}</p><div class="stat-line"><span>境界</span><b>${REALMS[p.realm].name}</b></div><p class="sidebar-note realm-benefits">${REALM_ABILITIES[p.realm]}寿元上限 ${lifespan12(state)} 岁。${fillLifespan(LIFESPAN_TEXT.line, lifespanPlan12(state))}。${lifespanNextText(state)}</p><div class="stat-line"><span>灵石</span><b id="stone-count">${Math.round(p.stones)}</b></div>${state.flags.debt ? `<div class="stat-line"><span>未还路费</span><b>${state.flags.debt}</b></div>` : ''}<div class="stat-line"><span>仁心</span><b>${Math.round(p.empathy)}</b></div><div class="stat-line"><span>世界</span><b>${WORLD_ERAS[state.birth.era].name}</b></div><p class="sidebar-note">${grown ? '每年净结余 +' + income(state) + ' 灵石，先还路费欠账。当前灵脉的修行倍率 ' + practiceRate(state) + '×。' : '幼年先经历成长与启蒙；十六岁后才开始修行与日常结余。'}</p></section><section class="panel"><h3 class="panel-h"><span>修行本事</span><span class="lbl">${SKILLS[p.focus]}为重</span></h3>${Object.entries(p.skills).map(([key, v]) => `<div class="skill-row ${key === p.focus ? 'active' : ''}"><strong>${SKILLS[key]}</strong><div class="meter"><div style="width:${v}%"></div></div><span class="mono">${Math.round(v)}</span></div>`).join('')}<p class="sidebar-note">平日练习会自动积累；大境界突破与危险经历仍由你决定。</p></section><section class="panel"><h3 class="panel-h"><span>随身行囊</span><span class="lbl">${state.inventory.length}件</span></h3><div class="inventory">${state.inventory.length ? state.inventory.map(id => `<span class="chip" data-item="${id}">${ITEMS[id].name}</span>`).join('') : '<span class="hint">行囊暂空，故事仍可继续。</span>'}</div>${allies.length ? `<p class="sidebar-note">已建立的援手与承诺</p><div class="inventory">${allies.map(promise => `<span class="chip positive">${promise}</span>`).join('')}</div>` : ''}</section><section class="panel"><h3 class="panel-h">家产与住处</h3>${Object.values(state.life.properties).map(p => `<div class="property-row ${p.status}"><strong>${escape(p.name)}</strong><small>${p.continent?GEOGRAPHY.find(g=>g.id===p.continent).name:regionInfo(state,p.location).name} · ${({ kept: '保有', damaged: '损坏', lost: '已失去' })[p.status]}</small></div>`).join('')}</section><section class="panel"><h3 class="panel-h">收到的历练消息</h3>${groundsMarkup()}</section><section class="panel people-panel"><h3 class="panel-h"><span>人物与牵挂</span><button class="sheet-close" data-action="people">全部 →</button></h3><div class="people-list">${personRows() || '<p class="hint">还没有遇见山门与异乡的人。</p>'}</div></section>`;
 }
 function timelineMarkup(all = ui.timelineAll) {
   const records = (all ? state.journal : state.journal.slice(-6)).slice().reverse();

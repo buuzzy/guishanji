@@ -367,6 +367,29 @@ function revised_cultivationText(input,s,event,kind='node'){
 }
 
 // Existing lives continue with their original scheduling, economy and choices.
+/**
+ * 地图视角 —— 「现在在哪 + 已经解锁了哪些地方」。
+ *
+ * ⚠ 呈现层（网页端点阵地图、小程序端点阵地图）**不许自己判断**该显示哪几块大陆：
+ *   它只按这里给的 `unlocked` 清单画 ⇒ 两端画出来的东西必然一样
+ *   （画面门禁要求两端「逐笔一致」）。
+ *
+ * ⚠ 「解锁」的口径 = **当前所在的大陆 + 真正走过的大陆**。
+ *   没去过、也没在的地方不画 —— 地图是用来回答「我现在在哪、能去哪」的，
+ *   不是用来展示世界有多大。
+ *
+ * @param {object} s 当前人生状态（可为空）
+ * @returns {{current:string|null, visited:string[], unlocked:string[]}}
+ */
+export function mapView(s){
+ const c=s&&s.life?s.life.cultivation:null;
+ const current=currentContinent(s);
+ const visited=(c&&c.visited)||[];
+ const unlocked=[];
+ if(current&&unlocked.indexOf(current)<0)unlocked.push(current);
+ for(let i=0;i<visited.length;i++)if(unlocked.indexOf(visited[i])<0)unlocked.push(visited[i]);
+ return {current,visited,unlocked};
+}
 export function currentContinent(...args){const version=args[0]?.life?.cultivation?.rulesVersion;return version===12?revised_currentContinent(...args):(version===11?rules11:version===10?rules10:version===9?rules9:version===8?rules8:version===7?rules7:version===6?rules6:previousRules).currentContinent(...args);}
 export function cultivationActionTrip(...args){const version=args[0]?.life?.cultivation?.rulesVersion;return version===12?revised_cultivationActionTrip(...args):(version===11?rules11:version===10?rules10:version===9?rules9:version===8?rules8:version===7?rules7:version===6?rules6:previousRules).cultivationActionTrip(...args);}
 export function beginCultivationAction(...args){const version=args[0]?.life?.cultivation?.rulesVersion;return version===12?revised_beginCultivationAction(...args):(version===11?rules11:version===10?rules10:version===9?rules9:version===8?rules8:version===7?rules7:version===6?rules6:previousRules).beginCultivationAction(...args);}

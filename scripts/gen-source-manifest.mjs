@@ -99,7 +99,7 @@ const CHANGED_REASON = {
   'miniprogram/subpkg/xianxia/runtime/build-manifest.json': '生成物：来源改为本仓库源码，并新增 upstreamOrigin 段',
   'miniprogram/subpkg/xianxia/runtime/engine.js': '生成物：由本仓库源码重新构建（除文件头注释外与迁移进来的那份逐字节一致，见 reference/migrated-runtime/）',
   'miniprogram/subpkg/xianxia/runtime/pixel-style.js': '生成物：由本仓库源码重新构建（与迁移进来的那份逐字节一致）',
-  'scripts/build-xianxia-mp.mjs': '构建来源改为本仓库自己的源码（vendor 快照降级为历史证据），新增 app.wxss 生成；2026-11-07 补充说明「上游 xianxia-life 已删除，门禁现在核对仓库内的 vendor 锁定快照」',
+  'scripts/build-xianxia-mp.mjs': '构建来源改为本仓库自己的源码（vendor 快照降级为历史证据），新增 app.wxss 生成；2026-11-07 补充说明「上游 xianxia-life 已删除」；S8 表达域与呈现域：新增 mapView / lifespanPlan12 / 寿元句式的导出',
   'docs/miniprogram-xianxia-integration.md': '2026-11-07：给 --refresh=../xianxia-life 这条已失效的旧命令加提示（该仓库已删除，build 脚本现在只读本仓库源码）；正文其余部分保持原样',
   'docs/xianxia-mini-program-integration.md': '2026-11-07：给 --source=../xianxia-life 这条已失效的旧命令加提示（该仓库已删除，build 脚本现在只读本仓库源码）；正文其余部分保持原样',
   'scripts/test-xianxia-art.mjs': '对照基准改为本仓库 reference/ 与 apps/preview/，不再依赖 1in8b 的 frozen-baseline',
@@ -108,12 +108,13 @@ const CHANGED_REASON = {
   'scripts/test-xianxia-mp.mjs': '新增首页仿真断言；路径层级按独立启动层调整',
   'scripts/test-xianxia-storage.mjs': '不再依赖 1in8b 的 frozen-baseline，改用本仓库自己的哈希校验',
   'scripts/test-xianxia-style.mjs': '官方对照源改读 reference/official/（本仓库内的锁定副本）+ 新的 app.wxss',
-  'miniprogram/subpkg/xianxia/bridge/page-model.js': 'S5 角色域：登记卡的「预期寿元」改读规则层算好的实际寿元（state.life.cultivation.lifespanLimit），不再读境界表的基础数字',
+  'miniprogram/subpkg/xianxia/bridge/page-model.js': 'S5 角色域：登记卡的「预期寿元」改读规则层算好的实际寿元；S8 呈现域：顶栏加「还能活多久」，登记卡加「下一境死线」（整句在 JS 侧拼好，WXML 不支持字符串拼接）',
   'miniprogram/subpkg/xianxia/bridge/view-model.js': 'S5 角色域：修行本事面板加「体魄」（只增不减的能力），体质行补「力竭」提示',
-  'miniprogram/subpkg/xianxia/pages/life/life.wxml': 'S5 角色域：修行本事面板加「体魄」一行',
+  'miniprogram/subpkg/xianxia/pages/life/life.wxml': 'S5 角色域：修行本事面板加「体魄」一行；S8 呈现域：顶栏常驻显示「还能活多久」（用官方已有的 .age-yr .t 类，不新造视觉类）',
   'content/cultivation-stories.js': 'S7 表达域：事件条目统一带上 voice 字段（表达成熟度：inline=已定稿 / pending=未定稿），在装配链末尾补一次，保证每个条目都有',
   'content/readable-stories.js': 'S7 表达域：内容按故事线拆到 content/expressions/ 下，本文件改成门面转发（旧路径还有人在用）',
   'packages/adventure/engine.js': 'S7 表达域：makeReadable 改读新的表达域入口 content/expressions/index.js',
+  'miniprogram/subpkg/xianxia/art/atlas.js': 'S8 呈现域：点阵地图从「一次画四块大陆」改成「只画当前所在 + 走过的大洲」并居中；「该显示哪几块」改由规则层给（engine.mapView）',
 };
 
 
@@ -341,13 +342,14 @@ const ADDED = [
   'docs/migration/ledger.md', 'docs/migration/plan.md', 'docs/migration/storage-migration.md',
   'docs/migration/web-cleanup.md', 'docs/migration/miniprogram-standalone.md',
   /* 2026-11-08：S7 表达域 —— 说法按故事线拆到 content/expressions/ 下 */
-  'content/expressions/index.js', 'content/expressions/people.js',
+  'content/expressions/index.js', 'content/expressions/people.js', 'content/expressions/lifespan.js',
   'content/expressions/mainline.js', 'content/expressions/tide.js', 'content/expressions/ember.js',
   'content/expressions/sky.js', 'content/expressions/journey.js', 'content/expressions/homecoming.js',
   'content/expressions/demonic.js', 'content/expressions/trial.js', 'content/expressions/cavern.js',
   'content/expressions/outer.js', 'content/expressions/beast.js', 'content/expressions/cultivation.js',
   'scripts/verify-expressions.mjs',
   'docs/expression-vocabulary.json',
+  'docs/art-divergence.json',
 ];
 const added = [];
 for (const p of ADDED) {

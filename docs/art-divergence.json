@@ -1,0 +1,13 @@
+{
+  "note": "画面差异台账 —— 迁移时带来的画面快照（vendor/xianxia-r12-art/）与本仓库 apps/preview/ 副本之间的**有意**差异。",
+  "why": "画面门禁拿本仓库的 apps/preview/ 当「上游」，跟小程序端那份逐笔比对 ⇒ 所以必须能证明「本仓库这份」还是不是迁移时那份。直接改了地图之后就不一样了，但改动是有意的 ⇒ 登记在此，门禁就不会误报；**没登记的改动照样报红**（偷偷改参考实现会让比对变成自己跟自己比）。",
+  "rule": "改 apps/preview/ 下被快照收录的文件（apps/preview/pixel-style.js、apps/preview/cultivation-pixel.js、apps/preview/continent-atlas.js）时，在 changes 里登记一条，写清改了什么、为什么。",
+  "changes": [
+    {
+      "file": "apps/preview/continent-atlas.js",
+      "why": "S8 呈现域：地图从「一次画四块大陆」改成「只画当前所在的大陆 + 真正走过的大陆」，并把这几块挪到画布中间（不挪的话画面会偏在一角、一大半是空的）。画什么没变（点阵、连线、标注都来自同一份 GEOGRAPHY），只是**画到哪里**变了；而且「该显示哪几块」改由规则层给（packages/adventure/cultivation.js 的 mapView），两端画出来的东西必然一样。",
+      "since": "S8",
+      "pixelsChanged": "少了没去过的大陆的点阵与标注；被画的那几块整体平移到了画布中间；连线只画两端都在「已解锁」里的。"
+    }
+  ]
+}

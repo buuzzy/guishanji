@@ -33,6 +33,34 @@ export function lifespan12(s){
  return Math.max(age(s),Math.round(base-b.loss));
 }
 /**
+ * 寿元计划 —— 这一世能活到几岁、还剩几年、下一境的死线。
+ *
+ * ⚠ 呈现层只读这个，**不许自己算**（寿元的唯一来源是规则层）。
+ * ⚠ 这里只给**数字**，不给句子 —— 句子归表达域（见 content/expressions/lifespan.js）。
+ *
+ * @param {object} s 当前人生状态
+ * @returns {{limit:number, age:number, left:number, next:number|null, nextRealm:string|null}}
+ *   limit     —— 这一世的寿元上限（岁）
+ *   age       —— 现在几岁
+ *   left      —— 还能活几年（不小于 0）
+ *   next      —— 下一境界的寿元上限（岁）；已在最后一境时为 null
+ *   nextRealm —— 下一境界的名字（如「筑基」）
+ */
+export function lifespanPlan12(s){
+ const limit=lifespan12(s),now=age(s);
+ const realm=s.player.realm,hasNext=realm>=0&&realm<REALMS.length-1;
+ let next=null;
+ if(hasNext){
+  if(!active12(s))next=REALMS[realm+1].lifespan;
+  else{
+   const b=rules12(s).body;
+   const baseFor=r=>r===0?b.natural:r===1?b.natural+45:REALMS[r].lifespan+(b.natural-66);
+   next=Math.max(now,Math.round(baseFor(realm+1)-b.loss));
+  }
+ }
+ return {limit,age:now,left:Math.max(0,limit-now),next,nextRealm:hasNext?REALMS[realm+1].name:null};
+}
+/**
  * 体魄 —— 这个人的身子底子（**能力**：只增不减）。
  *
  * ⚠ 与「体力」分开：

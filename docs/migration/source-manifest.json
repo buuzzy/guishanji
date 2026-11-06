@@ -19,16 +19,6 @@
       {
         "sourceRepo": "buuzzy/1in8b",
         "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
-        "sourcePath": "miniprogram/subpkg/xianxia/art/atlas.js",
-        "sourceBytes": 6827,
-        "sourceSha256": "54c54b28925aeaf0afa10a6c82e31fe8b6648404a26d22d9b774241fba4631a1",
-        "path": "miniprogram/subpkg/xianxia/art/atlas.js",
-        "bytes": 6827,
-        "sha256": "54c54b28925aeaf0afa10a6c82e31fe8b6648404a26d22d9b774241fba4631a1"
-      },
-      {
-        "sourceRepo": "buuzzy/1in8b",
-        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
         "sourcePath": "miniprogram/subpkg/xianxia/art/guilloche.js",
         "sourceBytes": 2009,
         "sourceSha256": "d49f3fb14bd0464a74e0daab3edfcdd36a53de96b9c44a0f65499473af719ae5",
@@ -1219,8 +1209,8 @@
         "sourceBytes": 11494,
         "sourceSha256": "66026f8b72b80fc179a98f3f31fe2c736ff0d8c96a74e4c8ad26cde58edd5875",
         "path": "miniprogram/subpkg/xianxia/runtime/build-manifest.json",
-        "currentBytes": 11914,
-        "currentSha256": "071197aa4633e08189696f8555eae4b78e2895707de86894990e4ede3a38c8a8",
+        "currentBytes": 12078,
+        "currentSha256": "9cda92d30818cb166ba270730c8411913603d78452ecc6dbcff8fbe943df2959",
         "reason": "生成物：来源改为本仓库源码，并新增 upstreamOrigin 段"
       },
       {
@@ -1230,8 +1220,8 @@
         "sourceBytes": 1738614,
         "sourceSha256": "ba0720f2c21c1babe39c605739e90243d7de00db5f920bd5078704d6952fed3f",
         "path": "miniprogram/subpkg/xianxia/runtime/engine.js",
-        "currentBytes": 1233855,
-        "currentSha256": "efee31fb9bd0d16546d108b5246ce706952247fd3a737f9a44b48122ba45dc7b",
+        "currentBytes": 1235559,
+        "currentSha256": "a2f60e175a31029bf639bec08cabbb55120ed72ac416be4c71cbc0605a609406",
         "reason": "生成物：由本仓库源码重新构建（除文件头注释外与迁移进来的那份逐字节一致，见 reference/migrated-runtime/）"
       },
       {
@@ -1252,8 +1242,8 @@
         "sourceBytes": 20247,
         "sourceSha256": "d48d08f49db0a696826670bc1395f2d894091aa747cbe1494e9078f765d16883",
         "path": "scripts/build-xianxia-mp.mjs",
-        "currentBytes": 32463,
-        "currentSha256": "30dc9b53c234dea3c8fcd541ace3414765bb55786f61be894fd073bbf16932a7",
+        "currentBytes": 32564,
+        "currentSha256": "712618905db75145e6187eb3d238893d71b495d3abeb44015ba7211e92345f3f",
         "reason": "构建来源改为本仓库自己的源码（vendor 快照降级为历史证据），新增 app.wxss 生成；2026-11-07 补充说明「上游 xianxia-life 已删除，门禁现在核对仓库内的 vendor 锁定快照」"
       },
       {
@@ -1307,8 +1297,8 @@
         "sourceBytes": 20657,
         "sourceSha256": "1c37a2ab89a56e007fcb257870384956c6e5ce7d0982e292bfa2ed3f0c6b8c74",
         "path": "scripts/test-xianxia-art.mjs",
-        "currentBytes": 22170,
-        "currentSha256": "952a04771892849edeecbb9f5904780835fae50b397cedd8f51f0a5c487a771f",
+        "currentBytes": 25083,
+        "currentSha256": "cca66431b0ad607ee420fe17db07b7dc9bf32487cf1c2ee8e0de821b308d4a86",
         "reason": "对照基准改为本仓库 reference/ 与 apps/preview/，不再依赖 1in8b 的 frozen-baseline"
       },
       {
@@ -1340,8 +1330,8 @@
         "sourceBytes": 15560,
         "sourceSha256": "6066d06f5368a0de077cf8afbe5c8c46480125eb2d4d4fe249283fc7643109f4",
         "path": "miniprogram/subpkg/xianxia/bridge/page-model.js",
-        "currentBytes": 16123,
-        "currentSha256": "aa684cc3de173ee7ba80574dd13260e77e1e76906f41464b622ef56578591194",
+        "currentBytes": 18163,
+        "currentSha256": "769bee00c082dd53858288960d9212dd798aa9ae0621857c5e2cbc7c927ebee2",
         "reason": "S5 角色域：登记卡的「预期寿元」改读规则层算好的实际寿元（state.life.cultivation.lifespanLimit），不再读境界表的基础数字"
       },
       {
@@ -1362,9 +1352,20 @@
         "sourceBytes": 27403,
         "sourceSha256": "9cf05497ca24b2e7aba1ad64c81c267ddc198202935f4c8c796df12b4856b4b6",
         "path": "miniprogram/subpkg/xianxia/pages/life/life.wxml",
-        "currentBytes": 27726,
-        "currentSha256": "3de5c562cb27e339d8eb8a132e364404bd0af02cac6e5603d7df59f5aef8e4a8",
+        "currentBytes": 28006,
+        "currentSha256": "45822544f94b13debf6257002256a4d20f9cf01655b584f007f36a5dc2b8613f",
         "reason": "S5 角色域：修行本事面板加「体魄」一行"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "miniprogram/subpkg/xianxia/art/atlas.js",
+        "sourceBytes": 6827,
+        "sourceSha256": "54c54b28925aeaf0afa10a6c82e31fe8b6648404a26d22d9b774241fba4631a1",
+        "path": "miniprogram/subpkg/xianxia/art/atlas.js",
+        "currentBytes": 8970,
+        "currentSha256": "ec6c757a33d52e1f277af3750dfa176393e6f6da0fef569b93593b8c0a092aca",
+        "reason": "S8 呈现域：点阵地图从「一次画四块大陆」改成「只画当前所在 + 走过的大洲」并居中；「该显示哪几块」改由规则层给（engine.mapView）"
       }
     ],
     "moved": [
@@ -1506,8 +1507,8 @@
       },
       {
         "path": "scripts/gen-source-manifest.mjs",
-        "bytes": 21713,
-        "sha256": "880e08b8486cd2ab1401ae22d4d7cf10220d81541af77cefd0df961c92dcdf78"
+        "bytes": 22221,
+        "sha256": "430cee1c9d0c996fb641ef81fcb1d2581b962ea37e1d2ad47c80de1a757ba8c9"
       },
       {
         "path": "scripts/test-xianxia-standalone.mjs",

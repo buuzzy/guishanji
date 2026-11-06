@@ -25,9 +25,12 @@ import {rows as OUTER_ROWS, dynamic as OUTER_DYNAMIC} from './outer.js';
 import {rows as BEAST_ROWS, dynamic as BEAST_DYNAMIC} from './beast.js';
 import {rows as CULTIVATION_ROWS, dynamic as CULTIVATION_DYNAMIC} from './cultivation.js';
 import {PEOPLE_BACKGROUNDS} from './people.js';
+import {LIFESPAN_TEXT, fillLifespan} from './lifespan.js';
 
 /* 人物背景也放在表达域里 ⇒ 这里一并带出去（小程序端要显示「这个人是谁」）。 */
 export {PEOPLE_BACKGROUNDS};
+/* 寿元那句话的句式也归表达域 ⇒ 一并带出去（两端都要显示「还能活多久」）。 */
+export {LIFESPAN_TEXT, fillLifespan};
 
 /* 各故事线的分片汇总。⚠ 加新线时：先建分片文件，再在这里加一行。 */
 export const ROWS = {

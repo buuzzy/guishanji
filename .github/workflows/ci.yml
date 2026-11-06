@@ -13,7 +13,9 @@ jobs:
       matrix:
         os: [windows-latest, macos-latest, ubuntu-latest]
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 20
+    # 全量回归含 18 道浏览器门禁（每个都要起服务 + 开一次浏览器），
+    # 本机实测约 28 分钟，CI 上更慢 ⇒ 超时给到 45 分钟，别把它掐断。
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v5
         with:

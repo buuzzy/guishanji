@@ -1,4 +1,4 @@
-import {lifespan12,choice12} from './story-rules12.js';
+import {lifespan12,choice12,constitution12} from './story-rules12.js';
 import {initializeCultivation as initializeRules11} from './cultivation-v11.js';
 import {MUNDANE_ENDINGS} from '../../content/mundane-stories.js';
 import { createStreams, random, hashText } from '../core/random.js';
@@ -90,7 +90,43 @@ export function createRun({ seed = '松风有信', id = 'life-' + hashText(seed)
   state.life.automaticCount = 1;
   if(state.life?.cultivation?.rulesVersion>=9&&state.birth.family==='clan')log(state,{kind:'birth',title:'长辈为你留下的灵石',body:'族中长辈为你封存四枚灵石，归在你的名下；族库和其他家产仍由家人保管。',automatic:true,context:'childhood',location:'home'});
   openJourney(state);
+  refreshLifespan(state);
   return validateRun(state);
+}
+
+/**
+ * 把「这个人实际能活到几岁」写进状态。
+ *
+ * ## 为什么要写进状态
+ * ------------------
+ * 寿元的**唯一来源**是 `lifespan12()`（规则十二）：它按体质、旧伤、境界算，
+ * 不是境界表里那个基础数字（`REALMS[realm].lifespan`）。
+ * 呈现层（网页端、小程序端）以前各读各的 —— 小程序读的是境界基础寿元，
+ * 于是登记卡上写的寿元与实际能活的岁数对不上。
+ *
+ * ⇒ 现在：**规则层算一次，写进 `state.life.cultivation.lifespanLimit`**，
+ *   呈现层只读这个值，不再自己算、也不再读境界表。
+ *
+ * @param {object} state 当前人生状态
+ * @param {boolean} onlyIfMissing 只在缺这个字段时补上（加载旧存档时用）
+ * @returns {number|undefined} 实际寿元
+ */
+export function refreshLifespan(state, onlyIfMissing = false) {
+  if (!state.life || !state.life.cultivation) return;
+  /*
+   * ⚠ **只给当前版本（规则十二）写这个字段**。
+   *   旧版本（5–11）的存档结构必须一个字节都不变 ——
+   *   多写一个键就会让旧档的序列化对不上（实测：旧11基线直接报红）。
+   *   旧版本呈现层读不到它时，回落到境界表的基础寿元（那边本来就是那个数）。
+   */
+  if (state.life.cultivation.rulesVersion !== 12) return;
+  /*
+   * ⚠ 加载旧存档时**只补不覆盖**：存档读出来再存回去必须一模一样
+   *   （`upgradeRun` 的契约：加载不改写、不重放旧年月）。
+   */
+  if (onlyIfMissing && state.life.cultivation.lifespanLimit !== undefined) return state.life.cultivation.lifespanLimit;
+  state.life.cultivation.lifespanLimit = lifespan12(state);
+  return state.life.cultivation.lifespanLimit;
 }
 
 /** Upgrade a validated copy; loading never writes or replays previous years. */
@@ -100,12 +136,13 @@ export const travelTo = (state,id) => beginTravel(state,id,callbacks(state));
 export const leaveExpedition = state => withdrawCultivation(state,callbacks(state));
 export function upgradeRun(input) {
   validateRun(input);
-  if (input.version === ADVENTURE_VERSION) return cloneRun(input);
-  if(input.version===PREVIEW3_VERSION){const state=cloneRun(input);state.version=ADVENTURE_VERSION;state.contentRevision=CONTENT_REVISION;state.revision++;return validateRun(state);}
+  if (input.version === ADVENTURE_VERSION) { const same = cloneRun(input); refreshLifespan(same, true); return same; }
+  if(input.version===PREVIEW3_VERSION){const state=cloneRun(input);state.version=ADVENTURE_VERSION;state.contentRevision=CONTENT_REVISION;state.revision++;refreshLifespan(state, true);return validateRun(state);}
   if (input.version === PREVIOUS_VERSION) {
     const migrated = cloneRun(input); migrated.version = ADVENTURE_VERSION; migrated.contentRevision = CONTENT_REVISION; migrated.revision++;
     migrated.life.feedback = false; migrated.life.family = familyState(migrated, true);
     if (migrated.journey) migrated.journey.legacyTarget = Boolean(migrated.journey.target);
+    refreshLifespan(migrated, true);
     return validateRun(migrated);
   }
   const state = cloneRun(input);
@@ -114,6 +151,7 @@ export function upgradeRun(input) {
   for (const [id, p] of Object.entries(NEW_CAST)) state.people[id] = { id, ...p, known: false, alive: true, status: 'alive', deathMonth: null, location: 'home', bond: 0 };
   initializeLife(state, true);
   if (state.journey) state.journey.legacyTarget = true;
+  refreshLifespan(state, true);
   return validateRun(state);
 }
 export function seekTraining(state, groundId) {
@@ -170,7 +208,18 @@ export function chance(state, check) {
   for (const [item, bonus] of Object.entries(check.items || {})) if (state.inventory.includes(item)) score += bonus;
   for (const [flag, bonus] of Object.entries(check.flags || {})) if (state.flags[flag]) score += bonus;
   for (const [id, bonus] of Object.entries(check.allies || {})) if (state.people[id].status === 'alive' && state.people[id].known) score += bonus;
-  if (state.player.health < 40) score -= 10;
+  /*
+   * 「虚弱」是**临时状态**，不是永久减益。
+   *
+   * ⚠ 原来这里是「体力低于 40 就固定扣 10 分」—— 一刀切 ⇒ 只要体力一直回不来，
+   *   这 10 分就一直挂着 ⇒ **越输越没戏**（实测：连输三次的修士后面几次冲关全败）。
+   * ⇒ 改成**连续**：体力越低扣得越多（最多还是 10 分），体力一恢复就还回去。
+   *
+   * 「体魄」是**永久能力**（只增不减）：给的是稳定加成，不随体力起伏。
+   */
+  const currentRules = state.life && state.life.cultivation && state.life.cultivation.rulesVersion === 12;
+  if (state.player.health < 40) score -= currentRules ? Math.round((40 - state.player.health) / 4) : 10;
+  score += constitution12(state) * 0.12;
   if (state.birth && !state.birth.legacy) score += WORLD_ERAS[state.birth.era].check;
   return bound(Math.round(score), 5, 95);
 }
@@ -230,6 +279,8 @@ function applyEffects(state, input) {
   }
   if (effect.realm !== undefined && effect.realm > state.player.realm) {
     const from=state.player.realm,actual=state.life?.cultivation?.rulesVersion===12,oldLimit=actual?lifespan12(state):null; state.player.realm=effect.realm; changes.push('踏入'+REALMS[effect.realm].name);
+    /* 换境界 ⇒ 寿元变了 ⇒ 登记卡上写的岁数也得跟着变。 */
+    if(actual){state.life.cultivation.lifespanLimit=lifespan12(state);}
     if(state.life) { state.life.lastBreakthrough=state.month; log(state,breakthroughRecord(from,effect.realm,state.month,state.life.cultivation?.rulesVersion,actual?{from:oldLimit,to:lifespan12(state)}:null)); }
   }
   if (effect.location) state.player.location = effect.location;
@@ -404,6 +455,8 @@ function tick(state) {
   state.month++;
   state.revision++;
   state.player.practice++;
+  /* 寿元随境界与旧伤变动 ⇒ 每月刷新一次，呈现层读到的永远是当前值。 */
+  refreshLifespan(state);
   if (!state.life?.cultivation && state.player.practice % 6 === 0 && (!state.life || age(state) >= 16)) {
     const skill = state.journey?.practice || state.player.focus;
     state.player.skills[skill] = Math.round(bound(state.player.skills[skill] + 0.45 * (state.life ? practiceRate(state) : 1), 0, 100) * 100) / 100;

@@ -288,6 +288,15 @@ function certPage(run) {
   var family = (engine.FAMILIES && engine.FAMILIES[birth.family]) || {name: '普通人家'};
   var path = cultivation && engine.PATHS ? engine.PATHS[cultivation.path] : null;
   var realm = (engine.REALMS[run.player.realm] || {name: '凡身', lifespan: 88});
+  /*
+   * 预期寿元 —— 读**规则层算好的实际寿元**（`state.life.cultivation.lifespanLimit`），
+   * 不再读境界表里的基础数字。
+   *
+   * ⚠ 为什么：实际寿元按体质、旧伤、境界算（`lifespan12()`），
+   *   与境界表那个基础值不是一个数 ⇒ 以前登记卡上写的岁数与实际能活的岁数对不上。
+   *   寿元的唯一来源是规则层；呈现层只读，不自己算。
+   */
+  var lifespanLimit = cultivation && cultivation.lifespanLimit ? cultivation.lifespanLimit : realm.lifespan;
   var rootKnown = !(cultivation && cultivation.rootKnown === false);
   var rootInfo = (engine.ROOTS || {})[run.player.root];
   var grade = rootKnown && rootInfo ? rootInfo.grade : null;
@@ -303,7 +312,7 @@ function certPage(run) {
   fields.push({k: '道路', v: [{t: path ? path.name + ' · ' + (cultivation.rank || '') : realm.name}]});
   fields.push({k: '起始境界', v: [{t: realm.name}]});
   fields.push({k: '山历', v: [{t: String(birth.year)}]});
-  fields.push({k: '预期寿元', v: [{t: realm.lifespan + ' 岁'}]});
+  fields.push({k: '预期寿元', v: [{t: lifespanLimit + ' 岁'}]});
 
   var seconds = 12;
   try {
@@ -316,7 +325,7 @@ function certPage(run) {
     name: run.player.name,
     cert: '你在' + continent.name + (birth.address ? '的' + birth.address : '') + '出生，' + family.name + '。'
       + era.name + '年间，这方山海的规矩由' + (path ? path.name : '凡尘') + '撑着。',
-    certPace: '活到预期寿元约需 ' + Math.round(realm.lifespan * 12 * seconds) + ' 秒（1 月 ≈ '
+    certPace: '活到预期寿元约需 ' + Math.round(lifespanLimit * 12 * seconds) + ' 秒（1 月 ≈ '
       + Math.round(seconds * 100) / 100 + ' 秒）…中途离开也会保存。',
     fields: fields,
     certMapCap: continent.name + ' · ' + (birth.address || ''),

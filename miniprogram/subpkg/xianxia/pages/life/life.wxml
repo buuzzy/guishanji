@@ -232,6 +232,10 @@
       <block wx:if="{{!fold['p-practice']}}">
         <!-- 体质（规则12 才有）：常人体质 / 先天孱弱 / 筋骨健壮 / 天生神力 -->
         <text class="hint" wx:if="{{practice.body}}">{{practice.body}}</text>
+        <!-- 体魄（规则12 才有）：练出来的本事，只增不减；体力是资源、体魄是能力 -->
+        <view class="fam" wx:if="{{practice.constitution !== null}}">
+          <view class="row"><text class="fk">体魄</text><text class="fv mono">{{practice.constitution}}</text></view>
+        </view>
         <view class="fam">
           <view class="row"><text class="fk">境界积累</text><text class="fv mono">{{practice.progressText}}</text></view>
         </view>

@@ -87,17 +87,17 @@ export const REQUIRED_PROGRESS = {
  *  · `base` 底分：按「这一关该有多难」分档。境界越高越难，但高阶修士
  *    技艺与悟性已经攒了几十年，所以底分不必压得太低。
  *  · `scale` / `statScale`：技艺与悟性各值多少分。
- *  · `harm` 失败扣多少体力：失败要有代价（不然冲关没有分量），
- *    但**不能一次把身子败空** —— 代价要留得住「还能再冲一次」。
+ *  · `harm` 失败留多少**旧伤**（永久的痕迹，影响修行速度与寿元）。
+ *    ⚠ 失败**不再扣体力** —— 体力是资源，扣它会让人「越输越没戏」。
  *  · `service` 做工换料要走多少个月：穷修士的额外代价。
  *
  * ⚠ 这张表进小程序包 ⇒ **不写 `?.` / `??`**（微信转译会改变作用域边界）。
  */
 export const BREAKTHROUGH = {
-  1: {base: 76, scale: 0.20, statScale: 0.12, harm: 6, service: 36},
-  2: {base: 68, scale: 0.20, statScale: 0.12, harm: 10, service: 36},
-  3: {base: 46, scale: 0.14, statScale: 0.14, harm: 12, service: 0},
-  4: {base: 26, scale: 0.14, statScale: 0.14, harm: 14, service: 0},
+  1: {base: 70, scale: 0.20, statScale: 0.12, harm: 1, service: 36},
+  2: {base: 62, scale: 0.20, statScale: 0.12, harm: 1, service: 36},
+  3: {base: 42, scale: 0.14, statScale: 0.14, harm: 2, service: 0},
+  4: {base: 22, scale: 0.14, statScale: 0.14, harm: 2, service: 0},
 };
 
 /**

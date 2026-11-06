@@ -13,7 +13,7 @@
       "path": "feature/adventure-preview-v01（本仓库 Git 历史的来源；该仓库已于 2026-11-07 删除，字节已完整迁入本仓库）"
     }
   ],
-  "note": "unchanged：迁进来后未改动，必须仍与来源逐字节一致。\nchanged：本轮有意改过，记来源哈希与现哈希 + 改动原因。\nmoved：本轮换了位置。\nadded：本轮新增的文件（不是迁入的）。\n核对用 scripts/verify-migration-import.mjs。\n（本次用 --offline 生成：只刷新了本轮自己写的文件（added/changed/moved）的哈希；unchanged 组保持不变（它的凭据来自来源仓库，只能靠完整模式重新核对）。）",
+  "note": "unchanged：迁进来后未改动，必须仍与来源逐字节一致。\nchanged：本轮有意改过，记来源哈希与现哈希 + 改动原因。\nmoved：本轮换了位置。\nadded：本轮新增的文件（不是迁入的）。\n核对用 scripts/verify-migration-import.mjs。\n（本次用 --offline 生成：只刷新了本轮自己写的文件（added/changed/moved）的哈希；并按 CHANGED_REASON 表把「有意改过的迁入文件」自动搬到 changed 组；unchanged 组保持不变（它的凭据来自来源仓库，只能靠完整模式重新核对）。）",
   "groups": {
     "unchanged": [
       {
@@ -69,16 +69,6 @@
       {
         "sourceRepo": "buuzzy/1in8b",
         "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
-        "sourcePath": "miniprogram/subpkg/xianxia/bridge/page-model.js",
-        "sourceBytes": 15560,
-        "sourceSha256": "6066d06f5368a0de077cf8afbe5c8c46480125eb2d4d4fe249283fc7643109f4",
-        "path": "miniprogram/subpkg/xianxia/bridge/page-model.js",
-        "bytes": 15560,
-        "sha256": "6066d06f5368a0de077cf8afbe5c8c46480125eb2d4d4fe249283fc7643109f4"
-      },
-      {
-        "sourceRepo": "buuzzy/1in8b",
-        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
         "sourcePath": "miniprogram/subpkg/xianxia/bridge/portrait.js",
         "sourceBytes": 4005,
         "sourceSha256": "ad4283c8617f1ebbb6602c692227101c99e95bb79ef7be90b1b5733aca0b6dc2",
@@ -105,16 +95,6 @@
         "path": "miniprogram/subpkg/xianxia/bridge/roller.js",
         "bytes": 2971,
         "sha256": "f897b6b4db1b81d272f18d3e7f72ccfe13e7e56ed3cdbf84af6eb82ba2ffecec"
-      },
-      {
-        "sourceRepo": "buuzzy/1in8b",
-        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
-        "sourcePath": "miniprogram/subpkg/xianxia/bridge/view-model.js",
-        "sourceBytes": 40479,
-        "sourceSha256": "e1c5c6ce21837c8bb0c518a23eab2362b33c8abc70fe132d77440c71b6edcaca",
-        "path": "miniprogram/subpkg/xianxia/bridge/view-model.js",
-        "bytes": 40479,
-        "sha256": "e1c5c6ce21837c8bb0c518a23eab2362b33c8abc70fe132d77440c71b6edcaca"
       },
       {
         "sourceRepo": "buuzzy/1in8b",
@@ -245,16 +225,6 @@
         "path": "miniprogram/subpkg/xianxia/pages/life/life.json",
         "bytes": 155,
         "sha256": "c946a7c88ac4d2cff81a4651a3688cadd81cc63251a8bf2c501ffd0269abdf6f"
-      },
-      {
-        "sourceRepo": "buuzzy/1in8b",
-        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
-        "sourcePath": "miniprogram/subpkg/xianxia/pages/life/life.wxml",
-        "sourceBytes": 27403,
-        "sourceSha256": "9cf05497ca24b2e7aba1ad64c81c267ddc198202935f4c8c796df12b4856b4b6",
-        "path": "miniprogram/subpkg/xianxia/pages/life/life.wxml",
-        "bytes": 27403,
-        "sha256": "9cf05497ca24b2e7aba1ad64c81c267ddc198202935f4c8c796df12b4856b4b6"
       },
       {
         "sourceRepo": "buuzzy/1in8b",
@@ -1250,7 +1220,7 @@
         "sourceSha256": "66026f8b72b80fc179a98f3f31fe2c736ff0d8c96a74e4c8ad26cde58edd5875",
         "path": "miniprogram/subpkg/xianxia/runtime/build-manifest.json",
         "currentBytes": 9802,
-        "currentSha256": "9f5dfbada749c5f4d78570a9c5c4845e6ecb380a772405305ced398c7f63feef",
+        "currentSha256": "f4ead933855e9432f3c087c344ee035c657d68f3bbbb56409ac48ef5566c3b3e",
         "reason": "生成物：来源改为本仓库源码，并新增 upstreamOrigin 段"
       },
       {
@@ -1260,8 +1230,8 @@
         "sourceBytes": 1738614,
         "sourceSha256": "ba0720f2c21c1babe39c605739e90243d7de00db5f920bd5078704d6952fed3f",
         "path": "miniprogram/subpkg/xianxia/runtime/engine.js",
-        "currentBytes": 1225268,
-        "currentSha256": "a381adca161e7d2ee7fd505b42bd58a4e8d3578b9f0f1eba294d466e137ec456",
+        "currentBytes": 1227157,
+        "currentSha256": "3151098194ce2d5c7d20dac0b9e4dceedd444915264a04d8b86e947fe18ecbac",
         "reason": "生成物：由本仓库源码重新构建（除文件头注释外与迁移进来的那份逐字节一致，见 reference/migrated-runtime/）"
       },
       {
@@ -1293,8 +1263,8 @@
         "sourceBytes": 15897,
         "sourceSha256": "eeb8547fbd5ea65fbfdaa967b6089af28db984494b529365a86e438badcf8955",
         "path": "scripts/test-xianxia-build.mjs",
-        "currentBytes": 29227,
-        "currentSha256": "c81528e591939d150d91edfe55d10cfad19b3967569ca113a44b5038f2b90e4e",
+        "currentBytes": 29349,
+        "currentSha256": "af3dba9efc8a54e2595efeba009745f502a35443ea6d7d660dbabaa69faba592",
         "reason": "新增「与迁移进来的产物逐字节一致」断言；不再依赖 1in8b 的 frozen-baseline"
       },
       {
@@ -1362,6 +1332,39 @@
         "currentBytes": 61290,
         "currentSha256": "1427f57e096b2d8d4c882209902a22969bf0dee030f91eb5ca765e5549f82fec",
         "reason": "2026-11-07：给 --refresh=../xianxia-life 这条已失效的旧命令加提示（该仓库已删除，build 脚本现在只读本仓库源码）；正文其余部分保持原样"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "miniprogram/subpkg/xianxia/bridge/page-model.js",
+        "sourceBytes": 15560,
+        "sourceSha256": "6066d06f5368a0de077cf8afbe5c8c46480125eb2d4d4fe249283fc7643109f4",
+        "path": "miniprogram/subpkg/xianxia/bridge/page-model.js",
+        "currentBytes": 16123,
+        "currentSha256": "aa684cc3de173ee7ba80574dd13260e77e1e76906f41464b622ef56578591194",
+        "reason": "S5 角色域：登记卡的「预期寿元」改读规则层算好的实际寿元（state.life.cultivation.lifespanLimit），不再读境界表的基础数字"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "miniprogram/subpkg/xianxia/bridge/view-model.js",
+        "sourceBytes": 40479,
+        "sourceSha256": "e1c5c6ce21837c8bb0c518a23eab2362b33c8abc70fe132d77440c71b6edcaca",
+        "path": "miniprogram/subpkg/xianxia/bridge/view-model.js",
+        "currentBytes": 41037,
+        "currentSha256": "cb9b0959ec2760a1ba8af886784537f7a0f5e60e8a52219ead7c2dcadfe1e15e",
+        "reason": "S5 角色域：修行本事面板加「体魄」（只增不减的能力），体质行补「力竭」提示"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "miniprogram/subpkg/xianxia/pages/life/life.wxml",
+        "sourceBytes": 27403,
+        "sourceSha256": "9cf05497ca24b2e7aba1ad64c81c267ddc198202935f4c8c796df12b4856b4b6",
+        "path": "miniprogram/subpkg/xianxia/pages/life/life.wxml",
+        "currentBytes": 27726,
+        "currentSha256": "3de5c562cb27e339d8eb8a132e364404bd0af02cac6e5603d7df59f5aef8e4a8",
+        "reason": "S5 角色域：修行本事面板加「体魄」一行"
       }
     ],
     "moved": [
@@ -1503,8 +1506,8 @@
       },
       {
         "path": "scripts/gen-source-manifest.mjs",
-        "bytes": 16224,
-        "sha256": "d31a27a7b82de1de2223fc1eb613ff7c3b9f90a6526de27d9c71907a5439f288"
+        "bytes": 20582,
+        "sha256": "782e75c02d4fd079453b08d9c43ad5ffe83ba7302ef10c9762cd4fb1d6879a5a"
       },
       {
         "path": "scripts/test-xianxia-standalone.mjs",

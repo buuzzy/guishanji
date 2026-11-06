@@ -357,7 +357,8 @@ section('迁移等价性（与从 1in8b 迁进来时的那份逐月对拍）');
       : null;
     ok(!!declared && declared.rulesVersion === CURRENT_VERSION && !!String(declared.why || '').trim(),
       `当前版本（规则 ${CURRENT_VERSION}）与迁移时那份产物的差异已在差异台账里登记在案`
-      + '（S4 起有意改过节奏：突破必发、修行指导卡让路、失败代价、进度不再倒扣）');
+      + '（S4 起有意改过节奏：突破必发、修行指导卡让路、失败代价、进度不再倒扣；'
+      + 'S5 起有意改过角色：寿元单一来源、新增体魄、失败不再扣体力、虚弱变临时状态）');
     console.log(`    · 当前版本与迁移时那份产物的分叉（**有意行为变更**，不判红）：`
       + (currentMismatches.length ? currentMismatches.join('；') : '本次未分叉'));
   }

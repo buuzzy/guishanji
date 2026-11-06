@@ -18,7 +18,7 @@ export function initialize12(s){
  const b=roll(s,'body')%100,key=b<15?'frail':b<36?'sturdy':b<38?'mighty':'ordinary',type=BODY_TYPES[key];
  const profiles=SECT_PROFILES.filter(p=>p.region===s.birth.continent),sect=profiles[roll(s,'sect')%profiles.length];
  const highest=c(s).progression.sect.highest;
- c(s).v12={format:1,body:{type:key,natural:type.min+roll(s,'span')%type.span,loss:0,damage:0,illness:false,treated:false,diagnosed:false},sect:sect.id,
+ c(s).v12={format:1,body:{type:key,natural:type.min+roll(s,'span')%type.span,loss:0,damage:0,constitution:type.constitution,illness:false,treated:false,diagnosed:false},sect:sect.id,
   patron:{until:highest===2?45:highest===3?60:75,noticed:false,stopped:false},
   childhood:{due:30+roll(s,'childhood')%36,kind:roll(s,'illness')<2000?'fever':'ordinary',done:false},
   practice:{stage:0,offered:[],next:20*12,notes:[],materialsDue:0},action:null,visit:null,visits:0,clue:{checked:false,due:0,accepted:false,lossAt:0},facts:{}};
@@ -31,13 +31,41 @@ export function lifespan12(s){
  const b=rules12(s).body,base=s.player.realm===0?b.natural:s.player.realm===1?b.natural+45:REALMS[s.player.realm].lifespan+(b.natural-66);
  return Math.max(age(s),Math.round(base-b.loss));
 }
+/**
+ * 体魄 —— 这个人的身子底子（**能力**：只增不减）。
+ *
+ * ⚠ 与「体力」分开：
+ *   · 体力（`player.health`）是**资源** —— 会被耗掉，靠调养与丹药回；
+ *   · 体魄是**能力** —— 练出来就在那里，不会因为一次失败就没了。
+ *
+ * @param {object} s 当前人生状态
+ * @returns {number} 体魄点数（0–100）
+ */
+export function constitution12(s){
+ if(!active12(s))return 0;
+ const b=rules12(s).body;
+ /* 旧存档里没有这个字段 ⇒ 当作 0（不能因此把旧档判成坏档）。 */
+ return typeof b.constitution==='number'?b.constitution:0;
+}
+/**
+ * 练出体魄 —— 出力的事才长体魄，静坐读书不长。
+ * @param {object} s 当前人生状态
+ * @param {number} gain 增加多少
+ */
+export function trainConstitution12(s,gain){
+ if(!active12(s)||!gain)return;
+ const b=rules12(s).body;
+ b.constitution=Math.min(100,constitution12(s)+gain);
+}
 export function stage12(s){
  if(!active12(s)||s.player.realm!==1)return '';
  const p=c(s).progress;return p<65?'炼气初期':p<130?'炼气中期':p<210?'炼气后期':'炼气圆满';
 }
 export function practiceFactor12(s){
  if(!active12(s))return 1;const r=rules12(s),b=r.body,a=r.action;
- return BODY_TYPES[b.type].rate*Math.max(.55,1-b.damage*.015)*(a?.kind==='retreat'?1.65:a?.kind==='travel'? .65:1);
+ /* 体魄高 ⇒ 修行更顺（这是「体魄」第二个用处：不是只有判定好看）。 */
+ const strong=1+constitution12(s)*.002;
+ return BODY_TYPES[b.type].rate*Math.max(.55,1-b.damage*.015)*strong*(a?.kind==='retreat'?1.65:a?.kind==='travel'? .65:1);
 }
 export function choice12(s,choice,event){
  if(!active12(s)||!choice)return choice;const o={...choice},r=rules12(s);
@@ -60,10 +88,24 @@ export function choice12(s,choice,event){
     *   失败代价也按境界分档（留得住「还能再冲一次」）。
     */
    const base=rule.base+(lastChance?15:0);
-   o.check={...(o.check||{}),base:base+gradeBonus(grade)-r.body.damage-older+(tier===2&&pill?16:0),
+   o.check={...(o.check||{}),base:base+gradeBonus(grade)-r.body.damage-older+(tier===2&&pill?16:0)+constitution12(s)*.25,
     skill:o.check?.skill||'array',scale:rule.scale,stat:'insight',statScale:rule.statScale,
     failText:tier===1?'灵气几次散出经脉，胸口疼得无法继续。看护者叫你停下，先休养再试；这次没有炼出稳定法力。':'药力散尽，真气却没能凝稳。你吐出一口血，护脉者把你扶出石室；这次冲关没有成功。',
-    failure:{stats:{health:-rule.harm,mind:-4}}};
+    failure:{stats:{mind:-4}}};
+   /*
+    * ⚠ 失败**不再扣体力**。
+    *   原来失败一次掉 8–28 点体力 ⇒ 掉到 40 以下就吃判定上的减分 ⇒ 越输越没戏。
+    *   现在失败的代价是**旧伤**（`body.damage`，永久但很轻）与心境波动 ——
+    *   体力是资源，不该由一次冲关永久拉低。
+    */
+   /*
+    * ⚠ 突破成功**不再回体力** —— 体力只由调养与丹药回。
+    *   成功回的是**体魄**（见 `complete12`）：练出来的本事不会掉。
+    */
+   if(o.effects&&o.effects.stats&&o.effects.stats.health){
+    const stats={...o.effects.stats};delete stats.health;
+    o.effects={...o.effects,stats};
+   }
    if(tier===2&&pill)o.cost={...o.cost,items:[...(o.cost?.items||[]),'foundation_pill']};
    if(o.id==='service'&&rule.service>0){o.months=rule.service;o.system={...o.system,service12:true};o.startReply='你先替授业者做完约定的差事，换取这一份材料，再封门尝试冲关。';}
   }
@@ -83,10 +125,14 @@ function setMethod(s,id,event,cb){
 }
 export function complete12(s,event,choice,success,cb){
  if(!active12(s)||!choice)return;const r=rules12(s),op=choice.system||{},id=choice.id;
- /* 冲关失败的旧伤：每次失败留一点旧伤（原来一次留 2 点、往后每境留 5 点，
-    连输三次身子就败空了，后面几次冲关连「体力不足」的额外扣分都吃不上）。
-    ⇒ 改成每次只留 1 点：**失败要有代价，但要留得住「还能再冲一次」。** */
- if(op.breakthrough){if(success){r.practice.stage=0;r.practice.next=s.month+48;}else{r.body.damage=Math.min(30,r.body.damage+1);r.body.loss+=op.breakthrough===1?1:3;}}
+ /* 冲关失败只留**旧伤**（永久的痕迹）；成功则长**体魄**（永久的本事）。
+    ⚠ 失败**不再扣体力** —— 体力是资源，只由调养与丹药回；
+       原来失败一次拉低体力 ⇒ 掉到 40 以下就吃判定减分 ⇒ 越输越没戏。 */
+ if(op.breakthrough){
+  const rule=breakthroughRule(op.breakthrough);
+  if(success){r.practice.stage=0;r.practice.next=s.month+48;trainConstitution12(s,8);}
+  else{r.body.damage=Math.min(30,r.body.damage+(rule?rule.harm:1));r.body.loss+=op.breakthrough===1?1:3;}
+ }
  if(op.method&&REGIONAL_METHODS[op.method]&&success)setMethod(s,op.method,event,cb);
  if(op.regionalCore12&&success)setMethod(s,sectProfile(s).core,event,cb);
  if(op.method&&!REGIONAL_METHODS[op.method]&&success&&c(s).network.method?.id!==op.method){const a=c(s).network;a.method={id:op.method,source:event,months:0,acquired:s.month};a.methods.push({...a.method});}
@@ -118,6 +164,19 @@ export function complete12(s,event,choice,success,cb){
 }
 export function month12(s,cb){
  if(!active12(s))return false;const r=rules12(s),cc=c(s),open=s.journey?.open&&!s.pending;
+ /*
+  * 「虚弱」是**临时状态**：体力低于 40 ⇒ 判定打折扣（见引擎的 `chance()`）。
+  * 它不是永久减益 —— 调养几日、吃一枚丹药，体力回来了，虚弱就过去。
+  * ⇒ 这里只做一件事：让玩家**知道自己虚着**，好去调养。
+  */
+ if(open&&age(s)>=16){
+  const weak=s.player.health<40;
+  if(weak!==!!r.weak){
+   r.weak=weak;
+   if(weak)log(s,cb,'你近来力竭','连日的消耗压过了恢复。眼下凡事都要打折扣 —— 先调养几日，把体力养回来再说。','cultivation');
+   else log(s,cb,'气力回来了','调养之后，身上那股发虚的劲过去了。做判定不再打折。','cultivation');
+  }
+ }
  if(!r.childhood.done&&s.month>=r.childhood.due&&age(s)<16&&open){
   if(r.childhood.kind==='fever'){r.body.illness=true;cb.apply({stats:{health:-18}});cb.arrive('r12_child_fever');}
   else cb.arrive('r12_child_body');return true;
@@ -181,7 +240,7 @@ export function month12(s,cb){
 export function validate12(s,fail){
  if(!active12(s))return;const r=rules12(s),int=(n,max=13000)=>Number.isSafeInteger(n)&&n>=0&&n<=max;
  if(!r||r.format!==1||!SECT_PROFILES.some(p=>p.id===r.sect))return fail('规则12宗门');
- const b=r.body;if(!b||!BODY_TYPES[b.type]||!int(b.natural,90)||b.natural<40||!int(b.loss,200)||!int(b.damage,30)||['illness','treated','diagnosed'].some(k=>typeof b[k]!=='boolean'))fail('规则12体质');
+ const b=r.body;if(!b||!BODY_TYPES[b.type]||!int(b.natural,90)||b.natural<40||!int(b.loss,200)||!int(b.damage,30)||(b.constitution!==undefined&&(!Number.isFinite(b.constitution)||b.constitution<0||b.constitution>100))||['illness','treated','diagnosed'].some(k=>typeof b[k]!=='boolean'))fail('规则12体质');
  if(!r.patron||!int(r.patron.until,100)||typeof r.patron.noticed!=='boolean'||typeof r.patron.stopped!=='boolean')fail('规则12资助');
  if(!r.practice||!Array.isArray(r.practice.offered)||r.practice.offered.length>6||r.practice.offered.some(id=>!/^r12_direction_[0-5]$/.test(id))||new Set(r.practice.offered).size!==r.practice.offered.length||!int(r.practice.next)||!int(r.practice.stage,3))fail('规则12修行');
  if(r.action&&(!['retreat','travel','work'].includes(r.action.kind)||!int(r.action.from)||r.action.from>s.month||!int(r.action.to)||r.action.to<r.action.from||!int(r.action.notes,2)))fail('规则12多年安排');

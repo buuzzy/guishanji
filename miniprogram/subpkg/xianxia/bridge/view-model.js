@@ -336,12 +336,22 @@ function practice(run) {
   if (rules && rules.body && engine.BODY_TYPES) {
     var type = engine.BODY_TYPES[rules.body.type];
     if (type) {
-      body = type.name + (rules.body.damage ? ' · 经脉受损' : '');
+      body = type.name + (rules.body.damage ? ' · 经脉受损' : '') + (rules.weak ? ' · 力竭（判定打折，调养可解）' : '');
     }
+  }
+  /**
+   * 体魄（规则12）—— **能力**：只增不减，靠练剑、做工这类出力的事练出来。
+   * ⚠ 与「体力」是两回事：体力是资源（会被耗掉，靠调养与丹药回），
+   *   体魄是练出来的本事，不会因为一次失败就没了。
+   */
+  var constitution = null;
+  if (rules && rules.body && typeof rules.body.constitution === 'number') {
+    constitution = Math.round(rules.body.constitution);
   }
   return {
     realm: stage || (engine.REALMS[run.player.realm] || {}).name,
     body: body,
+    constitution: constitution,
     progress: threshold ? Math.round(pct) : 100,
     progressText: threshold ? Math.round(pct) + '%' : '已臻元婴',
     skills: skills,

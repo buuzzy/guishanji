@@ -1,5 +1,5 @@
 import * as rules11 from './cultivation-v11.js';
-import {initialize12,begin12,complete12,practiceFactor12,validate12} from './story-rules12.js';
+import {initialize12,begin12,complete12,practiceFactor12,validate12,trainConstitution12} from './story-rules12.js';
 import * as rules10 from './cultivation-v10.js';
 import {initializeMundane,mundaneComplete,mundaneBegin,validateMundane,mundaneSettlement} from './mundane-life.js';
 import * as rules9 from './cultivation-v9.js';
@@ -16,6 +16,7 @@ import {automaticStory,storyOpportunity,familyMessage} from '../../content/culti
 import {economyQuote,settleEconomy} from './cultivation-economy.js';
 import {random,hashText} from '../core/random.js';
 import {PATHS,ROOTS,ACTIVITIES,GEOGRAPHY,OFFICERS} from '../../content/cultivation-world.js';
+import {CONSTITUTION_GAIN} from '../../content/rules12-world.js';
 import {ROAD_CHAINS,CULTIVATION_EVENTS,LEGACY_CULTIVATION_EVENTS} from '../../content/cultivation-stories.js';
 const copy=x=>JSON.parse(JSON.stringify(x));
 const clamp=(v,min=0,max=100)=>Math.max(min,Math.min(max,v));
@@ -225,7 +226,12 @@ function revised_cultivationMonth(s,cb){
     const before=c.progress;c.progress=canCultivate(s)?clamp(c.progress+(a.progress||1)*ROOTS[s.player.root].rate*(s.birth.era==='ebb'?.8:1)*networkRate(s)*practiceFactor12(s),0,1000):0;
    if(c.rulesVersion>=5){c.activityMonths[activity]=(c.activityMonths[activity]||0)+1;const gains=c.activityGains[activity]||={};gains.progress=(gains.progress||0)+c.progress-before;}
    if(s.month%6===0){const beforeSkills=s.player.skills[a.skill],prior=Object.fromEntries(['insight','courage','empathy','health','mind'].map(k=>[k,s.player[k]]));cb.apply({skills:c.rulesVersion>=5&&a.trainSkill===false?{}:{[a.skill]:.5},stats:Object.fromEntries(['insight','courage','empathy','health','mind'].filter(k=>a[k]).map(k=>[k,a[k]]))});
-    if(c.rulesVersion>=5){const gains=c.activityGains[activity];gains[a.skill]=(gains[a.skill]||0)+s.player.skills[a.skill]-beforeSkills;for(const k of Object.keys(prior))if(a[k])gains[k]=(gains[k]||0)+s.player[k]-prior[k];}}
+    if(c.rulesVersion>=5){const gains=c.activityGains[activity];gains[a.skill]=(gains[a.skill]||0)+s.player.skills[a.skill]-beforeSkills;for(const k of Object.keys(prior))if(a[k])gains[k]=(gains[k]||0)+s.player[k]-prior[k];}
+    /*
+     * 体魄 —— **出力的事**才长（练剑、做工、丹术），静坐读书不长。
+     * 只在当前版本（规则十二）有；旧版本照原样走（历史基线不能动）。
+     */
+    trainConstitution12(s,CONSTITUTION_GAIN[activity]||0);}
   }
   if(c.exam&&s.player.focus===c.exam.skill&&!restricted&&context!=='retreat'&&s.month<=c.exam.deadline)c.exam.preparation++;
  }

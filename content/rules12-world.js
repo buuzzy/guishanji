@@ -1,9 +1,29 @@
+/**
+ * 体质 —— 一个人身子底子。
+ *
+ * `constitution`（体魄）是**能力**：只增不减，靠练剑、做工这类出力的事慢慢长，
+ * 不会再掉。它决定两件事：判定时给多少稳定加成（`chance()`），
+ * 以及修行有多顺（`practiceFactor12()`）。
+ *
+ * ⚠ 与「体力」是两回事：
+ *   · **体力**是资源 —— 会被受伤、赶路耗掉，靠调养与丹药回得来；
+ *   · **体魄**是能力 —— 练出来就在那里，不会因为一次失败就没了。
+ *   （原来这两件事混在 `player.health` 一个数里：失败一次体力被拉低，
+ *     判定就永久少 10 分 ⇒ 越输越没戏。）
+ */
 export const BODY_TYPES={
- ordinary:{name:'常人体质',min:58,span:18,health:88,rate:1},
- frail:{name:'先天孱弱',min:45,span:18,health:70,rate:.88},
- sturdy:{name:'筋骨健壮',min:65,span:16,health:94,rate:1.04},
- mighty:{name:'天生神力',min:68,span:17,health:98,rate:1.04},
+ ordinary:{name:'常人体质',min:58,span:18,health:88,rate:1,constitution:30},
+ frail:{name:'先天孱弱',min:45,span:18,health:70,rate:.88,constitution:20},
+ sturdy:{name:'筋骨健壮',min:65,span:16,health:94,rate:1.04,constitution:40},
+ mighty:{name:'天生神力',min:68,span:17,health:98,rate:1.04,constitution:50},
 };
+
+/**
+ * 哪些日常能练出体魄 —— **出力的事**才长体魄，静坐读书不长。
+ * 数值是每半年一次结算的增量（`cultivation.js` 的日常结算处调用）。
+ */
+export const CONSTITUTION_GAIN={sword:.8,work:.5,alchemy:.3};
+
 export const REGIONAL_METHODS={
  mountain:{name:'青岚引息诀',root:['木','土'],rate:1.07,detail:'借山林灵气温养经脉，先练吐纳与护身。'},
  frost:{name:'寒潮吐纳经',root:['水','金'],rate:1.08,detail:'在寒潮间收敛真气，先护住心脉，再练水雾与寒息。'},

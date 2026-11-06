@@ -80,6 +80,40 @@ const digest = (file) => {
 };
 const headOf = (dir) => execFileSync('git', ['-C', dir, 'rev-parse', 'HEAD'], {encoding: 'utf8'}).trim();
 
+/* 本轮有意改过的文件：写清原因。
+ *
+ * ⚠⚠ 这张表是**分组的唯一来源**（2026-11-08 起）：
+ *   清单里的 `changed` 组 = 「迁进来的文件里，表里登记过的那些」。
+ *   表里有的文件 ⇒ 一定在 `changed` 组；表里没有的 ⇒ 一定在 `unchanged` 组。
+ *   ⇒ 离线模式也能靠它把文件**自动搬到正确的组**（见下面的 regroup）。
+ *
+ *   为什么要有这个：以前改了迁入文件只能**手工编辑 JSON**，
+ *   容易漏改（文件被改过却仍留在 `unchanged` 组 ⇒ import 门禁报红，
+ *   而人不知道该改哪儿），也看不出「这处改动是谁登记的」。
+ */
+const CHANGED_REASON = {
+  'miniprogram/subpkg/xianxia/bridge/session.js': '首页「继续人生」改为接最近动过的那一段人生（原来接最老那段），并支持 ?resume=<编号> 点名',
+  'miniprogram/subpkg/xianxia/pages/life/life.js': '失败兜底不再跳 1in8b 的 /subpkg/engine/pages/index/index，改跳新产品首页；续档参数与上面一致',
+  'miniprogram/subpkg/xianxia/pages/past/past.js': '失败兜底不再跳 1in8b 的 /subpkg/engine/pages/index/index，改跳新产品首页',
+  'miniprogram/subpkg/xianxia/pages/roll/roll.js': '命盘页适配独立启动层（首页进入路径）',
+  'miniprogram/subpkg/xianxia/runtime/build-manifest.json': '生成物：来源改为本仓库源码，并新增 upstreamOrigin 段',
+  'miniprogram/subpkg/xianxia/runtime/engine.js': '生成物：由本仓库源码重新构建（除文件头注释外与迁移进来的那份逐字节一致，见 reference/migrated-runtime/）',
+  'miniprogram/subpkg/xianxia/runtime/pixel-style.js': '生成物：由本仓库源码重新构建（与迁移进来的那份逐字节一致）',
+  'scripts/build-xianxia-mp.mjs': '构建来源改为本仓库自己的源码（vendor 快照降级为历史证据），新增 app.wxss 生成；2026-11-07 补充说明「上游 xianxia-life 已删除，门禁现在核对仓库内的 vendor 锁定快照」',
+  'docs/miniprogram-xianxia-integration.md': '2026-11-07：给 --refresh=../xianxia-life 这条已失效的旧命令加提示（该仓库已删除，build 脚本现在只读本仓库源码）；正文其余部分保持原样',
+  'docs/xianxia-mini-program-integration.md': '2026-11-07：给 --source=../xianxia-life 这条已失效的旧命令加提示（该仓库已删除，build 脚本现在只读本仓库源码）；正文其余部分保持原样',
+  'scripts/test-xianxia-art.mjs': '对照基准改为本仓库 reference/ 与 apps/preview/，不再依赖 1in8b 的 frozen-baseline',
+  'scripts/test-xianxia-build.mjs': '新增「与迁移进来的产物逐字节一致」断言；不再依赖 1in8b 的 frozen-baseline',
+  'scripts/test-xianxia-equivalence.mjs': '对照源改为本仓库 packages/ + content/（源码 vs 产物逐值全等）',
+  'scripts/test-xianxia-mp.mjs': '新增首页仿真断言；路径层级按独立启动层调整',
+  'scripts/test-xianxia-storage.mjs': '不再依赖 1in8b 的 frozen-baseline，改用本仓库自己的哈希校验',
+  'scripts/test-xianxia-style.mjs': '官方对照源改读 reference/official/（本仓库内的锁定副本）+ 新的 app.wxss',
+  'miniprogram/subpkg/xianxia/bridge/page-model.js': 'S5 角色域：登记卡的「预期寿元」改读规则层算好的实际寿元（state.life.cultivation.lifespanLimit），不再读境界表的基础数字',
+  'miniprogram/subpkg/xianxia/bridge/view-model.js': 'S5 角色域：修行本事面板加「体魄」（只增不减的能力），体质行补「力竭」提示',
+  'miniprogram/subpkg/xianxia/pages/life/life.wxml': 'S5 角色域：修行本事面板加「体魄」一行',
+};
+
+
 /* ═══════════════════════════ 离线模式 ═══════════════════════════
  *
  * 只重算**本仓库内文件**的哈希，来源信息（source / 来源哈希 / 换位置记录）原样保留。
@@ -117,6 +151,68 @@ if (OFFLINE) {
     entry[hashField] = d.sha256;
     entry[bytesField] = d.bytes;
   };
+  /* ── 重新分组（2026-11-08 加）──────────────────────────────────
+   *
+   * 问题：`unchanged` 组的哈希含义是「**与来源逐字节一致**」。
+   *   一旦有意改了某个迁进来的文件，它就**不再**属于 unchanged，
+   *   而该进 `changed` 组（记来源哈希 + 现哈希 + 改动原因）。
+   *   以前这一步只能**手工编辑 JSON** ⇒ 容易漏
+   *   （文件被改过却仍留在 unchanged 组 ⇒ import 门禁报红，
+   *     而人不知道该改哪儿 —— 这正是这次 S5 踩的坑）。
+   *
+   * 做法：分组的**唯一来源**是本文件顶部的 CHANGED_REASON 表。
+   *   表里登记过的 ⇒ 在 changed 组；
+   *   没登记的 ⇒ 在 unchanged 组（且必须仍与来源逐字节一致）。
+   *
+   * ⚠ 这里**不**刷新 unchanged 组的哈希 ——
+   *   它的凭据来自来源仓库，只有真的比对过来源才能刷新。
+   *   本段只在「文件确实已改」时才动它（改了就该离开 unchanged）。
+   */
+  const regroup = [];
+  const stillUnchanged = [];
+  for (const e of g.unchanged || []) {
+    const reason = CHANGED_REASON[e.path];
+    if (!reason) { stillUnchanged.push(e); continue; }
+    const abs = path.join(ROOT, e.path);
+    if (!fs.existsSync(abs)) {
+      console.error(`  ⚠ 文件不在了：${e.path}`);
+      stillUnchanged.push(e);
+      continue;
+    }
+    const d = digest(abs);
+    if (d.sha256 === e.sourceSha256) {
+      /* 改动已经撤回（文件又变回与来源一致）⇒ 回到 unchanged 组。 */
+      stillUnchanged.push({...e, bytes: d.bytes, sha256: d.sha256});
+      regroup.push(`${e.path}：已改回与来源一致 ⇒ 留在 unchanged`);
+      continue;
+    }
+    /* 确实改过 ⇒ 搬进 changed 组（来源哈希从原条目带过来）。 */
+    g.changed = (g.changed || []).concat([{
+      sourceRepo: e.sourceRepo,
+      sourceCommit: e.sourceCommit,
+      sourcePath: e.sourcePath,
+      sourceBytes: e.sourceBytes,
+      sourceSha256: e.sourceSha256,
+      path: e.path,
+      currentBytes: d.bytes,
+      currentSha256: d.sha256,
+      reason,
+    }]);
+    regroup.push(`${e.path}：有意改过 ⇒ 移到 changed`);
+  }
+  g.unchanged = stillUnchanged;
+
+  /* 反向核对：changed 组里的文件必须登记过原因。
+   *   没登记 ⇒ 要么是表里漏了，要么是有人把改动悄悄撤了登记。
+   *   两种都不该悄悄放过 ⇒ 直接停下报错，让人去把表补齐。 */
+  for (const e of g.changed || []) {
+    if (!CHANGED_REASON[e.path]) {
+      console.error(`  ✗ ${e.path} 在 changed 组，但 CHANGED_REASON 表里没登记改动原因`);
+      console.error('    ⇒ 去 scripts/gen-source-manifest.mjs 顶部的 CHANGED_REASON 补一条，再重跑本脚本');
+      process.exit(1);
+    }
+  }
+
   /* ⚠ unchanged 组**不刷新**（见上面的说明）。 */
   for (const e of g.added || []) refresh(e, 'sha256', 'bytes');
   for (const e of g.changed || []) refresh(e, 'currentSha256', 'currentBytes');
@@ -125,12 +221,19 @@ if (OFFLINE) {
   old.generatedAt = new Date().toISOString().slice(0, 10);
   /* ⚠ note 只追加一次（重复跑 offline 不会堆成一长串）。 */
   const OFFLINE_NOTE = '（本次用 --offline 生成：只刷新了本轮自己写的文件（added/changed/moved）的哈希；' +
+    '并按 CHANGED_REASON 表把「有意改过的迁入文件」自动搬到 changed 组；' +
     'unchanged 组保持不变（它的凭据来自来源仓库，只能靠完整模式重新核对）。）';
   old.note = String(old.note || '').split('\n').filter(line => !line.startsWith('（本次用 --offline 生成')).join('\n');
   old.note = old.note + '\n' + OFFLINE_NOTE;
   fs.writeFileSync(MANIFEST, JSON.stringify(old, null, 2) + '\n');
   console.log(`已离线刷新 ${path.relative(ROOT, MANIFEST)}`);
   console.log(`  刷新了 ${refreshed} 个文件的哈希${missing ? `，${missing} 个文件不在了` : ''}`);
+  if (regroup.length) {
+    console.log(`  重新分组了 ${regroup.length} 个文件：`);
+    for (const line of regroup) console.log(`    · ${line}`);
+  } else {
+    console.log('  分组没变（没有需要搬的迁入文件）');
+  }
   console.log('  ⚠ 离线模式**没有**重新比对来源仓库 ⇒ 「迁进来的文件被动过」这类问题查不出来');
   console.log('    （unchanged 组的哈希**故意没刷新**，好让门禁仍然报红）。');
   process.exit(0);
@@ -173,25 +276,6 @@ for (const f of ['life', 'roll', 'sheet', 'shelf']) {
   pushOne(`miniprogram/subpkg/engine/styles/${f}.wxss`, `reference/official/styles/${f}.wxss`);
 }
 
-/* 本轮有意改过的文件：写清原因。 */
-const CHANGED_REASON = {
-  'miniprogram/subpkg/xianxia/bridge/session.js': '首页「继续人生」改为接最近动过的那一段人生（原来接最老那段），并支持 ?resume=<编号> 点名',
-  'miniprogram/subpkg/xianxia/pages/life/life.js': '失败兜底不再跳 1in8b 的 /subpkg/engine/pages/index/index，改跳新产品首页；续档参数与上面一致',
-  'miniprogram/subpkg/xianxia/pages/past/past.js': '失败兜底不再跳 1in8b 的 /subpkg/engine/pages/index/index，改跳新产品首页',
-  'miniprogram/subpkg/xianxia/pages/roll/roll.js': '命盘页适配独立启动层（首页进入路径）',
-  'miniprogram/subpkg/xianxia/runtime/build-manifest.json': '生成物：来源改为本仓库源码，并新增 upstreamOrigin 段',
-  'miniprogram/subpkg/xianxia/runtime/engine.js': '生成物：由本仓库源码重新构建（除文件头注释外与迁移进来的那份逐字节一致，见 reference/migrated-runtime/）',
-  'miniprogram/subpkg/xianxia/runtime/pixel-style.js': '生成物：由本仓库源码重新构建（与迁移进来的那份逐字节一致）',
-  'scripts/build-xianxia-mp.mjs': '构建来源改为本仓库自己的源码（vendor 快照降级为历史证据），新增 app.wxss 生成；2026-11-07 补充说明「上游 xianxia-life 已删除，门禁现在核对仓库内的 vendor 锁定快照」',
-  'docs/miniprogram-xianxia-integration.md': '2026-11-07：给 --refresh=../xianxia-life 这条已失效的旧命令加提示（该仓库已删除，build 脚本现在只读本仓库源码）；正文其余部分保持原样',
-  'docs/xianxia-mini-program-integration.md': '2026-11-07：给 --source=../xianxia-life 这条已失效的旧命令加提示（该仓库已删除，build 脚本现在只读本仓库源码）；正文其余部分保持原样',
-  'scripts/test-xianxia-art.mjs': '对照基准改为本仓库 reference/ 与 apps/preview/，不再依赖 1in8b 的 frozen-baseline',
-  'scripts/test-xianxia-build.mjs': '新增「与迁移进来的产物逐字节一致」断言；不再依赖 1in8b 的 frozen-baseline',
-  'scripts/test-xianxia-equivalence.mjs': '对照源改为本仓库 packages/ + content/（源码 vs 产物逐值全等）',
-  'scripts/test-xianxia-mp.mjs': '新增首页仿真断言；路径层级按独立启动层调整',
-  'scripts/test-xianxia-storage.mjs': '不再依赖 1in8b 的 frozen-baseline，改用本仓库自己的哈希校验',
-  'scripts/test-xianxia-style.mjs': '官方对照源改读 reference/official/（本仓库内的锁定副本）+ 新的 app.wxss',
-};
 
 /* 本轮换了位置（内容基本没变）。 */
 const MOVED = {

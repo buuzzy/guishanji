@@ -114,6 +114,23 @@ xianxiastore:0 xianxiaart:0 xianxiamp:0 xianxiastyle:0 xianxiastandalone:0
 | Windows 上只有第一道浏览器门禁红，报「独立 Chrome 调试入口未启动」，同一台机器后面 17 道全过 | Chrome **冷启动慢**（首次建 profile + 杀软扫描），10 秒等待不够 | `scripts/lib/browser.mjs`：等待 10 → 30 秒，且失败时换新 profile **重试一次** |
 | macOS 连续两轮「被取消」 | 撞了 45 分钟 job 超时（`The operation was canceled.`），不是失败 | 超时放宽；更重要的是把回归**拆成快组 / 浏览器组两个独立 job** |
 | macOS runner 跑不完 18 道浏览器门禁 | macOS runner 约比本机慢一倍 | 见下：CI 改成两个 job |
+| **最后一轮 CI 的 6 个任务 0 步、2 秒就结束** | **GitHub 报：`The job was not started because recent account payments have failed or your spending limit needs to be increased.`** ⇒ **账户额度/付费问题，不是代码问题** | 需要人在 GitHub「Billing & plans」里处理；在此之前按方案 §8：**以本机实测为准，并把「job 没启动」和「代码失败」严格区分开** |
+
+**CI 的证据边界（必须如实说）**：
+
+- ✅ **Ubuntu**：全量通过（跑完了 37 道门禁，退出码 0）。
+- ✅ **Windows**：修掉 Chrome 冷启动问题后，浏览器组与快组都通过。
+- ⚠ **macOS**：前两轮都撞了 45 分钟超时（不是断言失败）；改成两个 job 之后**没来得及再跑一轮**
+  —— 因为额度在这一刻用完了。
+- ✅ **本机（macOS，Edge/Chromium）**：**37/37 全绿，退出码 0**（上面那条记录）。
+
+⇒ **Windows 那台电脑必须自己再跑一遍同样的命令**，那是两端口径一致的最后一步：
+
+```sh
+git clone git@github.com:buuzzy/guishanji.git   # 或 git pull
+cd guishanji && npm ci
+node scripts/run-regression.mjs                  # 期望：REGRESSION PASS · 37 道全 0
+```
 
 **CI 现在的结构（解决「盲等」）**：
 

@@ -24,7 +24,8 @@
 | `buuzzy/xianxia-life` | `feature/adventure-preview-v01` | `b519ac066a3499e0aced0fd9b5bd15ae855c3c49` | 本仓库 Git 历史的来源；tree = `c780c6c425f0dda82a09d7a6a0d3bfa6b4878e06` |
 | `buuzzy/1in8b` | `main` | `10fb833ed86b27e48718ccac94757445dccc9515` | 小程序适配代码与锁定快照的来源 |
 
-- `xianxia-life` 的 PR #2 状态：`refs/pull/2/head` = `b519ac06…`（**仍未合并**，本轮不擅自合并）。
+- `xianxia-life` 的 PR #2：~~仍未合并~~ → **2026-11-07 已合并**（main = `105da1f8`），
+  随后该仓库已删除，见 §9。
 - 两个来源仓库都打了本地备份标签 `migration/source-2026-11-06`（**未推送到那两个仓库**；
   需要时再推，不影响任何分支）。
 
@@ -44,8 +45,11 @@
 
 | 方式 | 命令 | 什么时候用 |
 | --- | --- | --- |
-| **完整模式** | `node scripts/gen-source-manifest.mjs --xianxia-life=<目录> --one8b=<目录>` | macOS（本机有那两个来源仓库）⇒ 顺便**重新核对来源** |
+| **完整模式** | `node scripts/gen-source-manifest.mjs --one8b=<1in8b 目录>` | macOS（本机有 1in8b）⇒ 顺便**重新核对来源** |
 | **离线模式** | `node scripts/gen-source-manifest.mjs --offline` | Windows（**只有本仓库**）⇒ 只刷新本轮自己写的文件的哈希 |
+
+⚠ 2026-11-07 起**完整模式不再需要 `xianxia-life`**（该仓库已删除，见 §9）⇒
+只要 1in8b 在本机就能重新核对来源。
 
 ⚠ **离线模式故意不刷新 `unchanged` 组**：那一组的哈希含义是
 「**与来源逐字节一致**」，凭据来自来源仓库 ⇒ 只有真的比对过来源才能刷新。
@@ -255,7 +259,7 @@ IDE 后端日志里的真错是：`TaskService.runTask failed Error: spawn EBADF
 | 阶段 5 玩家存档迁移（导出/导入） | 协议已设计（[storage-migration.md](storage-migration.md)），**实现未做**；端到端验证需要新 AppID |
 | 阶段 6 新产品发布 | 新 AppID / 域名 / 微信后台配置均未准备（属用户与后台操作） |
 | 阶段 7 清理 1in8b | 必须等新产品发布后按三步下线顺序做，**不能提前删**（否则玩家失去导出机会） |
-| `xianxia-life` PR #2 的合并与归档 | 方案 §10.6：不擅自合并；新产品稳定后再决定 |
+| ~~`xianxia-life` PR #2 的合并与归档~~ | ✅ **已完成**（2026-11-07）：PR #2 已合并（main = `105da1f8`），来源仓库已删除。详见 §9 |
 | 网页端部署（预览环境 / 正式域名） | 需要域名与部署授权 |
 
 ## 8. 需要用户/运营决定的事
@@ -267,5 +271,57 @@ IDE 后端日志里的真错是：`TaskService.runTask failed Error: spawn EBADF
 - [ ] 产品说明与隐私声明的正式文案（`miniprogram/pages/legal/` 现在是占位内容，缺运营主体/联系方式/备案号）
 - [ ] 网页端存档键 `ADVENTURE_KEY` 仍是 `shanhai.adventure.v01` —— **本轮有意不改**（换了会让玩家现有存档失联），是否改由你定
 - [ ] 旧入口的迁移说明文案、导出通道与下线窗口（天数由运营确认）
-- [ ] 是否把 `migration/source-2026-11-06` 标签推送到两个来源仓库
+- [x] 备份标签 `migration/source-2026-11-06` —— 已推到 **1in8b**（`refs/tags/migration/source-2026-11-06` → `10fb833e`）；
+      `xianxia-life` 那个仓库 2026-11-07 已删除，标签随仓库消失，
+      但**完整 Git 历史已存成本地 bundle**（`_archive/xianxia-life-git-2026-11-06-final.bundle`，验证过「complete history」）。
 - [ ] 真机确认一次「继续人生」接最近那段人生的行为变化
+
+---
+
+## 9. 2026-11-07：来源仓库下线与旧产物清理
+
+> 目标：**本仓库自足** —— 网页版 + 小程序端都在这里，构建与门禁不依赖任何相邻目录。
+
+### 9.1 为什么能删 xianxia-life：字节有三份保障
+
+逐文件比对过（199 个文件）：
+
+| 保障 | 位置 | 状态 |
+| --- | --- | --- |
+| 活代码 | `packages/adventure/` + `content/` + `apps/preview/` | ✅ 182 个文件**逐字节一致**，其余 17 个是同位置的更新版 |
+| 锁定快照 | `vendor/xianxia-r12/`、`vendor/xianxia-r12-art/`（`baseline.lock.json` 记着 `b519ac06`） | ✅ 在库，且**被 build / art 门禁逐个核对** |
+| Git 历史 | 本仓库历史含上游 **13 个提交**（rules8 / rules11 / rules12，逐个 sha 验证） | ✅ 在库 |
+
+⇒ 删掉来源仓库**不丢任何字节**。
+
+### 9.2 删之前做的四件事
+
+| # | 做了什么 | 结果 |
+| --- | --- | --- |
+| 1 | 合并 rules12 的 PR #2 | `main` = `105da1f8`（含 `b519ac06`） |
+| 2 | 打包备份 | `_archive/xianxia-life-2026-11-06.tar.gz`（工作树）+ `_archive/xianxia-life-git-2026-11-06-final.bundle`（**完整 Git 历史**，验证过「records a complete history」，含合并后的 main = `105da1f8`） |
+| 3 | 推备份标签到 1in8b | `refs/tags/migration/source-2026-11-06` → `10fb833e` |
+| 4 | 改清单脚本 | 完整模式只要 1in8b；xianxia-life 的 commit 写成常量 `b519ac06…` 长期留在清单里 |
+
+⚠ **`import` 门禁不受影响**：它只读仓库内那份清单、比对现文件哈希，
+**从来不需要来源仓库在场**（这一条 2026-11-07 已逐行核对脚本确认）。
+
+### 9.3 清理掉的旧产物
+
+| 删了什么 | 为什么能删 |
+| --- | --- |
+| `legacy/old-web/`（31 个文件 / 596 KB） | 旧 0.2.0 产品「山海一生」的完整快照，与归山记无关；历史仍在 git 里（`git log -- legacy/old-web`） |
+| 5 个没人调用的孤儿脚本 | `register-rules11/12-verification`、`research-adventure`、`verify-adventure-browser`、`verify-rules12-post-review` —— 全仓检索无人引用 |
+| 本地 `dist/`、`artifacts/`、3 个回归日志（17 MB） | 构建产物与日志，可重建；已进系统废纸篓（可恢复） |
+
+⚠ **没删**（门禁正在用，删了立刻红）：`vendor/xianxia-r12*`、`reference/official/`、
+`reference/migrated-runtime/`。
+
+### 9.4 清理本身也被门禁盯住
+
+`repohygiene` 新增 3 组断言（**反向验证 3/3 全部报红，退出码 1**）：
+
+- `legacy/old-web/` 不许再出现；
+- `vendor/xianxia-r12/`、`vendor/xianxia-r12-art/`、`reference/migrated-runtime/`、
+  `reference/official/` 必须在；
+- 代码里不许再出现指向已删 `xianxia-life` 的路径。

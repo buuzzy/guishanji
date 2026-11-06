@@ -32,8 +32,12 @@
  *   · 本仓库的 packages/ + content/（现在改的就是它们）；
  *   · 上游 buuzzy/xianxia-life 的 feature/adventure-preview-v01
  *     （commit b519ac06… / tree c780c6c4…，见 vendor/xianxia-r12/baseline.lock.json）。
- * 两边**逐字节相同**（门禁 scripts/test-xianxia-build.mjs 逐个核对）。
+ * 两边**逐字节相同** —— 门禁 `scripts/test-xianxia-build.mjs` 逐个核对。
  * build-manifest.json 里 `source` 记本仓库，`upstreamOrigin` 记上游 —— 不合并、不假装只有一个。
+ *
+ * ⚠ **上游仓库已于 2026-11-07 删除**（字节已完整迁入本仓库）⇒
+ *   门禁现在核对的是**仓库内的锁定快照** `vendor/xianxia-r12/`，
+ *   不再需要那个目录在场。
  *
  * ## 硬规矩
  * --------

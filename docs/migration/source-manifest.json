@@ -10,7 +10,7 @@
     {
       "repo": "buuzzy/xianxia-life",
       "commit": "b519ac066a3499e0aced0fd9b5bd15ae855c3c49",
-      "path": "feature/adventure-preview-v01（本仓库 Git 历史的来源）"
+      "path": "feature/adventure-preview-v01（本仓库 Git 历史的来源；该仓库已于 2026-11-07 删除，字节已完整迁入本仓库）"
     }
   ],
   "note": "unchanged：迁进来后未改动，必须仍与来源逐字节一致。\nchanged：本轮有意改过，记来源哈希与现哈希 + 改动原因。\nmoved：本轮换了位置。\nadded：本轮新增的文件（不是迁入的）。\n核对用 scripts/verify-migration-import.mjs。\n（本次用 --offline 生成：只刷新了本轮自己写的文件（added/changed/moved）的哈希；unchanged 组保持不变（它的凭据来自来源仓库，只能靠完整模式重新核对）。）",
@@ -1109,16 +1109,6 @@
       {
         "sourceRepo": "buuzzy/1in8b",
         "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
-        "sourcePath": "docs/miniprogram-xianxia-integration.md",
-        "sourceBytes": 61050,
-        "sourceSha256": "85ec52486de95a41305565b25923d6f7c3c66700a476b5ef6c9fe297ca2dc4d1",
-        "path": "docs/miniprogram-xianxia-integration.md",
-        "bytes": 61050,
-        "sha256": "85ec52486de95a41305565b25923d6f7c3c66700a476b5ef6c9fe297ca2dc4d1"
-      },
-      {
-        "sourceRepo": "buuzzy/1in8b",
-        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
         "sourcePath": "docs/xianxia-device-checklist.md",
         "sourceBytes": 10904,
         "sourceSha256": "40de1002d7f850a8dfee57259230dd3568ec5efeabe8b7879b891a6f34e7b50b",
@@ -1292,9 +1282,9 @@
         "sourceBytes": 20247,
         "sourceSha256": "d48d08f49db0a696826670bc1395f2d894091aa747cbe1494e9078f765d16883",
         "path": "scripts/build-xianxia-mp.mjs",
-        "currentBytes": 32245,
-        "currentSha256": "35ad37cbabbed93d9b7e95a1c3e08c346b5fbfb716f36f134cb05933726dfc19",
-        "reason": "构建来源改为本仓库自己的源码（vendor 快照降级为历史证据），新增 app.wxss 生成"
+        "currentBytes": 32461,
+        "currentSha256": "de066f2f3612844d038af938da07e27498068dc748aea7aa0fa9ad63853fd651",
+        "reason": "构建来源改为本仓库自己的源码（vendor 快照降级为历史证据），新增 app.wxss 生成；2026-11-07 补充说明「上游 xianxia-life 已删除，门禁现在核对仓库内的 vendor 锁定快照」"
       },
       {
         "sourceRepo": "buuzzy/1in8b",
@@ -1361,6 +1351,17 @@
         "currentBytes": 8282,
         "currentSha256": "51e38df57fdb95c4208de4f3f93faa3d03eeb7f81b9046c074721fe4007cc81c",
         "reason": "对照源改为本仓库 packages/ + content/（源码 vs 产物逐值全等）"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "docs/miniprogram-xianxia-integration.md",
+        "sourceBytes": 61050,
+        "sourceSha256": "85ec52486de95a41305565b25923d6f7c3c66700a476b5ef6c9fe297ca2dc4d1",
+        "path": "docs/miniprogram-xianxia-integration.md",
+        "currentBytes": 61290,
+        "currentSha256": "1427f57e096b2d8d4c882209902a22969bf0dee030f91eb5ca765e5549f82fec",
+        "reason": "2026-11-07：给 --refresh=../xianxia-life 这条已失效的旧命令加提示（该仓库已删除，build 脚本现在只读本仓库源码）；正文其余部分保持原样"
       }
     ],
     "moved": [
@@ -1497,13 +1498,13 @@
       },
       {
         "path": "scripts/verify-migration-import.mjs",
-        "bytes": 9212,
-        "sha256": "777579df5e29bc9a55cbb191383e84742b281ef7be9047ea5e29680a0f769dd1"
+        "bytes": 9311,
+        "sha256": "b978dfca52cfea33559a2928a56b6f5776ec6dd48cee908d0363393a0f28d422"
       },
       {
         "path": "scripts/gen-source-manifest.mjs",
-        "bytes": 15019,
-        "sha256": "ad4f5da7f4eb5f7b8e8c48e423143693a355580b8a7c4770b8c0057767589740"
+        "bytes": 16252,
+        "sha256": "2411b43d1fadef1a1c6a3f12147ff5783b920dc533096649c6a8cacbdcf83886"
       },
       {
         "path": "scripts/test-xianxia-standalone.mjs",
@@ -1512,8 +1513,8 @@
       },
       {
         "path": "scripts/test-repo-hygiene.mjs",
-        "bytes": 6355,
-        "sha256": "7c3b228427d7cb2b60e90c9189c90388038e7b9b0ab317e31a6aaf2279d4e45c"
+        "bytes": 9683,
+        "sha256": "38e117cd70acf8be6ded91e01b397966feb24f77ce7fd6effa40d167879b6565"
       },
       {
         "path": "scripts/measure-mp-package-size.mjs",
@@ -1527,18 +1528,18 @@
       },
       {
         "path": "AGENTS.md",
-        "bytes": 7702,
-        "sha256": "cf801c4f26b09b2aea38fb33b49b69843a59dfa62e4ecfe7d2e41f0e62cf3f7b"
+        "bytes": 8039,
+        "sha256": "e59eed1387edeab32eeb48b98021992277e75f185b2d7ad79a82b1472b37d85b"
       },
       {
         "path": "README.md",
-        "bytes": 2335,
-        "sha256": "0098d69a619bf74f09bc1e7a1f83da4bbbfc09f76e5ee276a09a22b68b93c4dd"
+        "bytes": 2687,
+        "sha256": "0eb06cf0d255b2a037dab2656b9e7f091a66ecb794b93329deeb1711077cbe56"
       },
       {
         "path": "docs/migration/ledger.md",
-        "bytes": 17841,
-        "sha256": "25211037f625cb97530adf57d977069ccbd2c8969e2a564151dda625af371474"
+        "bytes": 21048,
+        "sha256": "d59d9690f354036c22330270840e2c6591850da686a462d1a6a8e5c7c5d88bc8"
       },
       {
         "path": "docs/migration/plan.md",
@@ -1552,18 +1553,13 @@
       },
       {
         "path": "docs/migration/web-cleanup.md",
-        "bytes": 14797,
-        "sha256": "d77bac8a4e1fb4eee42e28f4a68a99d44035439693afb8e36ee91b35c7fe5858"
+        "bytes": 15388,
+        "sha256": "789f131aa438cfb170836a25e25bd6541d2bcae4e7a9ca3aeaa5a936f7712385"
       },
       {
         "path": "docs/migration/miniprogram-standalone.md",
         "bytes": 15337,
         "sha256": "e295e01d2e6c90ab77d3414676019529ebd4f28b7bd3429e3dbc1d64a6f39f33"
-      },
-      {
-        "path": "legacy/old-web/README.md",
-        "bytes": 2813,
-        "sha256": "451a214279ee2fcdf267fcc3c08b7861f59562dabe3f8c20f728e1cb67f4f592"
       }
     ]
   }

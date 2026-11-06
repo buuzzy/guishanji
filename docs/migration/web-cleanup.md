@@ -4,6 +4,11 @@
 - 分析基线：`migration/standalone` 分支 HEAD `b519ac066a3499e0aced0fd9b5bd15ae855c3c49`。
 - 结论：**旧 0.2.0 产品「山海一生」已下线；当前产品只有一个网页首页（归山记）。**
 
+> ⚠ **2026-11-07 后续处置**：`legacy/old-web/` 这个归档目录**已删除**
+> （旧产品与归山记无关，且来源仓库 `buuzzy/xianxia-life` 同日删除 ⇒ 不再需要留副本）。
+> **本文记录的是当时的处置过程，正文保持原样**；
+> 目录里的文件仍在 git 历史里，需要时用 `git log -- legacy/old-web` 找回。
+
 ---
 
 ## 1. 判定方法（不靠文件名或版本号猜）
@@ -71,7 +76,7 @@
 ### 2.1 处置：不是删除，是移出产品树
 
 上表 20 个模块连同旧产品自己的页面、测试与浏览器门禁，整体移入
-[`legacy/old-web/`](../../legacy/old-web/)，并保持原有的相对目录结构，
+`legacy/old-web/`（2026-11-07 已删除该目录，历史在 git 里），并保持原有的相对目录结构，
 使 `../../packages/…`、`../apps/web/…` 这类相对导入**不需要改写**。
 
 - 产品树（`apps/` `packages/` `content/` `scripts/` `tests/`）里不再有旧产品的任何一行代码；
@@ -165,7 +170,9 @@ rules12-browser:0 family-browser:0 static-build:0 adventure-static:0 decision-st
 network-static:0 progression-static:0 revision9-static:0 rules10-static:0 mundane-static:0
 rules12-static:0 family-static:0`）。
 
-旧产品下线后（**不在门禁清单里**，手动跑仍然全绿）：
+旧产品下线后（**不在门禁清单里**，手动跑仍然全绿）。
+⚠ **2026-11-07 起这三条命令已失效**：`legacy/old-web/` 目录已删除，
+下表是**当时的验收记录**（结果有效，命令需从 git 历史取回目录才能再跑）。
 
 | 命令 | 结果 |
 | --- | --- |

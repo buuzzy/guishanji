@@ -7,8 +7,9 @@ export const projectRoot = fileURLToPath(new URL('../', import.meta.url));
 const types = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.svg': 'image/svg+xml', '.png': 'image/png', '.webp': 'image/webp', '.ico': 'image/x-icon' };
 function within(parent, path) { const rel = relative(parent, path); return rel === '' || (rel !== '..' && !rel.startsWith('..' + sep) && !rel.startsWith(sep) && !/^[a-z]:/iu.test(rel)); }
 
-// 默认服务当前产品「归山记」。entry / allow 让 legacy/old-web 的历史快照能用同一份
-// 服务实现把旧页面单独跑起来；产品侧的默认值不随它们改变。
+// 默认服务当前产品「归山记」。entry / allow 让需要的路径能用同一份
+// 服务实现跑起来；产品侧的默认值不随它们改变。
+// ⚠ 2026-11-07：旧 0.2.0 产品的快照 `legacy/old-web/` 已删除，这里不再为它留位置。
 export async function startServer({ root = projectRoot, host = '127.0.0.1', port = 8866, entry = '/apps/preview/index.html', allow = ['/apps/preview/', '/preview/', '/packages/', '/content/'] } = {}) {
   const actualRoot = await realpath(root);
   if (!within(await realpath(projectRoot), actualRoot)) throw new Error('服务根目录必须位于本项目内。');

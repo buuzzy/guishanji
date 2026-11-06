@@ -2,7 +2,8 @@
 
 > 本文是旧 0.2.0 产品「山海一生」的规则设定表。2026-11-06 网页端独立化后，本文描述的数据定义
 > （`content/world.js`、`content/stories.js`、`content/expansion.js`）、效果引擎（`packages/core/engine.js`）
-> 与世局（`packages/core/world-events.js`）已整体移入 [`legacy/old-web/`](../legacy/old-web/)，属历史材料；
+> 与世局（`packages/core/world-events.js`）曾整体移入 `legacy/old-web/`；该目录已于 **2026-11-07 清理**
+> （与归山记无关，历史仍在 git 里：`git log -- legacy/old-web`），属历史材料；
 > 当前产品「归山记」的规则设定见 [`docs/adventure-rules12-design.md`](adventure-rules12-design.md)。
 > 本文正文保持原样，不回改历史。
 

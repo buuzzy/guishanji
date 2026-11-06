@@ -115,7 +115,11 @@ HTML 的 `life-panels.js` 返回 HTML/SVG 字符串，需要转 WXML 和数据�
 待新增 build 接收明确的源 checkout 路径，记录源提交、源码是否干净、所有输入 SHA256、rulesVersion 和输出 SHA256。输入路径禁止依赖当前 Windows 绝对目录。源未提交或哈希不匹配时停止生成；同一输入应产生相同输出。调用命令形式约定为：
 
 ```sh
-# 待 build-xianxia-mp.mjs 实施并验证后才可执行；当前尚不存在
+# ⚠ 历史命令（当时 xianxia-life 还在）：**现已不适用**。
+#   ① 该仓库已于 2026-11-07 删除；
+#   ② build-xianxia-mp.mjs 现在**只读本仓库**（packages/ + content/），
+#      没有 --source / --refresh 参数了。
+#   现在用这条：node scripts/build-xianxia-mp.mjs [--check]
 node scripts/build-xianxia-mp.mjs --source=../xianxia-life --check
 node scripts/build-xianxia-mp.mjs --source=../xianxia-life
 ```

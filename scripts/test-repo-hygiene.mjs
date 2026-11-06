@@ -132,6 +132,73 @@ for (const [rel, size] of stats.big) {
   ok(false, `没有超过 50 MB 的单个文件`, `${rel} = ${mb(size)}`);
 }
 
+/* ───────────────────────────────── ③ 旧产物不许回来 · 门禁依赖不许丢 */
+
+section('旧产物不许回来，门禁依赖不许丢');
+
+/**
+ * 2026-11-07 清理过一次：
+ *   · `legacy/old-web/` —— 旧 0.2.0 产品「山海一生」的完整快照，与归山记无关
+ *     （历史仍在 git 里，需要时用 `git log -- legacy/old-web` 找回来）；
+ *   · 5 个没人调用的孤儿脚本。
+ *
+ * ⇒ 这道断言盯住「别又把旧产物拷回来」——
+ *   仓库要保持「只有归山记」这一件事，不掺别的产品。
+ */
+ok(!fs.existsSync(path.join(ROOT, 'legacy', 'old-web')),
+  '旧 0.2.0 产品的快照没有回来（legacy/old-web/）');
+
+/**
+ * ⚠ 反过来：这几处**不许**被当成"旧产物"清掉 ——
+ *   它们是门禁正在用的对照物，删了门禁立刻红：
+ *   · `vendor/xianxia-r12/`      —— 规则 12 当年锁下的字节（build 门禁读它的 lock 文件）
+ *   · `vendor/xianxia-r12-art/`  —— 画面锁定快照（art 门禁逐笔比对）
+ *   · `reference/migrated-runtime/` —— 迁移进来的那份产物（build 门禁逐字节比对）
+ *   · `reference/official/`      —— 官方设计系统的逐字节副本（style / mp 门禁比对）
+ */
+for (const dir of ['vendor/xianxia-r12', 'vendor/xianxia-r12-art',
+  'reference/migrated-runtime', 'reference/official']) {
+  ok(fs.existsSync(path.join(ROOT, dir)),
+    `门禁在用的对照物还在：${dir}/`);
+}
+
+/**
+ * ⚠ `buuzzy/xianxia-life` 已于 2026-11-07 删除 ⇒ 源码里**不许**再去读它。
+ *
+ * ⚠ 判定口径要准（第一版太粗，自己抓到了自己）：
+ *   只看**路径被当成文件去操作**的写法（读文件 / require / import / 拼路径），
+ *   **不**看纯文案 —— 比如「旧命令是 `--refresh=../xianxia-life`，现已不适用」
+ *   这类说明文字必须留（否则后人照着做），它不该被判红。
+ */
+const DEAD_REPO_PATTERNS = [
+  /\b(?:readFileSync|readFile|existsSync|statSync|require|createRequire)\s*\(\s*['"`][^'"`]*xianxia-life/iu,
+  /\bimport\s*\(\s*['"`][^'"`]*xianxia-life/iu,
+  /path\.(?:join|resolve)\s*\([^)]*xianxia-life/iu,
+  /\bfrom\s*['"`][^'"`]*xianxia-life/iu,
+];
+const deadRepo = [];
+const scanDirs = ['scripts', 'tests', 'apps', 'packages', 'content', 'miniprogram'];
+const walk = (dir) => {
+  let entries;
+  try { entries = fs.readdirSync(dir, {withFileTypes: true}); } catch { return; }
+  for (const entry of entries) {
+    if (entry.name === 'node_modules' || entry.name === '.git') continue;
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) { walk(full); continue; }
+    if (!/\.(mjs|js|cjs)$/u.test(entry.name)) continue;
+    let text;
+    try { text = fs.readFileSync(full, 'utf8'); } catch { continue; }
+    const code = text.split('\n')
+      .filter(line => !/^\s*(\*|\/\/|\/\*)/u.test(line))
+      .join('\n');
+    if (DEAD_REPO_PATTERNS.some(re => re.test(code))) deadRepo.push(path.relative(ROOT, full));
+  }
+};
+for (const dir of scanDirs) walk(path.join(ROOT, dir));
+ok(deadRepo.length === 0,
+  '代码里没有再指向已删除的 xianxia-life 仓库',
+  deadRepo.length ? `还有 ${deadRepo.length} 处：${deadRepo.slice(0, 3).join('、')}` : '');
+
 console.log('');
 console.log(`  参考：正常状态 53 MB / 约 2,700 个文件；出事状态 32 GB / 53,152 个文件。`);
 console.log(`  实测：${mb(stats.bytes)} / ${stats.files.toLocaleString('en-US')} 个文件`);

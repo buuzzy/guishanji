@@ -16,10 +16,13 @@
  *
  * 为什么不能靠「旁边那个目录」
  * --------------------------
- * 迁移后的新仓库**不允许**依赖 `../xianxia-life` 或 `../1in8b` 这类相邻目录
+ * 迁移后的新仓库**不允许**依赖 `../1in8b` 这类相邻目录
  * （CI 上不存在 ⇒ 门禁变假门禁）。因此：
- *   · 生成清单：一次性，用真实的两个来源仓库生成，写进 git；
+ *   · 生成清单：一次性，用真实的 1in8b 仓库生成，写进 git；
  *   · 核对清单：随时可跑，只跟本仓库自己的字节比对。
+ *
+ * ⚠ 2026-11-07：来源仓库 `buuzzy/xianxia-life` 已删除（字节已完整迁入本仓库）。
+ *   ⇒ 完整模式现在只需要 1in8b；xianxia-life 的 commit 记在清单里长期保留。
  *
  * 用法
  * ----
@@ -161,10 +164,9 @@ ok(bad === 0, `${gAdded.length} 个本轮新增的文件：哈希一致`);
 if (staleAdded.length) {
   console.error('');
   console.error('  ⇒ 这几个文件本轮被改过，清单的哈希跟不上。');
-  console.error('    重新生成清单即可（需要那两个来源仓库在本机）：');
-  console.error('      node scripts/gen-source-manifest.mjs \\');
-  console.error('        --xianxia-life=<xianxia-life 目录> --one8b=<1in8b 目录>');
-  console.error('    ⚠ 若来源仓库不在本机：清单只依赖仓库内的文件，');
+  console.error('    重新生成清单即可（需要 1in8b 仓库在本机）：');
+  console.error('      node scripts/gen-source-manifest.mjs --one8b=<1in8b 目录>');
+  console.error('    ⚠ 若 1in8b 不在本机：清单只依赖仓库内的文件，');
   console.error('      可用 --offline 只重算仓库内文件的哈希（见脚本用法）。');
   console.error('');
 }

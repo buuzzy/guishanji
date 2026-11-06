@@ -15,9 +15,13 @@
  *
  * 用法
  * ----
- *   node scripts/gen-source-manifest.mjs \
- *     --xianxia-life=/path/to/xianxia-life \
- *     --one8b=/path/to/1in8b
+ *   node scripts/gen-source-manifest.mjs --one8b=/path/to/1in8b
+ *
+ * ⚠ 2026-11-07：`buuzzy/xianxia-life` **已删除**（它的字节已完整迁入本仓库：
+ *   规则进 `packages/` + `content/`，旧 0.2.0 产品进 git 历史，
+ *   锁定快照进 `vendor/xianxia-r12/`）⇒ 本脚本**不再需要它**。
+ *   它的 commit 记在下面的 `XL_COMMIT` 常量里，
+ *   作为「这套规则最初是哪一版」的凭据（清单里仍然写着）。
  */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -35,14 +39,20 @@ const args = Object.fromEntries(
   })
 );
 
-const XL = args['xianxia-life'];
 const ONE = args['one8b'];
 const OFFLINE = args['offline'] === true || args['offline'] === 'true';
 
 /**
+ * ⚠ `buuzzy/xianxia-life` 已于 2026-11-07 删除（见文件头）。
+ *   它的字节已完整迁入本仓库 ⇒ 完整模式**只需要** `1in8b`。
+ *   这里的 commit 是「规则来自哪一版」的凭据，写进清单里长期保留。
+ */
+const XL_COMMIT = 'b519ac066a3499e0aced0fd9b5bd15ae855c3c49';
+
+/**
  * ⚠ `--offline` 模式（2026-11-06 加）
  * ---------------------------------------------------------------------------
- * 完整模式需要 `xianxia-life` 与 `1in8b` 两个来源仓库都在本机。
+ * 完整模式需要 `1in8b` 仓库在本机（`buuzzy/xianxia-life` 已于 2026-11-07 删除）。
  * 但**另一台电脑（Windows）通常只有本仓库** ⇒ 改了本轮新增的文件后，
  * 清单的哈希跟不上 ⇒ `import` 门禁报红，而**没法在 Windows 上重新生成**。
  *
@@ -55,10 +65,10 @@ const OFFLINE = args['offline'] === true || args['offline'] === 'true';
  *
  * 用法：node scripts/gen-source-manifest.mjs --offline
  */
-if (!OFFLINE && (!XL || !ONE)) {
+if (!OFFLINE && !ONE) {
   console.error('用法：');
-  console.error('  完整模式（重新核对来源，需要两个来源仓库）：');
-  console.error('    node scripts/gen-source-manifest.mjs --xianxia-life=<目录> --one8b=<目录>');
+  console.error('  完整模式（重新核对来源，需要 1in8b 仓库）：');
+  console.error('    node scripts/gen-source-manifest.mjs --one8b=<1in8b 目录>');
   console.error('  离线模式（只重算本仓库文件的哈希，不碰来源）：');
   console.error('    node scripts/gen-source-manifest.mjs --offline');
   process.exit(2);
@@ -172,7 +182,9 @@ const CHANGED_REASON = {
   'miniprogram/subpkg/xianxia/runtime/build-manifest.json': '生成物：来源改为本仓库源码，并新增 upstreamOrigin 段',
   'miniprogram/subpkg/xianxia/runtime/engine.js': '生成物：由本仓库源码重新构建（除文件头注释外与迁移进来的那份逐字节一致，见 reference/migrated-runtime/）',
   'miniprogram/subpkg/xianxia/runtime/pixel-style.js': '生成物：由本仓库源码重新构建（与迁移进来的那份逐字节一致）',
-  'scripts/build-xianxia-mp.mjs': '构建来源改为本仓库自己的源码（vendor 快照降级为历史证据），新增 app.wxss 生成',
+  'scripts/build-xianxia-mp.mjs': '构建来源改为本仓库自己的源码（vendor 快照降级为历史证据），新增 app.wxss 生成；2026-11-07 补充说明「上游 xianxia-life 已删除，门禁现在核对仓库内的 vendor 锁定快照」',
+  'docs/miniprogram-xianxia-integration.md': '2026-11-07：给 --refresh=../xianxia-life 这条已失效的旧命令加提示（该仓库已删除，build 脚本现在只读本仓库源码）；正文其余部分保持原样',
+  'docs/xianxia-mini-program-integration.md': '2026-11-07：给 --source=../xianxia-life 这条已失效的旧命令加提示（该仓库已删除，build 脚本现在只读本仓库源码）；正文其余部分保持原样',
   'scripts/test-xianxia-art.mjs': '对照基准改为本仓库 reference/ 与 apps/preview/，不再依赖 1in8b 的 frozen-baseline',
   'scripts/test-xianxia-build.mjs': '新增「与迁移进来的产物逐字节一致」断言；不再依赖 1in8b 的 frozen-baseline',
   'scripts/test-xianxia-equivalence.mjs': '对照源改为本仓库 packages/ + content/（源码 vs 产物逐值全等）',
@@ -241,7 +253,6 @@ const ADDED = [
   '.github/workflows/ci.yml', 'AGENTS.md', 'README.md',
   'docs/migration/ledger.md', 'docs/migration/plan.md', 'docs/migration/storage-migration.md',
   'docs/migration/web-cleanup.md', 'docs/migration/miniprogram-standalone.md',
-  'legacy/old-web/README.md',
 ];
 const added = [];
 for (const p of ADDED) {
@@ -262,7 +273,7 @@ const manifest = {
   generatedAt: new Date().toISOString().slice(0, 10),
   sources: [
     {repo: 'buuzzy/1in8b', commit: headOf(ONE), path: '（小程序适配代码与锁定快照的来源）'},
-    {repo: 'buuzzy/xianxia-life', commit: headOf(XL), path: 'feature/adventure-preview-v01（本仓库 Git 历史的来源）'}
+    {repo: 'buuzzy/xianxia-life', commit: XL_COMMIT, path: 'feature/adventure-preview-v01（本仓库 Git 历史的来源；该仓库已于 2026-11-07 删除，字节已完整迁入本仓库）'}
   ],
   note: [
     'unchanged：迁进来后未改动，必须仍与来源逐字节一致。',

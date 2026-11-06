@@ -212,6 +212,9 @@ miniprogram/subpkg/xianxia/runtime/engine.js   ← 生成物（981,328 字节）
 刷新快照（要求上游工作树干净）：
 
 ```sh
+# ⚠ 历史命令（当时 xianxia-life 还在）：**现已不适用**。
+#   该仓库已于 2026-11-07 删除；build-xianxia-mp.mjs 现在只读本仓库源码，
+#   刷新快照的办法是改 packages/ + content/ 后重新构建。
 node scripts/build-xianxia-mp.mjs --refresh=../xianxia-life
 ```
 

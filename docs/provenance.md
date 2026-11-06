@@ -1,8 +1,10 @@
 # 原创实现与参考记录
 
 > 本文记录旧 0.2.0 产品「山海一生」的原创实现。2026-11-06 网页端独立化后，旧产品的页面与
-> 专属模块已整体移入 [`legacy/old-web/`](../legacy/old-web/)（例如原文提到的 `packages/render/canvas.js`、
-> `packages/media/audio.js`、`apps/web/` 现在都在那里）；当前产品「归山记」的来源记录见
+> 专属模块曾整体移入 `legacy/old-web/`（例如原文提到的 `packages/render/canvas.js`、
+> `packages/media/audio.js`、`apps/web/`）；该目录已于 **2026-11-07 清理**
+> （与归山记无关，历史仍在 git 里：`git log -- legacy/old-web`）；
+> 当前产品「归山记」的来源记录见
 > [`docs/migration/source-manifest.json`](migration/source-manifest.json)。本文正文保持原样，不回改历史。
 
 本项目在用户确定纯 Web 方向后，独立建立于 `C:/Users/CaiYiyang/xianxia-life`。代码、世界、剧情、图形和音乐在本项目编写。

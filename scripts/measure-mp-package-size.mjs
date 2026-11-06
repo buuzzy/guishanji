@@ -89,15 +89,27 @@ function toolVersion() {
   return 'unknown';
 }
 
-/** 微信开发者工具自己的版本号（从 app.asar 的 package.json 读）。 */
+/**
+ * 微信开发者工具自己的版本号（形如 `2.02.2608080`）。
+ *
+ * ⚠ **Info.plist 里没有它**：那里 `CFBundleShortVersionString` / `CFBundleVersion`
+ *   写的都是 **Electron 版本**（36.6.0），不是微信开发者工具版本。
+ *   真正的版本号在 app.asar 里，位置约在文件**后段**（实测偏移 ~203 MB），
+ *   形如 `"appname":"wechatwebdevtools","version":"2.02.2608080"`。
+ *   ⇒ 早期版本只读文件前 4 MB ⇒ 永远读不到 ⇒ 报告里记成 `unknown`。
+ *   现在改成**按字节搜完整文件**里的这个固定模式。
+ */
 function ideVersion() {
   if (process.platform !== 'darwin') return 'unknown';
   const asar = '/Applications/wechatwebdevtools.app/Contents/Resources/app.asar';
   try {
     const buf = fs.readFileSync(asar);
     const text = buf.toString('utf8');
-    const m = /"name"\s*:\s*"[^"]*"\s*,\s*"version"\s*:\s*"(\d+\.\d+\.\d+)"/.exec(text.slice(0, 4 * 1024 * 1024));
+    const m = /"appname"\s*:\s*"wechatwebdevtools"\s*,\s*"version"\s*:\s*"(\d+\.\d+\.\d+)"/.exec(text);
     if (m) return m[1];
+    /* 兜底：任何 2.02.x 的版本号都算。 */
+    const m2 = /"version"\s*:\s*"(2\.02\.\d{6,7})"/.exec(text);
+    if (m2) return m2[1];
   } catch { /* 读不到就算了 */ }
   return 'unknown';
 }

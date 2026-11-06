@@ -154,6 +154,43 @@ for (const e of gAdded) {
 }
 ok(bad === 0, `${gAdded.length} 个本轮新增的文件：哈希一致`);
 
+/* ── 包体实测台账：只查「存在且字段齐全」，**不锁哈希** ──────────────
+ *
+ * ⚠ 为什么它不锁哈希：
+ *   `docs/mp-package-size.json` 是**每次真机量包体都会重写**的快照
+ *   （里面有 measuredAt 时间戳、机器信息、当次 commit）。
+ *   一旦把它的哈希写进清单 ⇒ 每次重测包体，`import` 门禁就报红
+ *   ⇒ 门禁会逼着人「要么别重测、要么改清单」⇒ 反而没人愿意再量包体。
+ *   这跟「新增文件要锁哈希」（防偷改）的初衷是冲突的。
+ *
+ * ⇒ 折中：**锁结构，不锁内容**：
+ *   必须存在、必须能解析、必须记着「编译后」的真实体积
+ *   （compiled.total 非空）、必须标着工具版本与源码指纹。
+ *   有人偷偷删了报告、或把数字改成一个假的，门禁照样红。
+ */
+const sizeReport = path.join(ROOT, 'docs', 'mp-package-size.json');
+if (!fs.existsSync(sizeReport)) {
+  failures++;
+  console.error('  ✗ 缺少包体实测台账：docs/mp-package-size.json');
+  ok(false, '包体实测台账存在、含编译后体积与工具版本（内容不锁哈希：每次重测都会变）');
+} else {
+  let doc = null;
+  try { doc = JSON.parse(fs.readFileSync(sizeReport, 'utf8')); } catch (error) {
+    failures++;
+    console.error('  ✗ 包体台账不是合法 JSON：' + error.message);
+    ok(false, '包体实测台账存在、含编译后体积与工具版本（内容不锁哈希：每次重测都会变）');
+  }
+  if (doc) {
+    const problems = [];
+    if (!doc.compiled || !doc.compiled.total) problems.push('没有「编译后」的真实体积（compiled.total 为空）');
+    if (!doc.sourceFingerprint) problems.push('缺源码指纹（sourceFingerprint）');
+    if (!doc.tool || !doc.tool.ideVersion) problems.push('缺工具版本（tool.ideVersion）');
+    if (doc.passed !== true) problems.push('标记为未通过（passed ≠ true）');
+    for (const p of problems) { failures++; console.error('  ✗ 包体台账' + p); }
+    ok(problems.length === 0, '包体实测台账存在、含编译后体积与工具版本（内容不锁哈希：每次重测都会变）');
+  }
+}
+
 if (failures) {
   console.error(`\n${failures} 处不一致。`);
   process.exit(1);

@@ -132,6 +132,18 @@ cd guishanji && npm ci
 node scripts/run-regression.mjs                  # 期望：REGRESSION PASS · 37 道全 0
 ```
 
+### 6.2 macOS 这一档怎么办：**本机就是 macOS，本机跑就算**
+
+GitHub 的 macOS 虚拟 runner 在这件事上**不比本机更有代表性**——它更慢、更干净但也更陌生。本机是真 macOS 26.4.1，
+浏览器门禁就在真实系统上跑。所以 macOS 这一档的结论**以本机实测为准**，不需要等 GitHub。
+
+配套改动：`scripts/lib/browser.mjs` 现在会**自动找 Chrome 或 Edge**
+（macOS 的 Edge 路径、Windows 的 Edge 路径都列进去了），
+所以两台机器都**不用设 `CHROME_BIN`**，直接 `node scripts/run-regression.mjs` 就能跑。
+（之前本机必须手动带 `CHROME_BIN=.../Microsoft Edge`，Windows 那台同理。）
+
+CI 仍然保留三系统：它的价值是「干净环境 + 自动」的交叉验证，不是因为 macOS 只能靠它。
+
 **CI 现在的结构（解决「盲等」）**：
 
 - `fast` job（18 道：单元测试 / 静态检查 / 七道小程序门禁）—— 几分钟出结果；

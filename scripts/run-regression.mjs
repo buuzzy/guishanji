@@ -51,6 +51,10 @@ const commands = [
      eventseq 变，且必须先存旧基线、逐条审差异、再更新基线。 */
   ['eventsfid', ['scripts/verify-events-fidelity.mjs', '--check']],
   ['eventseq', ['scripts/verify-event-sequence.mjs', '--check']],
+  /* ── 结构边界门禁 ───────────────────────────────────────────────────
+     谁归谁管、依赖朝哪个方向、越界有没有许可证。
+     这道门禁管的是**结构**，不管内容好不好；内容由上面两道管。 */
+  ['boundaries', ['scripts/check-boundaries.mjs']],
 ];
 const report = { startedAt: new Date().toISOString(), node: process.version, platform: process.platform, results: [] };
 await mkdir(join(projectRoot, 'artifacts'), { recursive: true });

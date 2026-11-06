@@ -1,0 +1,216 @@
+{
+  "version": 1,
+  "purpose": "每个源文件归谁管 —— 依据「这件事由谁说了算」划分成六域，另有基础设施与入口两种角色。scripts/check-boundaries.mjs 按本表核对。",
+  "domains": [
+    {
+      "id": "world",
+      "order": 1,
+      "name": "世界",
+      "question": "世界本身怎么运转",
+      "owns": "地图与宗门、物品与境界表、体质与地区、纪元与出生地"
+    },
+    {
+      "id": "role",
+      "order": 2,
+      "name": "角色",
+      "question": "人是谁、能走多远",
+      "owns": "境界能力、出生条件、家人与族产、寿元与体力的承载"
+    },
+    {
+      "id": "cause",
+      "order": 3,
+      "name": "因果",
+      "question": "发生什么、有什么后果",
+      "owns": "事件表、决策细节、故事网、境界推进、结局与日常事件"
+    },
+    {
+      "id": "pace",
+      "order": 4,
+      "name": "节奏",
+      "question": "时间怎么走",
+      "owns": "年月推进、突破门槛与阶段、寿限、期限与调度"
+    },
+    {
+      "id": "voice",
+      "order": 5,
+      "name": "表达",
+      "question": "这件事怎么说",
+      "owns": "人话翻译、称呼与词库、自动叙述文本"
+    },
+    {
+      "id": "present",
+      "order": 6,
+      "name": "呈现",
+      "question": "玩家看到什么",
+      "owns": "界面、画布、地图画面、读数与控件"
+    }
+  ],
+  "roles": {
+    "infra": {
+      "name": "基础设施",
+      "order": 0,
+      "rule": "与内容无关的技术件（随机流）。序号 0 —— 所有域的共同底座，任何域都可以依赖它；它只能依赖自己。",
+      "note": "随机流是所有域的共同底座：同一个种子必须给出同一串数，谁都不许自己造。"
+    },
+    "entry": {
+      "name": "入口",
+      "rule": "把各域接起来的地方（规则入口、存档入口）。它可以依赖任何域，任何域也可以依赖它 —— 它是枢纽，不参与方向约束。",
+      "note": "它只负责「接线」，不负责「内容」—— 内容写在域里。"
+    }
+  },
+  "direction": "依赖是单向直线：⑥呈现 → ⑤表达 → ④节奏 → ③因果 → ②角色 → ①世界。序号大的可以依赖序号小的，反过来不行。",
+  "files": {
+    "content/adventure.js": "world",
+    "content/allegiance-stories.js": "cause",
+    "content/automatic-life.js": "cause",
+    "content/cultivation-daily-v6.js": "cause",
+    "content/cultivation-daily-v7.js": "cause",
+    "content/cultivation-daily.js": "cause",
+    "content/cultivation-revision-v10.js": "cause",
+    "content/cultivation-revision-v11.js": "cause",
+    "content/cultivation-revision-v6.js": "cause",
+    "content/cultivation-revision-v7.js": "cause",
+    "content/cultivation-revision-v8.js": "cause",
+    "content/cultivation-revision-v9.js": "cause",
+    "content/cultivation-revision.js": "cause",
+    "content/cultivation-stories.js": "cause",
+    "content/cultivation-world.js": "world",
+    "content/decision-details.js": "cause",
+    "content/expedition-changes.js": "world",
+    "content/living-episodes.js": "cause",
+    "content/living-world.js": "world",
+    "content/mundane-stories-v11.js": "cause",
+    "content/mundane-stories.js": "cause",
+    "content/novel-names.js": "role",
+    "content/progression-stories-v11.js": "cause",
+    "content/progression-stories.js": "cause",
+    "content/readable-automatic.js": "voice",
+    "content/readable-stories.js": "voice",
+    "content/revision9-stories-v11.js": "cause",
+    "content/revision9-stories.js": "cause",
+    "content/rules12-world.js": "world",
+    "content/story-network-v10.js": "cause",
+    "content/story-network-v11.js": "cause",
+    "content/story-network-v9.js": "cause",
+    "content/story-network.js": "cause",
+    "content/story-rules10-v11.js": "cause",
+    "content/story-rules10.js": "cause",
+    "content/story-rules12.js": "cause",
+    "packages/adventure/auto-choice.js": "cause",
+    "packages/adventure/birth.js": "role",
+    "packages/adventure/context.js": "cause",
+    "packages/adventure/cultivation-economy.js": "cause",
+    "packages/adventure/cultivation-v10.js": "cause",
+    "packages/adventure/cultivation-v11.js": "cause",
+    "packages/adventure/cultivation-v5.js": "cause",
+    "packages/adventure/cultivation-v6.js": "cause",
+    "packages/adventure/cultivation-v7.js": "cause",
+    "packages/adventure/cultivation-v8.js": "cause",
+    "packages/adventure/cultivation-v9.js": "cause",
+    "packages/adventure/cultivation.js": "entry",
+    "packages/adventure/engine.js": "entry",
+    "packages/adventure/family.js": "role",
+    "packages/adventure/life.js": "pace",
+    "packages/adventure/mundane-life.js": "cause",
+    "packages/adventure/progression.js": "cause",
+    "packages/adventure/realm.js": "role",
+    "packages/adventure/revision9-v9.js": "cause",
+    "packages/adventure/revision9.js": "cause",
+    "packages/adventure/store.js": "entry",
+    "packages/adventure/story-network-v9.js": "cause",
+    "packages/adventure/story-network.js": "cause",
+    "packages/adventure/story-rules10.js": "cause",
+    "packages/adventure/story-rules12.js": "pace",
+    "packages/core/random.js": "infra"
+  },
+  "presentRoots": [
+    "apps/",
+    "miniprogram/"
+  ],
+  "presentNote": "apps/ 与 miniprogram/ 整个目录属于呈现域（⑥）。域内怎么互相引用随意，但呈现域不许被下面的域依赖。",
+  "permits": [
+    {
+      "from": "content/automatic-life.js",
+      "to": "packages/adventure/context.js",
+      "reason": "自动事件要判断「此刻人在哪、在做什么」，那个判断在规则层（context.js）。拆法：把 context 的纯查询部分下沉到因果域，content 这条反向依赖即可撤掉。",
+      "since": "S2",
+      "status": "待拆"
+    },
+    {
+      "from": "content/mundane-stories.js",
+      "to": "packages/adventure/mundane-life.js",
+      "reason": "俗世人生的事件要读「凡人生活的硬条件」（mundaneRequirements），那个条件在规则层。",
+      "since": "S2",
+      "status": "待拆"
+    },
+    {
+      "from": "content/mundane-stories-v11.js",
+      "to": "packages/adventure/mundane-life.js",
+      "reason": "同上：规则 11 冻结版的事件表也要读凡人的硬条件。",
+      "since": "S2",
+      "status": "待拆"
+    },
+    {
+      "from": "content/story-rules10.js",
+      "to": "packages/adventure/story-rules10.js",
+      "reason": "规则十的内容表与执行器互相引用（内容表要执行器提供的判定函数）。",
+      "since": "S2",
+      "status": "待拆"
+    },
+    {
+      "from": "content/story-rules10-v11.js",
+      "to": "packages/adventure/story-rules10.js",
+      "reason": "同上：规则 11 冻结版。",
+      "since": "S2",
+      "status": "待拆"
+    },
+    {
+      "from": "content/story-rules12.js",
+      "to": "packages/adventure/story-rules10.js",
+      "reason": "规则十二的内容表要复用规则十的判定函数。",
+      "since": "S2",
+      "status": "待拆"
+    },
+    {
+      "from": "content/story-rules12.js",
+      "to": "packages/adventure/story-rules12.js",
+      "reason": "规则十二的内容表与执行器互相引用（同上）。",
+      "since": "S2",
+      "status": "待拆"
+    },
+    {
+      "from": "content/adventure.js",
+      "to": "content/revision9-stories.js",
+      "reason": "物品总表要并入「修订九」带来的道具。S9 拆 adventure.js 时，道具表会独立出去，这条即可撤掉。",
+      "since": "S2",
+      "status": "S9 撤"
+    },
+    {
+      "from": "content/adventure.js",
+      "to": "content/mundane-stories.js",
+      "reason": "物品总表要并入「俗世生活」带来的道具。同上，S9 拆完即可撤掉。",
+      "since": "S2",
+      "status": "S9 撤"
+    },
+    {
+      "from": "content/adventure.js",
+      "to": "content/progression-stories.js",
+      "reason": "物品总表要并入「境界推进」带来的道具。同上，S9 拆完即可撤掉。",
+      "since": "S2",
+      "status": "S9 撤"
+    },
+    {
+      "from": "packages/adventure/life.js",
+      "to": "content/readable-automatic.js",
+      "reason": "自动事件的文字在表达域，而驱动它们的年月推进在节奏域。这两件事本来是一件事，S8 之后可以并到一处。",
+      "since": "S2",
+      "status": "待拆"
+    }
+  ],
+  "rules": {
+    "ownership": "每个源文件都要有归属。新加文件忘了登记 ⇒ 报红（归属表漏登记 = 没人负责改它）。",
+    "domainDirection": "依赖是单向直线：⑥呈现 → ⑤表达 → ④节奏 → ③因果 → ②角色 → ①世界 → ⓪基础设施。序号大的可以依赖序号小的，反过来不行。入口（entry）是枢纽，两个方向都放行。",
+    "layerDirection": "content/ 是数据层，packages/adventure/ 是规则层。**数据层不许反向依赖规则层** —— 规则读数据天经地义，数据回头找规则就会让两边互相踩脚。",
+    "permits": "已经存在的越界，登记在 permits 里并写清原因；没登记的越界 ⇒ 报红；登记了但已经用不上（发霉）⇒ 也报红。"
+  }
+}

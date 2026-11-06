@@ -1,6 +1,6 @@
 {
   "label": "guishanji",
-  "measuredAt": "2026-11-06T15:17:07.201Z",
+  "measuredAt": "2026-11-06T15:22:18.199Z",
   "sourceFingerprint": "05e52e759392504195682ed706bdab2c9d1baf41f311f48df148a1bcb6d9080a",
   "sourceFiles": 64,
   "machine": {
@@ -9,8 +9,8 @@
     "arch": "arm64"
   },
   "code": {
-    "commit": "734b869c7d99944cd229ec1b4502111058fb9c75",
-    "tree": "c6618004b698032615ed1301f86be2ebca381a81",
+    "commit": "4f956a919083396b09cb7221c0999a56c35a81fe",
+    "tree": "5b0b96dc16473f6df4159fb58a81999883b80bb4",
     "branch": "main",
     "dirty": false
   },

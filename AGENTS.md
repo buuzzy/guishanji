@@ -114,7 +114,8 @@ node scripts/run-regression.mjs        # 全量回归
 
 ## 5. 发布前置（尚未完成，别当成已完成）
 
-- [ ] 新小程序 **AppID**（`project.config.json` 现在是占位值 `touristappid`，上传前必须换）
+- [ ] 新小程序**正式 AppID**（`project.config.json` 现在填的是**测试号** `wx0675a9d47174331e`，
+      上传前必须换成你自己注册的正式 AppID）
 - [ ] 新网页正式域名与部署目标
 - [ ] 产品说明与隐私声明的正式文案（`miniprogram/pages/legal/` 现在是占位内容）
 - [ ] 玩家存档导出 / 导入协议（**目前未实现**，见 [docs/migration/storage-migration.md](docs/migration/storage-migration.md)）

@@ -150,6 +150,8 @@ const ADDED = [
   'content/ends.js', 'content/nodes.js',
   'scripts/verify-content-modules.mjs',
   'tests/fixtures/content-modules.json',
+  /* 2026-11-07：S10 交付说明 */
+  'docs/内容架构重构交付说明-2026-11-07.md',
 ];
 
 

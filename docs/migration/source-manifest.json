@@ -1297,8 +1297,8 @@
         "sourceBytes": 20657,
         "sourceSha256": "1c37a2ab89a56e007fcb257870384956c6e5ce7d0982e292bfa2ed3f0c6b8c74",
         "path": "scripts/test-xianxia-art.mjs",
-        "currentBytes": 25083,
-        "currentSha256": "cca66431b0ad607ee420fe17db07b7dc9bf32487cf1c2ee8e0de821b308d4a86",
+        "currentBytes": 27078,
+        "currentSha256": "617f1c0174b8d45d5dd74e6d3d569364e1e7aa0a6548c6b19dd78e226d3075df",
         "reason": "对照基准改为本仓库 reference/ 与 apps/preview/，不再依赖 1in8b 的 frozen-baseline"
       },
       {
@@ -1507,8 +1507,8 @@
       },
       {
         "path": "scripts/gen-source-manifest.mjs",
-        "bytes": 23887,
-        "sha256": "dacb2c0dae66a27d04e3157ff8939e6ff3da543db0b3c0265645a4f841f5f6e0"
+        "bytes": 23980,
+        "sha256": "75310a2fd8c392c91aeec0b5c937f7da4c62418ae45fda965f613ce680eb6b8a"
       },
       {
         "path": "scripts/test-xianxia-standalone.mjs",
@@ -1527,8 +1527,8 @@
       },
       {
         "path": "AGENTS.md",
-        "bytes": 8920,
-        "sha256": "7d89193e0de074c9a11e370ee06a6c1cb6920edb991708a349785702feb6f8d3"
+        "bytes": 8982,
+        "sha256": "9f270f726b1320f92069505f54e113654a488ac772a5a6633c5bbe0f16a3cb5d"
       },
       {
         "path": "README.md",
@@ -1684,6 +1684,11 @@
         "path": "tests/fixtures/content-modules.json",
         "bytes": 147944,
         "sha256": "6d32727d47f6549ccef526fa6a4977e133b13286c5c1ac2ef3e7c6a8e1862284"
+      },
+      {
+        "path": "docs/内容架构重构交付说明-2026-11-07.md",
+        "bytes": 7993,
+        "sha256": "327cadf17cce2fa75b5994cefa91a48caae8551d0bcd111124659b64ae8046e1"
       }
     ]
   }

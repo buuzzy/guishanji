@@ -44,6 +44,13 @@ const commands = [
   ['xianxiastyle', ['scripts/test-xianxia-style.mjs']],
   ['xianxiastandalone', ['scripts/test-xianxia-standalone.mjs']],
   ['repohygiene', ['scripts/test-repo-hygiene.mjs']],
+  /* ── 内容保真门禁 ───────────────────────────────────────────────────
+     纯重构阶段这两个必须全绿：事件表的九个历史版本逐值全等、
+     固定种子的完整人生决策序列逐条全等。
+     有意行为变更阶段（突破必发 / 体力拆分 / 长线区间）才允许
+     eventseq 变，且必须先存旧基线、逐条审差异、再更新基线。 */
+  ['eventsfid', ['scripts/verify-events-fidelity.mjs', '--check']],
+  ['eventseq', ['scripts/verify-event-sequence.mjs', '--check']],
 ];
 const report = { startedAt: new Date().toISOString(), node: process.version, platform: process.platform, results: [] };
 await mkdir(join(projectRoot, 'artifacts'), { recursive: true });

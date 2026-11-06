@@ -178,7 +178,6 @@ section('本仓库源码与 vendor 历史快照的差异必须登记在案');
    */
   const ledgerFile = path.join(ROOT, 'docs', 'refactor-divergence.json');
   const ledger = fs.existsSync(ledgerFile) ? JSON.parse(fs.readFileSync(ledgerFile, 'utf8')) : {changes: []};
-  /* 台账按「一次改动」分组，每组写清「为什么改」，组下列出具体文件与改动类型。 */
   const declared = new Map();
   const declaredGroups = [];
   for (const change of ledger.changes || []) {
@@ -264,6 +263,19 @@ section('迁移等价性（与从 1in8b 迁进来时的那份逐月对拍）');
     const seeds = ['松风有信', '山海-001', '云深不知处', '灯下故人书', '一剑霜寒', '归途未晚'];
     const maxMonths = 600;
 
+    /**
+     * 历史版本 —— **必须**与迁移时那份产物逐月全等。
+     *
+     * ⚠ 为什么分成「历史版本」与「当前版本」两拨：
+     *   S1–S3 是纯重构（行为不变），那时这条门禁对**当前版本**也成立。
+     *   S4（节奏域）**有意**改了当前版本的行为（突破必发、指导卡让路、
+     *   失败代价、进度不再倒扣）⇒ 当前版本与迁移时那份产物**必然**不同。
+     *   继续拿「当前版本 == 迁移时」当门禁，等于逼着人要么别改、要么偷偷改基线。
+     *   ⇒ 牙齿挪到**真正不能动的地方**：历史版本（9/10/11）一个字节都不许变。
+     */
+    const FROZEN_VERSIONS = [11, 10, 9];
+    const CURRENT_VERSION = 12;
+
     /** 深比较（键序无关）。 */
     const canonical = (value) => {
       if (value === null || typeof value !== 'object') return JSON.stringify(value);
@@ -273,68 +285,81 @@ section('迁移等价性（与从 1in8b 迁进来时的那份逐月对拍）');
     };
     const same = (a, b) => canonical(a) === canonical(b);
 
-    let comparedMonths = 0;
-    let comparedChoices = 0;
-    const mismatches = [];
-
-    for (const [index, seed] of seeds.entries()) {
-      const id = `life-migration-${index}`;
+    /**
+     * 跑一条人生，逐月对拍两份产物。
+     * @returns {{mismatch: string|null, months: number, choices: number}}
+     */
+    const compareOne = (seed, rulesVersion, index) => {
+      const id = `life-migration-${rulesVersion}-${index}`;
       let a, b;
       try {
-        a = migrated.createRun({seed, id});
-        b = current.createRun({seed, id});
+        a = migrated.createRun({seed, id, rulesVersion});
+        b = current.createRun({seed, id, rulesVersion});
       } catch (error) {
-        mismatches.push(`${seed}：创建人生时抛错（${error.message}）`);
-        continue;
+        return {mismatch: `${seed}：创建人生时抛错（${error.message}）`, months: 0, choices: 0};
       }
-      if (!same(a, b)) {
-        mismatches.push(`${seed}：出生状态就不一致`);
-        continue;
-      }
-      let mismatch = null;
-      for (let step = 0; step < maxMonths && !mismatch; step++) {
+      if (!same(a, b)) return {mismatch: `${seed}：出生状态就不一致`, months: 0, choices: 0};
+      let comparedMonths = 0;
+      let comparedChoices = 0;
+      for (let step = 0; step < maxMonths; step++) {
         if (a.phase !== 'life') break;
         if (a.pending) {
           const oa = migrated.options(a);
           const ob = current.options(b);
-          if (!same(oa, ob)) {
-            mismatch = `第 ${a.month} 月的选项表不同`;
-            break;
-          }
+          if (!same(oa, ob)) return {mismatch: `第 ${a.month} 月的选项表不同`, months: comparedMonths, choices: comparedChoices};
           comparedChoices++;
           const pick = (oa.find((o) => o.enabled) || oa[0] || {}).id;
           if (!pick) break;
           migrated.choose(a, pick);
           current.choose(b, pick);
-          if (!same(a, b)) {
-            mismatch = `第 ${a.month} 月选择「${pick}」后的状态不同`;
-            break;
-          }
+          if (!same(a, b)) return {mismatch: `第 ${a.month} 月选择「${pick}」后的状态不同`, months: comparedMonths, choices: comparedChoices};
           continue;
         }
         const ma = migrated.advance(a, 1);
         const mb = current.advance(b, 1);
         comparedMonths++;
-        if (ma !== mb) {
-          mismatch = `第 ${step} 步推进月数不同：迁移时 ${ma} ≠ 现在 ${mb}`;
-          break;
-        }
-        if (!same(a, b)) {
-          mismatch = `第 ${a.month} 月的状态不同`;
-          break;
-        }
-        if (!same(migrated.review(a), current.review(b))) {
-          mismatch = `第 ${a.month} 月的回顾不同`;
-          break;
-        }
+        if (ma !== mb) return {mismatch: `第 ${step} 步推进月数不同：迁移时 ${ma} ≠ 现在 ${mb}`, months: comparedMonths, choices: comparedChoices};
+        if (!same(a, b)) return {mismatch: `第 ${a.month} 月的状态不同`, months: comparedMonths, choices: comparedChoices};
+        if (!same(migrated.review(a), current.review(b))) return {mismatch: `第 ${a.month} 月的回顾不同`, months: comparedMonths, choices: comparedChoices};
       }
-      if (mismatch) mismatches.push(`${seed}：${mismatch}`);
-    }
+      return {mismatch: null, months: comparedMonths, choices: comparedChoices};
+    };
 
-    ok(mismatches.length === 0,
-      `迁移时的那份产物与现在这份产物逐月对拍：${seeds.length} 条人生、`
-      + `${comparedMonths} 个月、${comparedChoices} 个决策点，行为逐值相同`
-      + (mismatches.length ? `；不一致：${mismatches.join('；')}` : ''));
+    /* ① 历史版本：必须逐月全等（硬门禁）。 */
+    const frozenMismatches = [];
+    let frozenMonths = 0;
+    let frozenChoices = 0;
+    for (const version of FROZEN_VERSIONS) {
+      for (const [index, seed] of seeds.entries()) {
+        const result = compareOne(seed, version, index);
+        frozenMonths += result.months;
+        frozenChoices += result.choices;
+        if (result.mismatch) frozenMismatches.push(`规则 ${version} · ${result.mismatch}`);
+      }
+    }
+    ok(frozenMismatches.length === 0,
+      `历史版本（规则 ${FROZEN_VERSIONS.join(' / ')}）与迁移时那份产物逐月对拍：`
+      + `${seeds.length * FROZEN_VERSIONS.length} 条人生、${frozenMonths} 个月、${frozenChoices} 个决策点，行为逐值相同`
+      + (frozenMismatches.length ? `；不一致：${frozenMismatches.join('；')}` : ''));
+
+    /* ② 当前版本：差异是**有意**的，但必须登记在案（不能只存在某个人的脑子里）。 */
+    const currentMismatches = [];
+    let currentMonths = 0;
+    for (const [index, seed] of seeds.entries()) {
+      const result = compareOne(seed, CURRENT_VERSION, index);
+      currentMonths += result.months;
+      if (result.mismatch) currentMismatches.push(`${seed}：${result.mismatch}`);
+    }
+    /* 当前版本的差异要登记在案 —— 直接读台账（不依赖别处的变量作用域）。 */
+    const ledgerPath = path.join(ROOT, 'docs', 'refactor-divergence.json');
+    const declared = fs.existsSync(ledgerPath)
+      ? JSON.parse(fs.readFileSync(ledgerPath, 'utf8')).currentVersion
+      : null;
+    ok(!!declared && declared.rulesVersion === CURRENT_VERSION && !!String(declared.why || '').trim(),
+      `当前版本（规则 ${CURRENT_VERSION}）与迁移时那份产物的差异已在差异台账里登记在案`
+      + '（S4 起有意改过节奏：突破必发、修行指导卡让路、失败代价、进度不再倒扣）');
+    console.log(`    · 当前版本与迁移时那份产物的分叉（**有意行为变更**，不判红）：`
+      + (currentMismatches.length ? currentMismatches.join('；') : '本次未分叉'));
   }
   if (fs.existsSync(MIGRATED_STYLE)) {
     const a = withoutHeader(fs.readFileSync(MIGRATED_STYLE));

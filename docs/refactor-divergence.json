@@ -33,6 +33,20 @@
       "files": {
         "packages/adventure/cultivation.js": "changed"
       }
+    },
+    {
+      "id": "S4",
+      "title": "节奏域：突破必发 + 进度表 + 冲关参数",
+      "why": "整条时间轴原本错位（玩家 50 岁还在炼气，而内容按「50 岁该是金丹」写）。这一轮把「该在哪一年到哪一境」写成数据（content/cadence-table.js），突破卡改成「条件齐了就发、不参与随机」，修行指导卡不再抢在突破卡前面，冲关参数分境分档，失败代价收敛到「留得住还能再冲一次」。只改当前版本（规则十二）；历史版本（5–11）的执行器与事件表一个字节都没动（见 eventsfid 与 eventseq 门禁）。",
+      "files": {
+        "content/story-rules12.js": "changed",
+        "packages/adventure/cultivation-economy.js": "changed",
+        "packages/adventure/story-rules12.js": "changed"
+      }
     }
-  ]
+  ],
+  "currentVersion": {
+    "rulesVersion": 12,
+    "why": "规则十二在 S4「节奏域」有意改过行为：突破卡改成必发（不再挤在随机池里）、修行指导卡给突破卡让路、冲关参数分境界分档（高阶原本底分只有 25、失败一次扣 28 点体力）、失败后休养一年（原本三年）、经济不再倒扣修行进度（杂役月例 1 灵石、吃住 2 灵石，倒扣之下入门即破产）、每境第四次冲关（「最后的机会」）。⇒ 当前版本与迁移时那份产物不再逐月相同，这是有意的。历史版本（9/10/11）仍必须与迁移时那份产物逐月全等，由 scripts/test-xianxia-build.mjs 的「迁移等价性」一节守着；当前版本的决策序列由 tests/fixtures/event-sequences.json 守着（更新基线时留有审查记录与变更前基线备查）。"
+  }
 }

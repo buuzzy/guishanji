@@ -1249,8 +1249,8 @@
         "sourceBytes": 11494,
         "sourceSha256": "66026f8b72b80fc179a98f3f31fe2c736ff0d8c96a74e4c8ad26cde58edd5875",
         "path": "miniprogram/subpkg/xianxia/runtime/build-manifest.json",
-        "currentBytes": 9483,
-        "currentSha256": "0486687a42e5986e11f557c966b60d682944292b43210260345a035f88b1a3a2",
+        "currentBytes": 9802,
+        "currentSha256": "9f5dfbada749c5f4d78570a9c5c4845e6ecb380a772405305ced398c7f63feef",
         "reason": "生成物：来源改为本仓库源码，并新增 upstreamOrigin 段"
       },
       {
@@ -1260,8 +1260,8 @@
         "sourceBytes": 1738614,
         "sourceSha256": "ba0720f2c21c1babe39c605739e90243d7de00db5f920bd5078704d6952fed3f",
         "path": "miniprogram/subpkg/xianxia/runtime/engine.js",
-        "currentBytes": 1220699,
-        "currentSha256": "4548d43353e70c5f46e882d62720882d8ab9b21c04df2cbfccec00cf2ab9c294",
+        "currentBytes": 1225268,
+        "currentSha256": "a381adca161e7d2ee7fd505b42bd58a4e8d3578b9f0f1eba294d466e137ec456",
         "reason": "生成物：由本仓库源码重新构建（除文件头注释外与迁移进来的那份逐字节一致，见 reference/migrated-runtime/）"
       },
       {
@@ -1293,8 +1293,8 @@
         "sourceBytes": 15897,
         "sourceSha256": "eeb8547fbd5ea65fbfdaa967b6089af28db984494b529365a86e438badcf8955",
         "path": "scripts/test-xianxia-build.mjs",
-        "currentBytes": 26485,
-        "currentSha256": "17041935218dba5ef9fadf520103f6e9c060b112c5704dd1fc5c6cbc5b6cfdcc",
+        "currentBytes": 29227,
+        "currentSha256": "c81528e591939d150d91edfe55d10cfad19b3967569ca113a44b5038f2b90e4e",
         "reason": "新增「与迁移进来的产物逐字节一致」断言；不再依赖 1in8b 的 frozen-baseline"
       },
       {

@@ -47,8 +47,21 @@ export function playCultivation({seed='新版人生',rulesVersion=11,...policy}=
   while(state.phase==='life'&&!state.pending){seconds.automatic+=monthSeconds(state);advance(state,1);}
   if(!state.pending)break;
   validateRun(state);events.push(state.pending.event);const o=decide(state,policy);if(!o)throw Error('没有可选项 '+state.pending.event);
-  snapshots.push({event:state.pending.event,path:state.life.cultivation.path,age:Math.floor(state.month/12),option:o.id});
-  seconds.reading+=8+state.journal.at(-1).body.length/9;choose(state,o.id);if(policy.activity&&activityOptions(state).find(a=>a.id===policy.activity)?.enabled)setActivity(state,policy.activity);validateRun(state);
+  snapshots.push({event:state.pending.event,path:state.life.cultivation.path,age:Math.floor(state.month/12),option:o.id,realm:state.player.realm});
+  seconds.reading+=8+state.journal.at(-1).body.length/9;choose(state,o.id);
+  if(policy.activity&&activityOptions(state).find(a=>a.id===policy.activity)?.enabled)setActivity(state,policy.activity);
+  /*
+   * 「没钱就做工攒钱」—— 一个会算账的普通玩家会这么做。
+   *
+   * ⚠ 默认**不开**：事件序列保真门禁跑的是固定策略，行为必须一模一样，
+   *    所以这条只在节奏审计里显式打开。
+   */
+  if(policy.workWhenBroke){
+   const broke=state.player.stones<4,rich=state.player.stones>=8;
+   const want=broke?'work':(rich?'study':null);
+   if(want&&state.life.cultivation?.activity!==want&&activityOptions(state).find(a=>a.id===want)?.enabled)setActivity(state,want);
+  }
+  validateRun(state);
  }
  if(state.phase!=='ended')throw Error('没有完成一生 '+seed+' '+state.pending?.event);
  return{seed,policy,path:state.life.cultivation.path,ending:state.ending.id,events,snapshots,seconds,review:review(state),state};

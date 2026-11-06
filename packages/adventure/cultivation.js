@@ -7,7 +7,7 @@ import {initialize10,canCultivate,hasMana,choose10,mundaneDaily,introduceText,va
 import * as rules8 from './cultivation-v8.js';
 import {initializeRevision9,revisionAction,validateRevision9} from './revision9.js';
 import * as rules7 from './cultivation-v7.js';
-import {initializeProgression,progressionAction,progressionBegin,progressionText,progressionChoice,validateProgression,materialSlots} from './progression.js';
+import {initializeProgression,progressionAction,progressionBegin,progressionText,progressionChoice,validateProgression} from './progression.js';
 import * as previousRules from './cultivation-v5.js';
 import * as rules6 from './cultivation-v6.js';
 import {initializeNetwork,networkAction,validateNetwork,networkRate} from './story-network.js';
@@ -143,7 +143,8 @@ function revised_completeCultivationAction(s,event,choiceId,cb) {
   else {const body=c.exam?'教习在你的卷册上圈出失误，叫你把这一页带回去重练。山阶上有人欢呼，也有人低着头。你收起笔记，未能领到这一届的奖励。':'散场钟响过，你没有上场。教习收走空着的名签，你把笔记带回住处。';if(result){result.title='山阶上散去的人';result.body=body;result.kind='institution';}else record(s,cb,'山阶上散去的人',body,'institution');}
  }
  if(event.startsWith('selection_')&&event.endsWith('_result'))c.exam=null;
- if(op.breakthrough||op.retry){const tier=op.breakthrough||op.retry;if(op.breakthrough)c.attempts[tier]++;c.retryAt=s.month+36;if(success&&op.breakthrough){c.progress=0;if(!seen(s,'family_rules')&&storyOpportunity(s,'family_rules',age(s),age(s)+5,.65))schedule(s,'family_rules',12);}}
+ /* 冲关失败后休养一年就够 —— 原来歇三年，等于把突破窗口直接拖没了。 */
+  if(op.breakthrough||op.retry){const tier=op.breakthrough||op.retry;if(op.breakthrough)c.attempts[tier]++;c.retryAt=s.month+12;if(success&&op.breakthrough){c.progress=0;if(!seen(s,'family_rules')&&storyOpportunity(s,'family_rules',age(s),age(s)+5,.65))schedule(s,'family_rules',12);}}
  if(op.chain){
   const chain=ROAD_CHAINS.find(a=>a.id===op.chain),previous=c.chains[chain.id];c.chains[chain.id]={origin:previous?.origin||currentContinent(s),originHome:previous?.originHome||s.player.home,departed:previous?.departed||false,step:op.step,conduct:op.conduct,month:s.month};
   if(op.conduct==='selfish'&&!op.concealed){c.reputation=clamp(c.reputation-8,-100,100);c.wanted=clamp(c.wanted+1,0,10);if(c.rulesVersion>=5)addEvidence(s,event,choiceId,choice.reply);}
@@ -259,7 +260,8 @@ function revised_cultivationMonth(s,cb){
  if(due.length){const next=due[0];c.queue=c.queue.filter(q=>q!==next);if(!seen(s,next.event))cb.arrive(next.event);return;}
  if(c.activeChain||c.detained||c.inquiry||!c.admissionDone||s.month<c.choiceAt)return;
  const possible=[];
- if(canCultivate(s)&&c.path!=='mortal'&&s.player.realm<4&&c.progress>=([80,260,220,320][s.player.realm])&&s.month>=c.retryAt&&c.attempts[s.player.realm+1]<3&&(s.player.realm<2||materialSlots(s,s.player.realm+1).every(x=>x[0])&&(c.network.method?.months||0)>=(s.player.realm===2?120:240))){const id='breakthrough_'+(s.player.realm+1)+'_'+c.attempts[s.player.realm+1];if(!seen(s,id))possible.push(id);}
+ /* 突破卡不在这里抽 —— 它归「里程碑档」管（packages/adventure/scheduler.js）：
+    条件齐了就发，不跟别的卡抢，也不受发卡冷却牵制。 */
  if(c.path==='orthodox'&&currentContinent(s)===s.birth.continent&&s.player.realm>=1&&s.month>=c.punishmentUntil&&!seen(s,'garden_accident')&&storyOpportunity(s,'garden_accident',20,36,.5))possible.push('garden_accident');
  if(canCultivate(s)&&age(s)>=40&&!seen(s,'road_turn')&&storyOpportunity(s,'road_turn',40,55,.6))possible.push('road_turn');
  const evidence=discoverableEvidence(s);
@@ -296,7 +298,7 @@ function revised_validateCultivation(s,fail){
  for(const key of ['choiceAt','dailyAt','punishmentUntil','retryAt','familyAt','nextFamilyAt','worldAt'])if(!Number.isSafeInteger(c[key])||c[key]<0||c[key]>13000)fail('修行时钟');
  if(typeof c.rank!=='string'||c.rank.length>20||typeof c.spot!=='string'||c.spot.length>60||!Array.isArray(c.queue)||c.queue.length>24||!Array.isArray(c.visited)||c.visited.some(id=>!GEOGRAPHY.some(p=>p.id===id)))fail('修行地点与后续');
  for(const q of c.queue)if(!CULTIVATION_EVENTS[q.event]||!Number.isSafeInteger(q.due)||q.due<0||q.due>13000||s.decisions.some(d=>d.event===q.event))fail('修行事件队列');
- if(!Array.isArray(c.attempts)||c.attempts.length!==5||c.attempts.some(v=>!Number.isInteger(v)||v<0||v>3))fail('突破次数');
+ if(!Array.isArray(c.attempts)||c.attempts.length!==5||c.attempts.some(v=>!Number.isInteger(v)||v<0||v>4))fail('突破次数');
  if(!['keep','secret','sever'].includes(c.familyPolicy)||!Array.isArray(c.mailHistory)||c.mailHistory.length>8)fail('俗缘');
  if(c.mail&&(!Number.isSafeInteger(c.mail.sent)||!Number.isSafeInteger(c.mail.due)||c.mail.sent>s.month||typeof c.mail.body!=='string'||c.mail.body.length>1000))fail('中转消息');
  if(c.exam&&(!['sword','array','alchemy'].includes(c.exam.skill)||!Number.isInteger(c.exam.deadline)||!Number.isInteger(c.exam.preparation)||c.exam.preparation<0))fail('考核记录');

@@ -24,8 +24,16 @@ export function settleEconomy(s){
  c.economy.last={month:s.month,gross:q.gross,upkeep:paid,shortfall:q.upkeep-paid,net,balance:s.player.stones+net};
  if(paid<q.upkeep){
   // Food is not death-by-zero-wallet. Selling ordinary labour covers survival,
-  // but the month is not counted as free cultivation or a new stone grant.
-  c.progress=Math.max(0,c.progress-(q.upkeep-paid)*3);
+  // but the year is not counted as free cultivation or a new stone grant.
+  //
+  // ⚠ **只有当前版本（规则十二）不倒扣进度**。
+  //   旧写法是「欠一枚灵石就扣三点进度」：杂役月例 1 灵石、吃住花销 2 灵石 ——
+  //   入门期几乎人人都欠一点，倒扣之下每年净攒不到 1 点，练一辈子也进不了炼气。
+  //   ⇒ 当前版本的代价改由**别处**承担（突破材料要现钱、要做工换）。
+  //
+  // ⚠ 旧版本（6–11）**照原样倒扣** —— 它们各有各的执行器与基线，
+  //   这里动一下，旧存档看到的人生就变了（实测：规则 11 的决策序列全变）。
+  if(c.rulesVersion!==12)c.progress=Math.max(0,c.progress-(q.upkeep-paid)*3);
  }
  return {...q,net};
 }

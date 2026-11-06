@@ -93,6 +93,19 @@ export function installRules12(events){
   if(tier===2)n.choices.push(choice('force','不备齐护脉药，强行冲关','真气失控可能死亡。','你从最险的一段经脉冲过，终于稳住真气，醒来时身上已添了几处难愈的伤。',{...long(18,'你拒绝再等护脉药，独自封住石室，试着强行凝聚真气。'),requires:{spirit:true},effects:{realm:2,stats:{health:-15}},check:{base:28,skill:'array',scale:.15,failText:'真气冲破了受损的心脉，你没能走出石室。',failure:{},failEnding:'breakthrough_lost'},system:{breakthrough:2}}));
   for(const o of n.choices){if(o.id==='service'){o.visible=s=>c(s).path!=='mortal'&&!!c(s).network.method&&c(s).continent===s.birth.continent&&s.player.stones<(tier===1?2:6);o.hint='先替授业者完成长期差事，换料后再闭关。';}if(o.id==='try'){o.reply='石门打开时，你已经能稳住新一层的真气。授业者核过经脉，确认这次冲关成功，再让你慢慢适应新学的术法。';}if(o.id==='wait')o.hint='继续核对功法，准备还缺的材料。';}
  }
+ /*
+  * 第四「最后的机会」。
+  *
+  * 原来每境只有三次机会，用完就再也拿不到突破卡 —— 于是出现「进度攒到五百点、
+  * 五十岁还卡在炼气」这种说不通的人生。**寿元不等人，但机会不该只有三次。**
+  *
+  * ⚠ 这张卡只加在**当前版本**（本函数是装配链的最后一步）：
+  *    旧版本（5–11）的执行器各自按自己的三次上限走，历史基线一个字节都不动。
+  */
+ for(let tier=1;tier<=4;tier++){
+  const src=events['breakthrough_'+tier+'_2'],id='breakthrough_'+tier+'_3';
+  events[id]={...src,id,title:'最后的冲关',text:s=>tier===1?'授业者把你的记录看了很久，没有再问要不要再等。他把最后一份材料放在石室门口：「这一回，成不成都在这里了。」':tier===2?'你把护脉药摊开，最后一次核对经脉。授业者说，筑基只剩这一次机会 —— 再不成，你得换一条路走。':'护法在石室外站了很久。主药已经用尽，凝丹也好、育婴也好，都没有下一次了。',choices:src.choices.map(o=>({...o,system:o.system?{...o.system}:undefined,check:o.check?{...o.check}:undefined}))};
+ }
  // A family with secular means sends household news, not spirit cultivation aid.
  events.family_support.text=s=>s.birth.family==='clan'?'族中管事经商队问起你的修炼，愿按族中剩下的积蓄送来家传笔记或药材。东西还在族里，必须有人走完商路才能交到你手中。':'家人托熟悉的商队送来旧屋近况，信里说粮价又涨了。他们没有能助你修炼的丹药，只问你在外是否安顿，也想知道以后该把消息送到哪里。';
  for(const o of events.family_support.choices)if(['supplies','notes'].includes(o.id))o.visible=s=>s.birth.family==='clan';

@@ -1,8 +1,10 @@
 import {hashText} from '../core/random.js';
 import {REALMS} from '../../content/adventure.js';
+import {progressNeeded,breakthroughRule,gradeBonus,CADENCE} from '../../content/cadence-table.js';
 import {BODY_TYPES,SECT_PROFILES,REGIONAL_METHODS} from '../../content/rules12-world.js';
 import {ROOTS,GEOGRAPHY} from '../../content/cultivation-world.js';
 import {canCultivate,route} from './story-rules10.js';
+import {breakthroughDue} from './cadence.js';
 const c=s=>s.life.cultivation;
 export const active12=s=>s.life?.cultivation?.rulesVersion===12;
 export const rules12=s=>c(s).v12;
@@ -41,14 +43,29 @@ export function choice12(s,choice,event){
  if(!active12(s)||!choice)return choice;const o={...choice},r=rules12(s);
  if(event.startsWith('breakthrough_')){
   const tier=Number(event.split('_')[1]);
+  /* 第四张卡是「最后的机会」—— 输过三次之后，授业者亲自护法，多一份底气。 */
+  const lastChance=Number(event.split('_')[2])===3;
   if(o.id!=='wait'){
    const grade=ROOTS[s.player.root].grade,older=tier===2?Math.max(0,age(s)-55)*.8:0;
    const pill=s.inventory.includes('foundation_pill');
-   o.check={...(o.check||{}),base:(o.check?.base||44)+(grade>=2?10:grade===1?0:-12)-r.body.damage-older+(tier===2&&pill?16:0),skill:o.check?.skill||'array',scale:o.check?.scale??.2,stat:'insight',statScale:.12,
-    failText:tier===1?'灵气几次散出经脉，胸口疼得无法继续。看护者叫你停下，先休养再试；这次没有炼出稳定法力。':'药力散尽，真气却没能凝稳。你吐出一口血，护脉者把你扶出石室；这次冲关没有成功。',failure:{stats:{health:tier===1?-10:-18,mind:-4}}};
-   if(tier>=3){o.check={...choice.check,base:choice.check.base-r.body.damage};}
+   const rule=breakthroughRule(tier);
+   /*
+    * 冲关参数（底分 / 技艺权重 / 悟性权重 / 失败伤多少）全在 `content/cadence-table.js`。
+    *
+    * ⚠ 旧写法有个致命毛病：高阶（金丹、元婴）的检查被**整块覆盖**成
+    *   `choice.check`（底分只有 25、技艺权重 0.12、失败一次扣 28 点体力），
+    *   ⇒ 实测金丹只有三成把握、元婴只有一成；
+    *   而且连输三次人已经半残，「体力不足」的额外扣分又跟上 ⇒ **越输越没戏**。
+    * ⇒ 现在：**合并**而不是覆盖，灵根加成与「最后的机会」加成都留着，
+    *   失败代价也按境界分档（留得住「还能再冲一次」）。
+    */
+   const base=rule.base+(lastChance?15:0);
+   o.check={...(o.check||{}),base:base+gradeBonus(grade)-r.body.damage-older+(tier===2&&pill?16:0),
+    skill:o.check?.skill||'array',scale:rule.scale,stat:'insight',statScale:rule.statScale,
+    failText:tier===1?'灵气几次散出经脉，胸口疼得无法继续。看护者叫你停下，先休养再试；这次没有炼出稳定法力。':'药力散尽，真气却没能凝稳。你吐出一口血，护脉者把你扶出石室；这次冲关没有成功。',
+    failure:{stats:{health:-rule.harm,mind:-4}}};
    if(tier===2&&pill)o.cost={...o.cost,items:[...(o.cost?.items||[]),'foundation_pill']};
-   if(o.id==='service'){o.months=(tier===1?24:36)+(tier===1?12:24);o.system={...o.system,service12:true};o.startReply='你先替授业者做完约定的差事，换取这一份材料，再封门尝试冲关。';}
+   if(o.id==='service'&&rule.service>0){o.months=rule.service;o.system={...o.system,service12:true};o.startReply='你先替授业者做完约定的差事，换取这一份材料，再封门尝试冲关。';}
   }
  }
  return o;
@@ -66,7 +83,10 @@ function setMethod(s,id,event,cb){
 }
 export function complete12(s,event,choice,success,cb){
  if(!active12(s)||!choice)return;const r=rules12(s),op=choice.system||{},id=choice.id;
- if(op.breakthrough){if(success){r.practice.stage=0;r.practice.next=s.month+48;}else{r.body.damage=Math.min(30,r.body.damage+(op.breakthrough===1?2:5));r.body.loss+=op.breakthrough===1?1:3;}}
+ /* 冲关失败的旧伤：每次失败留一点旧伤（原来一次留 2 点、往后每境留 5 点，
+    连输三次身子就败空了，后面几次冲关连「体力不足」的额外扣分都吃不上）。
+    ⇒ 改成每次只留 1 点：**失败要有代价，但要留得住「还能再冲一次」。** */
+ if(op.breakthrough){if(success){r.practice.stage=0;r.practice.next=s.month+48;}else{r.body.damage=Math.min(30,r.body.damage+1);r.body.loss+=op.breakthrough===1?1:3;}}
  if(op.method&&REGIONAL_METHODS[op.method]&&success)setMethod(s,op.method,event,cb);
  if(op.regionalCore12&&success)setMethod(s,sectProfile(s).core,event,cb);
  if(op.method&&!REGIONAL_METHODS[op.method]&&success&&c(s).network.method?.id!==op.method){const a=c(s).network;a.method={id:op.method,source:event,months:0,acquired:s.month};a.methods.push({...a.method});}
@@ -128,9 +148,32 @@ export function month12(s,cb){
  if(s.player.realm===0&&age(s)>=r.body.natural-12&&!done(s,'r12_late_doubt')){cb.arrive('r12_late_doubt');return true;}
  if(cc.path==='orthodox'&&!r.clue.checked&&age(s)>=38&&(cc.rank==='内门弟子'||s.flags.learningPermit)&&roll(s,'secret')<1200){r.clue.checked=true;cb.arrive('r12_sect_clue');return true;}
  if(s.player.realm===1&&cc.progress>=200&&!done(s,'r12_foundation_supply')&&(cc.rank==='内门弟子'||s.birth.family==='clan'||ROOTS[s.player.root].grade>=2)&&roll(s,'pill')<2200){cb.arrive('r12_foundation_supply');return true;}
- const ready=cc.progress>=(s.player.realm===0?80:260)&&s.month>=cc.retryAt&&cc.attempts[s.player.realm+1]<3;
- if(s.player.realm<=1&&!ready&&cc.network.method&&s.month>=r.practice.next&&s.month-(s.decisions.at(-1)?.month||0)>=24){
-  const index=r.practice.offered.length;if(index<6){cb.arrive('r12_direction_'+index);return true;}
+ /*
+  * 修行指导卡（「闭关细练数年」）是**准备**，突破卡是**关口**。
+  *
+  * ⚠ 以前两件事抢先后，坑在三处：
+  *   ① 指导卡一旦发出去就是几年闭关（`r12_direction_0` 整程 48 个月），
+  *      闭关期间任何卡都插不进来 ⇒ 人 24 岁才拿到炼气卡，
+  *      **炼气窗口（12–22 岁）被这几年吞掉了**；
+  *   ② 冲关失败后要休养一年（`retryAt`），休养期里「还没到能冲关」，
+  *      指导卡就抢在前面发出去 ⇒ 第二次冲关被推迟好几年；
+  *   ③ 指导卡发了之后，闭关四年就**必然赶不上**这一境的窗口 ——
+  *      那种情况下就不该发它。
+  *
+  * ⇒ 现在三件事一起管：
+  *   · 这个月该发突破卡（`breakthroughDue`，唯一一份判断）⇒ 指导卡让路；
+  *   · 刚失败正在休养 ⇒ 指导卡让路（该发的是下一次冲关）；
+  *   · 闭关几年还赶得上窗口 ⇒ 才发（赶不上就别发）。
+  */
+ const index=r.practice.offered.length;
+ const retreatMonths=index===0?48:72;
+ const window=CADENCE.find(w=>w.realm===s.player.realm+1);
+ const yearsLeft=window?window.to-age(s):99;
+ const ready=cc.progress>=progressNeeded(s.player.realm+1)&&cc.attempts[s.player.realm+1]<4;
+ const cooling=s.month<cc.retryAt;
+ const due=breakthroughDue(s);
+ if(s.player.realm<=1&&!ready&&!cooling&&!due&&yearsLeft*12>=retreatMonths&&cc.network.method&&s.month>=r.practice.next&&s.month-(s.decisions.at(-1)?.month||0)>=24){
+  if(index<6){cb.arrive('r12_direction_'+index);return true;}
  }
  if(s.player.realm===1){const stage=cc.progress<65?0:cc.progress<130?1:cc.progress<210?2:3;if(stage>r.practice.stage){r.practice.stage=stage;log(s,cb,'修到了'+stage12(s),'你把真气沿已练熟的经脉运转，过去总会散开的那一段终于接稳。'+(stage===3?'教习让你停下强行加快周天，筑基所需的丹药与护脉准备还没有因此齐全。':'教习让你用这一段稳定的真气练护身，新的口诀仍要慢慢学。'),'cultivation');}}
  return false;

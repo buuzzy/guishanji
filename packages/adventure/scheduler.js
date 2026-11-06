@@ -34,6 +34,41 @@ import {month10} from './story-rules10.js';
 import {mundaneMonth} from './mundane-life.js';
 import {progressionMonth} from './progression.js';
 import {networkMonth} from './story-network.js';
+import {breakthroughDue} from './cadence.js';
+
+/**
+ * 里程碑档 —— 「人生节点」优先于日常档。
+ *
+ * ## 为什么突破要单独一档
+ * ----------------------
+ * 以前突破卡和「花园事故」「宗门评比」「家常信」挤在同一个候选池里，
+ * 每月随机抽一张。抽不中就再等一年 —— 于是出现「突破卡等了 38 年才发出来」。
+ *
+ * 突破不是「这个月抽到的好事」，而是**「这个岁数该发生的事」**：
+ *   · 条件齐了 ⇒ 这个月就发，不跟别的卡抢；
+ *   · 没到岁数 ⇒ 不发（你还没到那个年岁）；
+ *   · 过了窗口上界 ⇒ 就算进度没攒够也发（寿元不等人）。
+ *
+ * ⇒ 窗口由 `content/cadence-table.js` 定，**上下界都由它保证**：
+ *   突破年龄必然落在 [窗口下界, 窗口上界] 里。
+ *
+ * ## 判断在哪里
+ * ------------
+ * 「该不该发」这句话写在 `packages/adventure/cadence.js`（`breakthroughDue`）——
+ * 那是**唯一一份**判断。`story-rules12.js` 的修行指导卡也要问同一句，
+ * 两边才不会各说各话。
+ *
+ * ## 只管当前版本
+ * --------------
+ * 旧规则版本（5–11）各有自己的执行器与候选池，**一律照原样走** ——
+ * 改它们会动到历史基线（rules5–rules11 的逐值全等门禁）。
+ */
+export function milestoneMonth(state, callbacks) {
+  const due = breakthroughDue(state);
+  if (!due) return false;
+  callbacks.arrive(due.id);
+  return true;
+}
 
 /**
  * 跑一遍这个月的调度。
@@ -46,6 +81,8 @@ export function scheduleMonth(state, callbacks) {
   const cultivation = state.life.cultivation;
   /* 境界十二：突破与寿限 —— 最硬的那件事，先问它。 */
   if (month12(state, callbacks)) return true;
+  /* 里程碑档：突破这种人生节点，不跟日常卡抢。 */
+  if (milestoneMonth(state, callbacks)) return true;
   /* 修订九：只在没有俗世支线时插话。 */
   if (!cultivation.mundane?.arc && revisionMonth(state, callbacks)) return true;
   /* 规则十：能不能修炼、能不能考核。 */

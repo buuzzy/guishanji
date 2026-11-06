@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-11-06T17:16:51.542Z",
+  "generatedAt": "2026-11-06T19:18:51.502Z",
   "tool": "verify-events-fidelity",
   "versions": {
     "CULTIVATION_EVENTS": {
-      "count": 281,
-      "digest": "80228ffb3ce87230",
+      "count": 285,
+      "digest": "0905214c562f2326",
       "ids": [
         "advance_material_3_0_0",
         "advance_material_3_0_0_resume",
@@ -59,15 +59,19 @@
         "breakthrough_1_0",
         "breakthrough_1_1",
         "breakthrough_1_2",
+        "breakthrough_1_3",
         "breakthrough_2_0",
         "breakthrough_2_1",
         "breakthrough_2_2",
+        "breakthrough_2_3",
         "breakthrough_3_0",
         "breakthrough_3_1",
         "breakthrough_3_2",
+        "breakthrough_3_3",
         "breakthrough_4_0",
         "breakthrough_4_1",
         "breakthrough_4_2",
+        "breakthrough_4_3",
         "child_apothecary",
         "child_caravan",
         "child_clan",

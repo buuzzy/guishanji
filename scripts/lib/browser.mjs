@@ -11,13 +11,33 @@ export async function findChrome() {
 }
 
 export async function launchBrowser() {
+  /* 冷启动时 Chrome 可能十几秒都起不来（CI 上尤其明显：首次建 profile + 杀软扫描）。
+     实测：Windows runner 上第一道浏览器门禁会在 10 秒等待里超时退出，
+     后面同一台机器再起就都好了 ⇒ 是「第一次慢」，不是「起不来」。
+     ⇒ 给足等待（30 秒），并且真的失败时**再试一次**（换一个新 profile）。
+     反正这道门禁跑完就结束，多等几秒比误报红强。 */
+  const attempts = 2;
+  const portWaitMs = 30000;
+  let lastError;
+  for (let attempt = 1; attempt <= attempts; attempt++) {
+    try {
+      return await launchOnce(portWaitMs);
+    } catch (error) {
+      lastError = error;
+      if (attempt < attempts) await delay(1000);
+    }
+  }
+  throw lastError;
+}
+
+async function launchOnce(portWaitMs) {
   const local = join(projectRoot, '.local'); await mkdir(local, { recursive: true });
   const profile = await mkdtemp(join(local, 'browser-'));
   const child = spawn(await findChrome(), ['--headless=new', '--remote-debugging-port=0', '--remote-debugging-address=127.0.0.1', '--user-data-dir=' + profile, '--no-first-run', '--no-default-browser-check', '--disable-background-networking', '--disable-component-update', '--disable-sync', '--disable-features=MediaRouter', '--password-store=basic', 'about:blank'], { windowsHide: true, stdio: ['ignore', 'ignore', 'pipe'] });
   let browserLog = ''; child.stderr.on('data', data => { browserLog += data.toString(); });
   let processError; child.once('error', error => { processError = error; });
   let portFile;
-  for (let i = 0; i < 100; i++) {
+  for (let waited = 0; waited < portWaitMs; waited += 100) {
     if (processError) throw processError;
     try { portFile = (await readFile(join(profile, 'DevToolsActivePort'), 'utf8')).trim().split(/\r?\n/u); break; } catch { await delay(100); }
   }

@@ -60,7 +60,7 @@
   },
   "direction": "依赖是单向直线：⑥呈现 → ⑤表达 → ④节奏 → ③因果 → ②角色 → ①世界。序号大的可以依赖序号小的，反过来不行。",
   "files": {
-    "content/adventure.js": "world",
+    "content/adventure.js": "entry",
     "content/allegiance-stories.js": "cause",
     "content/automatic-life.js": "cause",
     "content/cadence-table.js": "pace",
@@ -77,6 +77,7 @@
     "content/cultivation-stories.js": "cause",
     "content/cultivation-world.js": "world",
     "content/decision-details.js": "cause",
+    "content/ends.js": "cause",
     "content/expedition-changes.js": "world",
     "content/expressions/beast.js": "voice",
     "content/expressions/cavern.js": "voice",
@@ -93,15 +94,19 @@
     "content/expressions/sky.js": "voice",
     "content/expressions/tide.js": "voice",
     "content/expressions/trial.js": "voice",
+    "content/items.js": "world",
     "content/living-episodes.js": "cause",
     "content/living-world.js": "world",
     "content/mundane-stories-v11.js": "cause",
     "content/mundane-stories.js": "cause",
     "content/novel-names.js": "role",
+    "content/nodes.js": "cause",
     "content/progression-stories-v11.js": "cause",
     "content/progression-stories.js": "cause",
     "content/readable-automatic.js": "voice",
     "content/readable-stories.js": "voice",
+    "content/realms.js": "role",
+    "content/regions.js": "world",
     "content/revision9-stories-v11.js": "cause",
     "content/revision9-stories.js": "cause",
     "content/rules12-world.js": "world",
@@ -197,25 +202,25 @@
       "status": "待拆"
     },
     {
-      "from": "content/adventure.js",
+      "from": "content/items.js",
       "to": "content/revision9-stories.js",
-      "reason": "物品总表要并入「修订九」带来的道具。S9 拆 adventure.js 时，道具表会独立出去，这条即可撤掉。",
+      "reason": "道具总表要并入「修订九」带来的道具。S9 把道具表从 content/adventure.js 拆到 content/items.js，这条依赖跟着搬过来（内容层依赖因果层，方向仍然是反的）。",
       "since": "S2",
-      "status": "S9 撤"
+      "status": "S9 改：依赖跟着道具表搬到了 content/items.js（条数不变，没有新增越界）"
     },
     {
-      "from": "content/adventure.js",
+      "from": "content/items.js",
       "to": "content/mundane-stories.js",
-      "reason": "物品总表要并入「俗世生活」带来的道具。同上，S9 拆完即可撤掉。",
+      "reason": "道具总表要并入「俗世生活」带来的道具。同上，S9 拆完跟着搬到了 content/items.js。",
       "since": "S2",
-      "status": "S9 撤"
+      "status": "S9 改：依赖跟着道具表搬到了 content/items.js（条数不变，没有新增越界）"
     },
     {
-      "from": "content/adventure.js",
+      "from": "content/items.js",
       "to": "content/progression-stories.js",
-      "reason": "物品总表要并入「境界推进」带来的道具。同上，S9 拆完即可撤掉。",
+      "reason": "道具总表要并入「境界推进」带来的道具。同上，S9 拆完跟着搬到了 content/items.js。",
       "since": "S2",
-      "status": "S9 撤"
+      "status": "S9 改：依赖跟着道具表搬到了 content/items.js（条数不变，没有新增越界）"
     },
     {
       "from": "packages/adventure/life.js",

@@ -99,7 +99,7 @@ const CHANGED_REASON = {
   'miniprogram/subpkg/xianxia/runtime/build-manifest.json': '生成物：来源改为本仓库源码，并新增 upstreamOrigin 段',
   'miniprogram/subpkg/xianxia/runtime/engine.js': '生成物：由本仓库源码重新构建（除文件头注释外与迁移进来的那份逐字节一致，见 reference/migrated-runtime/）',
   'miniprogram/subpkg/xianxia/runtime/pixel-style.js': '生成物：由本仓库源码重新构建（与迁移进来的那份逐字节一致）',
-  'scripts/build-xianxia-mp.mjs': '构建来源改为本仓库自己的源码（vendor 快照降级为历史证据），新增 app.wxss 生成；2026-11-07 补充说明「上游 xianxia-life 已删除」；S8 表达域与呈现域：新增 mapView / lifespanPlan12 / 寿元句式的导出',
+  'scripts/build-xianxia-mp.mjs': '构建来源改为本仓库自己的源码（vendor 快照降级为历史证据），新增 app.wxss 生成；2026-11-07 补充说明「上游 xianxia-life 已删除」；S8 表达域与呈现域：新增 mapView / lifespanPlan12 / 寿元句式的导出；S9 内容模块拆分：小程序端要的那几张表改从各自域文件取（content/realms.js、content/regions.js、content/items.js、content/ends.js），不再从什么都有的门面取',
   'docs/miniprogram-xianxia-integration.md': '2026-11-07：给 --refresh=../xianxia-life 这条已失效的旧命令加提示（该仓库已删除，build 脚本现在只读本仓库源码）；正文其余部分保持原样',
   'docs/xianxia-mini-program-integration.md': '2026-11-07：给 --source=../xianxia-life 这条已失效的旧命令加提示（该仓库已删除，build 脚本现在只读本仓库源码）；正文其余部分保持原样',
   'scripts/test-xianxia-art.mjs': '对照基准改为本仓库 reference/ 与 apps/preview/，不再依赖 1in8b 的 frozen-baseline',
@@ -116,6 +116,41 @@ const CHANGED_REASON = {
   'packages/adventure/engine.js': 'S7 表达域：makeReadable 改读新的表达域入口 content/expressions/index.js',
   'miniprogram/subpkg/xianxia/art/atlas.js': 'S8 呈现域：点阵地图从「一次画四块大陆」改成「只画当前所在 + 走过的大洲」并居中；「该显示哪几块」改由规则层给（engine.mapView）',
 };
+
+/* 本轮新增的文件（不是从来源迁入的）。
+ * ⚠ 放在这里（离线模式之前），是因为**离线模式也要用它**：
+ *   离线模式拿不到来源仓库，但「本轮新增」这一组的哈希本来就来自本仓库
+ *   ⇒ 离线时把清单里缺的新增条目补上，是安全的（不会削弱任何证据）。 */
+const ADDED = [
+  'miniprogram/app.js', 'miniprogram/app.json', 'miniprogram/app.wxss', 'miniprogram/sitemap.json',
+  'miniprogram/pages/home/home.js', 'miniprogram/pages/home/home.json',
+  'miniprogram/pages/home/home.wxml', 'miniprogram/pages/home/home.wxss',
+  'miniprogram/pages/legal/about/about.js', 'miniprogram/pages/legal/about/about.json',
+  'miniprogram/pages/legal/about/about.wxml', 'miniprogram/pages/legal/about/about.wxss',
+  'miniprogram/pages/legal/privacy/privacy.js', 'miniprogram/pages/legal/privacy/privacy.json',
+  'miniprogram/pages/legal/privacy/privacy.wxml', 'miniprogram/pages/legal/privacy/privacy.wxss',
+  'project.config.json', 'scripts/verify-migration-import.mjs', 'scripts/gen-source-manifest.mjs',
+  'scripts/test-xianxia-standalone.mjs',
+  /* 2026-11-06：仓库卫生门禁（防仓库长胖把微信 IDE 压垮）+ 量包体脚本 */
+  'scripts/test-repo-hygiene.mjs', 'scripts/measure-mp-package-size.mjs',
+  'AGENTS.md', 'README.md',
+  'docs/migration/ledger.md', 'docs/migration/plan.md', 'docs/migration/storage-migration.md',
+  'docs/migration/web-cleanup.md', 'docs/migration/miniprogram-standalone.md',
+  /* 2026-11-08：S7 表达域 —— 说法按故事线拆到 content/expressions/ 下 */
+  'content/expressions/index.js', 'content/expressions/people.js', 'content/expressions/lifespan.js',
+  'content/expressions/mainline.js', 'content/expressions/tide.js', 'content/expressions/ember.js',
+  'content/expressions/sky.js', 'content/expressions/journey.js', 'content/expressions/homecoming.js',
+  'content/expressions/demonic.js', 'content/expressions/trial.js', 'content/expressions/cavern.js',
+  'content/expressions/outer.js', 'content/expressions/beast.js', 'content/expressions/cultivation.js',
+  'scripts/verify-expressions.mjs',
+  'docs/expression-vocabulary.json',
+  'docs/art-divergence.json',
+  /* 2026-11-08：S9 内容模块拆分 —— 原来的 content/adventure.js 拆成五个域文件 + 门面 */
+  'content/realms.js', 'content/items.js', 'content/regions.js',
+  'content/ends.js', 'content/nodes.js',
+  'scripts/verify-content-modules.mjs',
+  'tests/fixtures/content-modules.json',
+];
 
 
 /* ═══════════════════════════ 离线模式 ═══════════════════════════
@@ -222,6 +257,22 @@ if (OFFLINE) {
   for (const e of g.changed || []) refresh(e, 'currentSha256', 'currentBytes');
   for (const e of g.moved || []) refresh(e, 'currentSha256', 'currentBytes');
 
+  /* ⚠ 清单里缺的新增条目 ⇒ 补上。
+   *   「本轮新增」这一组的哈希**来自本仓库**（不是来源仓库）⇒ 离线补它不削弱证据。
+   *   不补的后果：本轮新写的文件在清单里没有影子 ⇒ 清单跟仓库对不上，
+   *   而清单的作用正是「本仓库现在长什么样」的可核对记录。 */
+  const addedPaths = new Set((g.added || []).map(e => e.path));
+  let addedNew = 0;
+  for (const p of ADDED) {
+    if (addedPaths.has(p)) continue;
+    const abs = path.join(ROOT, p);
+    if (!fs.existsSync(abs)) { console.error(`  ⚠ 新增文件不存在，跳过：${p}`); continue; }
+    const d = digest(abs);
+    g.added = (g.added || []).concat([{path: p, bytes: d.bytes, sha256: d.sha256}]);
+    addedNew++;
+  }
+  if (addedNew) console.log(`  补上了 ${addedNew} 个清单里缺的新增文件`);
+
   old.generatedAt = new Date().toISOString().slice(0, 10);
   /* ⚠ note 只追加一次（重复跑 offline 不会堆成一长串）。 */
   const OFFLINE_NOTE = '（本次用 --offline 生成：只刷新了本轮自己写的文件（added/changed/moved）的哈希；' +
@@ -325,32 +376,6 @@ for (const m of MAP) {
   }
 }
 
-/* 本轮新增的文件（不是从来源迁入的）。 */
-const ADDED = [
-  'miniprogram/app.js', 'miniprogram/app.json', 'miniprogram/app.wxss', 'miniprogram/sitemap.json',
-  'miniprogram/pages/home/home.js', 'miniprogram/pages/home/home.json',
-  'miniprogram/pages/home/home.wxml', 'miniprogram/pages/home/home.wxss',
-  'miniprogram/pages/legal/about/about.js', 'miniprogram/pages/legal/about/about.json',
-  'miniprogram/pages/legal/about/about.wxml', 'miniprogram/pages/legal/about/about.wxss',
-  'miniprogram/pages/legal/privacy/privacy.js', 'miniprogram/pages/legal/privacy/privacy.json',
-  'miniprogram/pages/legal/privacy/privacy.wxml', 'miniprogram/pages/legal/privacy/privacy.wxss',
-  'project.config.json', 'scripts/verify-migration-import.mjs', 'scripts/gen-source-manifest.mjs',
-  'scripts/test-xianxia-standalone.mjs',
-  /* 2026-11-06：仓库卫生门禁（防仓库长胖把微信 IDE 压垮）+ 量包体脚本 */
-  'scripts/test-repo-hygiene.mjs', 'scripts/measure-mp-package-size.mjs',
-  'AGENTS.md', 'README.md',
-  'docs/migration/ledger.md', 'docs/migration/plan.md', 'docs/migration/storage-migration.md',
-  'docs/migration/web-cleanup.md', 'docs/migration/miniprogram-standalone.md',
-  /* 2026-11-08：S7 表达域 —— 说法按故事线拆到 content/expressions/ 下 */
-  'content/expressions/index.js', 'content/expressions/people.js', 'content/expressions/lifespan.js',
-  'content/expressions/mainline.js', 'content/expressions/tide.js', 'content/expressions/ember.js',
-  'content/expressions/sky.js', 'content/expressions/journey.js', 'content/expressions/homecoming.js',
-  'content/expressions/demonic.js', 'content/expressions/trial.js', 'content/expressions/cavern.js',
-  'content/expressions/outer.js', 'content/expressions/beast.js', 'content/expressions/cultivation.js',
-  'scripts/verify-expressions.mjs',
-  'docs/expression-vocabulary.json',
-  'docs/art-divergence.json',
-];
 const added = [];
 for (const p of ADDED) {
   const abs = path.join(ROOT, p);

@@ -86,6 +86,14 @@
         "packages/adventure/cultivation.js": "changed",
         "packages/adventure/story-rules12.js": "changed"
       }
+    },
+    {
+      "id": "S9",
+      "title": "内容模块按域拆开：原来的一个大杂烩拆成五个域文件 + 一个门面",
+      "why": "content/adventure.js 原来是个 450 行的「大杂烩」：版本常量、幕、地区、境界、技艺、道具、人物、冒险节点、结局、期间选择全挤在一处，改一个道具要翻几百行，而且看不出哪一块归谁管。这一轮按六域拆开：境界与技艺 → content/realms.js（角色域）、道具总表 → content/items.js（世界域）、地区与人物 → content/regions.js（世界域）、版本号/幕/结局 → content/ends.js（因果域）、冒险线节点表（45 个节点 + 期间选择 + 末尾的节点修补）→ content/nodes.js（因果域）；content/adventure.js 留作**门面**，只转发不写内容（旧路径 from './adventure.js' 仍然能用，仓里还有十几处这么写）。搬运是**逐行机械复制**，一个字都没重打。纯重构 ⇒ 行为不变：由 scripts/verify-content-modules.mjs 守着（门面只转发 / 各管各的且没有重名 / 转出来的值与拆分前的基线 tests/fixtures/content-modules.json 逐值全等，函数按源码文本比）。依赖方向：道具表并进那三条内容表带来的道具，仍是「数据层依赖因果层」的反向依赖 ⇒ 三张许可证跟着从 content/adventure.js 换到 content/items.js（条数不变，没有新增越界）。",
+      "files": {
+        "content/adventure.js": "changed"
+      }
     }
   ],
   "currentVersion": {

@@ -3,8 +3,8 @@
   "source": {
     "repo": "buuzzy/guishanji",
     "branch": "main",
-    "commit": "c68563b8a514cb9fa8ad2c2d29a7e6fb33acdec0",
-    "tree": "5811589d970839cbb2d983a4dca0ce629125cf6d",
+    "commit": "ba09364403446ae9c7cc2338bf512b9686345ac9",
+    "tree": "d5587d9737a715e6b460a48726cfff8225222b88",
     "note": "构建那一刻本仓库的 HEAD 身份（快照信息，不参与逐字节复现校验）",
     "paths": [
       "packages/adventure/",
@@ -21,12 +21,12 @@
     "note": "同一批字节的两个来源之一：本仓库的 packages/ + content/ 与上游那个提交逐字节相同（门禁 scripts/test-xianxia-build.mjs 逐个核对）；vendor/xianxia-r12 是当时锁下的历史证据。"
   },
   "rulesVersion": 12,
-  "moduleCount": 66,
+  "moduleCount": 71,
   "inputs": [
     {
       "id": "content/adventure.js",
-      "bytes": 94240,
-      "sha256": "6b150c7a2b4a9dfc05c1b5b757fae3ed4ea49bd1605dd32e51c2fcd872a12af8"
+      "bytes": 1091,
+      "sha256": "64d0432cf33f3009e55c511f198ca35bf9e3ca032c07d3b531014d3a1f07d42b"
     },
     {
       "id": "content/allegiance-stories.js",
@@ -77,6 +77,11 @@
       "id": "content/decision-details.js",
       "bytes": 13229,
       "sha256": "7d1d41251b8bea36bf9b551d4c8c0dd75048655fde25a1c4ee5e1b4ae029a17e"
+    },
+    {
+      "id": "content/ends.js",
+      "bytes": 2587,
+      "sha256": "334d8c2dd119d09e97c43a8e9b4a3ec22cd97c8cddf9df35617cdd6cbae72ff6"
     },
     {
       "id": "content/expedition-changes.js",
@@ -159,6 +164,11 @@
       "sha256": "b9df343afbf82c92f702a07897b7c657b99e5ecc0a1afce6b108fcfecf4f2307"
     },
     {
+      "id": "content/items.js",
+      "bytes": 3247,
+      "sha256": "a31ab9bb0594a9d8d7cd4763fcf68d8449e2cbb6ee3cca9a88d4a9162c22d6c7"
+    },
+    {
       "id": "content/living-episodes.js",
       "bytes": 39886,
       "sha256": "cbb3277634f930c28582f6f800e3d6bac35246485b14571e00f3521e136a302f"
@@ -174,6 +184,11 @@
       "sha256": "b587471bba3fb3ec2d38c7abf010bc9463ec8ef3a97d7db7939cb1b552a114b7"
     },
     {
+      "id": "content/nodes.js",
+      "bytes": 87993,
+      "sha256": "a43f79016c6137dc82891c3bf7a71bcd09e6693ba585c5d28114409a1a39046b"
+    },
+    {
       "id": "content/novel-names.js",
       "bytes": 15555,
       "sha256": "dc17411d1d7b32e40825a30015fb21560a510c069c212c2900b223e7f24fe5c7"
@@ -187,6 +202,16 @@
       "id": "content/readable-automatic.js",
       "bytes": 6773,
       "sha256": "7fb5d2306b9793fe2e00c6a4ef17d53a4047d574c5d0f0e65bf18817c7c08a59"
+    },
+    {
+      "id": "content/realms.js",
+      "bytes": 655,
+      "sha256": "d031fbe8b4e4a1c07dc8747bbaa951cd0d8abc7ca849fda7aed5e7f1803fef07"
+    },
+    {
+      "id": "content/regions.js",
+      "bytes": 1385,
+      "sha256": "1a6eb84c123cba2f1740ebac18f9c9cf6a05bd482b0578537c315353850cdc06"
     },
     {
       "id": "content/revision9-stories.js",
@@ -356,8 +381,8 @@
   ],
   "output": {
     "file": "engine.js",
-    "bytes": 1235559,
-    "sha256": "a2f60e175a31029bf639bec08cabbb55120ed72ac416be4c71cbc0605a609406"
+    "bytes": 1237773,
+    "sha256": "451b8662dc8a5bd7a444a5dddb7b84b6186a3c49fc540a25a44fb7edbe584eb8"
   },
   "styleOutput": {
     "file": "pixel-style.js",

@@ -73,6 +73,12 @@ const commands = [
      表达域的输出必须与基线逐值全等（改一个字就报红）。
      它还核对「专有名词总表」：表达域不许发明内容。 */
   ['expressions', ['scripts/verify-expressions.mjs']],
+  /* ── 内容模块门禁 ───────────────────────────────────────────────────────
+     content/adventure.js 拆成「境界与技艺 / 道具 / 地区与人物 / 结局与版本 / 节点」
+     五个域文件之后，门面必须只转发、五个文件必须各管各的（没有重名），
+     而且转出来的值必须与拆分前的基线逐值全等（函数按源码文本比）。
+     纯重构 ⇒ 一个字都不该变；真要改内容，先改基线并说明理由。 */
+  ['contentmodules', ['scripts/verify-content-modules.mjs']],
 ];
 const report = { startedAt: new Date().toISOString(), node: process.version, platform: process.platform, results: [] };
 await mkdir(join(projectRoot, 'artifacts'), { recursive: true });

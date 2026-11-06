@@ -121,7 +121,12 @@ const EXPORTS = {
     'leaveExpedition', 'aid', 'chance', 'unmet', 'review', 'validateRun',
     'age', 'date', 'duration', 'EVENTS', 'ALL_ENDINGS',
   ],
-  'content/adventure.js': ['REALMS', 'REGIONS', 'ITEMS', 'SKILLS', 'ACTS', 'CAST'],
+  /* S9：内容按域拆开了 ⇒ 导出指向各域自己的文件，不再从「什么都有的」大杂烩门面取。
+     （门面 content/adventure.js 仍然转发同样的名字，旧路径照样能用。） */
+  'content/realms.js': ['REALMS', 'SKILLS'],
+  'content/regions.js': ['REGIONS', 'CAST'],
+  'content/items.js': ['ITEMS'],
+  'content/ends.js': ['ACTS'],
   'content/living-world.js': [
     'NEW_CAST', 'FAMILIES', 'BIRTHPLACES', 'WORLD_ERAS', 'LIFE_GOALS', 'TRAINING_GROUNDS',
   ],

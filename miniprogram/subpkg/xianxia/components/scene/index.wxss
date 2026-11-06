@@ -1,0 +1,17 @@
+/* 192×108 是 16:9 ⇒ 用 padding-bottom 锁比例，机型不同也不会变形。 */
+.scene-box {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%;
+  overflow: hidden;
+  border-radius: 12rpx;
+  background: #E8F2EC;
+}
+
+.scene-cv {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}

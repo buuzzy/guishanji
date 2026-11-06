@@ -1,0 +1,626 @@
+/* ==========================================================================
+   归山记 · 全局样式（app.wxss）
+   ==========================================================================
+
+   ⚠ **生成物，不要手改**
+      生成：node scripts/build-xianxia-mp.mjs
+      校验：node scripts/build-xianxia-mp.mjs --check
+
+   来源：reference/official/app.wxss（1in8b 官方设计系统的逐字节副本）。
+   做法：只保留本小程序**真正用得到**的那些规则，其余整条删掉。
+        被删的规则匹配不到本页任何一个元素 ⇒ 观感零变化（可证明，不是估计）。
+
+   想改样式：改页面的 class，或改官方那份的来源，然后重新构建。
+   ========================================================================== */
+/* ==========================================================================
+   八十亿分之一 · 设计系统
+   尺寸与配色逐项对齐 1in8b.life 官方 CSS（zh-hans 主题）。
+   换算基准：750rpx = 375pt，即 1px(官方) = 2rpx(小程序)。
+   ========================================================================== */
+
+page {
+  /* 纸面 */
+  --paper: #EBF0ED;
+  --card: #F7FAF8;
+  --card2: #F0F4F2;
+  /* 墨色 */
+  --ink: #13212A;
+  --ink2: #4A5A61;
+  --ink3: #5F6E72;
+  /* 分隔线 */
+  --rule: #C7D2CE;
+  --rule2: #DCE4E1;
+  /* 主色：印章红 */
+  --accent: #8C1D3C;
+  --accent-ink: #FFFFFF;
+  --accent-soft: #F3E3E8;
+  /* 副色：墨绿 */
+  --stamp: #0F6E68;
+  --stamp-soft: #DCEDEA;
+  --gold: #9C7020;
+  /* 语义色 */
+  --good: #2B7A4E;
+  --bad: #B0362B;
+  --warn: #A8730F;
+  --loss: #2C2F3A;
+  /* 生命地图 */
+  --grid-lo: #F3E2B3;
+  --grid-mid: #7FBF86;
+  --grid-hi: #0B5C63;
+  /* 阴影 */
+  --shadow: 0 1rpx 0 rgba(19, 33, 42, .04), 0 16rpx 48rpx -24rpx rgba(19, 33, 42, .18);
+
+  /* 官方 zh-Hans 字体栈 */
+  --f-display: "Noto Serif SC", "Noto Serif CJK SC", "Songti SC", "SimSun", serif;
+  --f-body: "PingFang SC", "Noto Sans SC", "Noto Sans CJK SC", "Microsoft YaHei", system-ui, sans-serif;
+  --f-mono: "IBM Plex Mono", "PingFang SC", "Noto Sans SC", "Microsoft YaHei", ui-monospace, Menlo, monospace;
+
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+@media (prefers-color-scheme: dark) {
+  page {
+    --paper: #0D1316;
+    --card: #141D21;
+    --card2: #1A2428;
+    --ink: #E1E9E6;
+    --ink2: #A3B2AF;
+    --ink3: #8A9A96;
+    --rule: #2A383D;
+    --rule2: #1D282C;
+    --accent: #E2678A;
+    --accent-ink: #1B0910;
+    --accent-soft: #3A1C26;
+    --stamp: #4CC0AF;
+    --stamp-soft: #12302D;
+    --gold: #D9AF59;
+    --good: #5CC38B;
+    --bad: #F07B6B;
+    --warn: #E2B04C;
+    --loss: #C9CDD8;
+    --grid-lo: #25283F;
+    --grid-mid: #2A8A80;
+    --grid-hi: #B8E8A8;
+    --shadow: 0 1rpx 0 rgba(0, 0, 0, .3), 0 20rpx 60rpx -28rpx rgba(0, 0, 0, .6);
+  }
+}
+
+/* 手动主题覆盖：根节点加 .theme-dark / .theme-light */
+.theme-dark {
+  --paper: #0D1316;
+  --card: #141D21;
+  --card2: #1A2428;
+  --ink: #E1E9E6;
+  --ink2: #A3B2AF;
+  --ink3: #8A9A96;
+  --rule: #2A383D;
+  --rule2: #1D282C;
+  --accent: #E2678A;
+  --accent-ink: #1B0910;
+  --accent-soft: #3A1C26;
+  --stamp: #4CC0AF;
+  --stamp-soft: #12302D;
+  --gold: #D9AF59;
+  --good: #5CC38B;
+  --bad: #F07B6B;
+  --warn: #E2B04C;
+  --loss: #C9CDD8;
+  --grid-lo: #25283F;
+  --grid-mid: #2A8A80;
+  --grid-hi: #B8E8A8;
+  --shadow: 0 1rpx 0 rgba(0, 0, 0, .3), 0 20rpx 60rpx -28rpx rgba(0, 0, 0, .6);
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.theme-light {
+  --paper: #EBF0ED;
+  --card: #F7FAF8;
+  --card2: #F0F4F2;
+  --ink: #13212A;
+  --ink2: #4A5A61;
+  --ink3: #5F6E72;
+  --rule: #C7D2CE;
+  --rule2: #DCE4E1;
+  --accent: #8C1D3C;
+  --accent-ink: #FFFFFF;
+  --accent-soft: #F3E3E8;
+  --stamp: #0F6E68;
+  --stamp-soft: #DCEDEA;
+  --gold: #9C7020;
+  --good: #2B7A4E;
+  --bad: #B0362B;
+  --warn: #A8730F;
+  --loss: #2C2F3A;
+  --grid-lo: #F3E2B3;
+  --grid-mid: #7FBF86;
+  --grid-hi: #0B5C63;
+  --shadow: 0 1rpx 0 rgba(19, 33, 42, .04), 0 16rpx 48rpx -24rpx rgba(19, 33, 42, .18);
+  background: var(--paper);
+  color: var(--ink);
+}
+
+view, text, button, input, textarea, scroll-view { box-sizing: border-box; }
+
+/* ─────────────────────────────────────────────────────────────────────
+   基础库全局样式的复位（重要）
+   ---------------------------------------------------------------------
+   微信基础库（实测 3.17.5）往每个页面注入下面这组全局样式：
+
+     wx-button { border-radius:4px; font-size:17px; font-weight:700;
+                 line-height:1.41176471; padding:8px 24px }
+     wx-button:not([size=mini]) { margin-left:auto; margin-right:auto; width:184px }
+     button.wx-button-size-normal { margin-left:auto; margin-right:auto; width:184px }
+
+   这三条都是**基础库注入**的，不是我们写的，而且作用于按钮的宿主元素：
+
+   ① width:184px —— 所有 <button> 被强制成固定 184px 宽，与内容、与容器都无关。
+      官方网页版的按钮是内容宽度（.themebtn 37px、.ghost.sm 76px、.cta 92px…）。
+      实测后果：分段控件 2×2 的按钮互相溢出；页脚 3 个按钮各占一行；
+      设置区每组按钮被拉成一整条。**这是全站 P0 视觉问题。**
+   ② margin-left/right:auto —— 按钮被居中，官方是左对齐 / 按 space-between 排。
+   ③ font-weight:700 —— 次要按钮比官方粗一圈（官方 .ghost / .seg button 都是 400）。
+
+   ⇒ 这里按官方口径复位。
+   ⚠ 宽度/外边距用 !important：那是注入样式，层叠顺序不可控，
+     只有 !important 能稳定压住。
+   ⚠ !important 会压掉**行内样式**，所以个别按钮的间距改用下面这几个类
+     （原来的行内 margin-left/right 已改成类）。
+   ⚠ 字重**不**做全局复位 —— 那会把 .cta 的 600 一起压成 400；
+     字重在用到的地方单独复位（.ghost / .seg button / .themebtn）。
+   ⚠ 不写 !important 到 width 之外的属性（padding/border 等由各自的类负责）。
+   ───────────────────────────────────────────────────────────────────── */
+button {
+  width: auto !important;
+  min-width: 0 !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+/* 需要保留间距的按钮：行内样式会被上面的 !important 压掉，改走类 */
+.ml-4 { margin-left: 8rpx !important; }
+/* flex 相关的两个常用值也走类，避免和上面的 !important 打架 */
+.flex1 { flex: 1; }
+/* 同理：官方 .speed .sps button 的 min-width:31px / margin-left:-1px 也会被
+   上面的 min-width:0 / margin-left:0 !important 压掉 ⇒ 走类。 */
+.sps-b { min-width: 31px !important; margin-left: -1px !important; }
+.sps-b.first { margin-left: 0 !important; }
+.morebtn-w { min-width: 36px !important; }
+
+/* ⚠ 2026-10-26 真机反馈：「出生随机选择地区的时候，底部有一片白色」。
+ * 根因：`.wrap` 只是容器，没有高度也没有底色 ⇒
+ *   ① 内容比屏幕短时，底下露出的是 `page` 的浅色底（#EBF0ED，看着像白块）；
+ *   ② 转盘态那 136px 是**给登记卡底栏预留的**，转盘态根本没有底栏 ⇒ 白扣了一块。
+ * 做法：`.wrap` 撑满整屏并铺上主题纸色（与 `page`、`.legalwrap` 同一口径）。
+ *   ⚠ 主题底色由 `.theme-light` / `.theme-dark` 提供（它们已带 background:var(--paper)），
+ *     这里写 `background:var(--paper)` ⇒ 深色模式下也跟着变，不会出现「深色页面白条」。 */
+.wrap {
+  padding: 0 32rpx;
+  min-height: 100vh;
+  background: var(--paper);
+  /* 2026-10-26：首页的主题按钮改成绝对定位（贴在微信胶囊左边），
+     需要 .wrap 当定位参照 ⇒ 绝对定位的 right/top 才是相对整屏算的。 */
+  position: relative;
+}
+.mono { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+.num { font-variant-numeric: tabular-nums; }
+
+/* 小标签：全大写、字距、弱化 */
+.lbl {
+  display: block;
+  font-size: 24rpx;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  font-weight: 600;
+}
+
+/* 设置项下的说明文字（官方 .optgroup .hint：12.5px / 1.6 / ink3 / max-width 24em）
+   ⚠ 12.5px 用 rpx（25rpx）表达会被渲染层取整成 13px ⇒ 直接用 px */
+.hint {
+  display: block;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--ink3);
+  max-width: 48em;
+}
+
+/* 2026-10-26（第六轮）：首页那个主题按钮**不再单独占一行**。
+ *
+ * 原来它在 `.nav` 里（.nav 是 flex + justify-content:flex-end + height:88rpx，
+ * 整行只放这一个按钮、左边全空）⇒ ① 把标题往下顶了 88rpx；
+ * ② 它右对齐 ⇒ 正好落在微信右上角胶囊底下，真机点不到。
+ *
+ * 现在改成绝对定位（位置由 index.js 的 topMetrics() 算：贴在胶囊左边 8px），
+ * 样式沿用原来那套（.nav .themebtn 的样子），只是不再占行。 */
+.navbtn {
+  position: absolute;
+  z-index: 30;
+  border: none;
+  background: none;
+  color: var(--ink2);
+  font-size: 30rpx;
+  font-weight: 400;
+  line-height: 1;
+  padding: 18rpx 22rpx;
+  margin: 0;
+  border-radius: 999rpx;
+}
+.navbtn:active { color: var(--ink); background: var(--rule2); }
+
+/* ---------------------------------------------------------------- 标题区 */
+
+.kicker {
+  font-family: var(--f-mono);
+  font-size: 24rpx;
+  color: var(--stamp);
+  letter-spacing: .02em;
+}
+
+.hero { padding: 0; }  /* 官方 .hero 没有内边距，间距由 .community 的 margin-top 给出 */
+
+.hero-title {
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: 128rpx;
+  line-height: .92;
+  letter-spacing: -.01em;
+  margin: 24rpx 0 48rpx;
+  white-space: nowrap;
+}
+
+.hero-title .em { color: var(--accent); font-style: normal; }
+
+.lede {
+  font-size: 34rpx;
+  color: var(--ink2);
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* ---------------------------------------------------------------- 卡片 */
+
+.panel {
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: 8rpx;
+  padding: 32rpx;
+  margin-bottom: 32rpx;
+}
+
+/* 官方 .panel > h3 { margin:0 0 10px; display:flex; justify-content:space-between;
+ *                    align-items:baseline; gap:8px }
+ * 官方这条规则没写 font-size / font-weight —— 面板标题拿到的是浏览器 h3 的
+ * UA 默认值：font-size 1.17em、font-weight bold。
+ * 官方 body 是 15px，所以实测 15 × 1.17 = 17.55px、line-height 28.08px（1.6 继承）。
+ * 这里把 UA 默认值显式写出来（数值与官方一致），不依赖小程序默认样式。 */
+.panel-h {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16rpx;
+  margin-bottom: 20rpx;
+  font-size: 17.55px;
+  font-weight: 700;
+  line-height: 1.6;
+}
+
+.panel-h .t {
+  font-family: var(--f-body);
+  font-weight: 700;
+}
+
+.panel-h .lbl { font-size: 11px; font-weight: 400; }
+
+/* ---------------------------------------------------------------- 按钮 */
+
+/* 官方 .cta：display:inline-flex; align-items:center; gap:12px; padding:16px 28px;
+   font-size:18px; font-weight:600; border-radius:4px; letter-spacing:-.01em
+   —— 官方没写 line-height，继承 body 的 1.6（⇒ 28.8px），这里照抄。 */
+.cta {
+  /* 官方 .cta { display:inline-flex; align-items:center; gap:12px; … } */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24rpx;
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-radius: 8rpx;
+  padding: 32rpx 56rpx;
+  font-size: 36rpx;
+  font-weight: 600;
+  letter-spacing: -.01em;
+  line-height: 1.6;
+  border: none;
+  box-shadow: var(--shadow);
+}
+
+.cta::after { border: none; }
+.cta:active { opacity: .88; }
+
+/* 官方 .ghost：background:transparent; border:1px solid var(--rule); color:var(--ink);
+   border-radius:4px; padding:12px 18px; font-size:15px
+   —— 没写 font-weight（⇒ 400），也没写 line-height（⇒ 继承 1.6）。 */
+.ghost {
+  /* 官方 .ghost 没写 display ⇒ <button> 默认 inline-block ⇒ **内容宽**。
+     小程序这边原来写的是 display:flex（块级）⇒ 在块级容器里被拉成通栏，
+     与官方不一致 ⇒ 改回 inline-flex（官方 .cta 同理，官方写的是 inline-flex）。 */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid var(--rule);
+  color: var(--ink);
+  border-radius: 8rpx;
+  padding: 24rpx 36rpx;
+  font-size: 30rpx;
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+.ghost::after { border: none; }
+.ghost:active { border-color: var(--ink3); }
+/* 官方 .ghost.sm：padding:6px 12px; font-size:13px; line-height:1.35 */
+.ghost.sm { padding: 12rpx 24rpx; font-size: 26rpx; line-height: 1.35; }
+
+/* -------------------------------------------------------- 出生登记卡片 */
+/* 出生登记卡（官方 .cert）的样式已随转盘页一起迁到
+   subpkg/engine/pages/roll/roll.wxss —— 只有转盘页用得到它，
+   留在全局样式里会污染其它页面。 */
+
+/* ---------------------------------------------------------------- 顶栏
+ * 官方 header.topbar > .wrap（page.zh-hans）：
+ *   .topbar { position:sticky; top:env(safe-area-inset-top,0px); z-index:20;
+ *             background:var(--paper); border-bottom:1px solid var(--rule) }
+ *   .topbar .wrap { display:flex; align-items:center; gap:18px; padding-block:10px;
+ *                   flex-wrap:wrap }
+ *   @≤560px .topbar .wrap { gap:8px 12px }
+ *   @≤560px .topbar .brand { display:none }
+ *
+ * 官方 .topbar 是通栏（底边线横贯整屏），左右留白在里面的 .wrap 上。
+ * 小程序外层已经有 .wrap（左右各 32rpx），所以这里用负边距把 .topbar 拉通栏，
+ * 留白交给里面的 .topbar-inner（= 官方 .topbar .wrap 的角色）。
+ */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--paper);
+  border-bottom: 1px solid var(--rule);
+  margin-left: -32rpx;
+  margin-right: -32rpx;
+}
+
+/* 官方 .topbar .wrap：display:flex; align-items:center; gap:18px; padding-block:10px;
+   flex-wrap:wrap —— @≤560px gap 8px 12px。左右 16px 来自官方 .wrap 的 padding-inline。 */
+.topbar-inner {
+  display: flex;
+  align-items: center;
+  gap: 16rpx 24rpx;
+  padding: 20rpx 32rpx;
+  flex-wrap: wrap;
+}
+
+/* 官方 @≤560px .topbar .brand { display:none } —— 手机宽度下品牌不占位。
+   官方没有媒体查询，小程序按手机基准（375pt）直接固定隐藏。
+   字值仍照抄官方 .brand（font-size 18px / weight 700 / letter-spacing -.01em）。 */
+.topbar .brand {
+  display: none;
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: -.01em;
+  white-space: nowrap;
+}
+.topbar .brand .em { color: var(--accent); }
+
+/* 官方 .agebox { display:flex; align-items:baseline; gap:10px; flex:1; min-width:200px }
+   官方 .agebox .yr { display:flex; flex-direction:column; flex:1; min-width:0; gap:4px } */
+.agebox {
+  display: flex;
+  align-items: baseline;
+  gap: 20rpx;
+  flex: 1;
+  min-width: 400rpx;
+}
+/* 官方 .agebox .age { font-family:var(--f-display); font-size:40px; font-weight:700;
+ *                     line-height:1; font-variant-numeric:tabular-nums }
+   @≤560px .agebox .age { font-size:34px } —— 小程序按手机宽度取 34px。 */
+.age-num {
+  font-family: var(--f-display);
+  font-size: 34px;
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+/* 官方 .agebox .age small { font-size:18px; font-weight:500; margin-left:2px } */
+.age-num .wx-small { font-size: 18px; font-weight: 500; margin-left: 4rpx; }
+/* 官方 .agebox .yr { display:flex; flex-direction:column; flex:1; min-width:0; gap:4px } */
+.age-yr {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  gap: 8rpx;
+}
+/* 官方 .agebox .yr .t { font-size:13px; color:var(--ink2); white-space:nowrap;
+ *                        overflow:hidden; text-overflow:ellipsis } */
+.age-yr .t {
+  font-size: 13px;
+  color: var(--ink2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* 官方 .prog { height:4px; background:var(--rule2); border-radius:2px; overflow:hidden } */
+.prog { height: 4px; background: var(--rule2); border-radius: 2px; overflow: hidden; }
+.prog view { height: 100%; background: var(--accent); }
+
+/* 官方 .speed { display:flex; gap:4px; align-items:center; flex-wrap:wrap }
+   @≤560px .speed button { padding:6px 8px; min-width:0; min-height:40px; font-size:12.5px }
+   @≤560px .sps { display:inline-flex }
+   @≤560px .speed .sps button { border-radius:0; margin-left:-1px; min-width:31px;
+ *                               padding:6px 0; font-size:12px; letter-spacing:-.02em } */
+.speed { display: flex; align-items: center; flex-wrap: wrap; gap: 8rpx; }
+.speed button {
+  /* ⚠ 2026-11-01：官方网页的 <button> 有浏览器原生的**垂直居中**，
+   *   微信渲染层没有 ⇒ min-height:40px + line-height:1 会让文字贴在按钮顶部
+   *   （暂停 / 倍速 / 下一个 全都偏上）。用 flex 自己居中，与 .morebtn / .exitbtn 同一套。 */
+  display: inline-flex;
+  align-items: center;
+  /* ⚠ 2026-11-01：浏览器按钮还有**水平居中**；flex 默认靠左，
+   *   倍速数字比 31px 最小宽度窄时就贴到了左边 ⇒ 补 justify-content。
+   *   ⋯ 菜单里的条目是通栏列表，要保持左对齐（.more .ff 里改回 flex-start）。 */
+  justify-content: center;
+  border: 1px solid var(--rule);
+  background: var(--card);
+  color: var(--ink);
+  border-radius: 6rpx;
+  padding: 12rpx 16rpx;
+  min-height: 40px;
+  font-size: 12.5px;
+  font-family: var(--f-mono);
+  line-height: 1;
+  white-space: nowrap;
+}
+/* ⚠ 2026-11-01：暂停/开始切换的两个字形（❚❚ ↔ ▶）宽度不同，
+ *   按钮宽度随内容变 ⇒ 会挤压旁边的倍速按钮。给一个覆盖较宽字形的固定最小宽度。 */
+.speed .pause { min-width: 84rpx; }
+.speed button::after { border: none; }
+.speed button.on { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.speed .pause.on { background: var(--card); color: var(--ink); border-color: var(--rule); }
+/* 官方 @≤560px .sps { display:inline-flex }：倍速按钮在手机上是一条分段控件 */
+.speed .sps { display: inline-flex; }
+.speed .sps button {
+  border-radius: 0;
+  padding: 12rpx 0;
+  font-size: 12px;
+  letter-spacing: -.02em;
+}
+.speed .sps button.first { border-radius: 6rpx 0 0 6rpx; }
+.speed .sps button.last { border-radius: 0 6rpx 6rpx 0; }
+
+/* ---------------------------------------------------------------- 状态条 */
+
+.stat {
+  display: grid;
+  grid-template-columns: 3.2em 1fr 2.2em;
+  gap: 20rpx;
+  align-items: center;
+  font-size: 27rpx;
+  padding-block: 8rpx;
+}
+.stat .n { color: var(--ink2); }
+.stat .bar { height: 20rpx; background: var(--rule2); border-radius: 2rpx; overflow: hidden; position: relative; }
+.stat .bar view { position: absolute; left: 0; top: 0; bottom: 0; }
+.stat .v { text-align: right; font-family: var(--f-mono); font-size: 26rpx; }
+
+/* ---------------------------------------------------------------- 筹码 */
+
+.chips { display: flex; flex-wrap: wrap; gap: 12rpx; }
+.chip {
+  border: 1px solid var(--rule);
+  background: var(--card);
+  border-radius: 999rpx;
+  padding: 12rpx 24rpx;
+  font-size: 27rpx;
+  color: var(--ink);
+  line-height: 1.25;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.chip.on { background: var(--stamp); border-color: var(--stamp); color: var(--paper); font-weight: 600; }
+
+/* ---------------------------------------------------------------- 记录
+ * 官方 .feed li { display:grid; grid-template-columns:3.4em minmax(0,1fr); gap:10px;
+ *                 padding:9px 0; border-bottom:1px solid var(--rule2); font-size:14.5px }
+ * 官方 .feed .a { font-family:var(--f-mono); font-size:12px; color:var(--ink3); padding-top:3px } */
+
+.feed { margin: 0; padding: 0; list-style: none; }
+.feed-item {
+  display: flex;
+  padding: 18rpx 0;
+  border-bottom: 1px solid var(--rule2);
+  font-size: 29rpx;
+  line-height: 1.55;
+}
+.feed-item .age {
+  flex: none;
+  width: 124rpx;
+  font-family: var(--f-mono);
+  font-size: 24rpx;
+  color: var(--ink3);
+  padding-top: 6rpx;
+}
+.feed-item .txt { flex: 1; min-width: 0; }
+.feed-item .txt .f {
+  display: block;
+  font-family: var(--f-mono);
+  font-size: 23rpx;
+  color: var(--ink3);
+  margin-top: 6rpx;
+  line-height: 1.45;
+}
+.feed-item .txt .f::before { content: '资料 '; color: var(--stamp); font-weight: 600; }
+.feed-item.kind-fam .txt { color: var(--stamp); }
+.feed-item.kind-edu .txt { color: var(--ink); }
+.feed-item.kind-work .txt { color: var(--ink); }
+.feed-item.kind-reflect .txt { color: var(--accent); font-style: italic; }
+.feed-item.kind-note .txt { color: var(--stamp); font-family: var(--f-display); font-size: 31rpx; }
+.feed-item.kind-dec .txt { color: var(--ink2); font-size: 26rpx; }
+.feed-item.kind-dec .txt::before { content: '▸ '; color: var(--accent); }
+.feed-item.kind-big .txt { font-weight: 600; }
+.feed-item.kind-death .txt { color: var(--bad); }
+/* 时代事件：世界历史 / 科技 —— 官方 hist 与 tech 两类 */
+.feed-item.kind-hist .txt { color: var(--ink2); }
+.feed-item.kind-hist .txt::before { content: '❖ '; color: var(--stamp); }
+.feed-item.kind-tech .txt { color: var(--ink2); }
+.feed-item.kind-tech .txt::before { content: '✦ '; color: var(--gold); }
+
+/* ---------------------------------------------------------------- 其他 */
+
+.note {
+  font-size: 25rpx;
+  color: var(--ink3);
+  line-height: 1.6;
+  margin: 24rpx 0 0;
+}
+
+.hr { height: 1px; background: var(--rule2); margin: 44rpx 0; }
+
+.row { display: flex; align-items: center; }
+
+/* 官方 .sheet-x（openSheet() 的关闭按钮 #sheetClose）：
+ *   .sheet-x { border:0; background:none; color:var(--ink2); font-family:var(--f-body);
+ *              font-size:13px; padding:8px 12px; margin:-8px -12px; min-height:40px; }
+ * ⚠ 官方**没有**写 line-height ⇒ 继承 body 的 1.6（官方实测 13px 字 → 20.8px）。
+ *   小程序的 <button> 有自己的 UA line-height（实测 18.3529px）⇒ 继承不到 1.6，
+ *   这里显式写 1.6 与官方逐值相同。
+ * ⚠ 高度也显式写死 40px（官方 min-height:40px + border-box ⇒ 实测 40px）：
+ *   微信 <button> 的 UA 高度按内容算，实测多出 1px（41px），
+ *   这 1px 会逐层累积到 .hd（45→46）→ .dec（536.83→538.63）⇒ 被判为差异。 */
+.sheet-x {
+  border: 0;
+  background: none;
+  color: var(--ink2);
+  font-family: var(--f-body);
+  font-size: 26rpx;
+  line-height: 1.6;
+  padding: 16rpx 24rpx;
+  margin: -16rpx -24rpx;
+  height: 40px;
+  min-height: 80rpx;
+}
+
+.sheet-x::after { border: none; }
+
+/* Semantic HTML equivalents use native text/view nodes. */
+.wx-b, .wx-strong { font-weight: 700; }
+.wx-small { font-size: .8em; }
+.wx-i { display: inline-block; }

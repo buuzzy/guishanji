@@ -1,0 +1,52 @@
+<view class="wrap {{theme}}" style="padding-top:{{statusBarHeight}}px">
+
+  <!-- 官方 shelfSheet()：.dec 卡片（标题 + 关闭）+ 正文 -->
+  <view class="dec">
+    <view class="hd">
+      <text class="hd-t">{{title}}</text>
+      <view class="hd-r">
+        <button class="sheet-x" bindtap="goBack">{{closeLabel}}</button>
+      </view>
+    </view>
+    <view class="bd sheet-bd">
+
+      <!-- 官方 shelfBody() 的引导句 -->
+      <view class="cm-sub">
+        <text>在这台手机上活过的修仙人生，依照活过的顺序站在这里。</text>
+      </view>
+
+      <!-- 官方 .shf：陈列架格子 -->
+      <view class="shf">
+        <view class="shf-i" wx:for="{{lives}}" wx:key="id"
+              data-id="{{item.id}}" bindtap="pick">
+          <view class="shf-f {{item.id === picked.id ? 'on' : ''}}">
+            <canvas type="2d" class="shf-cv" style="width:96rpx;height:120rpx"></canvas>
+          </view>
+          <text class="shf-n">{{item.name}}</text>
+          <text class="shf-s">{{item.realm}}</text>
+          <text class="shf-s">{{item.age}}岁</text>
+          <text class="shf-s">{{item.line}}</text>
+        </view>
+      </view>
+
+      <!-- 官方 .shf-card：选中那格的详情 -->
+      <view class="shf-card" wx:if="{{picked}}">
+        <view class="shf-card-tx">
+          <text class="shf-nm">{{picked.name}}</text>
+          <text class="shf-c1">{{picked.realm}} · {{picked.age}}岁</text>
+          <text class="shf-c2" wx:if="{{picked.ended}}">这一段人生已经走完了。</text>
+          <text class="shf-c2" wx:else>这一段人生还没走完，可以接着往下走。</text>
+          <view class="kp-row">
+            <button class="ghost sm" data-id="{{picked.id}}" bindtap="open">{{picked.action}}</button>
+          </view>
+        </view>
+      </view>
+
+      <view class="note" wx:if="{{empty}}">还没有留下人生。从山门的一盏灯开始。</view>
+
+      <view class="pl-hint">往期人生只会留在这台手机上，不会上传到任何地方。</view>
+    </view>
+  </view>
+
+  <view style="height:40rpx"></view>
+</view>

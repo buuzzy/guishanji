@@ -1,0 +1,71 @@
+<view class="wrap {{theme}}" style="padding-top:{{statusBarHeight}}px">
+
+  <!-- 转盘态（官方 .roller：lbl / roller-name / roller-meta） -->
+  <view wx:if="{{rolling}}" class="roll-stage" style="min-height:calc(100vh - {{statusBarHeight}}px)">
+    <view class="roller">
+      <text class="lbl">命盘转动</text>
+      <view class="roller-name">{{rollName}}</view>
+      <view class="roller-meta">{{rollMeta}}</view>
+    </view>
+  </view>
+
+  <!-- 山海行籍（官方 .cert 结构：band / body / foot） -->
+  <view wx:else class="cert-wrap">
+    <view class="cert">
+      <view class="cert-band">
+        <text class="wx-b">山海行籍</text>
+        <text class="wx-span mono">{{regNo}}</text>
+      </view>
+
+      <view class="cert-body">
+        <!-- 官方 #certG.guilloche：雕版底纹（小程序用 canvas 画同一套公式） -->
+        <canvas type="2d" id="certG" class="cert-guilloche"></canvas>
+
+        <text class="lbl">姓名</text>
+        <view class="cert-name">{{certName}}</view>
+
+        <view class="cert-story">{{certText}}</view>
+
+        <view class="cert-pace">{{certPace}}</view>
+
+        <!-- 官方 #certFields.fields：标签 + 值（两列） -->
+        <view class="fields">
+          <view class="fcell" wx:for="{{fields}}" wx:key="k">
+            <text class="lbl">{{item.k}}</text>
+            <view class="fval">
+              <block wx:for="{{item.v}}" wx:for-item="f" wx:for-index="fi" wx:key="fi">
+                <view wx:if="{{f.dots}}" class="qdots">
+                  <view wx:for="{{f.dots}}" wx:for-item="d" wx:for-index="di" wx:key="di" class="qdot {{d ? 'on' : ''}}"></view>
+                </view>
+                <text user-select="true" wx:elif="{{f.small}}" class="small">{{f.small}}</text>
+                <text user-select="true" wx:elif="{{f.nw}}" class="nw">{{f.nw}}</text>
+                <text user-select="true" wx:elif="{{f.b}}" class="b">{{f.b}}</text>
+                <text user-select="true" wx:else class="t">{{f.t}}</text>
+              </block>
+            </view>
+          </view>
+        </view>
+
+        <!-- 官方 #certMapF.certmap：出生地地图 + 一行说明 -->
+        <view class="certmap">
+          <x-map version="{{version}}" theme="{{theme === 'theme-dark' ? 'dark' : 'light'}}" />
+          <view class="certmap-cap">{{certMapCap}}</view>
+        </view>
+
+        <!-- 官方 #certOdds.odds-line -->
+        <view class="odds-line">{{oddsPre}}<text class="em">{{oddsShare}}</text>{{oddsPost}}</view>
+      </view>
+    </view>
+
+    <!-- 官方 #cert .foot（≤700px 常驻底部条） -->
+    <view class="cert-foot">
+      <button class="cta" bindtap="begin" disabled="{{saving}}">开始这一生</button>
+    </view>
+
+    <!-- 官方 .cert-after：再抽一次 + 一句提示 -->
+    <view class="cert-after">
+      <button class="ghost" bindtap="again">再抽一次</button>
+      <text class="ctahint">接下来的每一年，都按这方山海的规矩推演。你可以随时暂停、加速，或让它自动往前走。</text>
+    </view>
+  </view>
+</view>

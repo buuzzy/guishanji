@@ -1,0 +1,27 @@
+{
+  "label": "归山记 画面参考 · 锁定快照（调色板与两个参考实现）",
+  "source": {
+    "repo": "buuzzy/xianxia-life",
+    "branch": "feature/adventure-preview-v01",
+    "commit": "b519ac066a3499e0aced0fd9b5bd15ae855c3c49",
+    "tree": "c780c6c425f0dda82a09d7a6a0d3bfa6b4878e06"
+  },
+  "moduleCount": 3,
+  "files": [
+    {
+      "id": "apps/preview/pixel-style.js",
+      "bytes": 4044,
+      "sha256": "78791ceb46d10e352e06272e01a97cf41f3cfb48fa3447c45ff819a6589979d6"
+    },
+    {
+      "id": "apps/preview/cultivation-pixel.js",
+      "bytes": 12691,
+      "sha256": "1fc33265a3e016c095957e511906d0adc682f5395ee1845de8bd50eb66491d78"
+    },
+    {
+      "id": "apps/preview/continent-atlas.js",
+      "bytes": 3951,
+      "sha256": "3f3cebe14d0ad9ee8d3d5f249a6ba38a19dd478f7f4862cc435a9b2af666a347"
+    }
+  ]
+}

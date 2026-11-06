@@ -1,20 +1,21 @@
 import assert from 'node:assert/strict';
 import { mkdir, readFile, writeFile, readdir, stat } from 'node:fs/promises';
-import { join } from 'node:path';
-import { pathToFileURL } from 'node:url';
+import { join, resolve, dirname } from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { createHash } from 'node:crypto';
-import { startServer, projectRoot } from './serve.mjs';
-import { launchBrowser, delay } from './lib/browser.mjs';
+import { startServer, projectRoot } from '../../../scripts/serve.mjs';
+import { launchBrowser, delay } from '../../../scripts/lib/browser.mjs';
 import { STORAGE_KEY, SaveStore } from '../packages/storage/store.js';
 import { validateState } from '../packages/core/validate.js';
 import { beginLife, newLife } from '../apps/web/game-api.js';
 import { toAge, policyChoice } from '../tests/scenarios.mjs';
 
+const legacyRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const artifacts = join(projectRoot, 'artifacts'), shots = join(artifacts, 'screenshots');
 const imports = join(projectRoot, '.local', 'browser-imports');
 await Promise.all([mkdir(shots, { recursive: true }), mkdir(imports, { recursive: true })]);
 const report = { startedAt: new Date().toISOString(), platform: process.platform, node: process.version, results: [], screenshots: [], testedScope: 'isolated desktop Chromium + emulated mobile Web; not physical device/Safari/Firefox' };
-const service = await startServer({ port: 0 }); let errorService, browser, page, errorPage;
+const service = await startServer({ root: legacyRoot, port: 0, entry: '/apps/web/index.html', allow: ['/apps/web/', '/packages/', '/content/'] }); let errorService, browser, page, errorPage;
 async function check(name, operation) {
   const started = Date.now();
   try { await operation(); report.results.push({ name, passed: true, durationMs: Date.now() - started }); console.log('BROWSER PASS · ' + name); }
@@ -220,7 +221,7 @@ try {
     report.completeNaturalBrowserLife = { seed: state.seed, id: state.id, age: state.ending.age, decisions: state.choices.length, fromOrdinaryBirth: true, externalStateInjection: false };
   });
 
-  errorService = await startServer({ port: 0 }); errorPage = await browser.page(); await errorPage.navigate(errorService.url); await errorPage.waitFor('!!document.querySelector(".welcome")');
+  errorService = await startServer({ root: legacyRoot, port: 0, entry: '/apps/web/index.html', allow: ['/apps/web/', '/packages/', '/content/'] }); errorPage = await browser.page(); await errorPage.navigate(errorService.url); await errorPage.waitFor('!!document.querySelector(".welcome")');
   const backupLife = toAge('browser-backup', 18, 'cultivate', { root: 'dual', name: '许见山' });
   const memory = new Map(), backupStore = new SaveStore({ getItem: key => memory.get(key) ?? null, setItem: (key, value) => memory.set(key, value) }); backupStore.load(); backupStore.save(backupLife);
   const broken = '{damaged-browser-archive';

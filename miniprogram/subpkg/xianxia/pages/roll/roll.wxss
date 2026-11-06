@@ -1,0 +1,14 @@
+/* 官方出生页样式（逐字副本，见 scripts/test-xianxia-style.mjs）。
+   修仙只多了下面那几条 —— 其余版式（转盘 / 登记卡 / 底栏）全用官方的。 */
+@import "../../styles/official-roll.wxss";
+
+/* 修仙的登记卡里多一行「姓名」标签与名字（官方是 h2#certName）——
+   官方那张卡上名字本身就是 h2，这里沿用同一套类，不另加样式。 */
+
+/* 登记卡里的点阵地图：官方那张是 .certmap > world-map（组件），
+   修仙这边换成点阵大陆地图组件 ⇒ 只需要给它一个确定的高度。 */
+.certmap x-map,
+.certmap .x-map-box {
+  display: block;
+  width: 100%;
+}

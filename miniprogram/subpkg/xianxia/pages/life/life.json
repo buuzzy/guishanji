@@ -1,0 +1,7 @@
+{
+  "navigationStyle": "custom",
+  "usingComponents": {
+    "x-scene": "../../components/scene/index",
+    "x-radar": "../../components/radar/index"
+  }
+}

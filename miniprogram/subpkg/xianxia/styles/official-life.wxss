@@ -1,0 +1,773 @@
+/* ── 官方 .scenecap ───────────────────────────────────────────────────
+ * 官方 CSS：.scenecap { margin:0; padding:10px 16px 12px; line-height:1.55;
+ *                        word-break:keep-all }
+ * 官方是一行 15px 的普通字（没有 font-size ⇒ 继承 body 的 15px），
+ * 内容是「地点 · 住所 · 居住状况」。
+ * 小程序这边像素场景是自己重建的（miniprogram/art/scene.js），
+ * 拿不到官方 sceneModel 的居住信息，所以文字是「国家 · 职业 · 学历」，
+ * 但**版式按官方**：单行、15px、padding 10px 16px 12px。 */
+.scene-cap {
+  padding: 20rpx 32rpx 24rpx;
+  line-height: 1.55;
+  word-break: normal; /* ⚠ 中文断行：见 styles/sheet.wxss 的 keep-all 说明 */
+  font-size: 15px;
+}
+.scene-cap .meta {
+  font-size: 15px;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.speed .auto { font-family: var(--f-body); }
+
+/* ── 官方 #miniBar（≤800px 显示）：状态条 ────────────────────────────
+ * 官方 CSS（page.zh-hans，≤800px / ≤440px / ≤400px 三档叠加）：
+ *   .minibar { display:flex; align-items:center; gap:10px; margin:-6px 0 -4px;
+ *              padding:7px 10px; background:var(--card); border:1px solid var(--rule);
+ *              border-radius:4px; box-shadow:0 6px 14px -12px rgba(0,0,0,.5) }
+ *   @≤400px  .minibar { gap:7px }
+ *   .mb-st   { flex:1 1 auto; min-width:0; display:grid;
+ *              grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px }
+ *   .mb-i    { display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:baseline;
+ *              gap:0 4px; font-size:11.5px; color:var(--ink2); min-width:0 }
+ *   @≤440px  .mb-i { grid-template-columns:minmax(0,1fr) }
+ *            .mb-i .mb-n { font-size:10.5px; line-height:1.25 }
+ *   .mb-i b  { font:600 12.5px var(--f-mono); color:var(--ink); font-variant-numeric:tabular-nums }
+ *   .mb-i .mb-b { grid-column:1/-1; height:3px; margin-top:3px; border-radius:2px; background:var(--rule2) }
+ *
+ * 两处替换说明：
+ *   ① grid → flex：WXSS 的 grid 在 Android 内核会把 repeat() 塌成单列，
+ *      所以 .mb-st 用 flex + flex:1 1 0，.mb-i 改 flex-direction:column。
+ *      官方 ≤440px 本来就是单列（名称一行、数值一行、进度条一行），
+ *      所以 .mb-i 用 column 反而和官方同构。
+ *   ② :first-child / :last-child → 显式类名（.first / .last），
+ *      WXSS 不保证 wx:for 渲染出来的兄弟顺序对伪类选择器稳定。
+ */
+/* ⚠ 2026-10-26 真机反馈 + 用户拍板：**状态条不再吸顶**。
+ *   官方网页版这条是 position: sticky（吸在顶栏下面）⇒ 往下滚时它会压住
+ *   下方的面板标题（家人与生活 / 在同一秒出生的人们 / 人生地图…），用户说
+ *   「一直悬浮挡住了其他页面内容」。
+ *   ⇒ 小程序端改成普通文档流，随页面一起滚走。
+ *   （顶栏 .topbar 仍然吸顶 —— 它是导航，暂停与加速要随时能点。） */
+.minibar {
+  display: flex;
+  align-items: center;
+  gap: 14rpx;
+  margin: -12rpx 0 -8rpx;
+  padding: 14rpx 20rpx;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: 8rpx;
+  box-shadow: 0 12rpx 28rpx -24rpx rgba(0, 0, 0, .5);
+}
+.mb-st {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  gap: 16rpx;
+}
+.mb-i {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  font-size: 11.5px;
+  color: var(--ink2);
+}
+.mb-n {
+  font-size: 10.5px;
+  line-height: 1.25;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.mb-v {
+  font-family: var(--f-mono);
+  font-size: 12.5px;
+  font-weight: 600;
+  /* 官方 .mb-i b { font:600 12.5px var(--f-mono) } —— font 简写会把 line-height
+     重置成 normal（实测盒子 78×16）。这里显式写 normal，两端计算值才对得上。 */
+  line-height: normal;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.mb-b {
+  height: 3px;
+  margin-top: 3px;
+  border-radius: 2px;
+  background: var(--rule2);
+  overflow: hidden;
+}
+.mb-b > view {
+  height: 100%;
+  border-radius: 2px;
+}
+.mb-fo {
+  flex: 0 0 auto;
+  min-width: 0;
+  max-width: 45%;
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  min-height: 72rpx;
+  padding: 12rpx 20rpx;
+  border: 1px solid var(--rule);
+  border-radius: 999rpx;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 26rpx;
+}
+.mb-fl { color: var(--ink3); font-size: 23rpx; flex: none; }
+.mb-fon {
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+.mb-ar { flex: none; color: var(--ink3); font-size: 22rpx; }
+.mb-sh {
+  flex: none;
+  min-height: 72rpx;
+  padding: 12rpx 16rpx;
+  border: 1px solid var(--rule);
+  border-radius: 999rpx;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 25rpx;
+  white-space: nowrap;
+}
+
+/* ── 官方 .foldbtn（手机上的面板折叠按钮）──────────────────────────────
+ * 官方 @≤800px：
+ *   .foldbtn { display:inline-flex; align-items:center; justify-content:center;
+ *              margin-left:auto; min-width:36px; min-height:32px; padding:0 8px;
+ *              border:1px solid var(--rule); border-radius:999px;
+ *              background:transparent; color:var(--ink2); font-size:12px; }
+ *   .foldbtn::after { content:'▾' }
+ *   .panel.folded .foldbtn::after { content:'▸' }
+ *   .panel.folded > :not(h3) { display:none !important; }
+ *   .panel.folded h3 { margin-bottom:0 }
+ *   .panel.folded h3 .lbl { display:none }
+ *
+ * ⚠ 小程序没有 ::after（箭头直接写在按钮文本里）；
+ *   WXSS 也不支持 :not()（面板体用 wx:if 收起，不靠 CSS）；
+ *   全局 button 复位用了 !important（min-width / margin-left），
+ *   这里要用 !important 抢回来。 */
+.foldbtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto !important;
+  min-width: 72rpx !important;
+  min-height: 64rpx;
+  padding: 0 16rpx;
+  border: 1px solid var(--rule);
+  border-radius: 999rpx;
+  background: transparent;
+  color: var(--ink2);
+  font-size: 24rpx;
+  line-height: 1;
+}
+
+.foldbtn::after { border: none; }
+.panel.folded .panel-h { margin-bottom: 0; }
+.panel.folded .panel-h .lbl { display: none; }
+
+/* ── 官方 .status（人生页「状态行」）：值逐字照抄官方 CSS ────────────────
+ * 官方：.status { font-size: 14px; color: var(--ink2); margin-bottom: 10px; }
+ *       .status b { color: var(--ink); font-weight: 600; }
+ * 官方没有全局 b 规则 ⇒ .status 里的 <b> 只改颜色与字重，字号仍继承 14px。
+ * 小程序没有 <b> 标签 ⇒ 用 .status-b 还原。 */
+.status {
+  font-size: 28rpx;
+  color: var(--ink2);
+  margin-bottom: 20rpx;
+}
+
+.status-b {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+/* ── 官方 .p-focus：还没有重心可选时，chips 区放的是这段说明 ──────────
+ * 官方 renderFocus() 里没有 focusOptions() 时，
+ * #focusChips.innerHTML = '<span style="color:var(--ink3);font-size:13.5px">…</span>'
+ * 这里把内联样式搬进类名，值照抄。 */
+.baby-hint {
+  color: var(--ink3);
+  font-size: 13.5px;
+  flex: 1 1 100%;
+}
+
+/* ---------------------------------------------------------------- 弹窗 */
+/* 决策卡：逐项对齐官方 .dec（1px = 2rpx） */
+
+.scrim {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 100;
+  background: rgba(10, 18, 22, .52);
+  display: flex;
+  padding: 32rpx;
+  overflow-y: auto;
+}
+
+/* 官方弹层卡片的通用样式（.dec / .dec .hd / .dec .bd）搬到了
+ * miniprogram/styles/sheet.wxss —— 那五块「官方是弹层」的页面也要用它，
+ * 而 WXSS 的 @import 只对引用它的那个页面生效 ⇒ 由各页面各自 @import。 */
+
+.dec .d-h2 {
+  display: block;
+  font-family: var(--f-display);
+  font-size: 52rpx;
+  line-height: 1.25;
+  margin: 0 0 16rpx;
+  font-weight: 700;
+}
+
+.dec .d-p {
+  display: block;
+  margin: 0 0 24rpx;
+  color: var(--ink2);
+  font-size: 30rpx;
+  line-height: 1.6;
+}
+
+.dec h2 {
+  font-family: var(--f-display);
+  font-size: 52rpx;
+  line-height: 1.25;
+  margin: 0 0 16rpx;
+  font-weight: 700;
+}
+
+.dec p {
+  margin: 0 0 24rpx;
+  color: var(--ink2);
+  font-size: 30rpx;
+  line-height: 1.6;
+}
+
+.dec .fact {
+  font-family: var(--f-mono);
+  font-size: 24rpx;
+  color: var(--ink2);
+  background: var(--stamp-soft);
+  border-left: 6rpx solid var(--stamp);
+  padding: 16rpx 20rpx;
+  margin-bottom: 28rpx;
+  line-height: 1.5;
+  word-break: break-all;
+}
+
+.dec .q {
+  font-family: var(--f-display);
+  font-size: 38rpx;
+  line-height: 1.45;
+  color: var(--ink);
+  margin: 12rpx 0 20rpx;
+}
+
+.dec .ch {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.dec .ch button {
+  text-align: left;
+  border: 1px solid var(--rule);
+  background: var(--paper);
+  color: var(--ink);
+  border-radius: 6rpx;
+  padding: 24rpx 28rpx;
+  display: grid;
+  grid-template-columns: 1.6em minmax(0, 1fr);
+  gap: 4rpx 20rpx;
+  font-family: var(--f-body);
+  font-size: 30rpx;
+  line-height: 1.45;
+  /* 小程序 button 的默认样式会压缩两行内容，这里逐一复位 */
+  min-height: 0;
+  white-space: normal;
+  overflow: visible;
+  word-break: break-word;
+}
+
+.dec .ch button::after { border: none; }
+.dec .ch button:active { border-color: var(--accent); }
+
+.dec .ch button .k {
+  grid-row: span 2;
+  font-family: var(--f-mono);
+  font-size: 24rpx;
+  color: var(--ink3);
+  padding-top: 4rpx;
+}
+
+.dec .ch button b { font-weight: 600; font-size: 30rpx; }
+.dec .ch button .wx-small { color: var(--ink3); font-size: 25rpx; }
+
+/* 控制项（2026-10-26 第七轮）：「暂停 / 结束」这类流程按钮，不是剧情。
+   拆出编号列表后放在卡片底部 ⇒ 灰色小字、无编号、无边框，与剧情选项一眼分得开。 */
+.dec .ch-control {
+  margin-top: 12rpx;
+  padding-top: 16rpx;
+  border-top: 1px solid var(--rule);
+  gap: 8rpx;
+}
+
+.dec .ch-control button {
+  border: none;
+  background: transparent;
+  padding: 8rpx 4rpx;
+  display: block;
+  font-size: 25rpx;
+  color: var(--ink3);
+}
+
+.dec .ch-control button:active { color: var(--ink); }
+.dec .ch-control button .b { display: block; font-weight: 400; font-size: 25rpx; color: inherit; }
+.dec .ch-control button .s { display: block; font-size: 23rpx; color: var(--ink3); margin-top: 2rpx; }
+
+.dec textarea {
+  width: 100%;
+  box-sizing: border-box;
+  font-family: var(--f-body);
+  font-size: 30rpx;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 6rpx;
+  padding: 20rpx 24rpx;
+  margin-bottom: 24rpx;
+  min-height: 160rpx;
+  line-height: 1.6;
+}
+
+.dec .dec-name {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  margin: 0 0 24rpx;
+}
+
+.dec .dec-name .wx-span { flex: none; font-size: 27rpx; color: var(--ink2); }
+
+.dec .dec-name input {
+  flex: 1;
+  min-width: 0;
+  /* ⚠ 2026-10-26 真机反馈：这里原来没写高度 ⇒ 小程序的 <input> 是原生组件，
+     盒子高度按默认值算（比「字号 + 上下内边距」小）⇒ 文字被**裁掉一半**，
+     看着像被下面挡住了。
+     现在显式给高度与行高，并把上下内边距归零（高度里已经算进去了）。 */
+  box-sizing: border-box;
+  height: 76rpx;
+  line-height: 76rpx;
+  padding: 0 24rpx;
+  font-family: var(--f-body);
+  font-size: 32rpx;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 6rpx;
+}
+
+.dec.pause .hd { color: var(--stamp); }
+
+/* ── 决策卡「先收起来」（官方 decMin / decPeek） ──────────────────────
+ *
+ * 官方原文（vendor/official/page.zh-hans.html:493-500）：
+ *   .decmin { font: 500 12.5px var(--f-body); letter-spacing: 0; color: var(--ink2);
+ *             background: var(--paper); border: 1px solid var(--rule);
+ *             border-radius: 999px; padding: 5px 10px; min-height: 30px;
+ *             white-space: nowrap; }
+ *   .decmin:hover { border-color: var(--accent); color: var(--ink); }
+ *   .decpeek { position: fixed; left: 50%; transform: translateX(-50%);
+ *              bottom: calc(12px + env(safe-area-inset-bottom, 0px)); z-index: 45;
+ *              width: min(560px, calc(100% - 24px)); display: flex;
+ *              align-items: center; gap: 12px; padding: 10px 10px 10px 16px;
+ *              background: var(--card); border: 1px solid var(--accent);
+ *              border-radius: 8px; box-shadow: 0 18px 40px -16px rgba(19,33,42,.45); }
+ *   .decpeek .dp-t { flex: 1 1 auto; min-width: 0; display: flex;
+ *                    flex-direction: column; gap: 1px; }
+ *   .decpeek .dp-t b { font-size: 14px; }
+ *   .decpeek .dp-t small { color: var(--ink3); font-size: 12.5px; overflow: hidden;
+ *                           text-overflow: ellipsis; white-space: nowrap; }
+ *   .decpeek .cta { flex: none; padding: 10px 14px; font-size: 14px; }
+ *
+ * ⚠ z-index：官方 .scrim 是 50、.decpeek 是 45 ⇒ **常驻条在遮罩之下**
+ *   （官方开别的弹层时，常驻条被遮罩压住）。小程序 .scrim 是 100，
+ *   这里保留官方的 45 ⇒ 相对关系一致。
+ * ⚠ 官方 width 用 min()，小程序 WXSS 不写 min() ⇒ 拆成
+ *   width:calc(100% - 48rpx) + max-width:1120rpx（等价于 min(560px, 100%-24px)）。
+ * ⚠ 官方 .dp-t 里是 <b>/<small>，小程序用 <text class="b"/"s"> ⇒
+ *   <b> 的默认粗体要显式补上（<text> 默认 normal）。
+ */
+
+/* 官方 font: 500 12.5px var(--f-body)（shorthand 里 line-height 被重置为 normal） */
+.decmin {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--f-body);
+  font-size: 12.5px;
+  font-weight: 500;
+  line-height: normal;
+  letter-spacing: 0;
+  color: var(--ink2);
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 999rpx;
+  padding: 10rpx 20rpx;
+  min-height: 60rpx;
+  white-space: nowrap;
+  margin: 0;
+}
+
+.decmin::after { border: none; }
+.decmin:active { border-color: var(--accent); color: var(--ink); }
+
+.decpeek {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: calc(24rpx + env(safe-area-inset-bottom, 0px));
+  z-index: 45;
+  width: calc(100% - 48rpx);
+  max-width: 1120rpx;
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  padding: 20rpx 20rpx 20rpx 32rpx;
+  background: var(--card);
+  border: 1px solid var(--accent);
+  border-radius: 16rpx;
+  box-shadow: 0 36rpx 80rpx -32rpx rgba(19, 33, 42, .45);
+}
+
+.decpeek .dp-t {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2rpx;
+}
+
+.decpeek .dp-t .b {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 700;
+  line-height: 1.6;
+}
+
+.decpeek .dp-t .s {
+  display: block;
+  color: var(--ink3);
+  font-size: 12.5px;
+  line-height: 1.6;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.decpeek .cta {
+  flex: none;
+  padding: 20rpx 28rpx;
+  font-size: 28rpx;
+}
+
+/* ------------------------------------------------------------ 迁移轨迹 */
+
+.path { display: flex; flex-direction: column; }
+.path-item {
+  display: flex;
+  align-items: baseline;
+  gap: 32rpx;
+  padding: 24rpx 0;
+  border-bottom: 1px solid var(--rule2);
+  font-size: 27rpx;
+}
+.path-item:last-child { border-bottom: none; }
+.path .pc { font-weight: 600; }
+.path .pr {
+  margin-left: auto;
+  font-family: var(--f-mono);
+  font-size: 24rpx;
+  color: var(--ink3);
+}
+
+/* ── 顶栏折叠菜单（官方 moreBtn / moreMenu） ─────────────────────── */
+ /* 官方 @≤560px .speed .morebtn { display:inline-flex; align-items:center;
+  *   justify-content:center; position:relative; min-width:36px; font-size:16px; line-height:1 }
+  * 尺寸沿用官方 .speed button 的底子（padding 6px 8px / min-height 40px / border 1px / radius 3px），
+  * 实测盒子 36×40。 */
+.morebtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  min-height: 40px;
+  padding: 12rpx 16rpx;
+  border: 1px solid var(--rule);
+  border-radius: 6rpx;
+  background: var(--card);
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: 16px;
+  line-height: 1;
+}
+.morebtn::after { border: none; }
+/* 官方 @≤560px .speed .morebtn.on::after：右上角一个 7px 的墨绿点（表示菜单里有新东西） */
+.morebtn.on::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--stamp);
+}
+
+/* ── 官方 #ffBtn「快转到下一个抉择」 ─────────────────────────────────
+ * 官方 .speed .ff { font-family:var(--f-body) }
+ * 官方 @≤560px .speed .fftx { display:none } / .speed .ffsh { display:inline }
+ * ⇒ 手机上按钮上只有「下一个 »」，实测盒子 66.73×40。
+ * 官方 .speed .more button { text-align:left; padding:11px 12px; font-size:15px }
+ *   —— 更多菜单里的按钮在手机上也是 .speed button 的底子，但内边距/字号更大。 */
+
+/* 官方 .more { display:contents } —— 菜单按钮直接排在 .speed 这一行里。
+   WXSS 没有 display:contents，用 flex-basis:100% 让整块换行独占一行，
+   里面的按钮再横向排开，视觉与官方一致。 */
+.more {
+  flex: 1 0 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8rpx;
+  margin-top: 12rpx;
+}
+.more .ff {
+  /* ⚠ 2026-11-01：与 .speed button 同一个偏上问题（min-height + 块级排布）⇒ 一并 flex 居中。
+   *   ⚠ 水平方向要**左对齐**（官方 .speed .more button { text-align:left }）——
+   *     app.wxss 给 .speed button 加的 justify-content:center 只该管顶栏小按钮，
+     *     这里改回 flex-start，通栏菜单条目居中会很难看。 */
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: left;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: 6rpx;
+  padding: 22rpx 24rpx;
+  min-height: 40px;
+  font-size: 15px;
+  font-family: var(--f-body);
+  color: var(--ink);
+}
+.more .ff::after { border: none; }
+.more .ff.on { color: var(--accent); border-color: var(--accent); }
+.more .vol { width: 100%; margin: 8rpx 0 4rpx; }
+
+/* ── 家人与生活（官方 .p-fam） ────────────────────────────────────
+ * 官方 CSS：
+ *   .fam { display:flex; flex-direction:column; gap:6px; font-size:13.5px }
+ *   .fam .row { display:flex; justify-content:space-between; gap:10px }
+ *   .fam .row span:first-child { color:var(--ink3) }
+ *   .fam .row span:last-child  { text-align:right; overflow-wrap:anywhere }
+ * 官方行与行之间靠 gap 6px 分开，没有下边框 —— 原来的 border-bottom 是小程序自加的。 */
+.p-fam { scroll-margin-top: 120rpx; }
+.fam {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+  font-size: 13.5px;
+}
+.fam .row {
+  display: flex;
+  justify-content: space-between;
+  gap: 20rpx;
+}
+.fam .fk { flex: 0 0 auto; color: var(--ink3); font-size: 13.5px; }
+.fam .fv {
+  flex: 1 1 auto;
+  text-align: right;
+  overflow-wrap: anywhere;
+  color: var(--ink);
+  font-size: 13.5px;
+}
+
+/* ── 人生记录 全部（官方 .lifelog / .decs / .feed.full） ────────── */
+.dec .decs { display: flex; flex-wrap: wrap; gap: 10rpx; margin: 12rpx 0 16rpx; }
+.dec .decs button {
+  border: 1rpx solid var(--rule); border-radius: 4rpx;
+  background: var(--card); color: var(--ink2);
+  font-size: 23rpx; padding: 8rpx 16rpx; margin: 0;
+}
+.dec .decs button.on { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.dec .feed.full { max-height: 62vh; }
+.dec .feed-item .egg { margin-right: 8rpx; }
+.dec .feed-item .tdc {
+  margin-right: 8rpx; padding: 2rpx 10rpx; border-radius: 999rpx;
+  border: 1rpx solid var(--stamp); color: var(--stamp); font-size: 21rpx;
+}
+.dec .feed-item .fa { color: var(--ink2); font-size: 23rpx; margin-left: 8rpx; }
+.dec .feed-item .fx { color: var(--ink3); font-size: 22rpx; margin-left: 8rpx; }
+.dec .feed-item .star { color: var(--gold); margin-left: 8rpx; }
+
+/* ⚠ 2026-11-01（用户拍板）：.dec .fb 一族（意见反馈弹窗）随「⋯ 菜单 → 提供意见」一起删除。 */
+
+/* ── 「离开」按钮（2026-11-01：从 ⋯ 菜单挪到 ⋯ 右侧） ──────────────
+ * 底子沿用 .morebtn 的尺寸（36×40 那套），文字用 --accent 墨绿描边，
+ * 让它在一排灰按钮里一眼可辨 —— 用户要的就是「直接、容易找到」。 */
+.exitbtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 12rpx 20rpx;
+  border: 1px solid var(--accent);
+  border-radius: 6rpx;
+  background: var(--card);
+  color: var(--accent);
+  font-family: var(--f-body);
+  font-size: 15px;
+  line-height: 1;
+}
+.exitbtn::after { border: none; }
+
+/* ── 身份证卡片（官方 p-id 面板） ─────────────────────────────────────
+ * 版式逐项照抄官方 .idcard / .guilloche / .mrz / .qdots，
+ * px → rpx（1px = 2rpx）。
+ */
+.idcard {
+  position: relative; overflow: hidden; padding: 0; margin-top: 20rpx;
+}
+.idcard .id-guilloche {
+  position: absolute; left: 0; top: 0; width: 100%; height: 100%;
+  z-index: 0; pointer-events: none;
+}
+.idcard .id-top {
+  position: relative; z-index: 1;
+  background: var(--accent); color: var(--accent-ink);
+  padding: 16rpx 28rpx; display: flex; justify-content: space-between;
+  font-family: var(--f-mono); font-size: 23rpx; letter-spacing: .04em;
+}
+.idcard .id-in {
+  position: relative; z-index: 1;
+  padding: 28rpx 28rpx 20rpx;
+  display: flex; align-items: flex-start;
+}
+.idcard .id-portrait {
+  width: 128rpx; height: 160rpx; flex: 0 0 auto; margin-right: 28rpx;
+  border: 1rpx solid var(--rule); border-radius: 4rpx; background: var(--card2);
+  overflow: hidden;
+}
+.idcard .id-right { flex: 1; min-width: 0; }
+.idcard .id-name {
+  font-family: var(--f-display); font-size: 44rpx; font-weight: 700;
+  line-height: 1.2; overflow-wrap: anywhere;
+}
+.idcard .id-dl { margin-top: 16rpx; font-size: 26rpx; }
+.idcard .id-row { display: flex; align-items: baseline; margin-bottom: 4rpx; }
+.idcard .id-dt {
+  color: var(--ink3); font-size: 24rpx; flex: 0 0 auto;
+  min-width: 96rpx; margin-right: 20rpx;
+}
+.idcard .id-dd { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.idcard .id-t { }
+.idcard .id-small { font-size: 21rpx; color: var(--ink3); }
+.idcard .id-b { font-weight: 700; }
+.idcard .qdots { display: inline-flex; }
+.idcard .qdots .wx-i {
+  width: 16rpx; height: 16rpx; border-radius: 50%;
+  border: 1rpx solid var(--ink3); margin-right: 6rpx;
+}
+.idcard .qdots .wx-i.on { background: var(--ink); border-color: var(--ink); }
+.idcard .mrz {
+  position: relative; z-index: 1;
+  font-family: var(--f-mono); font-size: 22rpx; letter-spacing: .12em;
+  color: var(--ink2); padding: 16rpx 28rpx 24rpx;
+  border-top: 1rpx dashed var(--rule); white-space: nowrap; overflow: hidden;
+}
+.idcard .mrz .mono { display: block; }
+
+/* ── 官方 #feed：记录折叠 / 加星 ────────────────────────────────────────
+ * 官方 CSS（page.zh-hans）：
+ *   .feed li { display: grid; grid-template-columns: 3.4em minmax(0,1fr); gap: 10px; }
+ *   .feed .stb { display: none; }                 ← 加星按钮默认藏起来
+ *   #feed li.open .stb { display: flex; … }      ← 点开这一行才露出来
+ *   #feed li.open .stb[aria-pressed="true"] { border-color: var(--gold); color: var(--ink); }
+ *   .stlist li { display: flex; gap: 10px; align-items: baseline; padding: 9px 0; }
+ *   .stx { flex: none; padding: 6px 10px; font-size: 12.5px; border-radius: 999px; }
+ * 小程序没有 :hover / .open 的等价物 ⇒ 用 wx:if(item.op) 控制按钮是否渲染，
+ * 布局改成 grid，让按钮落在「第二行第一列」（与官方一致，不挤在正文右边）。
+ */
+.p-feed .feed-item {
+  display: grid;
+  grid-template-columns: 3.4em minmax(0, 1fr);
+  gap: 20rpx;
+  align-items: start;
+}
+.p-feed .feed-item .age { width: auto; }
+.p-feed .feed-item .stb {
+  display: flex; width: fit-content; margin: 12rpx 0 0; padding: 10rpx 20rpx;
+  font-size: 25rpx; font-weight: 400; line-height: 1.2;
+  border: 1rpx solid var(--rule); border-radius: 999rpx;
+  background: transparent; color: var(--ink2);
+  /* ⚠ 2026-10-26 真机反馈：「值得记住的时刻」是一个**极小宽度的文字胶囊**，
+   *   把整页撑得很高。
+   *   原因：这个按钮是 .feed-item 里的第三个子元素 ⇒ 自动排到 grid 的
+   *   **第一列**（那一列只有 3.4em，正好放年龄）⇒ 文字被挤成一条竖线。
+   *   修法：让它**横跨整行**、靠左、内容自适应，并且**不换行**。 */
+  grid-column: 1 / -1;
+  justify-self: start;
+  white-space: nowrap;
+}
+.p-feed .feed-item .stb::after { border: none; }
+.p-feed .feed-item .stb[aria-pressed="true"] { border-color: var(--gold); color: var(--ink); }
+
+/* ⚠ 官方 .tgline（#tgLine）「此刻有多少人一起活在这个人生模拟里」来自世界快照
+   ⇒ 单机版没有后端 ⇒ 2026-11-01 连这一行样式一起删掉。 */
+.sth { white-space: nowrap; }
+.stlist { margin: 20rpx 0 0; }
+.stlist-li { display: flex; gap: 20rpx; align-items: baseline; padding: 18rpx 0; border-top: 1rpx solid var(--rule); }
+.stlist-li .a { flex: none; font-family: var(--f-mono); font-size: 23rpx; color: var(--ink3); }
+.stlist-li .x { flex: 1; min-width: 0; }
+.stlist-li .stx {
+  flex: none; margin: 0; padding: 12rpx 20rpx; font-size: 25rpx;
+  border: 1rpx solid var(--rule); border-radius: 999rpx;
+  background: transparent; color: var(--ink2); line-height: 1.2;
+}
+.stlist-li .stx::after { border: none; }
+
+.p-dlc .dlc-plan {
+  padding: 22rpx 0;
+  border-top: 1rpx solid var(--rule);
+}
+.p-dlc .dlc-plan:first-of-type { border-top: none; padding-top: 0; }
+.p-dlc .dlc-h {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 20rpx;
+}
+.p-dlc .dlc-title { font-weight: 700; font-size: 30rpx; color: var(--ink); }
+.p-dlc .dlc-phase {
+  flex: none; font-size: 23rpx; color: var(--ink3);
+  border: 1rpx solid var(--rule); border-radius: 999rpx; padding: 4rpx 16rpx;
+}
+.p-dlc .dlc-step { display: block; margin-top: 10rpx; font-size: 24rpx; color: var(--ink3); }
+.p-dlc .dlc-choices { margin-top: 10rpx; }
+.p-dlc .dlc-choice {
+  display: flex; gap: 14rpx; align-items: baseline; padding: 6rpx 0;
+  font-size: 26rpx; color: var(--ink2);
+}
+.p-dlc .dlc-cy { flex: none; font-family: var(--f-mono); font-size: 23rpx; color: var(--stamp); }
+.p-dlc .dlc-cl { flex: 1; min-width: 0; }
+.p-dlc .dlc-sum {
+  display: block; margin-top: 12rpx; font-size: 24rpx; color: var(--ink3); line-height: 1.6;
+}
+.p-dlc .dlc-note {
+  display: block; margin-top: 6rpx; font-size: 23rpx; color: var(--ink3); line-height: 1.6;
+}

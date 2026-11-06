@@ -1,0 +1,3 @@
+<view class="radar-box">
+  <canvas id="cv" type="2d" class="radar-cv"></canvas>
+</view>

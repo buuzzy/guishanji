@@ -1,0 +1,75 @@
+name: Cross-platform regression
+on:
+  pull_request:
+  push:
+    branches: [main, 'migration/**']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  # 同一个分支只留最新一轮：推了新提交就把上一轮掐掉，别让旧结果误导人。
+  group: regression-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  # ── 快组：单元测试 + 静态检查 + 小程序门禁（不开浏览器）────────────────
+  # 实测几分钟就完 ⇒ 快速拿到第一轮结论，不用等浏览器。
+  fast:
+    name: fast (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .node-version
+      - name: Install dependencies
+        run: npm ci
+      - name: Fast gates (unit / static checks / mini-program gates)
+        run: node scripts/run-regression.mjs --group=fast
+      - name: Preserve test evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fast-${{ matrix.os }}
+          path: artifacts/
+          if-no-files-found: ignore
+
+  # ── 浏览器组：18 道浏览器门禁 ────────────────────────────────────────
+  # 这一组才是慢的（每道门禁都要起服务 + 开一次浏览器）。
+  # ⚠ 实测**不要**用 --parallel：两路 Chromium 抢 CPU，单道门禁从 1–3 分钟变成 6–12 分钟，
+  #   整体反而更慢（本地实测 40 分钟没跑完，串行只要 28 分钟）⇒ 这里保持串行。
+  # 进程会实时打印每一道门禁的 PASS/FAIL 与耗时 ⇒ GitHub 网页端可以边跑边看，不用盲等。
+  browser:
+    name: browser (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .node-version
+      - name: Install dependencies
+        run: npm ci
+      - name: Build the static site (browser gates test the built product)
+        run: node scripts/build.mjs
+      - name: Browser gates (real Chromium against source and built site)
+        run: node scripts/run-regression.mjs --group=browser
+      - name: Preserve test evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-${{ matrix.os }}
+          path: artifacts/
+          if-no-files-found: ignore

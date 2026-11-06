@@ -1,20 +1,22 @@
 import assert from 'node:assert/strict';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
-import { join, relative } from 'node:path';
+import { join, relative, resolve, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
-import { startServer, projectRoot } from './serve.mjs';
-import { launchBrowser } from './lib/browser.mjs';
+import { startServer, projectRoot } from '../../../scripts/serve.mjs';
+import { launchBrowser } from '../../../scripts/lib/browser.mjs';
 import { STORAGE_KEY } from '../packages/storage/store.js';
 import { validateState } from '../packages/core/validate.js';
 import { incomePreview, travelPreview } from '../packages/core/engine.js';
 import { toAge, policyChoice } from '../tests/scenarios.mjs';
 
 const stamp = new Date().toISOString().replace(/[^0-9]/gu, '');
+const legacyRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const artifacts = join(projectRoot, 'artifacts', 'feedback-' + stamp);
 const imports = join(projectRoot, '.local', 'feedback-imports-' + stamp);
 await Promise.all([mkdir(artifacts, { recursive: true }), mkdir(imports, { recursive: true })]);
 const report = { startedAt: new Date().toISOString(), node: process.version, platform: process.platform, results: [], screenshots: [], scope: 'Real clicks on isolated Chromium; controlled authored saves + published 0.1.0 fixture. Mobile viewport emulation, not physical devices.' };
-const service = await startServer({ port: 0 }); let browser, page;
+const service = await startServer({ root: legacyRoot, port: 0, entry: '/apps/web/index.html', allow: ['/apps/web/', '/packages/', '/content/'] }); let browser, page;
 const raw = () => page.eval('localStorage.getItem(' + JSON.stringify(STORAGE_KEY) + ')');
 const life = async () => { const doc = JSON.parse(await raw()); return doc?.lives.find(item => item.id === doc.activeId) || null; };
 const saved = () => page.waitFor('document.querySelector("#save-status").textContent.includes("已在本地留档") && document.querySelector("#save-warning").hidden');
@@ -62,7 +64,7 @@ try {
   await page.send('Emulation.setDeviceMetricsOverride', { width: 1440, height: 1050, deviceScaleFactor: 1, mobile: false });
   await page.navigate(service.url); await page.waitFor('!!document.querySelector(".welcome")');
   await check('旧人生按新规则读取，继续操作后仍保留升级前原文与完整往事', async () => {
-    const sourceRaw = await readFile(join(projectRoot, 'tests/fixtures/v0.1.0-archive.json'), 'utf8'), source = JSON.parse(sourceRaw);
+    const sourceRaw = await readFile(join(legacyRoot, 'tests/fixtures/v0.1.0-archive.json'), 'utf8'), source = JSON.parse(sourceRaw);
     const previous = source.lives.find(item => item.id === source.activeId);
     await page.eval('localStorage.setItem(' + JSON.stringify(STORAGE_KEY) + ',' + JSON.stringify(sourceRaw) + ')');
     await page.navigate(service.url); await page.waitFor('!!document.querySelector("[data-action=continue]")'); await page.click('[data-action="continue"]');

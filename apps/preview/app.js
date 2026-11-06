@@ -46,7 +46,7 @@ function save() {
   return ui.writes;
 }
 function toolbar() {
-  return `<div class="topbar-inner"><div class="brand">归<em class="em">山</em>记</div><span class="eyebrow">修仙一生 · HTML 试玩</span><div class="nav-spacer"></div><button class="small-btn" data-action="theme">${ui.theme === 'light' ? '夜读' : '日读'}</button><button class="small-btn" data-action="history">往期人生</button></div>`;
+  return `<div class="topbar-inner"><div class="brand">归<em class="em">山</em>记</div><span class="eyebrow">修仙人生</span><div class="nav-spacer"></div><button class="small-btn" data-action="theme">${ui.theme === 'light' ? '夜读' : '日读'}</button><button class="small-btn" data-action="history">往期人生</button></div>`;
 }
 function lifeToolbar() {
  return '<div class="topbar-inner"><div class="brand">归<em class="em">山</em>记</div><div class="agebox"><div class="age-num"><span id="life-age"></span><small>岁</small></div><div class="age-yr"><span class="t" id="life-date"></span><div class="prog"><div id="year-progress"></div></div></div></div><div class="speed"><button class="pause" data-action="play" id="play-control" aria-label="暂停"></button><div class="sps">'+[1,2,4].map((v,i)=>'<button class="sps-b '+(i===0?'first':i===2?'last':'')+'" data-action="set-speed" data-speed="'+v+'">'+v+'<small>×</small></button>').join('')+'</div><button class="exitbtn" data-action="home">离开</button><button class="morebtn" data-action="menu" aria-label="更多">⋯</button></div><span class="save-label" id="save-status"></span></div>';

@@ -1,0 +1,116 @@
+/* ── 官方弹层卡片（.dec）：给「官方是 openSheet() 弹层」的那几块用 ──────
+ *
+ * 官方那五块（更新说明 / 往期人生 / 我希望的人生 / 前世之家 / 追思馆）
+ * 在网页上都是 `openSheet()` **弹层**：
+ *   <div id="sheet" class="scrim">      ← 全屏暗遮罩 + 居中卡片
+ *     <div class="dec">
+ *       <div class="hd"><span>标题</span><button class="sheet-x">닫기</button></div>
+ *       <div class="bd">…正文…</div>
+ *     </div>
+ *   </div>
+ *
+ * 小程序这边是**独立页面**（形态差异，A 类），但**正文区的宽度必须一致**：
+ *   官方正文宽 = 视口 390 − 遮罩内边距 16×2 − 卡片边框 1×2 − .bd 内边距 18×2
+ *              = 320px
+ * ⇒ 页面里也用 .dec 卡片承载正文 ⇒ 两端正文宽度逐值相同。
+ *
+ * ⚠ 这三条规则原来写在 styles/life.wxss 里（人生页的决策卡也用 .dec），
+ *   但 WXSS 的 @import 只对**引用它的那个页面**生效 ⇒ 抽到这里，
+ *   由各页面自己 @import（life.wxss 不再 import，避免嵌套 @import）。
+ *
+ * 官方原文：
+ *   .dec { width:min(560px,100%); background:var(--card); border:1px solid var(--rule);
+ *          border-radius:4px; box-shadow:0 30px 80px -20px rgba(0,0,0,.45); overflow:hidden; }
+ *   .dec .hd { display:flex; justify-content:space-between; align-items:center;
+ *              padding:10px 18px; border-bottom:1px solid var(--rule);
+ *              font-family:var(--f-mono); font-size:12px; color:var(--accent); letter-spacing:.03em; }
+ *   .dec .bd { padding:18px; }
+ *   .dec .hd > span:last-child { display:flex; align-items:center; gap:10px; }
+ */
+
+.dec {
+  margin: auto;
+  width: 100%;
+  max-width: 1120rpx;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: 8rpx;
+  box-shadow: 0 60rpx 160rpx -40rpx rgba(0, 0, 0, .45);
+  overflow: hidden;
+}
+
+.dec .hd {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20rpx;
+  padding: 20rpx 36rpx;
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--f-mono);
+  font-size: 24rpx;
+  color: var(--accent);
+  letter-spacing: .03em;
+}
+
+.dec .hd-r {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+}
+
+.dec .bd { padding: 36rpx; }
+
+/**
+ * 官方 `#sheet .bd`：max-height:calc(100vh - 120px); overflow-y:auto;
+ *                    overscroll-behavior:contain
+ * ------------------------------------------------------------------
+ * ⚠ **少了这一条，更新说明弹层就是官方的 3 倍高**（2026-10-24 实测）：
+ *   官方 .dec 827px / .dec .bd 780px（正文内容 2620px，被这个上限挡住并内部滚动）
+ *   小程序 .dec 2626px / .dec .bd 2578px（没有上限，整段摊开）
+ * ⇒ 官方那个弹层是「一张有高度上限、内部滚动的卡片」，小程序以前是「一张摊开的卡片」。
+ *
+ * ⚠ 只给**弹层**（`.scrim > .dec > .bd`）加，别给页面上那些内联 `.dec` 卡片加
+ *   （人生页的决策卡也用 .dec，官方那边没有这个上限）。
+ */
+.sheet-bd {
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* ── 官方弹层正文里常用的三条（小程序原本在用、但一直没写样式）──────────
+ * 官方原文：
+ *   .cm-sub  { margin:0 0 12px; color:var(--ink2); line-height:1.6; word-break:keep-all; }
+ *   .pl-hint { margin:-2px 0 14px; font-size:13.5px; color:var(--ink2); word-break:keep-all; }
+ *   .kp-row  { display:flex; gap:8px; flex-wrap:wrap; }
+ *
+ * ⚠⚠ **`word-break: keep-all` 在这里必须改成 normal（平台差异 D 类）**
+ *
+ *   官方那条 keep-all 是**为韩文**设计的（韩文按空格断词，别把词切开）。
+ *   但 zh-hans 构建里渲染的是**中文** ⇒ 实测（scripts/probe-official-text.mjs）：
+ *     · Chrome 官方页：同一段中文，keep-all / normal / break-all **完全一样**（5 行）
+ *       ⇒ Chrome 对中文根本不吃 keep-all，官方**实际渲染效果** = 自由断行。
+ *     · 微信渲染器：keep-all 会**真的**禁止汉字之间断行 ⇒ 只能在标点处断
+ *       ⇒ 官方 98 字排 5 行，小程序同样字数排 6 行（.cm-sub 高 120px → 144px）。
+ *   ⇒ 结论：要复现官方的**渲染结果**，小程序这一处不能用 keep-all。
+ *     样式值与官方不同，但排版结果逐值相同（这才是对齐口径）。
+ */
+.cm-sub {
+  margin: 0 0 24rpx;
+  color: var(--ink2);
+  line-height: 1.6;
+  word-break: normal;
+}
+
+.pl-hint {
+  margin: -4rpx 0 28rpx;
+  font-size: 27rpx;
+  color: var(--ink2);
+  word-break: normal;
+}
+
+.kp-row {
+  display: flex;
+  gap: 16rpx;
+  flex-wrap: wrap;
+}

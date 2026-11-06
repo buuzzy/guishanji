@@ -1,0 +1,372 @@
+{
+  "generatedBy": "scripts/build-xianxia-mp.mjs",
+  "source": {
+    "repo": "buuzzy/guishanji",
+    "branch": "migration/standalone",
+    "commit": "b519ac066a3499e0aced0fd9b5bd15ae855c3c49",
+    "tree": "c780c6c425f0dda82a09d7a6a0d3bfa6b4878e06",
+    "note": "构建那一刻本仓库的 HEAD 身份（快照信息，不参与逐字节复现校验）",
+    "paths": [
+      "packages/adventure/",
+      "content/",
+      "packages/core/random.js",
+      "apps/preview/pixel-style.js"
+    ]
+  },
+  "upstreamOrigin": {
+    "repo": "buuzzy/xianxia-life",
+    "branch": "feature/adventure-preview-v01",
+    "commit": "b519ac066a3499e0aced0fd9b5bd15ae855c3c49",
+    "tree": "c780c6c425f0dda82a09d7a6a0d3bfa6b4878e06",
+    "note": "同一批字节的两个来源之一：本仓库的 packages/ + content/ 与上游那个提交逐字节相同（门禁 scripts/test-xianxia-build.mjs 逐个核对）；vendor/xianxia-r12 是当时锁下的历史证据。"
+  },
+  "rulesVersion": 12,
+  "moduleCount": 67,
+  "inputs": [
+    {
+      "id": "content/adventure.js",
+      "bytes": 94240,
+      "sha256": "6b150c7a2b4a9dfc05c1b5b757fae3ed4ea49bd1605dd32e51c2fcd872a12af8"
+    },
+    {
+      "id": "content/allegiance-stories.js",
+      "bytes": 15079,
+      "sha256": "9905dc390ade6b2412e155293611b64b9ffebe4f55ab8c28ecd7d5eb5c4b2dda"
+    },
+    {
+      "id": "content/automatic-life.js",
+      "bytes": 19360,
+      "sha256": "cf7bb63f20b469759e89760ce37c952af93556ec39494932c8613f1532a6d7dd"
+    },
+    {
+      "id": "content/cultivation-daily-v6.js",
+      "bytes": 24438,
+      "sha256": "a33e8bc04b77fa5bdb39ad99af8b5e17ec7ea568dba0b28221107a8a5b136e5e"
+    },
+    {
+      "id": "content/cultivation-daily-v7.js",
+      "bytes": 31575,
+      "sha256": "3ff6cfa045a1fc9e6e547a87dc259c38933b51fce11b066986639279aed413f7"
+    },
+    {
+      "id": "content/cultivation-daily.js",
+      "bytes": 31575,
+      "sha256": "3ff6cfa045a1fc9e6e547a87dc259c38933b51fce11b066986639279aed413f7"
+    },
+    {
+      "id": "content/cultivation-revision-v10.js",
+      "bytes": 20051,
+      "sha256": "63268567247882c5bd0fb8539f81c5bdb95812ba7d11e6eebef31d523117078f"
+    },
+    {
+      "id": "content/cultivation-revision-v11.js",
+      "bytes": 20051,
+      "sha256": "63268567247882c5bd0fb8539f81c5bdb95812ba7d11e6eebef31d523117078f"
+    },
+    {
+      "id": "content/cultivation-revision-v6.js",
+      "bytes": 20051,
+      "sha256": "63268567247882c5bd0fb8539f81c5bdb95812ba7d11e6eebef31d523117078f"
+    },
+    {
+      "id": "content/cultivation-revision-v7.js",
+      "bytes": 20051,
+      "sha256": "63268567247882c5bd0fb8539f81c5bdb95812ba7d11e6eebef31d523117078f"
+    },
+    {
+      "id": "content/cultivation-revision-v8.js",
+      "bytes": 20051,
+      "sha256": "63268567247882c5bd0fb8539f81c5bdb95812ba7d11e6eebef31d523117078f"
+    },
+    {
+      "id": "content/cultivation-revision-v9.js",
+      "bytes": 20051,
+      "sha256": "63268567247882c5bd0fb8539f81c5bdb95812ba7d11e6eebef31d523117078f"
+    },
+    {
+      "id": "content/cultivation-revision.js",
+      "bytes": 20051,
+      "sha256": "63268567247882c5bd0fb8539f81c5bdb95812ba7d11e6eebef31d523117078f"
+    },
+    {
+      "id": "content/cultivation-stories-v10.js",
+      "bytes": 38960,
+      "sha256": "8aba79100a53419c51b6714c4e8ecab6389ca66c496f941a97adc67bb73d7240"
+    },
+    {
+      "id": "content/cultivation-stories-v11.js",
+      "bytes": 39173,
+      "sha256": "77dcd51b9695033eeada50f9f4ee928b9970dd844d4972cfcc8415051d81162b"
+    },
+    {
+      "id": "content/cultivation-stories-v5.js",
+      "bytes": 37424,
+      "sha256": "2cee3b93be42d90c0c60bed9a36ee1e51f614d2dfcbf74fa35cd27d4f897431c"
+    },
+    {
+      "id": "content/cultivation-stories-v6.js",
+      "bytes": 37741,
+      "sha256": "aed42cf5aabf96aff90a8321977f9ad3d72dcba3217600042df91f5e69d4b4f8"
+    },
+    {
+      "id": "content/cultivation-stories-v7.js",
+      "bytes": 38368,
+      "sha256": "81970efb438d95954eac59e2263701d7eaec4b460f0ab60d3dd9cbd0d5655084"
+    },
+    {
+      "id": "content/cultivation-stories-v8.js",
+      "bytes": 38574,
+      "sha256": "aeb628cfb0609815bf1ad29c50da8b58a9a4ba52e43d1f0fc0c82fb01d03a9da"
+    },
+    {
+      "id": "content/cultivation-stories-v9.js",
+      "bytes": 38766,
+      "sha256": "1543aed4311e1c670565095b64e40c8e371971ab4e3483ced2697746a88c3d67"
+    },
+    {
+      "id": "content/cultivation-stories.js",
+      "bytes": 39332,
+      "sha256": "313dce398df462a8cb3595c213ec82409b5a5050e1c3638a80302d0c53f2249a"
+    },
+    {
+      "id": "content/cultivation-world.js",
+      "bytes": 6319,
+      "sha256": "5b5aaa5141b62a2c8d5f80d1195ffd8c43dbdab58600e83210e617b6ef00364f"
+    },
+    {
+      "id": "content/decision-details.js",
+      "bytes": 13229,
+      "sha256": "7d1d41251b8bea36bf9b551d4c8c0dd75048655fde25a1c4ee5e1b4ae029a17e"
+    },
+    {
+      "id": "content/expedition-changes.js",
+      "bytes": 6372,
+      "sha256": "da649a89571a19bd33f87af9357baaa10efec3f10747e7aec0a4595608446843"
+    },
+    {
+      "id": "content/living-episodes.js",
+      "bytes": 39886,
+      "sha256": "cbb3277634f930c28582f6f800e3d6bac35246485b14571e00f3521e136a302f"
+    },
+    {
+      "id": "content/living-world.js",
+      "bytes": 5356,
+      "sha256": "41182ded897d32198e2bfbd1d9d91d147526b18085d7425fffa43626a7250250"
+    },
+    {
+      "id": "content/mundane-stories-v11.js",
+      "bytes": 39447,
+      "sha256": "b587471bba3fb3ec2d38c7abf010bc9463ec8ef3a97d7db7939cb1b552a114b7"
+    },
+    {
+      "id": "content/mundane-stories.js",
+      "bytes": 39447,
+      "sha256": "b587471bba3fb3ec2d38c7abf010bc9463ec8ef3a97d7db7939cb1b552a114b7"
+    },
+    {
+      "id": "content/novel-names.js",
+      "bytes": 15555,
+      "sha256": "dc17411d1d7b32e40825a30015fb21560a510c069c212c2900b223e7f24fe5c7"
+    },
+    {
+      "id": "content/progression-stories-v11.js",
+      "bytes": 21704,
+      "sha256": "2a23d89e02375122906a56a879498ae01524f8eb15b72edd5773ff1f53a5dcbf"
+    },
+    {
+      "id": "content/progression-stories.js",
+      "bytes": 21704,
+      "sha256": "2a23d89e02375122906a56a879498ae01524f8eb15b72edd5773ff1f53a5dcbf"
+    },
+    {
+      "id": "content/readable-automatic.js",
+      "bytes": 6773,
+      "sha256": "7fb5d2306b9793fe2e00c6a4ef17d53a4047d574c5d0f0e65bf18817c7c08a59"
+    },
+    {
+      "id": "content/readable-stories.js",
+      "bytes": 27542,
+      "sha256": "7e15161ffdf8c39d3816988d082c5be9fc133c59d9de9661ab7f8ec55b5372db"
+    },
+    {
+      "id": "content/revision9-stories-v11.js",
+      "bytes": 15697,
+      "sha256": "7928757afc26bcb5e27dd835abaafeabd3c5c924e3cbe5e6a3aab4a662d50658"
+    },
+    {
+      "id": "content/revision9-stories.js",
+      "bytes": 15697,
+      "sha256": "7928757afc26bcb5e27dd835abaafeabd3c5c924e3cbe5e6a3aab4a662d50658"
+    },
+    {
+      "id": "content/rules12-world.js",
+      "bytes": 2974,
+      "sha256": "297e6a0a1ce8addd4d7e761ea68715da25fdbb74a9e04745cf23d3b379f0fb5e"
+    },
+    {
+      "id": "content/story-network-v10.js",
+      "bytes": 40946,
+      "sha256": "2bc61abd96414eaf6ae5bdcd06b573e5ae203dcbe94ecabd865201a7e51c8c9e"
+    },
+    {
+      "id": "content/story-network-v11.js",
+      "bytes": 41021,
+      "sha256": "43718b15e70faa0c6437fc39937421d4247208120b1f7a8957a2f0e76e896317"
+    },
+    {
+      "id": "content/story-network-v9.js",
+      "bytes": 40946,
+      "sha256": "2bc61abd96414eaf6ae5bdcd06b573e5ae203dcbe94ecabd865201a7e51c8c9e"
+    },
+    {
+      "id": "content/story-network.js",
+      "bytes": 41021,
+      "sha256": "43718b15e70faa0c6437fc39937421d4247208120b1f7a8957a2f0e76e896317"
+    },
+    {
+      "id": "content/story-rules10-v11.js",
+      "bytes": 27876,
+      "sha256": "06cd92402d76de5b8530fc4814a093c7aeb8c8bf617c65393bc5b586c94d0516"
+    },
+    {
+      "id": "content/story-rules10.js",
+      "bytes": 27876,
+      "sha256": "06cd92402d76de5b8530fc4814a093c7aeb8c8bf617c65393bc5b586c94d0516"
+    },
+    {
+      "id": "content/story-rules12.js",
+      "bytes": 26338,
+      "sha256": "28b212ffc4b6c4acf4961cb835972fefbbcd9ea2886193853846635181bfcf11"
+    },
+    {
+      "id": "packages/adventure/birth.js",
+      "bytes": 1933,
+      "sha256": "13aa745d957ed0715bd16edf4647d9162fdfd185cd9681c1ac88ef3c36662c8f"
+    },
+    {
+      "id": "packages/adventure/context.js",
+      "bytes": 2149,
+      "sha256": "da043e10177aadc1fb4dbb7735d1c6c3cea43bb895c418615b36a71d7cca99d7"
+    },
+    {
+      "id": "packages/adventure/cultivation-economy.js",
+      "bytes": 3104,
+      "sha256": "413247e496366c26df42fdc150efa937791ce582bd845ecafc10dade856afa05"
+    },
+    {
+      "id": "packages/adventure/cultivation-v10.js",
+      "bytes": 50286,
+      "sha256": "f25ea9cc056055e1910de606eab2dea813535219ad286bd083def981c9024d99"
+    },
+    {
+      "id": "packages/adventure/cultivation-v11.js",
+      "bytes": 51419,
+      "sha256": "5c0ad87a6b15545c0a8d5ed5cd16c4ccfb686b70c80987783e9981149a2ac7b3"
+    },
+    {
+      "id": "packages/adventure/cultivation-v5.js",
+      "bytes": 37871,
+      "sha256": "bf8f93d5ef60b778cd390110b16590c3de28c127e3379f9de83a13c35e67c476"
+    },
+    {
+      "id": "packages/adventure/cultivation-v6.js",
+      "bytes": 43693,
+      "sha256": "755f4285b73218598c24f296c41f1b310c0e416d1b0894ceff7b126804e0b87d"
+    },
+    {
+      "id": "packages/adventure/cultivation-v7.js",
+      "bytes": 46129,
+      "sha256": "01b152b5234b31ec256cf796567d1ad4d544ecb69f6ad3632133de0c46044a9a"
+    },
+    {
+      "id": "packages/adventure/cultivation-v8.js",
+      "bytes": 48756,
+      "sha256": "cca481607055ae928c4468cb227edaaaf97089260878431bd4ba8dbedc652184"
+    },
+    {
+      "id": "packages/adventure/cultivation-v9.js",
+      "bytes": 48927,
+      "sha256": "1cd7650595fdaa0a86a1eb570323e0efe8e13f4dd99f7d2596b686c21db28d7e"
+    },
+    {
+      "id": "packages/adventure/cultivation.js",
+      "bytes": 52549,
+      "sha256": "c04c9381583444dd8689c132dc832d827cd9954566b8fb6353604848e0a515d9"
+    },
+    {
+      "id": "packages/adventure/engine.js",
+      "bytes": 55200,
+      "sha256": "52fcc598bf2ad284b0e80dccecd1c085ad95e6619fe09080efc9846250875061"
+    },
+    {
+      "id": "packages/adventure/family.js",
+      "bytes": 3506,
+      "sha256": "9a6f0699486cacbb4677c143e16d4a98f4905e941e59a8a1b3b88f6020debb4f"
+    },
+    {
+      "id": "packages/adventure/life.js",
+      "bytes": 34200,
+      "sha256": "d4c1bc31239f54fa81f406a5de80469e44d8fe35a7ff535141aff165e8cfa35d"
+    },
+    {
+      "id": "packages/adventure/mundane-life.js",
+      "bytes": 31859,
+      "sha256": "a4ecbd46a1cc12c6bee10109e0e100f7f433c291932a76c46ddb35aced9b0a2b"
+    },
+    {
+      "id": "packages/adventure/progression.js",
+      "bytes": 25883,
+      "sha256": "453c3732966e9d6fbc43f5d18e8cf5e7c0b49d0696f49fdc727e4152241ca457"
+    },
+    {
+      "id": "packages/adventure/realm.js",
+      "bytes": 1163,
+      "sha256": "66f680e2c6e01dabc90d75f898d37f56073ca1bc3f1703c85b2f47871698f4d4"
+    },
+    {
+      "id": "packages/adventure/revision9-v9.js",
+      "bytes": 12218,
+      "sha256": "4ad2cf6803ceda9d4d6e341460afe8f63ebb6adff67422dceeafe32a43e5c4be"
+    },
+    {
+      "id": "packages/adventure/revision9.js",
+      "bytes": 12297,
+      "sha256": "953bde7ebe8479f1549d2f1788c08b0574b948bdcc37f2918f5565b5e569d4d6"
+    },
+    {
+      "id": "packages/adventure/story-network-v9.js",
+      "bytes": 16239,
+      "sha256": "570860d61ee4405b7bba85e41790fc0ee4f2c0dcb9f164716c83760d979e28a9"
+    },
+    {
+      "id": "packages/adventure/story-network.js",
+      "bytes": 16686,
+      "sha256": "ce4cf2ae2e9c3de6903cab5e30c78738826221439c26364dd92c5014697eeb25"
+    },
+    {
+      "id": "packages/adventure/story-rules10.js",
+      "bytes": 18118,
+      "sha256": "7dc5ecd1b5727db52e748b9651f809ad36ddd081a28689b864c476508a6d21ca"
+    },
+    {
+      "id": "packages/adventure/story-rules12.js",
+      "bytes": 17624,
+      "sha256": "51fc86ae06d2d04014b26a08a9dd8d584f091c5975e4117352992918d756be80"
+    },
+    {
+      "id": "packages/core/random.js",
+      "bytes": 1427,
+      "sha256": "5cc65b632c86293fdb1e45515c1fa9e9fed2b3b21e34bccfa0c449c9326ada68"
+    }
+  ],
+  "output": {
+    "file": "engine.js",
+    "bytes": 1738682,
+    "sha256": "180a56709d6df95daaf3d5680c24590c964e7a81d35956b16ce7bc17c578b09d"
+  },
+  "styleOutput": {
+    "file": "pixel-style.js",
+    "bytes": 4903,
+    "sha256": "d06637a5a934e9c2faefee25d438ee379616236b1bfe4315fe85bffd5d443bd2"
+  }
+}

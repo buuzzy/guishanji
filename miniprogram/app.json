@@ -1,0 +1,26 @@
+{
+  "pages": [
+    "pages/home/home"
+  ],
+  "subPackages": [
+    {
+      "root": "subpkg/xianxia",
+      "name": "xianxia",
+      "pages": [
+        "pages/roll/roll",
+        "pages/life/life",
+        "pages/past/past"
+      ]
+    }
+  ],
+  "window": {
+    "navigationBarTitleText": "归山记",
+    "navigationBarBackgroundColor": "#EBF0ED",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#EBF0ED",
+    "backgroundTextStyle": "dark"
+  },
+  "style": "v2",
+  "lazyCodeLoading": "requiredComponents",
+  "sitemapLocation": "sitemap.json"
+}

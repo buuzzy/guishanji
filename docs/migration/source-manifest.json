@@ -1512,8 +1512,8 @@
       },
       {
         "path": ".github/workflows/ci.yml",
-        "bytes": 1474,
-        "sha256": "87b10348d825f52b7ddf1961f26350c53be227a2e811cb6e4fc80735c8f05a1e"
+        "bytes": 1664,
+        "sha256": "03ffb943aaea8aaae03c5e5d68c3bdb55d6ca9bb28375f7c332c58ad46a45f43"
       },
       {
         "path": "AGENTS.md",

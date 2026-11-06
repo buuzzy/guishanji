@@ -1492,8 +1492,8 @@
       },
       {
         "path": "project.config.json",
-        "bytes": 2722,
-        "sha256": "bd1311988faaf1ba96103665358e4a79812ee64bf65de154f629624592e5ef93"
+        "bytes": 2728,
+        "sha256": "f8402e3d8439c35e25063963f75ee9b7d31338224c3c8a50ae2c92de578800db"
       },
       {
         "path": "scripts/verify-migration-import.mjs",
@@ -1527,8 +1527,8 @@
       },
       {
         "path": "docs/migration/ledger.md",
-        "bytes": 12119,
-        "sha256": "e6b8e884c4d3dc7eef2339e12cb72a839c290c196a62f974727fb611f7441fd1"
+        "bytes": 14049,
+        "sha256": "b499ae87f185bc3d36fc8497d0c4e8c135ecc6e7d662a99c72430915c66662e3"
       },
       {
         "path": "docs/migration/plan.md",

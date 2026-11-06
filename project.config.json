@@ -64,7 +64,7 @@
   "compileType": "miniprogram",
   "miniprogramRoot": "miniprogram/",
   "libVersion": "3.5.5",
-  "appid": "touristappid",
+  "appid": "wx0675a9d47174331e",
   "projectname": "归山记",
   "condition": {
     "miniprogram": {

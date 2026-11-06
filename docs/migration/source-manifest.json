@@ -1527,8 +1527,8 @@
       },
       {
         "path": "docs/migration/ledger.md",
-        "bytes": 11294,
-        "sha256": "cc516a5256dafefe815f5077fa37b9b9ae07ce7c59134b1e295c95ff575cd11b"
+        "bytes": 12119,
+        "sha256": "e6b8e884c4d3dc7eef2339e12cb72a839c290c196a62f974727fb611f7441fd1"
       },
       {
         "path": "docs/migration/plan.md",

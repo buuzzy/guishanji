@@ -5,9 +5,26 @@ import { projectRoot } from '../serve.mjs';
 
 export const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 export async function findChrome() {
-  const candidates = [process.env.CHROME_BIN, 'C:/Program Files/Google/Chrome/Application/chrome.exe', 'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe', '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/usr/bin/google-chrome', '/usr/bin/chromium', '/usr/bin/chromium-browser'].filter(Boolean);
+  /* 候选顺序 = 「最像用户会装的那个」优先。
+     ⚠ 本机（macOS）只装了 Edge、没装 Chrome；Windows 那台同理 —— 所以
+       **必须**把 Edge 也列进去，否则两台机器都得手动设 CHROME_BIN 才能跑门禁。
+       Edge 与 Chrome 同为 Chromium 内核，行为一致。 */
+  const candidates = [
+    process.env.CHROME_BIN,
+    'C:/Program Files/Google/Chrome/Application/chrome.exe',
+    'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe',
+    'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe',
+    'C:/Program Files/Microsoft/Edge/Application/msedge.exe',
+    '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
+    '/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge',
+    '/Applications/Chromium.app/Contents/MacOS/Chromium',
+    '/usr/bin/google-chrome',
+    '/usr/bin/chromium',
+    '/usr/bin/chromium-browser',
+    '/usr/bin/microsoft-edge',
+  ].filter(Boolean);
   for (const path of candidates) { try { await access(path); return path; } catch { /* next */ } }
-  throw new Error('没有找到 Chrome。可通过 CHROME_BIN 指定浏览器路径；浏览器检查没有被跳过。');
+  throw new Error('没有找到 Chrome/Edge。可通过 CHROME_BIN 指定浏览器路径；浏览器检查没有被跳过。');
 }
 
 export async function launchBrowser() {

@@ -1507,8 +1507,8 @@
       },
       {
         "path": "scripts/gen-source-manifest.mjs",
-        "bytes": 23980,
-        "sha256": "75310a2fd8c392c91aeec0b5c937f7da4c62418ae45fda965f613ce680eb6b8a"
+        "bytes": 24204,
+        "sha256": "3211187906d621e509d6902802f955f112c5f3ac912909fb6d955e326e053fbb"
       },
       {
         "path": "scripts/test-xianxia-standalone.mjs",
@@ -1694,6 +1694,16 @@
         "path": "docs/遗留问题清单-2026-11-07.md",
         "bytes": 11804,
         "sha256": "a4ed9b376d9d5b0f001140bd4a8ff35570e51351a3465364d6e52fd50778b397"
+      },
+      {
+        "path": "scripts/audit-metrics.mjs",
+        "bytes": 10588,
+        "sha256": "766c9b7ede9169042e34eadfd51a50cb02d0d6577a0efc0ed06567c9b3ecb97e"
+      },
+      {
+        "path": "tests/fixtures/metrics-baseline.json",
+        "bytes": 243,
+        "sha256": "138b71507ed3ce8def1985bac377dffcb2fe095af69737a69155f011849d0527"
       }
     ]
   }

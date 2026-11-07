@@ -1,0 +1,13 @@
+{
+  "createdAt": "2026-11-07T02:40:27.772Z",
+  "count": 120,
+  "metrics": {
+    "neverSeen": 167,
+    "density10": 14,
+    "density5": 10,
+    "cooldownRepeats": 2306,
+    "realmContentMin": 5,
+    "endingMissing": 0,
+    "spanMax": 102
+  }
+}

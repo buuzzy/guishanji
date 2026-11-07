@@ -79,6 +79,14 @@ const commands = [
      而且转出来的值必须与拆分前的基线逐值全等（函数按源码文本比）。
      纯重构 ⇒ 一个字都不该变；真要改内容，先改基线并说明理由。 */
   ['contentmodules', ['scripts/verify-content-modules.mjs']],
+  /* ── 内容指标门禁 ─────────────────────────────────────────────────────
+     六项「内容匀不匀」的指标：可达性（多少条内容发霉）／密度（最挤的 10 年
+     有多少个抉择）／冷却（人生经历里 60 个月内的重复）／节奏对齐（每个境界段
+     实际发出过多少种内容）／结局覆盖／阶段跨度。
+     判据是「跟基线比」⇒ **只许变好，不许变差**。
+     ⚠ 这道门禁补上的是 2026-11-06 那一轮漏掉的洞：当时量指标的脚本
+       `scripts/content-map.mjs` 根本没进过 git ⇒ 六项指标长期没人盯着。 */
+  ['metrics', ['scripts/audit-metrics.mjs', '--count=120', '--check']],
 ];
 const report = { startedAt: new Date().toISOString(), node: process.version, platform: process.platform, results: [] };
 await mkdir(join(projectRoot, 'artifacts'), { recursive: true });

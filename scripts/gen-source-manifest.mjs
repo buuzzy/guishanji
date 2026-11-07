@@ -152,6 +152,10 @@ const ADDED = [
   'tests/fixtures/content-modules.json',
   /* 2026-11-07：S10 交付说明 */
   'docs/内容架构重构交付说明-2026-11-07.md',
+  /* 2026-11-07：第二轮 —— 六项内容指标门禁（上一轮量指标的脚本没进过库） */
+  'scripts/audit-metrics.mjs',
+  'tests/fixtures/metrics-baseline.json',
+  'docs/遗留问题清单-2026-11-07.md',
 ];
 
 

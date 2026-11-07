@@ -1,5 +1,5 @@
-import { spawn } from 'node:child_process';
-import { writeFile, mkdir } from 'node:fs/promises';
+import { spawn, execFileSync } from 'node:child_process';
+import { writeFile, mkdir, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { projectRoot } from './serve.mjs';
 
@@ -83,6 +83,32 @@ const commands = [
 const report = { startedAt: new Date().toISOString(), node: process.version, platform: process.platform, results: [] };
 await mkdir(join(projectRoot, 'artifacts'), { recursive: true });
 
+/* ── 门禁结果绑「树」，不是绑「动作」 ───────────────────────────────────
+   为什么：门禁验的是**代码树**。同一棵树跑第二次，什么都没多证明。
+   所以报告里必须记下「验的是哪棵树」，
+   下次要跑之前先比一次 —— 树没变就别跑（省 22 分钟），树变了才跑。
+
+   ⚠ 用 tree 而不是 commit：提交本身不改变代码内容，
+     但 commit 会变（提交号每次都不一样）。验的是内容 ⇒ 绑 tree。
+   ⚠ dirty=true 时树哈希描述的是 HEAD，**不含**工作区改动 ⇒
+     这种情况下报告一律不算数（后面 --status 会拒绝认它）。 */
+function git(args) {
+  try {
+    return execFileSync('git', args, { cwd: projectRoot, encoding: 'utf8', windowsHide: true }).trim();
+  } catch {
+    return '';
+  }
+}
+function currentTree() {
+  return {
+    commit: git(['rev-parse', 'HEAD']),
+    tree: git(['rev-parse', 'HEAD^{tree}']),
+    branch: git(['rev-parse', '--abbrev-ref', 'HEAD']),
+    dirty: (git(['status', '--porcelain', '--untracked-files=all']) || '') !== '',
+  };
+}
+report.code = currentTree();
+
 /* ── 单门禁模式与门禁清单 ──────────────────────────────────────────────
    没有自动闸门了（2026-11-07 删除了 GitHub Actions 配置）⇒
    合并前要**手动**跑，并确认退出码是 0。
@@ -90,7 +116,12 @@ await mkdir(join(projectRoot, 'artifacts'), { recursive: true });
      --list           打印门禁清单（JSON）
      --only=<名字>    只跑这一道门禁
      --group=<组>     跑某一组（fast / browser）
-   组是按「要不要开浏览器」分的：fast 那组几分钟就完，browser 那组才是慢的。 */
+   组是按「要不要开浏览器」分的：fast 那组几分钟就完，browser 那组才是慢的。
+   --status          查「这棵树验过没有」—— 验过就不跑，树变了就报要跑哪组
+
+   ⚠ **门禁结果绑「树」，不绑「动作」**：
+     同步 GitHub 不会改代码 ⇒ 同一棵树不用重跑。
+     先跑门禁 → 树没动 → 再推 ⇒ 一次门禁就够。 */
 const argv = process.argv.slice(2);
 const only = (argv.find(a => a.startsWith('--only=')) || '').slice('--only='.length);
 const group = (argv.find(a => a.startsWith('--group=')) || '').slice('--group='.length);
@@ -103,6 +134,64 @@ if (argv.includes('--list')) {
     needsBuild: args.includes('--built'),
   })), null, 2));
   process.exit(0);
+}
+
+/* ── --status：这棵树验过没有？ ──────────────────────────────────────────
+   用法：node scripts/run-regression.mjs --status [--group=fast|browser]
+
+   输出三态：
+     GREEN    这棵树已经全量验过且全绿 ⇒ 不用再跑
+     STALE    上次验的是别的树（或工作区脏）⇒ 需要跑（会告诉你跑哪组）
+     UNKNOWN  从来没跑过 ⇒ 需要跑
+
+   ⚠ 判据是**树哈希相同**，不是「最近跑过」。
+     「最近跑过」会骗人：中间改了代码，跑过的结果早就不作数了。 */
+if (argv.includes('--status')) {
+  const LEDGER = join(projectRoot, 'artifacts', 'gate-ledger.json');
+  let ledger = { trees: {} };
+  try {
+    const prev = JSON.parse(await readFile(LEDGER, 'utf8'));
+    if (prev && prev.trees) ledger = prev;
+  } catch {
+    /* 从来没跑过 */
+  }
+  const now = currentTree();
+  const need = group || 'all';
+  const groupOf = (name) => (isBrowserGate([name]) ? 'browser' : 'fast');
+  const allGates = commands.map(([name]) => name);
+  const howToRun = () => {
+    if (need === 'all') {
+      console.log('  跑法：node scripts/run-regression.mjs --group=fast   （小程序端，约 1 分半）');
+      console.log('       node scripts/run-regression.mjs                （全量，约 22 分钟）');
+    } else {
+      console.log(`  跑法：node scripts/run-regression.mjs --group=${need}`);
+    }
+  };
+  /* 退出码：0 = 不用跑；1 = 要跑。 */
+  const verdict = (state, msg) => {
+    console.log(`${state} · ${msg}`);
+    if (state !== 'GREEN') howToRun();
+    process.exit(state === 'GREEN' ? 0 : 1);
+  };
+  if (now.dirty) {
+    verdict('STALE', '工作区有未提交的改动 ⇒ 上次的结果不算数（树哈希只描述 HEAD，不含工作区改动）');
+  }
+  const entry = now.tree ? ledger.trees[now.tree] : null;
+  if (!entry) {
+    verdict('UNKNOWN', `这棵树（${(now.tree || '未知').slice(0, 8)}）从来没验过 ⇒ 要跑`);
+  }
+  const keys = Object.keys(entry).filter(k => k === 'fast' || k === 'browser' || k === 'all');
+  const passed = keys.filter(k => entry[k] && entry[k].passed);
+  if (!passed.length) {
+    verdict('STALE', `这棵树跑过但没绿（记录：${keys.join(' ') || '无'}）⇒ 要重跑`);
+  }
+  const covered = new Set();
+  for (const k of passed) for (const g of entry[k].gates) covered.add(g);
+  const missing = allGates.filter(name => !covered.has(name) && (need === 'all' || groupOf(name) === need));
+  if (missing.length) {
+    verdict('STALE', `这棵树验过，但${need === 'all' ? '还有' : '这组还'}没跑过：${missing.join(' ')}`);
+  }
+  verdict('GREEN', `这棵树（${now.tree.slice(0, 8)}）已验过且全绿（${passed.map(k => entry[k].at).join(' / ')}）⇒ 不用再跑`);
 }
 let selected = commands;
 if (only) selected = commands.filter(([name]) => name === only);
@@ -131,5 +220,40 @@ await Promise.all(Array.from({length:argv.includes('--parallel')?2:1},()=>worker
 report.results.sort((a,b)=>selected.findIndex(([name])=>name===a.name)-selected.findIndex(([name])=>name===b.name));
 report.finishedAt = new Date().toISOString(); report.passed = report.results.every(result => result.code === 0);
 await writeFile(join(projectRoot, 'artifacts', 'regression.json'), JSON.stringify(report, null, 2) + '\n');
+
+/* ── 门禁台账：按「树」记住每组验过没有 ─────────────────────────────────
+   为什么要有台账：`regression.json` 每次跑都被覆盖 ⇒ 跑完快组再跑全量，
+   快组的记录就没了。台账**累积**，同一棵树上跑过的组都留着。
+
+   结构：{ trees: { <树哈希>: { commit, fast: {...}, browser: {...} } } }
+   ⇒ 「这棵树验过没有」= 台账里有没有这棵树的条目。
+
+   ⚠ 只在**干净**的树上记台账：dirty 时树哈希描述的是 HEAD、不含工作区改动，
+     记下来会变成一个「看起来验过、其实没验过」的假记录。 */
+const LEDGER_FILE = join(projectRoot, 'artifacts', 'gate-ledger.json');
+const scope = only ? 'only:' + only : (group || 'all');
+if (!report.code.dirty && report.code.tree) {
+  let ledger = { trees: {} };
+  try {
+    const prev = JSON.parse(await readFile(LEDGER_FILE, 'utf8'));
+    if (prev && prev.trees && typeof prev.trees === 'object') ledger = prev;
+  } catch {
+    /* 第一次 */
+  }
+  const entry = ledger.trees[report.code.tree] || { commit: report.code.commit, branch: report.code.branch };
+  const groupKey = only ? 'only:' + only : (group || 'all');
+  entry[groupKey] = {
+    passed: report.passed,
+    at: report.finishedAt,
+    gates: report.results.map(r => r.name),
+  };
+  ledger.trees[report.code.tree] = entry;
+  /* 只留最近 20 棵树的记录，别让台账自己长胖。 */
+  const trees = Object.keys(ledger.trees);
+  if (trees.length > 20) {
+    for (const t of trees.slice(0, trees.length - 20)) delete ledger.trees[t];
+  }
+  await writeFile(LEDGER_FILE, JSON.stringify(ledger, null, 2) + '\n');
+}
 console.log('REGRESSION ' + (report.passed ? 'PASS' : 'FAIL') + ' · ' + report.results.map(result => result.name + ':' + result.code).join(' '));
 if (!report.passed) process.exitCode = 1;

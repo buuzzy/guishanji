@@ -196,6 +196,31 @@ const ADDED = [
   'scripts/lib/completeness-limits.js',
   /* 2026-11-08：T11 第二轮内容改造交付说明 */
   'docs/第二轮内容改造交付说明-2026-11-08.md',
+  /* 2026-11-08：开发者面板（`apps/viz/`）—— 观测台，不进小程序包也不进 dist。
+   * `decide-policy.js` 是从 `play-cultivation.mjs` 里搬出来的同一份策略，
+   * 搬出来是为了让浏览器也能 import 它（面板的「固定偏好」与各审计脚本同源）。 */
+  'scripts/lib/decide-policy.js',
+  'scripts/verify-viz-panel.mjs',
+  'apps/viz/index.html',
+  'apps/viz/viz.js',
+  'apps/viz/viz.css',
+  'apps/viz/model.js',
+  'apps/viz/axis.js',
+  'apps/viz/curve.js',
+  'apps/viz/decision.js',
+  'apps/viz/snapshot.js',
+  'apps/viz/tabs.js',
+  'apps/viz/items.js',
+  'apps/viz/map.js',
+  'apps/viz/world.js',
+  'apps/viz/people.js',
+  'apps/viz/journal.js',
+  'apps/viz/batch.js',
+  'apps/viz/coverage.js',
+  'apps/viz/progress.js',
+  'apps/viz/findings.js',
+  'apps/viz/md.js',
+  'apps/viz/history.js',
 ];
 
 

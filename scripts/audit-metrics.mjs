@@ -50,7 +50,7 @@ import {isMilestone, SPEC as GATES_SPEC} from '../packages/adventure/gates.js';
 import * as GATES from '../packages/adventure/gates.js';
 import {projectRoot} from './serve.mjs';
 /* ⚠ 底线数字**只住这一份**（浏览器也要用 ⇒ 这个文件不许 import node:*）。 */
-import {REALM_KINDS_MIN} from './lib/completeness-limits.js';
+import {REALM_KINDS_MIN, SPAN_TARGET} from './lib/completeness-limits.js';
 
 /** 基线文件（跟着源码走 ⇒ 门禁只依赖跟着源码走的文件）。 */
 const BASELINE_FILE = join(projectRoot, 'tests/fixtures/metrics-baseline.json');
@@ -248,8 +248,9 @@ export function spanMedianOf(good) {
   };
 }
 
-/** 规格里的目标值（第 6 条：跨度中位数 ≤ 15 年）。 */
-export const SPAN_TARGET = 15;
+/** 规格里的目标值（第 6 条：跨度中位数 ≤ 15 年）。
+ *  ⚠ 数字住在共享常量里（浏览器也要用 ⇒ 那个文件不许 import node:*）。 */
+export {SPAN_TARGET};
 
 /**
  * 算出一批人生的事实（**不跑人生**，只做汇总）。

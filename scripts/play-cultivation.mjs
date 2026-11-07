@@ -1,46 +1,15 @@
-import {createRun,options,choose,advance,validateRun,review,setActivity} from '../packages/adventure/engine.js';
+import {createRun,choose,advance,validateRun,review,setActivity} from '../packages/adventure/engine.js';
 import {monthSeconds} from '../packages/adventure/life.js';
 import {activityOptions} from '../packages/adventure/cultivation.js';
 import {ROAD_CHAINS,CULTIVATION_EVENTS} from '../content/cultivation-stories.js';
 import {writeFile,mkdir} from 'node:fs/promises';
-export function decide(s,{path='birth',conduct='care',ending='guard',family='keep',school='array',method='clear',childhood='care',invitation='accept',material='safe',rebuild='lead',remit='coin',years='retreat'}={}){
- const id=s.pending.event,available=options(s).filter(o=>o.enabled),preferred=[];
- if(id.startsWith('advance_material_'))preferred.push(id.split('_')[4]==='0'?'learn':id.split('_')[4]==='1'?material==='risk'?'search':material==='substitute'?'substitute':'exchange':material==='risk'?'refine':'commission');
- if(id==='sect_rebuild')preferred.push(rebuild);
- if(id.startsWith('sect_council_'))preferred.push('teach','earn','ward');
- if(id==='sect_revenge')preferred.push(conduct==='selfish'?'fight':'investigate');
- if(id==='tribulation_prepare')preferred.push(ending==='dao'?'prepare':'decline');
- if(id.startsWith('years_practice_'))preferred.push(years,'stay');
- if(id==='family_support')preferred.push(remit==='stone'?'stones':'send','peace');
- if(id.startsWith('parcel_missing'))preferred.push('search');
- if(id.startsWith('parcel_exposed'))preferred.push(conduct==='selfish'?'guard':'convert');
- if(id==='reception')preferred.push(path==='mortal'?'home':path==='loose'?'leave':'test');
- if(id==='root_result')preferred.push(path==='demonic'?'dark':path==='loose'?'loose':path==='mortal'?'loose':'join','servant');
- if(id==='early_demonic')preferred.push(path==='loose'?'leave':'stay');
- if(id==='early_loose')preferred.push(path==='orthodox'?'sect':'learn');
- if(id==='early_beast')preferred.push(path==='loose'?'town':'stay');
- if(id==='first_method')preferred.push(school);
- if(id.startsWith('child_')&&childhood==='bold')preferred.push('claim','hide','trace','warn','accept','ask');
- if(id==='network_method')preferred.push(method,'clear','shade','beast','stone');
- if(id==='network_archive')preferred.push(invitation==='decline'?'decline':school==='sword'?'iron':'river');
- if(id==='network_mentor'||id==='network_ward')preferred.push(invitation==='decline'?'decline':'accept');
- if(id==='network_mentor_result')preferred.push('finish','escape','leave');
- if(id==='network_ward_result')preferred.push('evidence','investigate');
- if(id==='network_bottleneck')preferred.push('seek');
- if(id==='network_volume')preferred.push('verify','replace','decline');
- if(id==='garden_accident')preferred.push(conduct==='selfish'?'frame':'honest');
- if(id==='family_rules')preferred.push(family);
- if(id==='family_gate')preferred.push('return');
- if(id==='family_dispute')preferred.push(conduct==='selfish'?'take':'stop');
- if(id==='family_grave')preferred.push('stay');
- if(id.startsWith('breakthrough_'))preferred.push('try','service','wait');
- if(id.startsWith('selection_'))preferred.push(id.endsWith('_result')?'fair':school,'withdraw');
- if(id==='road_turn')preferred.push('keep');
- if(id==='world_raid')preferred.push(conduct==='selfish'?'loot':'escape');
- if(id==='system_final')preferred.push(ending,'guard');
- if(ROAD_CHAINS.some(a=>id.startsWith(a.id+'_')))preferred.push(conduct);
- return available.find(o=>preferred.includes(o.id)&&o.id===preferred.find(p=>available.some(a=>a.id===p)))||available[0];
-}
+/*
+ * 「遇到这张卡按什么偏好选」的策略表搬到了 `scripts/lib/decide-policy.js` ——
+ * 那里没有 Node 内置模块，浏览器（`apps/viz/` 开发者面板）也能 import 同一份。
+ * 这里继续转发导出，既有调用方（各审计脚本、浏览器门禁、测试）一个字不用改。
+ */
+import {decide} from './lib/decide-policy.js';
+export {decide};
 export function playCultivation({seed='新版人生',rulesVersion=11,...policy}={}){
  const state=createRun({seed,rulesVersion}),events=[],snapshots=[],seconds={automatic:0,reading:0};
  for(let step=0;step<160&&state.phase==='life';step++){

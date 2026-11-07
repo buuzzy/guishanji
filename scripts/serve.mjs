@@ -10,7 +10,10 @@ function within(parent, path) { const rel = relative(parent, path); return rel =
 // 默认服务当前产品「归山记」。entry / allow 让需要的路径能用同一份
 // 服务实现跑起来；产品侧的默认值不随它们改变。
 // ⚠ 2026-11-07：旧 0.2.0 产品的快照 `legacy/old-web/` 已删除，这里不再为它留位置。
-export async function startServer({ root = projectRoot, host = '127.0.0.1', port = 8866, entry = '/apps/preview/index.html', allow = ['/apps/preview/', '/preview/', '/packages/', '/content/'] } = {}) {
+// ⚠ `/apps/viz/` 是**开发者面板**（给我们自己看的，不给玩家看）；
+//   `/scripts/lib/` 只为面板里那份「选哪个选项」的策略而放行（纯函数，无 Node 内置模块）。
+//   两者都**不进小程序包**，也**不进 dist 静态产物**（build.mjs 只搬 apps/preview）。
+export async function startServer({ root = projectRoot, host = '127.0.0.1', port = 8866, entry = '/apps/preview/index.html', allow = ['/apps/preview/', '/apps/viz/', '/scripts/lib/', '/preview/', '/packages/', '/content/'] } = {}) {
   const actualRoot = await realpath(root);
   if (!within(await realpath(projectRoot), actualRoot)) throw new Error('服务根目录必须位于本项目内。');
   const server = httpServer(async (request, response) => {
@@ -21,6 +24,9 @@ export async function startServer({ root = projectRoot, host = '127.0.0.1', port
       // 根入口是当前产品「归山记」；/preview 是同一页面的旧路径，保留兼容。
       if (pathname === '/' || pathname === '/index.html') pathname = entry;
       if (pathname === '/preview' || pathname === '/preview/') pathname = '/apps/preview/index.html';
+      // 开发者面板的目录形式（/apps/viz/）→ 具体文件。
+      // ⚠ 不然它会以「没有扩展名」被判成私有路径（types 表按扩展名放行）。
+      if (pathname === '/apps/viz' || pathname === '/apps/viz/') pathname = '/apps/viz/index.html';
       if (!allow.some(prefix => pathname.startsWith(prefix)) || !types[extname(pathname)]) throw new Error('Private path');
       const path = resolve(actualRoot, '.' + pathname);
       if (!within(actualRoot, path) || !within(actualRoot, await realpath(path)) || !(await stat(path)).isFile()) throw new Error('Invalid file');

@@ -1509,8 +1509,8 @@
       },
       {
         "path": "scripts/gen-source-manifest.mjs",
-        "bytes": 26736,
-        "sha256": "a7c4c9d9d43b33831f85fe38973d14030d5ff29bca68250aa83f7d305763dcb2"
+        "bytes": 27585,
+        "sha256": "fe81d88d0908afe86102d0ef7767ebbb219ad743b7d58f5a1834a85630e84034"
       },
       {
         "path": "scripts/test-xianxia-standalone.mjs",
@@ -1529,8 +1529,8 @@
       },
       {
         "path": "AGENTS.md",
-        "bytes": 11634,
-        "sha256": "6b350380131a85dc5f396ac5fe752d1e191e9f3ff6eb8bae2210f62b1d3f7ff7"
+        "bytes": 26491,
+        "sha256": "86a370cc599640cd12bfb0a3652a0917ff912fd3b829edc3d8b4691dba69b5d1"
       },
       {
         "path": "README.md",
@@ -1699,8 +1699,8 @@
       },
       {
         "path": "scripts/audit-metrics.mjs",
-        "bytes": 21231,
-        "sha256": "1ba3c84270e4621ab3c6cedaecedf7281b298f95d60d6ea6f3375edfe771c752"
+        "bytes": 21335,
+        "sha256": "f4218909274ed9bd96b1b782d403be7af44d8f6e7a4b1d214d06b30635e2bfa9"
       },
       {
         "path": "tests/fixtures/metrics-baseline.json",
@@ -1843,6 +1843,96 @@
         "sha256": "1d6b7c90edc7bc4bd12c9c327027d8fc291b4f906ddbd9252942fbe93874aab6"
       },
       {
+        "path": "scripts/lib/decide-policy.js",
+        "bytes": 4515,
+        "sha256": "1e29a160f2d19719751ff4f5bdecbe521ff3ce0ac31dedecfb6a9f2ebcdd8849"
+      },
+      {
+        "path": "scripts/verify-viz-panel.mjs",
+        "bytes": 98168,
+        "sha256": "7c6838d2b609a5d7903bf3f3c9ecc6750928f8e9bec6a0f45fc148b7515338ef"
+      },
+      {
+        "path": "apps/viz/index.html",
+        "bytes": 3811,
+        "sha256": "acca2ece7a5a68a4adbe77d045999426eb09cc55a7ecac479ba244ddd6283ba3"
+      },
+      {
+        "path": "apps/viz/viz.js",
+        "bytes": 24670,
+        "sha256": "317b9e17d01edcfede983c15f1f06cc8c3c1fd5dc7d0008863b49a333c0f27da"
+      },
+      {
+        "path": "apps/viz/viz.css",
+        "bytes": 42095,
+        "sha256": "c5dcb27048dd7d7cd964a5ff7e685c7ad5939b555617a48ddc674c836075f8c8"
+      },
+      {
+        "path": "apps/viz/model.js",
+        "bytes": 125680,
+        "sha256": "b686219bb2762b2e9da51bf9a999397946771d714c960527bac79c861b7af718"
+      },
+      {
+        "path": "apps/viz/axis.js",
+        "bytes": 6269,
+        "sha256": "5bd473b08f5ad170be0c661f9fd04995822077e20eee6c2b1a7e37c1abb9e871"
+      },
+      {
+        "path": "apps/viz/curve.js",
+        "bytes": 4800,
+        "sha256": "e58e00c680dc1600a9b4c1ccce6123491d02421a4514ed54290cbef941180b99"
+      },
+      {
+        "path": "apps/viz/decision.js",
+        "bytes": 5010,
+        "sha256": "ff0dcfe400ee8043d4a4bae2a62b783d2b57862628ebefe7822024b0af059849"
+      },
+      {
+        "path": "apps/viz/snapshot.js",
+        "bytes": 4582,
+        "sha256": "2076c4426d99a79d6adc2ef97392a49ab2e485a2435d1cb24c5f3fc705fc4aea"
+      },
+      {
+        "path": "apps/viz/tabs.js",
+        "bytes": 2412,
+        "sha256": "c9cd9caf4674f4ebe5420860146968ee582b118593b041837f26f3223d2e2764"
+      },
+      {
+        "path": "apps/viz/items.js",
+        "bytes": 3082,
+        "sha256": "89e5e8ad5204c74c752750795c7adc5b0564bf5331c5bc68f9087c1ffb9844ca"
+      },
+      {
+        "path": "apps/viz/map.js",
+        "bytes": 5491,
+        "sha256": "938b491b2bdfb601dccc6a1d8c1388f40899538339ed23f7bcd47897d7cf3676"
+      },
+      {
+        "path": "apps/viz/world.js",
+        "bytes": 8624,
+        "sha256": "b224ecf92bd992f248d7fcdadb2b166e10ec4dfee7cd0de2d079603f9bfb3d6a"
+      },
+      {
+        "path": "apps/viz/people.js",
+        "bytes": 3416,
+        "sha256": "6c406e497c56020be999669d43de1c7d5eee6e86bd7fd29e5b98647dcbcecd42"
+      },
+      {
+        "path": "apps/viz/journal.js",
+        "bytes": 6522,
+        "sha256": "03d9f2ad638a539d5b32fe99a5ffcc844d1aab5800770f7a9e65b7dbfdf593f6"
+      },
+      {
+        "path": "apps/viz/batch.js",
+        "bytes": 8233,
+        "sha256": "b459953696c91a7124be2a6d0a728b2dbe75f340ae9fe37f3ad77bd54ddfd29c"
+      },
+      {
+        "path": "apps/viz/coverage.js",
+        "bytes": 19716,
+        "sha256": "cd3805c513e445534e18474d22ea7a02ad8f28efe343b69c2fa16901b4a95f30"
+      },
+      {
         "path": "scripts/t10-reverse.mjs",
         "bytes": 12172,
         "sha256": "028f0f860cb14619648b9e1ae89e33ac5a66cdb60bdbd0f3ac9308b6fd04ca4e"
@@ -1854,13 +1944,33 @@
       },
       {
         "path": "scripts/lib/completeness-limits.js",
-        "bytes": 1743,
-        "sha256": "e82e143a1b83a2321cb495d1237be525bd694f6973b844957665c9ca6945ddf2"
+        "bytes": 2187,
+        "sha256": "80ed6eece6925a82d8cda63e75a06c8573bb3c25f0bcf0a2cf62a4e78d1a4e4e"
       },
       {
         "path": "docs/第二轮内容改造交付说明-2026-11-08.md",
         "bytes": 12308,
         "sha256": "5717f373468ab5e679729e316467261c9f02489a9fcd31f86da32170479f0907"
+      },
+      {
+        "path": "apps/viz/progress.js",
+        "bytes": 5079,
+        "sha256": "581b80e7d3a9f22b99e7b9dd91acddccb9dac1b92391dabf0a17cf558b033163"
+      },
+      {
+        "path": "apps/viz/findings.js",
+        "bytes": 2790,
+        "sha256": "71b6a11a0fb5f0afa3370962862b0889210205b6e39c460a7f12318749e07c26"
+      },
+      {
+        "path": "apps/viz/md.js",
+        "bytes": 1194,
+        "sha256": "f560531f06e8e48cebcb3e338c96bcdded2958eaed93a0dafd89a13b563efe0c"
+      },
+      {
+        "path": "apps/viz/history.js",
+        "bytes": 8358,
+        "sha256": "cc85c5116a566e1a486a0c4ce5b8ee722f63fb0cbe76ae4f157b5631fd162d89"
       }
     ]
   }

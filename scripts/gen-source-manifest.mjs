@@ -194,6 +194,8 @@ const ADDED = [
   'scripts/t10-reverse.mjs',
   'tests/fixtures/expressions-pre-t10.json',
   'scripts/lib/completeness-limits.js',
+  /* 2026-11-08：T11 第二轮内容改造交付说明 */
+  'docs/第二轮内容改造交付说明-2026-11-08.md',
 ];
 
 

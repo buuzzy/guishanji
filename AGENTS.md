@@ -109,8 +109,8 @@ node scripts/run-regression.mjs --status
 | 合并进 main | 按上表选，**把结果贴出来** | — |
 
 ```sh
-node scripts/run-regression.mjs --group=fast   # 小程序端相关的 26 道
-node scripts/run-regression.mjs                # 全量 45 道（网页端上线前必须跑）
+node scripts/run-regression.mjs --group=fast   # 小程序端 + 内容层相关的 34 道
+node scripts/run-regression.mjs                # 全量 54 道（网页端上线前必须跑）
 ```
 
 - 跑完**确认退出码是 0**（`node … > log 2>&1; echo $?` —— 别用管道，管道后面取到的是最后一条命令的码）。

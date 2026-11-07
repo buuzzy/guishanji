@@ -1,16 +1,16 @@
 {
   "label": "guishanji",
-  "measuredAt": "2026-11-07T01:04:22.542Z",
-  "sourceFingerprint": "94c6cd8b54f835dcebf69e74eacfd0ac050f9974e81be794795d5c788486d879",
-  "sourceFiles": 64,
+  "measuredAt": "2026-11-07T08:02:38.682Z",
+  "sourceFingerprint": "cfeec2db2f146231216a67e86ad5727d9891aa88652e366af984c0e6d9a238a1",
+  "sourceFiles": 63,
   "machine": {
     "os": "darwin 25.4.0",
     "node": "v22.22.2",
     "arch": "arm64"
   },
   "code": {
-    "commit": "b6f2343c0c3922ad1571296263a8b5cbfda5108f",
-    "tree": "f19a9a67e96581f56f8324c388b9cd893eb2e96e",
+    "commit": "d78b5ff",
+    "tree": "04e0192d634b50632b2a322df6fe3d84eb49eb8b",
     "branch": "main",
     "dirty": false
   },
@@ -42,34 +42,34 @@
     }
   },
   "compiled": {
-    "total": 1488008,
+    "total": 1664542,
     "packages": {
-      "main": 32005,
-      "/subpkg/xianxia/": 1456003
+      "main": 33817,
+      "/subpkg/xianxia/": 1630725
     },
     "error": null
   },
   "rawBytes": {
     "/": 69056,
-    "/subpkg/xianxia/": 1512794,
-    "total": 1581850
+    "/subpkg/xianxia/": 1713896,
+    "total": 1782952
   },
   "packages": [
     {
       "name": "main",
-      "compiledBytes": 32005,
+      "compiledBytes": 33817,
       "rawBytes": null,
       "limitBytes": 2097152,
-      "headroomToLimit": 2065147,
+      "headroomToLimit": 2063335,
       "withinHardLimit": true,
       "status": "ok"
     },
     {
       "name": "/subpkg/xianxia/",
-      "compiledBytes": 1456003,
-      "rawBytes": 1512794,
+      "compiledBytes": 1630725,
+      "rawBytes": 1713896,
       "limitBytes": 2097152,
-      "headroomToLimit": 641149,
+      "headroomToLimit": 466427,
       "withinHardLimit": true,
       "status": "ok"
     }
@@ -78,5 +78,6 @@
     "packageLimit": 2097152,
     "totalLimit": 20971520
   },
-  "passed": true
+  "passed": true,
+  "note": "本轮（T0–T10）内容改造后重测：清完 IDE 编译缓存的真编译。相对 2026-11-07 那版，编译后总量 +176,534 B（+11.9%），主要是表达域接管把 285 张卡的新文案带进了分包；主包与分包仍远低于硬上限（主包余 2,063,335 B、分包余 466,427 B）。"
 }

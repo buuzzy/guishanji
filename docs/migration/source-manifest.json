@@ -1509,8 +1509,8 @@
       },
       {
         "path": "scripts/gen-source-manifest.mjs",
-        "bytes": 26619,
-        "sha256": "8fe8009626a33891523d2408c235b4867307cc3908fd4642763495a1fbb7aa94"
+        "bytes": 26736,
+        "sha256": "a7c4c9d9d43b33831f85fe38973d14030d5ff29bca68250aa83f7d305763dcb2"
       },
       {
         "path": "scripts/test-xianxia-standalone.mjs",
@@ -1529,8 +1529,8 @@
       },
       {
         "path": "AGENTS.md",
-        "bytes": 11622,
-        "sha256": "20cb4c2efe599e26713cbd8522aca9cdf68a2a8013504706a7c30c01daea9033"
+        "bytes": 11634,
+        "sha256": "6b350380131a85dc5f396ac5fe752d1e191e9f3ff6eb8bae2210f62b1d3f7ff7"
       },
       {
         "path": "README.md",
@@ -1694,8 +1694,8 @@
       },
       {
         "path": "docs/遗留问题清单-2026-11-07.md",
-        "bytes": 11804,
-        "sha256": "a4ed9b376d9d5b0f001140bd4a8ff35570e51351a3465364d6e52fd50778b397"
+        "bytes": 13946,
+        "sha256": "fea24f0f70da99730189e3fc42eca163b385949453d43c0521bc9b8a434e26fb"
       },
       {
         "path": "scripts/audit-metrics.mjs",
@@ -1856,6 +1856,11 @@
         "path": "scripts/lib/completeness-limits.js",
         "bytes": 1743,
         "sha256": "e82e143a1b83a2321cb495d1237be525bd694f6973b844957665c9ca6945ddf2"
+      },
+      {
+        "path": "docs/第二轮内容改造交付说明-2026-11-08.md",
+        "bytes": 12308,
+        "sha256": "5717f373468ab5e679729e316467261c9f02489a9fcd31f86da32170479f0907"
       }
     ]
   }

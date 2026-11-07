@@ -186,6 +186,10 @@ const ADDED = [
   'tests/fixtures/event-expressions.json',
   'tests/fixtures/event-expressions-pre-rewrite.json',
   'docs/表达域接管-修仙线-2026-11-08.md',
+  /* 2026-11-08：T9 内容完备度盘点变成门禁 —— 缺口台账 + 反向验证 */
+  'scripts/t9-reverse.mjs',
+  'tests/fixtures/completeness-gaps.json',
+  'docs/内容完备度盘点-2026-11-08.md',
 ];
 
 

@@ -42,6 +42,8 @@
  */
 import {readFile, writeFile, mkdir} from 'node:fs/promises';
 import {join} from 'node:path';
+import {realpathSync} from 'node:fs';
+import {fileURLToPath} from 'node:url';
 import {playCultivation} from './play-cultivation.mjs';
 import {EVENTS} from '../packages/adventure/engine.js';
 import {isMilestone, SPEC as GATES_SPEC} from '../packages/adventure/gates.js';
@@ -79,7 +81,7 @@ const HARD_LIMIT = {endingMissing: 0, density10: 5, density5: 3, cooldownRepeats
 
 
 /** 跑一条命，把它的指标事实收拢起来。 */
-function specFor(i) {
+export function specFor(i) {
   const paths = ['orthodox', 'loose', 'demonic', 'beast', 'mortal'];
   return {
     seed: '指标审计-' + i,
@@ -151,32 +153,58 @@ function runOne(spec) {
       events: run.events,
       realmCounts: Object.fromEntries(Object.entries(perRealm).map(([k, v]) => [k, v.size])),
       noEnding: !(run.state.ending && run.state.ending.title && run.state.ending.text),
+      /* 每条命的卡序列快照（年龄 / 卡 id / 境界）——
+       * 完备度盘点（`scripts/audit-completeness.mjs`）要用**同一批人生**算
+       * 「哪一年发什么卡」，所以这里把它带出来，别让那边再跑一遍。 */
+      snapshots: run.snapshots,
     };
   } catch (error) {
     return {ok: false, error: String(error && error.message || error)};
   }
 }
 
-/** 跑一批人生，算出六项指标。 */
-export function collect(count = 120) {
+/** 跑一批人生，把每条命的事实收拢起来（**只跑，不管指标**）。 */
+export function collectLives(count = 120) {
   const runs = [];
   for (let i = 0; i < count; i++) runs.push(runOne(specFor(i)));
   const good = runs.filter(r => r.ok);
   const failed = runs.filter(r => !r.ok);
+  return {count, good, failed};
+}
 
-  /* ① 可达性：事件表里一次都没出现过的条数。 */
-  const seen = new Set(good.flatMap(r => r.events));
-  const allIds = Object.keys(EVENTS);
-  const neverSeen = allIds.filter(id => !seen.has(id));
-
-  /* ④ 节奏对齐：把每条命里各境界的内容种数合并（并集）。 */
+/**
+ * 各境界段实际发出过多少种不同内容。
+ *
+ * ⚠ 口径：**取每条命里最多的那一档**，不是把所有人的并起来 ——
+ *   并集会把「只有极少数命走到的内容」算进去，看着好看，其实玩家碰不到。
+ *
+ * 完备度盘点也用这个函数 ⇒ 两边**同一套口径**，数字必然一致
+ * （不一致就说明有一边改过口径却没改另一边 ⇒ 那是要紧的事，不是噪音）。
+ */
+export function realmCountsOf(good) {
   const perRealm = {};
   for (const r of good) {
     for (const [realm, n] of Object.entries(r.realmCounts)) {
       perRealm[realm] = Math.max(perRealm[realm] || 0, n);
     }
   }
-  const realmCounts = Object.fromEntries(Object.entries(perRealm).map(([k, v]) => [k, v]));
+  return perRealm;
+}
+
+/**
+ * 把一批人生算成六项指标（**不跑人生**，只做汇总）。
+ *
+ * 拆出来是为了让完备度盘点能**只跑一批命**、同时拿到六项指标与逐年的卡分布
+ * —— 两边共用同一批命 ⇒ 数字必然对得上。
+ */
+export function metricsOf(good, count = good.length) {
+  /* ① 可达性：事件表里一次都没出现过的条数。 */
+  const seen = new Set(good.flatMap(r => r.events));
+  const allIds = Object.keys(EVENTS);
+  const neverSeen = allIds.filter(id => !seen.has(id));
+
+  /* ④ 节奏对齐：各境界段内容种数（口径见 `realmCountsOf`）。 */
+  const realmCounts = realmCountsOf(good);
   const realmContentMin = Object.keys(realmCounts).length ? Math.min(...Object.values(realmCounts)) : 0;
 
   const metrics = {
@@ -188,7 +216,13 @@ export function collect(count = 120) {
     endingMissing: good.filter(r => r.noEnding).length,
     spanMax: good.length ? Math.max(...good.map(r => r.spanMax)) : 0,
   };
-  return {count, good: good.length, failed, metrics, realmCounts, neverSeenSample: neverSeen.slice(0, 10)};
+  return {count, good: good.length, metrics, realmCounts, neverSeenSample: neverSeen.slice(0, 10)};
+}
+
+/** 跑一批人生，算出六项指标。 */
+export function collect(count = 120) {
+  const {good, failed} = collectLives(count);
+  return {...metricsOf(good, count), failed};
 }
 
 /** 核对基线：只许变好，不许变差。 */
@@ -229,82 +263,94 @@ export function check(report, baseline) {
 
 /* ── CLI ──────────────────────────────────────────────────────────────── */
 
-const argv = process.argv.slice(2);
-const count = Number(argv.find(a => a.startsWith('--count='))?.split('=')[1] || 120);
-const report = collect(count);
+/*
+ * ⚠ 这一段**只在直接运行时**才做（`node scripts/audit-metrics.mjs …`）。
+ *   因为别的脚本要 import 本文件里的 `collectLives` / `realmCountsOf` / `specFor`
+ *   （完备度盘点要用**同一批人生、同一套口径**算「哪一年发什么卡」）
+ *   ⇒ import 时不能顺手把报告打出来、更不能 `process.exit`。
+ */
+async function main() {
+  const argv = process.argv.slice(2);
+  const count = Number(argv.find(a => a.startsWith('--count='))?.split('=')[1] || 120);
+  const report = collect(count);
 
-if (argv.includes('--json')) {
-  console.log(JSON.stringify(report, null, 2));
-  process.exit(0);
-}
-
-console.log(`内容指标审计（实跑 ${report.count} 条命，成功 ${report.good} 条）\n`);
-console.log('  可达性（发霉的条数）  ' + report.metrics.neverSeen + ' / ' + Object.keys(EVENTS).length + ' 条事件');
-console.log('  密度（最挤 10 年 / 5 年）  ' + report.metrics.density10 + ' / ' + report.metrics.density5 + ' 个抉择');
-console.log('  冷却（60 个月内重复）  ' + report.metrics.cooldownRepeats + ' 处');
-console.log('  节奏对齐（各境内容种数）  ' + JSON.stringify(report.realmCounts));
-console.log('  结局覆盖（缺结局的人生）  ' + report.metrics.endingMissing + ' 条');
-console.log('  阶段跨度（各境突破年龄极差的最大值）  ' + report.metrics.spanMax + ' 年');
-if (report.failed.length) console.log('  ⚠ ' + report.failed.length + ' 条命没跑完（已排除）');
-
-if (argv.includes('--gen')) {
-  /*
-   * 重生成基线 —— **基线文件自带变更台账**（`history`）。
-   *
-   * 为什么要台账：
-   *   这道门禁的判据是「只许变好，不许变差」⇒ 基线就是一道**棘轮**。
-   *   棘轮要挪，只许在「有意变更」时挪 ⇒ 那一次挪动必须留下理由与前后数字，
-   *   否则半年后没人说得清「为什么这一步允许倒退」。
-   *
-   * 用法：`node scripts/audit-metrics.mjs --gen --reason="为什么允许这次变化"`
-   */
-  const reason = (argv.find(a => a.startsWith('--reason=')) || '').slice('--reason='.length);
-  let history = [];
-  try {
-    const old = JSON.parse(await readFile(BASELINE_FILE, 'utf8'));
-    if (old && Array.isArray(old.history)) history = old.history;
-    if (old && old.metrics && !reason) {
-      console.log('\n⚠ 这次重生成没有写理由（--reason=…）⇒ 台账里会记成「未说明」。');
-    }
-    if (old && old.metrics && reason) {
-      history.push({
-        at: new Date().toISOString(),
-        reason,
-        from: old.metrics,
-        to: report.metrics,
-      });
-    }
-  } catch {
-    /* 第一次生成，没有旧基线 */
+  if (argv.includes('--json')) {
+    console.log(JSON.stringify(report, null, 2));
+    process.exit(0);
   }
-  const payload = {createdAt: new Date().toISOString(), count: report.count, metrics: report.metrics, history};
-  await mkdir(join(projectRoot, 'tests/fixtures'), {recursive: true});
-  await writeFile(BASELINE_FILE, JSON.stringify(payload, null, 2) + '\n');
-  console.log('\n✓ 基线已写入 ' + BASELINE_FILE);
-  process.exit(0);
-}
 
-let baseline = null;
-try {
-  baseline = JSON.parse(await readFile(BASELINE_FILE, 'utf8'));
-} catch {
-  console.log('\n✗ 没有基线文件：' + BASELINE_FILE + '（先跑 node scripts/audit-metrics.mjs --gen）');
-  process.exit(1);
-}
+  console.log(`内容指标审计（实跑 ${report.count} 条命，成功 ${report.good} 条）\n`);
+  console.log('  可达性（发霉的条数）  ' + report.metrics.neverSeen + ' / ' + Object.keys(EVENTS).length + ' 条事件');
+  console.log('  密度（最挤 10 年 / 5 年）  ' + report.metrics.density10 + ' / ' + report.metrics.density5 + ' 个抉择');
+  console.log('  冷却（60 个月内重复）  ' + report.metrics.cooldownRepeats + ' 处');
+  console.log('  节奏对齐（各境内容种数）  ' + JSON.stringify(report.realmCounts));
+  console.log('  结局覆盖（缺结局的人生）  ' + report.metrics.endingMissing + ' 条');
+  console.log('  阶段跨度（各境突破年龄极差的最大值）  ' + report.metrics.spanMax + ' 年');
+  if (report.failed.length) console.log('  ⚠ ' + report.failed.length + ' 条命没跑完（已排除）');
 
-if (argv.includes('--check')) {
-  const problems = check(report, baseline);
-  if (problems.length) {
-    console.log('\n════════ 指标核对 ════════');
-    for (const p of problems) console.log('  ✗ ' + p);
-    console.log('\n结果：' + problems.length + ' 个问题');
+  if (argv.includes('--gen')) {
+    /*
+     * 重生成基线 —— **基线文件自带变更台账**（`history`）。
+     *
+     * 为什么要台账：
+     *   这道门禁的判据是「只许变好，不许变差」⇒ 基线就是一道**棘轮**。
+     *   棘轮要挪，只许在「有意变更」时挪 ⇒ 那一次挪动必须留下理由与前后数字，
+     *   否则半年后没人说得清「为什么这一步允许倒退」。
+     *
+     * 用法：`node scripts/audit-metrics.mjs --gen --reason="为什么允许这次变化"`
+     */
+    const reason = (argv.find(a => a.startsWith('--reason=')) || '').slice('--reason='.length);
+    let history = [];
+    try {
+      const old = JSON.parse(await readFile(BASELINE_FILE, 'utf8'));
+      if (old && Array.isArray(old.history)) history = old.history;
+      if (old && old.metrics && !reason) {
+        console.log('\n⚠ 这次重生成没有写理由（--reason=…）⇒ 台账里会记成「未说明」。');
+      }
+      if (old && old.metrics && reason) {
+        history.push({
+          at: new Date().toISOString(),
+          reason,
+          from: old.metrics,
+          to: report.metrics,
+        });
+      }
+    } catch {
+      /* 第一次生成，没有旧基线 */
+    }
+    const payload = {createdAt: new Date().toISOString(), count: report.count, metrics: report.metrics, history};
+    await mkdir(join(projectRoot, 'tests/fixtures'), {recursive: true});
+    await writeFile(BASELINE_FILE, JSON.stringify(payload, null, 2) + '\n');
+    console.log('\n✓ 基线已写入 ' + BASELINE_FILE);
+    process.exit(0);
+  }
+
+  let baseline = null;
+  try {
+    baseline = JSON.parse(await readFile(BASELINE_FILE, 'utf8'));
+  } catch {
+    console.log('\n✗ 没有基线文件：' + BASELINE_FILE + '（先跑 node scripts/audit-metrics.mjs --gen）');
     process.exit(1);
   }
-  console.log('\n✓ 六项指标都不比基线差');
+
+  if (argv.includes('--check')) {
+    const problems = check(report, baseline);
+    if (problems.length) {
+      console.log('\n════════ 指标核对 ════════');
+      for (const p of problems) console.log('  ✗ ' + p);
+      console.log('\n结果：' + problems.length + ' 个问题');
+      process.exit(1);
+    }
+    console.log('\n✓ 六项指标都不比基线差');
+    process.exit(0);
+  }
+
+  /* 报告模式：顺手写一份本机快照（不进仓库）。 */
+  await mkdir(join(projectRoot, 'artifacts'), {recursive: true});
+  await writeFile(join(projectRoot, 'artifacts/metrics.json'), JSON.stringify(report, null, 2) + '\n');
   process.exit(0);
 }
 
-/* 报告模式：顺手写一份本机快照（不进仓库）。 */
-await mkdir(join(projectRoot, 'artifacts'), {recursive: true});
-await writeFile(join(projectRoot, 'artifacts/metrics.json'), JSON.stringify(report, null, 2) + '\n');
-process.exit(0);
+if (process.argv[1] && realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url))) {
+  await main();
+}

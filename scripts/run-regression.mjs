@@ -122,6 +122,22 @@ const commands = [
      ⚠ 它是护栏 ⇒ 光看「跑一遍没报错」证明不了它有用 ⇒ 反向验证在
        tests/plot.test.mjs（造坏数据逐条证明三条判据真抓得住）。 */
   ['plot', ['scripts/audit-plot.mjs', '--count=120']],
+
+  /* ── 内容完备度门禁 ─────────────────────────────────────────────────────
+     用户 2026-11-06 提的第 12 条：「细节到底到哪了」。
+     这道门禁把那份盘点变成**会报红的守门员**，守两件事：
+     · **硬底线** —— 十一条故事线都不空、每境至少 5 种内容、每条长线至少 2 步、
+       结局至少 20 个、每个灵根都有说明、晚年至少 30 种卡；
+     · **已知缺口台账** —— 「还缺什么」记在 tests/fixtures/completeness-gaps.json，
+       台账与现状**两个方向都要对上**：新缺口要登记，缺口被补上要更新台账。
+     ⚠ 它是护栏 ⇒ 光看「跑一遍没报错」证明不了它有用 ⇒ 反向验证在
+       scripts/t9-reverse.mjs（14 道：注入坏值逐条证明会报红，
+       并证明台账正常时它是绿的 —— 不会「永远报红」）。 */
+  ['completeness', ['scripts/audit-completeness.mjs', '--check']],
+  /* ── 完备度门禁的体检 ───────────────────────────────────────────────────
+     反向验证不是门禁，但它是「门禁有没有用」的证据 ⇒ 也挂进来，
+     免得它变成没人跑的孤儿脚本（孤儿 = 假门禁）。 */
+  ['t9reverse', ['scripts/t9-reverse.mjs']],
 ];
 const report = { startedAt: new Date().toISOString(), node: process.version, platform: process.platform, results: [] };
 await mkdir(join(projectRoot, 'artifacts'), { recursive: true });

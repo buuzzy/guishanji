@@ -1509,8 +1509,8 @@
       },
       {
         "path": "scripts/gen-source-manifest.mjs",
-        "bytes": 26207,
-        "sha256": "d845dc9fde82c2e8a77c22e125a192a901f4a12b888c3b284803f1c4c930fd4b"
+        "bytes": 26417,
+        "sha256": "97b0369a3995da7170326d36ac48ccebeb3975a93ece14acaee0e3c7f546c10a"
       },
       {
         "path": "scripts/test-xianxia-standalone.mjs",
@@ -1699,8 +1699,8 @@
       },
       {
         "path": "scripts/audit-metrics.mjs",
-        "bytes": 15014,
-        "sha256": "cc7e5dee85147eb5495f5754f03b09e1bbda5fbc2dbe850285dbde5baaae16cb"
+        "bytes": 17117,
+        "sha256": "dcd6e3fc989b6341fbb032ffbc56f6a8ac3eb7b90c09c794ef5eb20df6ed93b7"
       },
       {
         "path": "tests/fixtures/metrics-baseline.json",
@@ -1804,8 +1804,8 @@
       },
       {
         "path": "scripts/audit-completeness.mjs",
-        "bytes": 7703,
-        "sha256": "4fd3a07b1dbf8e8411cb41ce51ebe2245e9aed0c960f70648d67e37f0d1bbfdb"
+        "bytes": 21558,
+        "sha256": "5321db8365c63b798b48b37fbc6dd33376aa38c41032187d2a85a31471c1b224"
       },
       {
         "path": "tests/fixtures/event-expressions.json",
@@ -1826,6 +1826,21 @@
         "path": "scripts/lib/text-numbers.mjs",
         "bytes": 5482,
         "sha256": "e81092e497329ffd82c2fb43666032fcbb63ddae5ffe36214e7287443573e38d"
+      },
+      {
+        "path": "scripts/t9-reverse.mjs",
+        "bytes": 12770,
+        "sha256": "76aee7eb3e3ecbb4a25677ce861d6582fc080d55c5c9b5dbd8d5ae594132feba"
+      },
+      {
+        "path": "tests/fixtures/completeness-gaps.json",
+        "bytes": 431,
+        "sha256": "0ded757d1a62ed872a8f4d3f35998fd4884efd8e30320a535c583ac0c6c4f480"
+      },
+      {
+        "path": "docs/内容完备度盘点-2026-11-08.md",
+        "bytes": 14511,
+        "sha256": "05576c78fb9f62c9ff64377297142bb81beadc6a71f9317be3a090d66c4e1335"
       }
     ]
   }

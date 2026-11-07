@@ -1,6 +1,6 @@
 {
   "label": "归山记 · 迁移导入来源清单",
-  "generatedAt": "2026-11-06",
+  "generatedAt": "2026-11-07",
   "sources": [
     {
       "repo": "buuzzy/1in8b",
@@ -1210,7 +1210,7 @@
         "sourceSha256": "66026f8b72b80fc179a98f3f31fe2c736ff0d8c96a74e4c8ad26cde58edd5875",
         "path": "miniprogram/subpkg/xianxia/runtime/build-manifest.json",
         "currentBytes": 12824,
-        "currentSha256": "f642653495afca8bf573442b12b896ca18a7c3f188a87606456c5cef06a0305c",
+        "currentSha256": "4628f756044e47335d617ac2ea1906589d2fa3616bdb5558180519fb2e498bf2",
         "reason": "生成物：来源改为本仓库源码，并新增 upstreamOrigin 段"
       },
       {
@@ -1220,8 +1220,8 @@
         "sourceBytes": 1738614,
         "sourceSha256": "ba0720f2c21c1babe39c605739e90243d7de00db5f920bd5078704d6952fed3f",
         "path": "miniprogram/subpkg/xianxia/runtime/engine.js",
-        "currentBytes": 1237773,
-        "currentSha256": "451b8662dc8a5bd7a444a5dddb7b84b6186a3c49fc540a25a44fb7edbe584eb8",
+        "currentBytes": 1237915,
+        "currentSha256": "0b6b669b6691a0ce1f3aa4622755d3153d5ae511462de6a26a31a25ab27bf732",
         "reason": "生成物：由本仓库源码重新构建（除文件头注释外与迁移进来的那份逐字节一致，见 reference/migrated-runtime/）"
       },
       {
@@ -1297,8 +1297,8 @@
         "sourceBytes": 20657,
         "sourceSha256": "1c37a2ab89a56e007fcb257870384956c6e5ce7d0982e292bfa2ed3f0c6b8c74",
         "path": "scripts/test-xianxia-art.mjs",
-        "currentBytes": 27078,
-        "currentSha256": "617f1c0174b8d45d5dd74e6d3d569364e1e7aa0a6548c6b19dd78e226d3075df",
+        "currentBytes": 27406,
+        "currentSha256": "c28b98e56686a64a8b763f77a0b90ed9399b7e576aed6b71275cc524a29cd046",
         "reason": "对照基准改为本仓库 reference/ 与 apps/preview/，不再依赖 1in8b 的 frozen-baseline"
       },
       {
@@ -1647,8 +1647,8 @@
       },
       {
         "path": "docs/art-divergence.json",
-        "bytes": 1534,
-        "sha256": "d7e0cc1c051690f314c4ef76de44f663f7d30391d38847ef90329ab6c99da402"
+        "bytes": 1979,
+        "sha256": "93e38a89cbd2e3027ec63b8adc12064dfbf50e5942c3975db9624b7fd85cbb10"
       },
       {
         "path": "content/realms.js",
@@ -1687,8 +1687,8 @@
       },
       {
         "path": "docs/内容架构重构交付说明-2026-11-07.md",
-        "bytes": 8104,
-        "sha256": "f79f9fa6894937cea1e19884dbd80dbb6236f5226a12ac829707fa33ec76c252"
+        "bytes": 8296,
+        "sha256": "b737ca2ed210bf3b0e82a71cc21ce9c578ce0d945651ba96fe273936595dd7c7"
       }
     ]
   }

@@ -13,7 +13,7 @@ await mkdir(out,{recursive:true});const report={built,checks:[],flows:[],scope:'
 let server,browser;
 const snapshot=p=>p.eval('adventurePreview.snapshot()');
 /**
- * 地图上「已经解锁的大陆」= 当前所在 + 走过的大陆。
+ * 地图上「已经解锁的大陆」= 当前所在 + 走过 + 从这些地方能直接去的大陆（只隔一跳）。
  *
  * ⚠ 这里**故意不调用规则层的 mapView()**：
  *   地图画什么由 mapView 决定，若门禁也用它算期望值 ⇒ 两边同源 ⇒ 地图画错了也看不出来。
@@ -23,8 +23,16 @@ function unlockedOf(st){
   const c=(st&&st.life&&st.life.cultivation)||{};
   const here=c.continent||(['home','refuge'].includes(st?.player?.location)?st?.birth?.continent:st?.player?.location);
   const out=[];
-  if(here&&!out.includes(here))out.push(here);
-  for(const id of (c.visited||[]))if(!out.includes(id))out.push(id);
+  const push=id=>{if(id&&!out.includes(id))out.push(id);};
+  push(here);
+  for(const id of (c.visited||[]))push(id);
+  /* 再补上「从这些地方能直接去的大陆」（只隔一跳）。 */
+  const known=out.slice();
+  for(const id of known){
+    const g=GEOGRAPHY.find(x=>x.id===id);
+    if(!g)continue;
+    for(const b of (g.connections||[]))push(b);
+  }
   return out;
 }
 /** 两端都在「已解锁大陆」里的通路条数。 */

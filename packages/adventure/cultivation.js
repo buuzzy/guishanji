@@ -374,9 +374,16 @@ function revised_cultivationText(input,s,event,kind='node'){
  *   它只按这里给的 `unlocked` 清单画 ⇒ 两端画出来的东西必然一样
  *   （画面门禁要求两端「逐笔一致」）。
  *
- * ⚠ 「解锁」的口径 = **当前所在的大陆 + 真正走过的大陆**。
- *   没去过、也没在的地方不画 —— 地图是用来回答「我现在在哪、能去哪」的，
- *   不是用来展示世界有多大。
+ * ⚠ 「解锁」的口径 = **当前所在的大陆 + 真正走过的大陆 + 从这些地方能直接去的大陆**。
+ *   · 前两项：你在哪、你去过哪。
+ *   · 第三项：**直接相邻**（只隔一跳）的大陆也画上。
+ *     为什么要有这一项：实测随机跑出来的 5 段人生**每一段都只在一块大陆上**
+ *     （`visited` 里只有出生地）⇒ 若只画前两项，地图上一条路都没有，
+ *     图例里的「虚线 · 已知通路 / 墨绿 · 已走路线 / × 暂不通行」全都用不上。
+ *     画上相邻的大陆后：在青岚就看得见临潮与烬原，也看得见通往它们的路
+ *     （路暂时不通的还会标 ×）⇒ 地图这才真的回答了「能去哪」。
+ *   · 隔两跳的大陆不画（浮屿界在青岚看不到）⇒ 地图仍然聚焦，不会摊成一张世界全图。
+ *   · 走过的路越多，画出来的大陆越多 ⇒ 地图会随旅程慢慢长齐。
  *
  * @param {object} s 当前人生状态（可为空）
  * @returns {{current:string|null, visited:string[], unlocked:string[]}}
@@ -386,8 +393,17 @@ export function mapView(s){
  const current=currentContinent(s);
  const visited=(c&&c.visited)||[];
  const unlocked=[];
- if(current&&unlocked.indexOf(current)<0)unlocked.push(current);
- for(let i=0;i<visited.length;i++)if(unlocked.indexOf(visited[i])<0)unlocked.push(visited[i]);
+ const push=id=>{if(id&&unlocked.indexOf(id)<0)unlocked.push(id);};
+ push(current);
+ for(let i=0;i<visited.length;i++)push(visited[i]);
+ /* 再把「从这些地方能直接去的大陆」补上（只隔一跳）。 */
+ const known=unlocked.slice();
+ for(let i=0;i<known.length;i++){
+  const g=GEOGRAPHY.find(x=>x.id===known[i]);
+  if(!g)continue;
+  const links=g.connections||[];
+  for(let j=0;j<links.length;j++)push(links[j]);
+ }
  return {current,visited,unlocked};
 }
 export function currentContinent(...args){const version=args[0]?.life?.cultivation?.rulesVersion;return version===12?revised_currentContinent(...args):(version===11?rules11:version===10?rules10:version===9?rules9:version===8?rules8:version===7?rules7:version===6?rules6:previousRules).currentContinent(...args);}

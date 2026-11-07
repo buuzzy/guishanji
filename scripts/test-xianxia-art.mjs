@@ -396,13 +396,21 @@ for (const run of lives) {
     /* 通路条数：每画一条路就 lineTo 一次（当前大陆的圆圈是 arc+stroke，不算路）。 */
     mapRoutes += our.ops.filter(op => op[0] === 'line').length;
     {
-      /* ⚠ 独立算一遍「已解锁大陆之间的通路条数」（不用 mapView，免得自己跟自己比）。 */
+      /* ⚠ 独立算一遍「已解锁大陆之间的通路条数」（不用 mapView，免得自己跟自己比）。
+       *   口径 = 当前所在 + 走过 + 从这些地方能直接去的大陆（只隔一跳）。 */
       const c = (run.life && run.life.cultivation) || {};
       const here = c.continent || (['home', 'refuge'].indexOf(run.player && run.player.location) >= 0
         ? (run.birth && run.birth.continent) : (run.player && run.player.location));
       const unlocked = [];
-      if (here && unlocked.indexOf(here) < 0) unlocked.push(here);
-      for (const id of (c.visited || [])) if (unlocked.indexOf(id) < 0) unlocked.push(id);
+      const push = (id) => { if (id && unlocked.indexOf(id) < 0) unlocked.push(id); };
+      push(here);
+      for (const id of (c.visited || [])) push(id);
+      const known = unlocked.slice();
+      for (const id of known) {
+        const g = (engine.GEOGRAPHY || []).find(x => x.id === id);
+        if (!g) continue;
+        for (const b of (g.connections || [])) push(b);
+      }
       const set = new Set(unlocked), edges = new Set();
       for (const g of (engine.GEOGRAPHY || [])) {
         for (const b of (g.connections || [])) if (set.has(g.id) && set.has(b)) edges.add([g.id, b].sort().join('-'));

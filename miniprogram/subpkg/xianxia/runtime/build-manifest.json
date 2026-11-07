@@ -3,8 +3,8 @@
   "source": {
     "repo": "buuzzy/guishanji",
     "branch": "main",
-    "commit": "c18766b3c06a9c94f9e7fac7edbee77bf5027fba",
-    "tree": "10018d4aebf5280d340db3c29d66099adf68bd2a",
+    "commit": "3d14838786b3cf13f27eee48130202928bcb4593",
+    "tree": "102b823a762867fce67840b02a99d6d1ba1f4931",
     "note": "构建那一刻本仓库的 HEAD 身份（快照信息，不参与逐字节复现校验）",
     "paths": [
       "packages/adventure/",
@@ -245,8 +245,8 @@
     },
     {
       "id": "content/story-network.js",
-      "bytes": 41021,
-      "sha256": "43718b15e70faa0c6437fc39937421d4247208120b1f7a8957a2f0e76e896317"
+      "bytes": 42403,
+      "sha256": "450589f56a4fcfb45146fc35a12a1dc1ac040e9ad43ebd49cc9b028b32eabf2c"
     },
     {
       "id": "content/story-rules10.js",
@@ -315,8 +315,8 @@
     },
     {
       "id": "packages/adventure/cultivation.js",
-      "bytes": 59462,
-      "sha256": "5e86a727af4280234aaf2d2f2e43398bcb4698ce9fe040874242d77e74b1ca00"
+      "bytes": 60848,
+      "sha256": "81825d7b23257b066a2fa8ad272b57c1bcb6fd407c8a195abcd59264efc9c494"
     },
     {
       "id": "packages/adventure/engine.js",
@@ -375,18 +375,18 @@
     },
     {
       "id": "packages/adventure/story-network.js",
-      "bytes": 17605,
-      "sha256": "b03f88d3ffc8abc7d62fa9573e80895686926a7655ad88cd3c6ea15b16b00c2b"
+      "bytes": 23010,
+      "sha256": "8e0f757cc6e40f950c413f53fef0a7e6eea44b5b80325d18731826ac15565c2e"
     },
     {
       "id": "packages/adventure/story-rules10.js",
-      "bytes": 20513,
-      "sha256": "162ecd5363f5301f926ed42b336c6ea009644b2e47b926f2e6c7da11de9811da"
+      "bytes": 21213,
+      "sha256": "0817bb2b1f7154ef145e2777a3ca2364aa381344c49047a9ce13cf24d18202ff"
     },
     {
       "id": "packages/adventure/story-rules12.js",
-      "bytes": 25549,
-      "sha256": "c52ccd28d503720e4b3365a33afa52ef7318cd32223449faa225e3fabcc3e989"
+      "bytes": 27390,
+      "sha256": "9e02002b0f5f5fb24dade89dc3b615c3d308d9129d64182d8bb41d1b7c5096ed"
     },
     {
       "id": "packages/core/random.js",
@@ -396,8 +396,8 @@
   ],
   "output": {
     "file": "engine.js",
-    "bytes": 1245899,
-    "sha256": "b0bcb3030d39e9db90a0028075f1d338025a39b68b275fc3dba43bca42f2cd91"
+    "bytes": 1247189,
+    "sha256": "5ba73cd21337c7cf50c2c97aefc7e2d4e04954e8f9a68bb285c2b308afcfd968"
   },
   "styleOutput": {
     "file": "pixel-style.js",

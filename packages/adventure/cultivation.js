@@ -36,7 +36,39 @@ export function initializeCultivation(s) {
  s.player.stones=({common:0,noble:6,clan:4})[s.birth.family];s.life.family.reserve=({common:0,noble:0,clan:12})[s.birth.family];
  s.life.family.members[0].deathAt=s.birth.family==='clan'?125*12:58*12;
  s.life.family.members[1].deathAt=s.birth.family==='clan'?180*12:82*12;
- initializeNetwork(s);initializeProgression(s);initializeRevision9(s);initialize10(s);initializeMundane(s);initialize12(s);return c;
+ initializeNetwork(s);initializeProgression(s);initializeRevision9(s);initialize10(s);initializeMundane(s);initialize12(s);alignChildhood(s);return c;
+}
+/**
+ * 童年三段与「身体检查」对齐（2026-11-07 · T3）。
+ *
+ * ## 为什么需要这一步
+ * ------------------
+ * 童年卡排在**人脉网络**那块（`packages/adventure/story-network.js` 的
+ * `network.childhood`），身体检查排在**规则十二**那块（`v12.childhood`）——
+ * 两边各自初始化，谁也不知道对方。
+ * 而规则是：**要查身体的孩子，6–9 岁那一段让给体检**
+ * （体检不是「多一张卡」，是「那一年发生的是这件事」）。
+ *
+ * ## 为什么放在这里
+ * ----------------
+ * `packages/adventure/cultivation.js` 是**枢纽**（entry）：它同时看得见
+ * 两个域的状态 ⇒ 只有它能做这个对齐。
+ * ⚠ 因果域不许反过来依赖节奏域（`scripts/check-boundaries.mjs` 盯着），
+ *   所以这个对齐**不能**写在网络模块里。
+ *
+ * ⚠ 只对当前版本（规则十二）做：旧版本（5–11）没有身体检查 ⇒ 不动它们。
+ *
+ * @param {object} s 当前人生状态
+ */
+function alignChildhood(s){
+ const c=s.life.cultivation;
+ if(!c||c.rulesVersion!==12)return;
+ const childhood=c.v12&&c.v12.childhood;
+ if(!childhood||!childhood.worthy)return;
+ const tickets=c.network&&c.network.childhood;
+ if(!tickets||!tickets.length)return;
+ /* 6–9 岁那一张（第一段）让给体检。 */
+ tickets[0].done=true;
 }
 function revised_currentContinent(s){return s.life?.cultivation?.continent||(['home','refuge'].includes(s.player.location)?s.birth.continent:s.player.location);}
 function revised_cultivationActionTrip(s,op={}){

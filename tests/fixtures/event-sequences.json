@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-07T03:33:27.380Z",
+  "generatedAt": "2026-11-07T03:52:15.851Z",
   "tool": "verify-event-sequence",
   "rulesVersions": [
     11,
@@ -1549,18 +1549,13 @@
       "ending": "loose_home",
       "steps": [
         [
-          "r12_child_body",
-          "learn",
-          3
-        ],
-        [
           "child_school",
           "read",
           6
         ],
         [
-          "child_caravan",
-          "warn",
+          "child_relic",
+          "keep",
           10
         ],
         [
@@ -1596,26 +1591,26 @@
         [
           "selection_1",
           "sword",
-          21
+          20
         ],
         [
           "selection_1_result",
           "fair",
-          23
+          22
         ],
         [
-          "echo_teacher",
+          "echo_relic",
           "follow",
           23
         ],
         [
-          "echo_teacher_check",
+          "echo_relic_check",
           "visit",
           23
         ],
         [
-          "echo_teacher_visit",
-          "notes",
+          "echo_relic_visit",
+          "compare",
           24
         ],
         [
@@ -1721,17 +1716,17 @@
         [
           "years_practice_2",
           "retreat",
-          212
+          213
         ],
         [
           "years_practice_3",
           "retreat",
-          250
+          251
         ],
         [
           "system_final",
           "guard",
-          287
+          288
         ]
       ]
     },
@@ -1741,11 +1736,6 @@
       "path": "orthodox",
       "ending": "mundane_family",
       "steps": [
-        [
-          "r12_child_fever",
-          "medicine",
-          4
-        ],
         [
           "child_school",
           "read",
@@ -1870,18 +1860,13 @@
       "ending": "battle_lost",
       "steps": [
         [
-          "r12_child_body",
-          "learn",
-          3
-        ],
-        [
-          "child_apothecary",
-          "learn",
+          "child_clan",
+          "share",
           7
         ],
         [
-          "child_caravan",
-          "warn",
+          "child_relic",
+          "keep",
           11
         ],
         [
@@ -1937,7 +1922,7 @@
         [
           "dark_ledger_1",
           "selfish",
-          24
+          25
         ],
         [
           "dark_ledger_2",
@@ -1947,32 +1932,32 @@
         [
           "thin_root_offer",
           "keep",
-          26
+          27
         ],
         [
           "family_rules",
           "keep",
-          26
+          27
         ],
         [
-          "echo_teacher",
+          "echo_relic",
           "follow",
           27
         ],
         [
-          "echo_teacher_check",
+          "echo_relic_check",
           "visit",
-          27
+          28
         ],
         [
           "family_gate",
           "return",
-          28
+          29
         ],
         [
           "r12_home_resolve",
           "repair",
-          29
+          30
         ],
         [
           "r12_home_leave",
@@ -1982,21 +1967,21 @@
         [
           "dark_sacrifice_0",
           "selfish",
-          30
+          31
         ],
         [
           "dark_sacrifice_1",
           "selfish",
-          32
+          33
         ],
         [
           "dark_sacrifice_2",
           "selfish",
-          34
+          35
         ],
         [
-          "echo_teacher_visit",
-          "notes",
+          "echo_relic_visit",
+          "compare",
           35
         ],
         [
@@ -2033,11 +2018,6 @@
       "ending": "guardian",
       "steps": [
         [
-          "r12_child_body",
-          "learn",
-          4
-        ],
-        [
           "child_school",
           "read",
           6
@@ -2070,7 +2050,7 @@
         [
           "network_method",
           "wind",
-          17
+          16
         ],
         [
           "breakthrough_1_0",
@@ -2083,24 +2063,34 @@
           19
         ],
         [
-          "r12_direction_0",
-          "retreat",
+          "selection_1",
+          "sword",
           22
+        ],
+        [
+          "selection_1_result",
+          "fair",
+          24
+        ],
+        [
+          "network_archive",
+          "iron",
+          24
         ],
         [
           "breakthrough_2_0",
           "service",
-          26
+          25
         ],
         [
           "family_gate",
           "return",
-          29
+          28
         ],
         [
           "r12_home_resolve",
           "repair",
-          30
+          29
         ],
         [
           "r12_home_leave",
@@ -2108,39 +2098,39 @@
           30
         ],
         [
-          "garden_accident",
-          "honest",
-          33
-        ],
-        [
           "selection_2",
           "sword",
-          37
+          33
         ],
         [
           "selection_2_result",
           "fair",
-          39
+          35
         ],
         [
           "advance_material_3_0_0",
           "learn",
-          40
+          39
         ],
         [
           "advance_material_3_0_1",
           "exchange",
-          46
+          45
         ],
         [
           "advance_material_3_0_2",
           "commission",
-          54
+          53
         ],
         [
-          "breakthrough_3_0",
-          "try",
-          62
+          "sect_return_0",
+          "care",
+          61
+        ],
+        [
+          "sect_return_1",
+          "care",
+          64
         ],
         [
           "world_raid",
@@ -2148,104 +2138,59 @@
           65
         ],
         [
-          "sect_return_0",
-          "care",
-          65
-        ],
-        [
-          "sect_return_1",
-          "care",
-          68
-        ],
-        [
-          "sect_return_2",
-          "care",
-          69
-        ],
-        [
-          "sect_rebuild",
-          "lead",
-          70
-        ],
-        [
-          "advance_material_3_1_1",
-          "exchange",
-          72
-        ],
-        [
-          "sect_council_0",
-          "teach",
-          80
-        ],
-        [
-          "advance_material_3_1_2",
-          "commission",
-          84
-        ],
-        [
-          "breakthrough_3_1",
+          "breakthrough_3_0",
           "try",
-          92
-        ],
-        [
-          "sect_council_1",
-          "teach",
-          102
+          65
         ],
         [
           "years_practice_0",
           "retreat",
-          108
-        ],
-        [
-          "sect_council_2",
-          "teach",
-          138
+          78
         ],
         [
           "advance_material_4_0_0",
           "learn",
-          142
+          108
         ],
         [
           "advance_material_4_0_1",
           "exchange",
-          152
+          118
         ],
         [
           "advance_material_4_0_2",
           "commission",
-          167
+          133
         ],
         [
           "breakthrough_4_0",
           "try",
-          182
+          148
         ],
         [
           "tribulation_prepare",
           "decline",
-          202
+          168
         ],
         [
           "years_practice_1",
           "retreat",
-          204
+          171
         ],
         [
           "years_practice_2",
           "retreat",
-          242
+          208
         ],
         [
           "years_practice_3",
           "retreat",
-          280
+          246
         ],
         [
           "system_final",
           "guard",
-          317
+          284
         ]
       ]
     },
@@ -2256,18 +2201,13 @@
       "ending": "mortal_home",
       "steps": [
         [
-          "r12_child_body",
-          "learn",
-          4
-        ],
-        [
           "child_school",
           "read",
           6
         ],
         [
-          "child_friend",
-          "witness",
+          "child_relic",
+          "keep",
           10
         ],
         [
@@ -2281,18 +2221,18 @@
           16
         ],
         [
-          "echo_friend",
+          "echo_teacher",
           "follow",
           23
         ],
         [
-          "echo_friend_check",
+          "echo_teacher_check",
           "visit",
           23
         ],
         [
-          "echo_friend_visit",
-          "help",
+          "echo_teacher_visit",
+          "notes",
           24
         ],
         [
@@ -2319,18 +2259,13 @@
       "ending": "old_age",
       "steps": [
         [
-          "r12_child_body",
-          "learn",
-          4
-        ],
-        [
           "child_apothecary",
           "learn",
           9
         ],
         [
-          "child_caravan",
-          "warn",
+          "child_relic",
+          "keep",
           12
         ],
         [
@@ -2444,21 +2379,16 @@
       "seed": "序列基线-6",
       "rulesVersion": 12,
       "path": "loose",
-      "ending": "loose_home",
+      "ending": "battle_lost",
       "steps": [
-        [
-          "r12_child_body",
-          "learn",
-          5
-        ],
         [
           "child_clan",
           "share",
           7
         ],
         [
-          "child_friend",
-          "witness",
+          "child_relic",
+          "keep",
           12
         ],
         [
@@ -2504,42 +2434,37 @@
         [
           "loose_contract_2",
           "selfish",
-          25
+          24
         ],
         [
-          "echo_friend",
+          "echo_relic",
           "follow",
+          24
+        ],
+        [
+          "echo_relic_check",
+          "visit",
           25
         ],
         [
-          "echo_friend_check",
-          "visit",
+          "echo_relic_visit",
+          "compare",
           26
-        ],
-        [
-          "echo_friend_visit",
-          "help",
-          27
         ],
         [
           "r12_direction_0",
           "retreat",
-          29
+          28
         ],
         [
           "r12_foundation_supply",
           "serve",
-          33
+          32
         ],
         [
           "breakthrough_2_0",
           "service",
-          33
-        ],
-        [
-          "network_clan_call",
-          "check",
-          36
+          32
         ],
         [
           "loose_relic_0",
@@ -2549,107 +2474,7 @@
         [
           "loose_relic_1",
           "selfish",
-          40
-        ],
-        [
-          "loose_relic_2",
-          "selfish",
-          42
-        ],
-        [
-          "system_warrant",
-          "explain",
-          46
-        ],
-        [
-          "road_turn",
-          "keep",
-          49
-        ],
-        [
-          "selection_2",
-          "sword",
-          52
-        ],
-        [
-          "selection_2_result",
-          "fair",
-          54
-        ],
-        [
-          "advance_material_3_0_0",
-          "learn",
-          54
-        ],
-        [
-          "advance_material_3_0_1",
-          "search",
-          60
-        ],
-        [
-          "advance_material_3_0_2",
-          "refine",
-          65
-        ],
-        [
-          "breakthrough_3_0",
-          "try",
-          70
-        ],
-        [
-          "loose_portal_0",
-          "selfish",
-          80
-        ],
-        [
-          "years_practice_0",
-          "retreat",
-          82
-        ],
-        [
-          "advance_material_4_0_0",
-          "learn",
-          112
-        ],
-        [
-          "advance_material_4_0_1",
-          "search",
-          122
-        ],
-        [
-          "advance_material_4_0_2",
-          "refine",
-          132
-        ],
-        [
-          "breakthrough_4_0",
-          "try",
-          142
-        ],
-        [
-          "tribulation_prepare",
-          "decline",
-          162
-        ],
-        [
-          "years_practice_1",
-          "retreat",
-          165
-        ],
-        [
-          "years_practice_2",
-          "retreat",
-          203
-        ],
-        [
-          "years_practice_3",
-          "retreat",
-          241
-        ],
-        [
-          "system_final",
-          "guard",
-          279
+          39
         ]
       ]
     },
@@ -2663,11 +2488,6 @@
           "r12_child_fever",
           "medicine",
           4
-        ],
-        [
-          "child_apothecary",
-          "learn",
-          8
         ],
         [
           "child_relic",
@@ -2753,18 +2573,13 @@
       "ending": "demon_oath",
       "steps": [
         [
-          "r12_child_body",
-          "learn",
-          4
-        ],
-        [
-          "child_apothecary",
-          "learn",
+          "child_school",
+          "read",
           8
         ],
         [
-          "child_friend",
-          "hide",
+          "child_relic",
+          "trace",
           12
         ],
         [
@@ -2805,7 +2620,7 @@
         [
           "breakthrough_1_0",
           "service",
-          19
+          18
         ],
         [
           "selection_1",
@@ -2833,44 +2648,49 @@
           37
         ],
         [
-          "family_dispute",
-          "stop",
+          "road_turn",
+          "keep",
           42
+        ],
+        [
+          "family_support",
+          "peace",
+          44
         ],
         [
           "selection_2",
           "sword",
-          45
+          47
         ],
         [
           "selection_2_result",
           "fair",
-          47
+          49
         ],
         [
-          "road_turn",
-          "keep",
-          50
+          "family_dispute",
+          "stop",
+          51
         ],
         [
           "advance_material_3_0_0",
           "learn",
-          59
+          58
         ],
         [
           "advance_material_3_0_1",
           "exchange",
-          65
+          64
         ],
         [
           "advance_material_3_0_2",
           "commission",
-          73
+          72
         ],
         [
           "breakthrough_3_0",
           "try",
-          81
+          80
         ],
         [
           "world_raid",
@@ -2910,37 +2730,37 @@
         [
           "years_practice_0",
           "retreat",
-          117
+          118
         ],
         [
           "advance_material_4_0_0",
           "learn",
-          147
+          148
         ],
         [
           "advance_material_4_0_1",
           "exchange",
-          157
+          158
         ],
         [
           "advance_material_4_0_2",
           "commission",
-          172
+          173
         ],
         [
           "breakthrough_4_0",
           "try",
-          187
+          188
         ],
         [
           "tribulation_prepare",
           "decline",
-          207
+          208
         ],
         [
           "years_practice_1",
           "retreat",
-          210
+          211
         ],
         [
           "years_practice_2",
@@ -2950,12 +2770,12 @@
         [
           "years_practice_3",
           "retreat",
-          285
+          287
         ],
         [
           "system_final",
           "guard",
-          323
+          325
         ]
       ]
     },
@@ -2966,24 +2786,14 @@
       "ending": "battle_lost",
       "steps": [
         [
-          "r12_child_body",
-          "learn",
-          2
-        ],
-        [
-          "child_apothecary",
-          "learn",
+          "child_caravan",
+          "warn",
           8
         ],
         [
-          "child_friend",
-          "witness",
+          "child_relic",
+          "keep",
           11
-        ],
-        [
-          "child_recruit",
-          "ask",
-          15
         ],
         [
           "early_loose",
@@ -3006,18 +2816,18 @@
           17
         ],
         [
-          "echo_friend",
+          "echo_teacher",
           "follow",
           23
         ],
         [
-          "echo_friend_check",
+          "echo_teacher_check",
           "visit",
           23
         ],
         [
-          "echo_friend_visit",
-          "help",
+          "echo_teacher_visit",
+          "notes",
           24
         ],
         [
@@ -3033,7 +2843,7 @@
         [
           "family_support",
           "peace",
-          36
+          35
         ],
         [
           "loose_relic_0",
@@ -3054,18 +2864,13 @@
       "ending": "mortal_home",
       "steps": [
         [
-          "r12_child_body",
-          "learn",
-          5
-        ],
-        [
           "child_apothecary",
           "learn",
           6
         ],
         [
-          "child_friend",
-          "witness",
+          "child_relic",
+          "keep",
           11
         ],
         [
@@ -3077,6 +2882,21 @@
           "reception",
           "home",
           16
+        ],
+        [
+          "echo_teacher",
+          "follow",
+          23
+        ],
+        [
+          "echo_teacher_check",
+          "visit",
+          23
+        ],
+        [
+          "echo_teacher_visit",
+          "notes",
+          24
         ],
         [
           "family_support",
@@ -3101,11 +2921,6 @@
       "path": "orthodox",
       "ending": "guardian",
       "steps": [
-        [
-          "r12_child_body",
-          "learn",
-          2
-        ],
         [
           "child_school",
           "read",
@@ -3154,7 +2969,7 @@
         [
           "sect_repair_1",
           "care",
-          23
+          24
         ],
         [
           "sect_repair_2",
@@ -3162,9 +2977,14 @@
           26
         ],
         [
-          "family_rules",
+          "thin_root_offer",
           "keep",
           26
+        ],
+        [
+          "family_rules",
+          "keep",
+          27
         ],
         [
           "echo_relic",
@@ -3172,43 +2992,43 @@
           27
         ],
         [
-          "echo_relic_check",
-          "visit",
-          27
-        ],
-        [
-          "family_gate",
-          "return",
-          28
-        ],
-        [
-          "r12_home_resolve",
-          "repair",
-          29
-        ],
-        [
-          "r12_home_leave",
-          "return",
-          30
-        ],
-        [
-          "family_home_ambush",
-          "witness",
-          30
-        ],
-        [
           "sect_trial_0",
           "care",
-          30
+          28
         ],
         [
           "sect_trial_1",
           "care",
-          33
+          30
         ],
         [
           "sect_trial_2",
           "care",
+          33
+        ],
+        [
+          "family_gate",
+          "return",
+          33
+        ],
+        [
+          "r12_home_resolve",
+          "repair",
+          34
+        ],
+        [
+          "r12_home_leave",
+          "return",
+          35
+        ],
+        [
+          "family_home_ambush",
+          "witness",
+          35
+        ],
+        [
+          "echo_relic_check",
+          "visit",
           35
         ],
         [
@@ -3227,23 +3047,23 @@
           38
         ],
         [
-          "family_dispute",
-          "stop",
-          43
-        ],
-        [
           "road_turn",
           "keep",
-          46
+          44
         ],
         [
           "selection_2",
           "sword",
-          49
+          47
         ],
         [
           "selection_2_result",
           "fair",
+          49
+        ],
+        [
+          "family_dispute",
+          "stop",
           51
         ],
         [
@@ -3334,12 +3154,12 @@
         [
           "years_practice_2",
           "retreat",
-          281
+          280
         ],
         [
           "years_practice_3",
           "retreat",
-          319
+          318
         ],
         [
           "system_final",

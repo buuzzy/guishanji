@@ -1,24 +1,123 @@
 import {random,hashText} from '../core/random.js';
 import {active10,canCultivate} from './story-rules10.js';
-import {CHILD_WINDOWS,METHODS,NETWORK_EVENTS} from '../../content/story-network.js';
-import {NETWORK_EVENTS as FROZEN_NETWORK_EVENTS} from '../../content/story-network-v11.js';
+import {CHILD_WINDOWS as CURRENT_CHILD_WINDOWS,METHODS,NETWORK_EVENTS} from '../../content/story-network.js';
+import {CHILD_WINDOWS as FROZEN_CHILD_WINDOWS,NETWORK_EVENTS as FROZEN_NETWORK_EVENTS} from '../../content/story-network-v11.js';
 const age=s=>Math.floor(s.month/12)+(s.birth.startAge||0);
 const seen=(s,id)=>s.decisions.some(d=>d.event===id)||s.pending?.event===id;
 const n=s=>s.life.cultivation.network;
 const log=(s,cb,title,body)=>cb.log({kind:'institution',title,body,automatic:true,context:s.life.cultivation.context||'home',location:s.player.location});
 const int=(v,max=13000)=>Number.isSafeInteger(v)&&v>=0&&v<=max;
-function childEligible(s,id){
- if(id==='child_clan'||id==='child_family_vow')return s.birth.family==='clan'&&s.birth.upbringing==='ordinary';
- if(id==='child_keeper'||id==='child_secret')return ['demonic','beast'].includes(s.birth.upbringing);
- if(['demonic','beast'].includes(s.birth.upbringing))return ['child_teacher','child_relic','child_keeper','child_secret'].includes(id);
+/**
+ * 旧版本（规则 5–11）的童年卡筛选 —— **一个字都不能改**。
+ *
+ * ## 为什么单独留一份（2026-11-07 · T3）
+ * --------------------------------------
+ * 这个模块（`packages/adventure/story-network.js`）的 `initializeNetwork`
+ * **被规则 7 / 8 / 10 / 11 共用**（`cultivation-v7/-v8/-v10/-v11.js` 都 import 它），
+ * 而窗口表原来也是**共用同一张**（`content/story-network.js` 的 `CHILD_WINDOWS`）。
+ *
+ * ⚠ T3 改造童年时改了那张表 ⇒ 旧版本的人生序列**跟着变了**
+ *   （实测规则 11 的 12 条固定序列里变了 8 条：`child_caravan` 变 `child_relic`、
+ *    后面的 `echo_teacher` 一串也变）⇒ 违反「旧档逐值零差异」这条硬规矩。
+ *
+ * ⇒ 所以这里改成**按版本分流**：
+ *   · 规则 12 ⇒ 当前版本（新窗口表 + 新筛选条件）；
+ *   · 规则 5–11 ⇒ 冻结窗口表（`content/story-network-v11.js` 里那份，
+ *     与改造前共用表**逐字节相同**）+ 改造前的筛选条件。
+ *
+ * ⚠ 随机数的**消耗顺序**也必须一样：老版本每段窗口仍然抽 1 次选卡 + 2 次定年月，
+ *   否则种子相同也会排出不同的童年。
+ *
+ * @param {object} s 当前人生状态
+ * @param {string} id 童年卡 id
+ * @returns {boolean}
+ */
+function childEligibleLegacy(s,id){
+  if(id==='child_clan'||id==='child_family_vow')return s.birth.family==='clan'&&s.birth.upbringing==='ordinary';
+  if(id==='child_keeper'||id==='child_secret')return ['demonic','beast'].includes(s.birth.upbringing);
+  if(['demonic','beast'].includes(s.birth.upbringing))return ['child_teacher','child_relic','child_keeper','child_secret'].includes(id);
+  return true;
+}
+/**
+ * 这张童年卡**是不是这家的孩子**会遇到的事（**只有规则十二**用这份）。
+ *
+ * ## 为什么要有这张表（2026-11-07 · T3）
+ * -------------------------------------
+ * 以前只挡了三类（世家 / 魔道 / 妖兽出身），其余全靠随机抽签 ⇒
+ * 「跟药师学药」「渡口的少年」「宗门来招」这些卡**看着像人人都有**（实测 32%–43%），
+ * 用户 2026-11-06 报的正是这个：「跟药师学药／偷粮／测灵根 必定触发、密集」。
+ *
+ * ⇒ 现在每张卡都有**由头**：家里什么境况，才会撞上这件事。
+ *   · 族学与举荐 ⇒ 世家；
+ *   · 照看者与夜里的呼救 ⇒ 魔道 / 妖兽出身（没人照看）；
+ *   · 村塾 ⇒ 寻常人家的孩子；
+ *   · 药铺学徒 ⇒ 平民人家（送孩子去换饭吃）；
+ *   · 渡口的少年 ⇒ 家在渡口；
+ *   · 商队 ⇒ 家里跟着商路走；
+ *   · 宗门来招 / 授业者要走 ⇒ 前面得有过由头（读过书、学过药）。
+ *
+ * ⚠ `earlier` 是**前面几段已经排好的童年卡**（13–15 岁那段要看伏笔）。
+ *
+ * @param {object} s 当前人生状态
+ * @param {string} id 童年卡 id
+ * @param {Array} earlier 前面几段已经排好的卡
+ * @returns {boolean}
+ */
+function childEligible(s,id,earlier){
+ const upbringing=s.birth.upbringing,family=s.birth.family;
+ /* 族学与族里举荐：世家、且不是被外头的人带大的。 */
+ if(id==='child_clan'||id==='child_family_vow')return family==='clan'&&upbringing==='ordinary';
+ /* 照看者与夜里的呼救：魔道 / 妖兽出身。 */
+ if(id==='child_keeper'||id==='child_secret')return ['demonic','beast'].includes(upbringing);
+ if(['demonic','beast'].includes(upbringing))return ['child_teacher','child_relic','child_keeper','child_secret'].includes(id);
+ /* 村塾：寻常人家的孩子才读得起。 */
+ if(id==='child_school')return upbringing==='ordinary';
+ /* 药铺学徒：平民人家送孩子去换饭吃。 */
+ if(id==='child_apothecary')return family==='common';
+ /* 渡口的少年：家在渡口。 */
+ if(id==='child_friend')return s.birth.continent==='tide';
+ /* 商队：家里跟着商路走。 */
+ if(id==='child_caravan')return upbringing==='loose';
+ /*
+  * 13–15 岁那两张（宗门来招 / 授业者要走）都要**由头**：
+  *   · 有人真的教过你 —— 读过书（村塾）或学过药（药铺）。
+  * 没有由头的人，那几年就没人上门来找 ⇒ 那段留空（人生照过）。
+  */
+ if(id==='child_recruit'||id==='child_teacher'){
+  const marks=earlier.map(x=>x.event);
+  const taught=marks.includes('child_school')||marks.includes('child_apothecary');
+  /*
+   * 宗门来招：得**有人看得上你**。
+   * ⚠ 以前把「见过铜匣」也算由头 ⇒ 铜匣人人都有之后，
+   *   宗门来招就成了「人人都有」—— 而用户 2026-11-06 报的正是
+   *   「测灵根必定触发」。现在只认**读过书、学过药**这种由头。
+   */
+  return taught;
+ }
  return true;
 }
 export function initializeNetwork(s){
- const childhood=CHILD_WINDOWS.map(w=>{
-  const pool=w.events.filter(id=>childEligible(s,id));
-  const event=pool[Math.floor(random(s,'events')*pool.length)]||'child_teacher';
-  return {event,due:(w.from+Math.floor(random(s,'events')*(w.to-w.from+1)))*12+Math.floor(random(s,'events')*10),done:false};
- });
+ /*
+  * 版本分流（2026-11-07 · T3）：
+  *   规则 12 ⇒ 当前窗口表 + 当前筛选条件；
+  *   规则 5–11 ⇒ 冻结窗口表 + 旧筛选条件（**逐值不变**）。
+  */
+ const current=s.life?.cultivation?.rulesVersion===12;
+ const windows=current?CURRENT_CHILD_WINDOWS:FROZEN_CHILD_WINDOWS;
+ const eligible=current?childEligible:childEligibleLegacy;
+ const childhood=[];
+ for(const w of windows){
+  const pool=w.events.filter(id=>eligible(s,id,childhood));
+  const picked=pool[Math.floor(random(s,'events')*pool.length)];
+  const due=(w.from+Math.floor(random(s,'events')*(w.to-w.from+1)))*12+Math.floor(random(s,'events')*10);
+  /*
+   * 抽不到卡（这一段没有由头）⇒ **那几年没人来找你** ⇒ 这一格留空。
+   * ⚠ 以前是 `|| 'child_teacher'` ⇒ 等于「没由头也硬塞一张授业者的卡」，
+   *   那正是「必定触发」的来源之一。
+   */
+  if(!picked){childhood.push({event:null,due,skipped:true,done:true});continue;}
+  childhood.push({event:picked,due,done:false});
+ }
  s.life.cultivation.network={format:1,childhood,marks:{},echoChecked:false,method:null,methods:[],methodDue:0,bottleneck:false,seekVolume:false,volumeChecked:false,offer:null,arc:null,next:null,offerCount:0,offerChecked:[],quietUntil:0,role:null,progressMonths:0,summary:{month:0,activity:'study',months:0,skill:6},clanChecked:false,seniorChecked:false};
 }
 export function networkRate(s){
@@ -164,7 +263,11 @@ export function networkMonth(s,cb){
 }
 export function validateNetwork(s,fail){
  const a=n(s);if(!a||a.format!==1)fail('故事网络版本');
- if(!Array.isArray(a.childhood)||a.childhood.length!==3||a.childhood.some(x=>!NETWORK_EVENTS[x.event]||!int(x.due,191)||typeof x.done!=='boolean'))fail('童年经历');
+ if(!Array.isArray(a.childhood)||a.childhood.length!==3||a.childhood.some(x=>{
+  /* 空槽（那一段没有由头 ⇒ 没人上门来找你）：只认 `skipped` 且已结清。 */
+  if(x.event===null)return x.skipped!==true||x.done!==true||!int(x.due,191);
+  return !NETWORK_EVENTS[x.event]||!int(x.due,191)||typeof x.done!=='boolean';
+ }))fail('童年经历');
  if(!a.marks||Array.isArray(a.marks)||Object.entries(a.marks).length>12||Object.values(a.marks).some(x=>!NETWORK_EVENTS[x.event]||!int(x.month)||x.month>s.month))fail('童年前因');
  for(const method of [...(a.methods||[]),...(a.method?[a.method]:[])])if(!METHODS[method.id]||!int(method.acquired)||method.acquired>s.month||!int(method.months)||method.months>s.month||typeof method.source!=='string')fail('功法来源');
  if(!Array.isArray(a.methods)||a.methods.length>8)fail('功法记录');

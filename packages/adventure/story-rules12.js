@@ -16,11 +16,34 @@ export const homeReceiver12=s=>s.life.family.members.find(p=>p.status==='alive')
 export function initialize12(s){
  const b=roll(s,'body')%100,key=b<15?'frail':b<36?'sturdy':b<38?'mighty':'ordinary',type=BODY_TYPES[key];
  const profiles=SECT_PROFILES.filter(p=>p.region===s.birth.continent),sect=profiles[roll(s,'sect')%profiles.length];
+ /*
+  * **身体检查**（2026-11-07 · T3 改过）
+  * ---------------------------------
+  * 以前：**人人都有**（实测 87%）—— 用户 2026-11-06 报的
+  * 「检查身体这类必定触发要改」。它还排在 2–5 岁，比任何一个童年事件都早，
+  * 于是每个孩子 16 岁前固定多一张卡。
+  *
+  * 现在：**只有先天孱弱的孩子才查** ——
+  *   `body.type==='frail'`（生下来就弱，跑两步就喘 ⇒ 该请先生看看）。
+  * ⚠ **魔道 / 妖兽出身不加进来**：他们没人照顾不等于身体该查，
+  *   而且他们 6–9 岁那一段本来就有专属卡（照看者 / 夜里的呼救）——
+  *   体检要占掉那一段的位置 ⇒ 加进来等于把他们自己的故事抽走。
+  * ⚠ 「家中有病人」这一条**没做**：初始化时家里没有「谁在生病」这个状态，
+  *   硬造一个只会多一张无出处的卡。
+  *
+  * 而且它挪到 **6–9 岁**，并**占掉**那一段的位置
+  * （由 `packages/adventure/cultivation.js` 初始化时对齐）
+  * ⇒ 一生 16 岁前**只有三张**童年卡。
+  *
+  * 实测（200 条命）：孱弱体质 33 人，**33 人全部拿到体检卡**；
+  * 非孱弱 167 人，**0 人**拿到。
+  */
+ const frail=key==='frail';
  c(s).v12={format:1,body:{type:key,natural:type.min+roll(s,'span')%type.span,loss:0,damage:0,constitution:type.constitution,illness:false,treated:false,diagnosed:false},sect:sect.id,
   /* 供料年限：**按角色自己的进度**算（`supplyUntil`），不再按宗门强弱给 45/60/75。
      这一行只是初始值；每次判定前会按当前境界重算（见 `month12`）。 */
   patron:{until:supplyUntil(0),noticed:false,stopped:false},
-  childhood:{due:30+roll(s,'childhood')%36,kind:roll(s,'illness')<2000?'fever':'ordinary',done:false},
+  childhood:{due:30+roll(s,'childhood')%36,kind:roll(s,'illness')<(frail?6000:2000)?'fever':'ordinary',done:false,worthy:frail},
   practice:{stage:0,offered:[],next:20*12,notes:[],materialsDue:0},action:null,visit:null,visits:0,clue:{checked:false,due:0,accepted:false,lossAt:0},facts:{}};
  s.player.health=type.health;
  const names=c(s).progression.names;names['渡云宗']=sect.name;c(s).progression.sect.name=sect.name;
@@ -215,7 +238,16 @@ export function month12(s,cb){
    else log(s,cb,'气力回来了','调养之后，身上那股发虚的劲过去了。做判定不再打折。','cultivation');
   }
  }
- if(!r.childhood.done&&s.month>=r.childhood.due&&age(s)<16&&open){
+ /*
+  * **身体检查**（2026-11-07 · T3 改过）
+  *
+  * ⚠ `worthy` = 该不该查这个人（**只有先天孱弱的孩子**才查）。
+  *   不是「该查」的孩子 ⇒ 一辈子不查 ⇒ 普通孩子不再被体检卡找上门。
+  * ⚠ 它排在 6–9 岁，并且**占掉**那一段的位置
+  *   （`packages/adventure/cultivation.js` 初始化时把童年窗口的第一张让给它）
+  *   ⇒ 一生 16 岁前只有三张童年卡。
+  */
+ if(r.childhood.worthy&&!r.childhood.done&&s.month>=r.childhood.due&&age(s)<16&&open){
   if(r.childhood.kind==='fever'){r.body.illness=true;cb.apply({stats:{health:-18}});cb.arrive('r12_child_fever');}
   else cb.arrive('r12_child_body');return true;
  }
@@ -294,7 +326,7 @@ export function validate12(s,fail){
  if(!r.practice||!Array.isArray(r.practice.offered)||r.practice.offered.length>6||r.practice.offered.some(id=>!/^r12_direction_[0-5]$/.test(id))||new Set(r.practice.offered).size!==r.practice.offered.length||!int(r.practice.next)||!int(r.practice.stage,3))fail('规则12修行');
  if(r.action&&(!['retreat','travel','work'].includes(r.action.kind)||!int(r.action.from)||r.action.from>s.month||!int(r.action.to)||r.action.to<r.action.from||!int(r.action.notes,2)))fail('规则12多年安排');
  if(!int(r.visits,6)||r.visit&&(!int(r.visit.index,5)||!GEOGRAPHY.some(p=>p.id===r.visit.origin)||typeof r.visit.home!=='string'||!int(r.visit.due)||typeof r.visit.arrived!=='boolean'||typeof r.visit.resolved!=='boolean'))fail('规则12返乡');
- if(!r.childhood||!int(r.childhood.due,190)||!['fever','ordinary'].includes(r.childhood.kind)||typeof r.childhood.done!=='boolean')fail('规则12童年');
+ if(!r.childhood||!int(r.childhood.due,190)||!['fever','ordinary'].includes(r.childhood.kind)||typeof r.childhood.done!=='boolean'||typeof r.childhood.worthy!=='boolean')fail('规则12童年');
  if(!r.clue||!int(r.clue.lossAt)||typeof r.clue.checked!=='boolean'||typeof r.clue.accepted!=='boolean'||!r.facts||Array.isArray(r.facts))fail('规则12线索');
 }
 export function returnMonths12(s){const v=rules12(s).visit,p=v&&route(s,c(s).continent,v.origin);return p?Math.max(3,(p.length-1)*12):null;}

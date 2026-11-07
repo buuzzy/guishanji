@@ -70,9 +70,20 @@ export function route(s,from,to){
 export function echoKind(s){
  const m=c(s).network.marks;
  if(m.friend_witness||m.friend_hide)return 'friend';
- if(m.old_page||m.relic_route)return 'relic';
- if(m.herbs||m.teacher_notes||m.teacher_route||m.route_contact)return 'teacher';
- return null;
+ const teacher=!!(m.herbs||m.teacher_notes||m.teacher_route||m.route_contact);
+ const relic=!!(m.old_page||m.relic_route);
+ /*
+  * 「旧联系人」这条线，**先认出谁**决定了整条线走哪一版（friend / relic / teacher）。
+  *
+  * ⚠ 旧版本（5–11）保持原顺序（旧物在前）：逐值不变。
+  * ⚠ 当前版本（规则十二）改成「授业者在前」——
+  *   因为铜匣（child_relic）现在**人人都有**（10–12 岁那段），
+  *   若仍按旧顺序，「旧联系人」对每个孩子都是铜匣那条 ⇒
+  *   「授业者回响」整条线（echo_teacher / echo_teacher_check / echo_teacher_visit）
+  *   **永远发不出来** ⇒ 实测 0/120 可达。
+  */
+ if(c(s).rulesVersion===12)return teacher?'teacher':relic?'relic':null;
+ return relic?'relic':teacher?'teacher':null;
 }
 /**
  * 「旧联系人」这条线的状态往前推一步。

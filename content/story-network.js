@@ -14,9 +14,31 @@ export const METHODS={
 const c=(id,label,hint,reply,data={})=>({id,label,hint,reply,...data});
 const node=(id,title,text,choices,data={})=>({id,act:0,title,text,choices,...data});
 const child=(mark,effects={})=>({system:{childMark:mark},effects});
+/*
+ * 童年三段（2026-11-07 · T3 改过）
+ * ---------------------------------
+ * 以前：每段各抽一张，共 3 张 **外加**一张「身体检查」⇒ 16 岁前平均 4 张，
+ * 体检更是**人人都有**（实测 87%）—— 用户 2026-11-06 报的「检查身体必定触发」。
+ *
+ * 现在：
+ *   · 一生**只有三张**童年卡（6–9 / 10–12 / 13–15），多一张都嫌挤；
+ *   · 10–12 岁那一段**人人都有铜匣**（旧屋梁上取下来的旧物）——
+ *     它是铜匣线的钩子（T6 要靠它接上），覆盖率必须高；
+ *   · 6–9 岁那段按家境挑（谁家的孩子遇到什么事），
+ *     渡口的、商路上的、魔道与妖兽人家的，各是各的事；
+ *   · 13–15 岁那段要有**由头**：读过书、学过药、家是世家，
+ *     才有人上门来找你（宗门来招 / 授业者要走 / 族里要举荐）。
+ *   · 「身体检查」挪到 6–9 岁，**只给体弱或没人照看的孩子**，
+ *     而且它**占掉**那一段的位置（不是多一张）——
+ *     这件事由 `packages/adventure/story-rules12.js` 记，
+ *     由 `packages/adventure/cultivation.js` 在初始化时对齐。
+ *
+ * ⚠ 旧档（规则 5–11）各有自己的窗口表（`content/story-network-v9/v10/v11.js`），
+ *   一个字节都没动 ⇒ 历史基线逐值全等。
+ */
 export const CHILD_WINDOWS=[
- {from:6,to:9,events:['child_school','child_apothecary','child_clan','child_keeper']},
- {from:10,to:12,events:['child_friend','child_relic','child_caravan','child_secret']},
+ {from:6,to:9,events:['child_school','child_apothecary','child_clan','child_keeper','child_friend','child_caravan','child_secret']},
+ {from:10,to:12,events:['child_relic']},
  {from:13,to:15,events:['child_recruit','child_teacher','child_family_vow']},
 ];
 export const NETWORK_EVENTS={

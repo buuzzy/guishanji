@@ -1,8 +1,8 @@
 {
-  "createdAt": "2026-11-07T03:35:46.868Z",
+  "createdAt": "2026-11-07T04:00:26.006Z",
   "count": 120,
   "metrics": {
-    "neverSeen": 165,
+    "neverSeen": 166,
     "density10": 4,
     "density5": 3,
     "cooldownRepeats": 0,
@@ -47,6 +47,28 @@
       },
       "to": {
         "neverSeen": 165,
+        "density10": 4,
+        "density5": 3,
+        "cooldownRepeats": 0,
+        "realmContentMin": 6,
+        "endingMissing": 0,
+        "spanMax": 102
+      }
+    },
+    {
+      "at": "2026-11-07T04:00:26.005Z",
+      "reason": "T3 童年必然触发改造：一生固定三张童年卡（6–9/10–12/13–15），铜匣人人都有（99%），「跟药师学药」38%→15%、「渡口的少年」43%→8%、「宗门来招」43%→28%，身体检查只给先天孱弱的孩子；16 岁前平均卡数 4.6→2.79（最多 3）。可达性 165→166：**唯一变化的是 custody_terms，不是内容被删** —— 它由「旧账」卡的判定失败触发，判定带随机数，童年卡少一张 ⇒ 随机数序列位移 ⇒ 命 35/70 的判定这次通过了；已实测该卡仍可达（改选「先顺从，跟他们回去见管事」时 6/120 条命发出）。其余五项持平或变好：密度 4/3、冷却 0、结局 0、跨度 102，节奏对齐筑基段内容种数 25→26。",
+      "from": {
+        "neverSeen": 165,
+        "density10": 4,
+        "density5": 3,
+        "cooldownRepeats": 0,
+        "realmContentMin": 6,
+        "endingMissing": 0,
+        "spanMax": 102
+      },
+      "to": {
+        "neverSeen": 166,
         "density10": 4,
         "density5": 3,
         "cooldownRepeats": 0,

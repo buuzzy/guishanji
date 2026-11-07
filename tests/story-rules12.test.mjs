@@ -33,12 +33,136 @@ test('独立出生体质有四类，普通家庭寿限与亲人寿限不再固�
 test('未入道的天生神力不会给法力或灵根',()=>{
  const s=pending('r12_child_body',{root:'未显灵根',realm:0,years:5});rules12(s).body.type='mighty';assert.ok(!canCultivate(s));assert.ok(!hasMana(s));choose(s,'practice');assert.ok(!canCultivate(s));assert.equal(s.player.realm,0);
 });
-test('普通幼年与病症会自然到达，不再等六岁才出现抉择',()=>{
- const kinds=new Set();for(let i=0;i<40;i++){const s=createRun({seed:'early-body-'+i});advanceToChoice(s);assert.ok(s.month<6*12);kinds.add(s.pending.event);validateRun(s);}assert.ok(kinds.has('r12_child_fever'));assert.ok(kinds.has('r12_child_body'));
+test('体弱的孩子六岁前有一次看病抉择，普通孩子不再被体检',()=>{
+ /*
+  * 2026-11-07 · T3 改过：
+  *   以前「身体检查」**人人都有**（实测 87%）—— 用户 2026-11-06 报的
+  *   「检查身体这类必定触发要改」。
+  * ⇒ 现在**只有先天孱弱的孩子**才查；查的那一次仍然排在六岁前
+  *   （孩子人生里最早的一次抉择），而且它**占掉**童年 6–9 岁那一张
+  *   ⇒ 一生 16 岁前固定三张童年卡。
+  */
+ const kinds=new Set();let frailSeen=0,ordinaryEarly=0;
+ for(let i=0;i<60;i++){
+  const s=createRun({seed:'early-body-'+i});
+  const frail=rules12(s).body.type==='frail';
+  advanceToChoice(s);
+  if(frail){
+   frailSeen++;
+   assert.ok(s.month<6*12,`体弱的孩子六岁前就该有一次抉择（实际第 ${s.month} 个月）`);
+   assert.ok(['r12_child_body','r12_child_fever'].includes(s.pending.event),`体弱的孩子抽到的是看病（实际 ${s.pending.event}）`);
+   kinds.add(s.pending.event);
+  }else{
+   assert.ok(s.month>=6*12,`普通孩子不该在六岁前被体检（实际第 ${s.month} 个月：${s.pending&&s.pending.event}）`);
+   if(s.pending&&['r12_child_body','r12_child_fever'].includes(s.pending.event))ordinaryEarly++;
+  }
+  validateRun(s);
+ }
+ assert.ok(frailSeen>0,`这一批种子里得有体弱的孩子（实际 ${frailSeen} 个）`);
+ assert.equal(ordinaryEarly,0,'普通孩子一次都不该被体检');
+ assert.ok(kinds.has('r12_child_fever'),'发热的体检仍然要能抽到');
+ assert.ok(kinds.has('r12_child_body'),'平常的体检仍然要能抽到');
 });
 test('童年求医在完成前不治愈，治病不会保证入道',()=>{
  const s=pending('r12_child_fever',{root:'未显灵根',realm:0,years:5});rules12(s).body.illness=true;s.player.health=65;
  choose(s,'immortal');assert.equal(rules12(s).body.treated,false);advance(s,5);assert.equal(rules12(s).body.treated,false);finish(s);assert.equal(s.player.realm,0);assert.ok(s.phase==='ended'||s.player.health>=65);validateRun(s);
+});
+/**
+ * 童年这一段跑一遍，收集 16 岁前发出的每一张卡。
+ * @param {string} seed 种子
+ * @param {number} rulesVersion 规则版本（默认当前版本 12）
+ */
+function childhoodRun(seed,rulesVersion=12){
+ const s=createRun({seed,rulesVersion});
+ const cards=[];let guard=0;
+ try{
+  while(s.phase==='life'&&guard++<600){
+   while(s.phase==='life'&&!s.pending)advance(s,1);
+   if(s.phase!=='life')break;
+   const av=options(s).filter(o=>o.enabled);
+   if(!av.length)break;
+   cards.push({event:s.pending.event,month:s.month});
+   if(s.month>=16*12)break;
+   choose(s,av[0].id);
+  }
+ }catch(e){/* 这条命跑不通就不算它 */ }
+ return {cards,tickets:c(s).network.childhood};
+}
+test('童年三段：一生最多三张卡、铜匣人人有、每张都有由头',()=>{
+ /*
+  * 2026-11-07 · T3 的验收标准（用户 2026-11-06 提的第 8、9 条）：
+  *   · 16 岁前的卡片数 **≤ 3 张**（以前平均 4.6、最多 4）；
+  *   · 铜匣（child_relic）覆盖率 **≥ 80%**（它是铜匣线的钩子，T6 要靠它接上）；
+  *   · 每张童年卡都有由头：药铺学徒＝平民人家、渡口的少年＝家在渡口、
+  *     商队＝家里跟着商路走、族学＝世家、照看者与呼救＝魔道／妖兽出身。
+  */
+ const lives=120;let total=0,max=0,relic=0,apothecary=0,friend=0,recruit=0,ran=0;
+ for(let i=0;i<lives;i++){
+  const {cards,tickets}=childhoodRun('child-三段-'+i);
+  if(!tickets||tickets.length!==3)continue;
+  ran++;
+  const before=cards.filter(x=>x.month<16*12);
+  total+=before.length;max=Math.max(max,before.length);
+  const ids=tickets.map(t=>t.event);
+  if(ids.includes('child_relic'))relic++;
+  if(ids.includes('child_apothecary'))apothecary++;
+  if(ids.includes('child_friend'))friend++;
+  if(ids.includes('child_recruit'))recruit++;
+  /* 10–12 岁那一段固定是铜匣；铜匣永远有 ⇒ 那一段永远不是空槽。 */
+  assert.equal(tickets[1].event,'child_relic',`10–12 岁那一段固定是铜匣（实际 ${tickets[1].event}）`);
+  /* 空槽只允许出现在 13–15 岁那一段（那一段要「读过书或学过药」的由头）。 */
+  for(const t of tickets)if(t.event===null)assert.equal(t.done,true,'空槽必须已经结清，不许再发出来');
+ }
+ assert.ok(ran>=lives*0.9,`这一批种子要能跑起来（实际 ${ran}/${lives}）`);
+ assert.ok(max<=3,`16 岁前最多三张卡（实际最多 ${max} 张）`);
+ assert.ok(total/ran<=3,`16 岁前平均不超过三张卡（实际平均 ${(total/ran).toFixed(2)} 张）`);
+ assert.ok(relic/ran>=0.8,`铜匣覆盖率不得低于 80%（实际 ${(relic/ran*100).toFixed(0)}%）`);
+ /* 「跟药师学药／偷粮／测灵根」不再是人人都有。 */
+ assert.ok(apothecary/ran<0.5,`跟药师学药不再是人人都有（实际 ${(apothecary/ran*100).toFixed(0)}%）`);
+ assert.ok(friend/ran<0.5,`渡口的少年不再是人人都有（实际 ${(friend/ran*100).toFixed(0)}%）`);
+ assert.ok(recruit/ran<0.5,`宗门来招不再是人人都有（实际 ${(recruit/ran*100).toFixed(0)}%）`);
+});
+test('童年卡按家境挑：魔道妖兽人家不读村塾也不进药铺',()=>{
+ /*
+  * 这条是「结构保证」，不是抽样统计：换个种子也不该破。
+  */
+ let seen=0;
+ for(let i=0;i<400;i++){
+  const s=createRun({seed:'child-家境-'+i});
+  const b=s.birth,ids=c(s).network.childhood.map(t=>t.event);
+  if(!ids.length)continue;
+  seen++;
+  if(['demonic','beast'].includes(b.upbringing)){
+   assert.ok(!ids.includes('child_school'),`魔道／妖兽人家的孩子不该读村塾（实际 ${ids}）`);
+   assert.ok(!ids.includes('child_apothecary'),`魔道／妖兽人家的孩子不该进药铺（实际 ${ids}）`);
+   assert.ok(!ids.includes('child_friend'),`魔道／妖兽人家的孩子不该在渡口（实际 ${ids}）`);
+   assert.ok(!ids.includes('child_caravan'),`魔道／妖兽人家的孩子不该跟商队（实际 ${ids}）`);
+  }
+  if(b.family!=='common')assert.ok(!ids.includes('child_apothecary'),`不是平民人家的孩子不该被送去药铺当学徒（实际 ${ids}）`);
+  if(b.continent!=='tide')assert.ok(!ids.includes('child_friend'),`不在渡口的孩子不该遇到渡口那件事（实际 ${ids}）`);
+  if(b.upbringing!=='loose')assert.ok(!ids.includes('child_caravan'),`不跟商路走的家庭不该随商队（实际 ${ids}）`);
+  if(b.family!=='clan'||b.upbringing!=='ordinary')assert.ok(!ids.includes('child_clan'),`不是世家嫡庶相配的孩子不该上族学（实际 ${ids}）`);
+ }
+ assert.ok(seen>=300,`这一批种子要能跑起来（实际 ${seen}）`);
+});
+test('旧版本的童年一字未改：窗口表与筛选条件都走冻结那一份',()=>{
+ /*
+  * ⚠ 这条守的是 T3 差点踩进去的坑：
+  *   `packages/adventure/story-network.js` 的童年初始化**被规则 7/8/10/11 共用**，
+  *   改造童年时若不分流，旧版本的人生会跟着变（实测规则 11 的 12 条固定序列变了 8 条）。
+  */
+ for(let i=0;i<60;i++){
+  const s=createRun({seed:'child-旧档-'+i,rulesVersion:11});
+  const t=c(s).network.childhood;
+  assert.equal(t.length,3,'旧版本也是三段');
+  for(const x of t){
+   assert.ok(x.event!==null,'旧版本不该有空槽');
+   assert.equal(x.done,false);
+  }
+  assert.ok(['child_school','child_apothecary','child_clan','child_keeper'].includes(t[0].event),`旧版本 6–9 岁段仍是冻结那四张（实际 ${t[0].event}）`);
+  assert.ok(['child_friend','child_relic','child_caravan','child_secret'].includes(t[1].event),`旧版本 10–12 岁段仍是冻结那四张（实际 ${t[1].event}）`);
+  assert.ok(['child_recruit','child_teacher','child_family_vow'].includes(t[2].event),`旧版本 13–15 岁段不变（实际 ${t[2].event}）`);
+ }
 });
 test('童年热病存在真实死亡分支',()=>{
  let died=false;for(let i=0;i<120&&!died;i++){const s=createRun({seed:'illness-death-'+i});advanceToChoice(s);if(s.pending.event!=='r12_child_fever')continue;choose(s,'rest');finish(s);if(s.phase==='ended'){assert.equal(s.ending.id,'childhood_illness');died=true;}}assert.ok(died);

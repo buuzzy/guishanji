@@ -167,6 +167,25 @@ const ADDED = [
   /* 2026-11-08：T6 剧情承接 —— 魔道入口有条件、选项里的人名先被介绍、童年结果都有下文 */
   'scripts/audit-plot.mjs',
   'tests/plot.test.mjs',
+  /* 2026-11-08：T7 表达域接管修仙线 —— 285 张卡的说法搬进 content/expressions/events/ */
+  'content/expressions/events/index.js',
+  'content/expressions/events/entry.js',
+  'content/expressions/events/trial.js',
+  'content/expressions/events/sect.js',
+  'content/expressions/events/wild.js',
+  'content/expressions/events/child.js',
+  'content/expressions/events/material.js',
+  'content/expressions/events/twelve.js',
+  'content/expressions/events/echo.js',
+  'content/expressions/events/mundane.js',
+  'scripts/verify-event-expressions.mjs',
+  'scripts/t7-reverse.mjs',
+  'scripts/t7-diff.mjs',
+  'scripts/audit-completeness.mjs',
+  'scripts/lib/text-numbers.mjs',
+  'tests/fixtures/event-expressions.json',
+  'tests/fixtures/event-expressions-pre-rewrite.json',
+  'docs/表达域接管-修仙线-2026-11-08.md',
 ];
 
 

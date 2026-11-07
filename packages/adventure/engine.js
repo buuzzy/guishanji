@@ -11,6 +11,7 @@ import { activityContext, personHere } from './context.js';
 import { titleAllows } from './gates.js';
 
 import { makeReadable } from '../../content/expressions/index.js';
+import { makeReadableEvents } from '../../content/expressions/events/index.js';
 import { EXPEDITION_CHANGES, CLUE_EVENTS } from '../../content/expedition-changes.js';
 import { FAMILY_EVENTS, familyState, familyAvailable } from './family.js';
 import { breakthroughRecord } from './realm.js';
@@ -27,6 +28,19 @@ const NODES = { ...makeReadable({ ...ORIGINAL_NODES, ...EPISODES }), ...EXPEDITI
 NODES.beacon.legacyOnly = true;
 Object.assign(NODES,CULTIVATION_EVENTS);
 for(const node of Object.values(CULTIVATION_EVENTS))node.cultivationOnly=true;
+/*
+ * 修仙线的说法交给**表达域**（2026-11-08 · T7）。
+ *
+ * 经典那条路的 66 张早就在表达域里（`makeReadable`），修仙这条路的 285 张却一张都没进去
+ * ⇒ 玩家读到的全是「一句里塞三件事」的老写法（用户 2026-11-06 提的第 10 条：
+ * 「表述优雅但难懂，不够通俗」）。
+ *
+ * ⚠ **只换说法，不换事实**：标题、正文、选项提示语三样换成表达域的版本；
+ *   效果、判定、代价、月份、后续事件一个字都不动（那些是规则层的）。
+ * ⚠ **只对当前版本（规则十二）生效**：历史版本（5–11）各有自己的事件表快照，
+ *   那些快照一个字都不动（eventsfid 门禁盯着）。
+ */
+const READABLE_EVENTS=makeReadableEvents(CULTIVATION_EVENTS);
 const CAST = { ...ORIGINAL_CAST, ...NEW_CAST };
 const ENDINGS = { ...ORIGINAL_ENDINGS, ...EXTRA_ENDINGS, ...SYSTEM_ENDINGS,...MUNDANE_ENDINGS,childhood_illness:{title:'夭折于童年',text:'热病没能治好，家人守到了最后。短短的一生，留在他们记得的院落里。'},breakthrough_lost:{title:'陨落于冲关',text:'强行冲关伤断了心脉，石室外再没等到你的回音。留下的卷册与未用完的药，由相识的人收起。'} };
 export { NODES as EVENTS, ENDINGS as ALL_ENDINGS };
@@ -52,7 +66,7 @@ export function duration(months) {
 }
 function eventNode(state,id){
  if(state.life?.cultivation&&String(id).startsWith('m11_')&&state.life.cultivation.rulesVersion<11)return undefined;
- const c=state.life?.cultivation,table=c&&(c.rulesVersion===12?CULTIVATION_EVENTS:c.rulesVersion===11?RULES11_CULTIVATION_EVENTS:c.rulesVersion===10?RULES10_CULTIVATION_EVENTS:c.rulesVersion===9?RULES9_CULTIVATION_EVENTS:c.rulesVersion===8?RULES8_CULTIVATION_EVENTS:c.rulesVersion===7?RULES7_CULTIVATION_EVENTS:c.rulesVersion===6?RULES6_CULTIVATION_EVENTS:c.rulesVersion===5?RULES5_CULTIVATION_EVENTS:LEGACY_CULTIVATION_EVENTS);
+ const c=state.life?.cultivation,table=c&&(c.rulesVersion===12?READABLE_EVENTS:c.rulesVersion===11?RULES11_CULTIVATION_EVENTS:c.rulesVersion===10?RULES10_CULTIVATION_EVENTS:c.rulesVersion===9?RULES9_CULTIVATION_EVENTS:c.rulesVersion===8?RULES8_CULTIVATION_EVENTS:c.rulesVersion===7?RULES7_CULTIVATION_EVENTS:c.rulesVersion===6?RULES6_CULTIVATION_EVENTS:c.rulesVersion===5?RULES5_CULTIVATION_EVENTS:LEGACY_CULTIVATION_EVENTS);
  return table&&Object.hasOwn(table,id)?table[id]:Object.hasOwn(NODES,id)?NODES[id]:undefined;
 }
 export function currentNode(state) { return state.pending ? eventNode(state,state.pending.event) : null; }

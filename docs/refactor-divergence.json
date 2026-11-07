@@ -152,6 +152,14 @@
         "content/story-rules12.js": "changed",
         "packages/adventure/story-rules10.js": "changed"
       }
+    },
+    {
+      "id": "T7",
+      "title": "表达域接管修仙线：285 张卡的说法搬进 content/expressions/events/（只换说法，行为零变化）",
+      "why": "用户 2026-11-06 提的第 10 条（「文案说人话」）。依据 docs/剧情复盘-2026-11-06.md §10、§11：修仙这条路上有 285 张决策卡，2026-11-07 之前**一张都没进过表达域**（经典线那 66 张早就在 content/expressions/ 里了）⇒ 玩家读到的全是「一句里塞三件事」的老写法（实测：285 张卡里只有 66 张口语化；正文中位 63 字、p90 94 字、最长 130 字；hint 中位 18 字）。这一轮把修仙线的说法整体搬进表达域：**只换 title / text / hint 三个字段**，label（选项动作本身）、reply（回应）、effects（效果）、check（判定）、months（耗时）、后续指向一律不动。⚠ **为什么只改规则十二**：旧版本（规则 5–11）走各自的事件表快照，接管点放在 packages/adventure/engine.js 的 eventNode() 里、只有 rulesVersion===12 才读表达域；规则 5–11 的执行器与事件表一个字节都没动（eventsfid 与 eventseq 两道门禁盯着）。⚠ **层方向不许越界**：表达域是数据层，不许反向 import 规则层 ⇒ 9 个分片文件**一个 import 都没有**，所有「按情形说话」的分支都在表达域内自己判断状态，分支数与规则层一致（由门禁按行为判据核，不按源码形态核）。⚠ **接管点为什么不需要新许可证**：域依赖方向是单向直线（呈现→表达→节奏→因果→角色→世界），而 packages/adventure/engine.js 正是 entry 角色（规则层的枢纽）⇒ 表达域从它接管是既有方向内的合法边，不需要新增越界许可证（docs/结构章程.md 的层方向表未变，check-boundaries 门禁 0 问题）。⚠ **专名的双向口径**：「不许丢」查人工维护的角色名表 + 物件名表；「不许发明」查专名是否出现在词表或规则层全部卡的原文里（收集范围含 title/text/hint/reply/label）；地名是动态值（homeName(s)），硬写会对别的出生地说错 ⇒ 放行。⚠ **分支数判据为什么用行为不用源码形态**：数「引号个数」能被模板字符串绕过去 ⇒ 改成在 12 份分支探针状态下数「能说出几种不同的话」（distinctSayings），模板字符串藏不住。差异审查（scripts/t7-diff.mjs）：一条不许少、选项数不许变、正文里的数字不许变、专名不许丢；规则 5–11 的事件表摘要逐字未变、24 条固定人生的 594 步决策序列零差异、六项内容指标与基线完全一致。门禁：新增 scripts/verify-event-expressions.mjs（门禁名 eventexpressions，六条判据：一条不漏／提示语数对齐／正文 ≤ 90 字／说法种数与规则层一致／专名双向／与基线逐值全等），反向验证在 scripts/t7-reverse.mjs（改一个字、漏一条卡、hint 数量对不上，三道都必须报红）。",
+      "files": {
+        "packages/adventure/engine.js": "changed"
+      }
     }
   ],
   "currentVersion": {

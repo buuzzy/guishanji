@@ -1189,8 +1189,8 @@
         "sourceBytes": 11494,
         "sourceSha256": "66026f8b72b80fc179a98f3f31fe2c736ff0d8c96a74e4c8ad26cde58edd5875",
         "path": "miniprogram/subpkg/xianxia/runtime/build-manifest.json",
-        "currentBytes": 13466,
-        "currentSha256": "e25abe2a12df5b897cb59cbfe6548fc884ed2e4560e7900930f2fe8376376c0d",
+        "currentBytes": 15158,
+        "currentSha256": "d139393beef01ba25f61623ca3792499948e684c73d9bcc812ff669607d04ceb",
         "reason": "生成物：来源改为本仓库源码，并新增 upstreamOrigin 段"
       },
       {
@@ -1200,8 +1200,8 @@
         "sourceBytes": 1738614,
         "sourceSha256": "ba0720f2c21c1babe39c605739e90243d7de00db5f920bd5078704d6952fed3f",
         "path": "miniprogram/subpkg/xianxia/runtime/engine.js",
-        "currentBytes": 1267281,
-        "currentSha256": "30736fd3d5791102d5b260eac1d9c436805aad33363d260c91015e3528cb6db9",
+        "currentBytes": 1430925,
+        "currentSha256": "1c3a8afb1884d3c5435686f35f90dbee3d61a5edb557df6c80a6f1ace38f0b79",
         "reason": "生成物：由本仓库源码重新构建（除文件头注释外与迁移进来的那份逐字节一致，见 reference/migrated-runtime/）"
       },
       {
@@ -1509,8 +1509,8 @@
       },
       {
         "path": "scripts/gen-source-manifest.mjs",
-        "bytes": 25371,
-        "sha256": "cbb0d016a83af5a3e25aedf4e7670aea1aa9852b14d12af30269db067125cc71"
+        "bytes": 26207,
+        "sha256": "d845dc9fde82c2e8a77c22e125a192a901f4a12b888c3b284803f1c4c930fd4b"
       },
       {
         "path": "scripts/test-xianxia-standalone.mjs",
@@ -1736,6 +1736,96 @@
         "path": "tests/plot.test.mjs",
         "bytes": 7626,
         "sha256": "ba05b7bbb8fa937806fd4840a3d6f06c8dbe4a471f98a944993dc18930f187ce"
+      },
+      {
+        "path": "content/expressions/events/index.js",
+        "bytes": 3896,
+        "sha256": "f134aa788816845e0da0e47d251afed924036431fceaf022a0d9c09aeee4ff4d"
+      },
+      {
+        "path": "content/expressions/events/entry.js",
+        "bytes": 16101,
+        "sha256": "25c628e09c35362747cd1c40874659ea9205410a6aeb26ca4ca4658d2d294d11"
+      },
+      {
+        "path": "content/expressions/events/trial.js",
+        "bytes": 28283,
+        "sha256": "3f5654830775b7d3b12de5c6184a3b31a0742b4fe44b5f72ea4078ddfcb8bc75"
+      },
+      {
+        "path": "content/expressions/events/sect.js",
+        "bytes": 18386,
+        "sha256": "1b1a37c0ba516c96a0d07ea91e183bf7b838255b64b115ed7ca96339880f9216"
+      },
+      {
+        "path": "content/expressions/events/wild.js",
+        "bytes": 29887,
+        "sha256": "152353a01641d1a12ef139dc15df8aed989c7e2d1c31e329e79cc7f744aa2c88"
+      },
+      {
+        "path": "content/expressions/events/child.js",
+        "bytes": 24008,
+        "sha256": "0a05a793b041bdee704eca218893233834c7cbdedc0f42cd1c5f556cfb63957c"
+      },
+      {
+        "path": "content/expressions/events/material.js",
+        "bytes": 27166,
+        "sha256": "4ab99c9ab94befe89b7632cf344d915a426be39e8bf4b85c98d7d04ec84e2476"
+      },
+      {
+        "path": "content/expressions/events/twelve.js",
+        "bytes": 24527,
+        "sha256": "7e45815c6eadfe1169504f36f5cad2c527a9811e0a6e347851e11e2c0ae1fb24"
+      },
+      {
+        "path": "content/expressions/events/echo.js",
+        "bytes": 17598,
+        "sha256": "aebaa2f7aab98d6c301adde34d918b73c3eb284a52754759d33742797b7c7351"
+      },
+      {
+        "path": "content/expressions/events/mundane.js",
+        "bytes": 36669,
+        "sha256": "c332471fa5b160e2b6d40adfa511d73f96381288342b375dbea8744bf9bc3ed5"
+      },
+      {
+        "path": "scripts/verify-event-expressions.mjs",
+        "bytes": 35599,
+        "sha256": "85c0bafe6ec6afa03db16c3a858f70d240c6c9c749ae3517c7678fa216ebd2ae"
+      },
+      {
+        "path": "scripts/t7-reverse.mjs",
+        "bytes": 13992,
+        "sha256": "2348a02e0eb8d89926793bc404a7fe91c8f1afd88488e7e165c745446c7b2ac5"
+      },
+      {
+        "path": "scripts/t7-diff.mjs",
+        "bytes": 13200,
+        "sha256": "9494a56227885bca75e6fbe786696d393d31f4d5be6d75d59b83717ad7be014d"
+      },
+      {
+        "path": "scripts/audit-completeness.mjs",
+        "bytes": 7703,
+        "sha256": "4fd3a07b1dbf8e8411cb41ce51ebe2245e9aed0c960f70648d67e37f0d1bbfdb"
+      },
+      {
+        "path": "tests/fixtures/event-expressions.json",
+        "bytes": 536387,
+        "sha256": "d77affaef9304591c763f3e9f8d3557acd967e0778bf25a8c9c0d63e4fb46c76"
+      },
+      {
+        "path": "tests/fixtures/event-expressions-pre-rewrite.json",
+        "bytes": 516203,
+        "sha256": "4d17cf6f52161a3abb4a6798021ff4b4684bfd48b9b3cc07690211cc44ec5c62"
+      },
+      {
+        "path": "docs/表达域接管-修仙线-2026-11-08.md",
+        "bytes": 17077,
+        "sha256": "6040e8b5e900a6f91ecfb5e74448678be3ffe479d808757f2b3c328c31930351"
+      },
+      {
+        "path": "scripts/lib/text-numbers.mjs",
+        "bytes": 5482,
+        "sha256": "e81092e497329ffd82c2fb43666032fcbb63ddae5ffe36214e7287443573e38d"
       }
     ]
   }

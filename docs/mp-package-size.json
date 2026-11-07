@@ -1,7 +1,7 @@
 {
   "label": "guishanji",
-  "measuredAt": "2026-11-06T21:33:54.254Z",
-  "sourceFingerprint": "e159a7fc4d42b9e4319fbb768d04b61fbecce1a2045f6c0cd07be5402718cfbf",
+  "measuredAt": "2026-11-07T01:04:22.542Z",
+  "sourceFingerprint": "94c6cd8b54f835dcebf69e74eacfd0ac050f9974e81be794795d5c788486d879",
   "sourceFiles": 64,
   "machine": {
     "os": "darwin 25.4.0",
@@ -9,15 +9,15 @@
     "arch": "arm64"
   },
   "code": {
-    "commit": "d123e8a140d0df157d743e527552d51f363fde2d",
-    "tree": "263f6a7a7995010c316211c4413ad10b6dab57e2",
+    "commit": "b6f2343c0c3922ad1571296263a8b5cbfda5108f",
+    "tree": "f19a9a67e96581f56f8324c388b9cd893eb2e96e",
     "branch": "main",
     "dirty": false
   },
   "tool": {
     "cli": "/Applications/wechatwebdevtools.app/Contents/MacOS/cli",
     "version": "electron 36.6.0",
-    "ideVersion": "2.02.2608080"
+    "ideVersion": "2.02.2609250"
   },
   "config": {
     "appid": "wx0675a9d47174331e",
@@ -42,34 +42,34 @@
     }
   },
   "compiled": {
-    "total": 1487945,
+    "total": 1488008,
     "packages": {
-      "main": 32018,
-      "/subpkg/xianxia/": 1455927
+      "main": 32005,
+      "/subpkg/xianxia/": 1456003
     },
     "error": null
   },
   "rawBytes": {
     "/": 69056,
-    "/subpkg/xianxia/": 1512652,
-    "total": 1581708
+    "/subpkg/xianxia/": 1512794,
+    "total": 1581850
   },
   "packages": [
     {
       "name": "main",
-      "compiledBytes": 32018,
+      "compiledBytes": 32005,
       "rawBytes": null,
       "limitBytes": 2097152,
-      "headroomToLimit": 2065134,
+      "headroomToLimit": 2065147,
       "withinHardLimit": true,
       "status": "ok"
     },
     {
       "name": "/subpkg/xianxia/",
-      "compiledBytes": 1455927,
-      "rawBytes": 1512652,
+      "compiledBytes": 1456003,
+      "rawBytes": 1512794,
       "limitBytes": 2097152,
-      "headroomToLimit": 641225,
+      "headroomToLimit": 641149,
       "withinHardLimit": true,
       "status": "ok"
     }

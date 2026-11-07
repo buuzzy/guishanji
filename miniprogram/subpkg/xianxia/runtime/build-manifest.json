@@ -3,8 +3,8 @@
   "source": {
     "repo": "buuzzy/guishanji",
     "branch": "main",
-    "commit": "de865b2bacbfe448e20424edb979674ab7308fac",
-    "tree": "35d4699848efbc0b143b2b304140d8905b0f80d4",
+    "commit": "dae59d27dc96a81ca62054cba852701b3370192b",
+    "tree": "7a7869c6382d6fd90e932dc95e8d6d5837538b23",
     "note": "构建那一刻本仓库的 HEAD 身份（快照信息，不参与逐字节复现校验）",
     "paths": [
       "packages/adventure/",
@@ -260,8 +260,8 @@
     },
     {
       "id": "content/story-rules12.js",
-      "bytes": 27535,
-      "sha256": "b8202e4ac600e5f6f511cac6c1616f40527fb7ee3cc7cd52f6f99a0f3823f3f3"
+      "bytes": 35362,
+      "sha256": "a5a452caedf32cc2bb2c80d539430af7ba65c5bb969e1f15221428af17ed667a"
     },
     {
       "id": "packages/adventure/birth.js",
@@ -385,8 +385,8 @@
     },
     {
       "id": "packages/adventure/story-rules10.js",
-      "bytes": 21213,
-      "sha256": "0817bb2b1f7154ef145e2777a3ca2364aa381344c49047a9ce13cf24d18202ff"
+      "bytes": 21625,
+      "sha256": "5f43673052c84ec13f039b928af784de14345ba93f10e5f77bf4589f7caca1a1"
     },
     {
       "id": "packages/adventure/story-rules12.js",
@@ -401,8 +401,8 @@
   ],
   "output": {
     "file": "engine.js",
-    "bytes": 1264102,
-    "sha256": "c0f2512478cdf5e93e1595dcb9b39bd86e71f610185237babc8ae733d455679e"
+    "bytes": 1267281,
+    "sha256": "30736fd3d5791102d5b260eac1d9c436805aad33363d260c91015e3528cb6db9"
   },
   "styleOutput": {
     "file": "pixel-style.js",

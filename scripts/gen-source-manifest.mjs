@@ -164,6 +164,9 @@ const ADDED = [
   'tests/items.test.mjs',
   /* 2026-11-08：T4 雷达换轴 —— 两端雷达的轴必须一致（体力退出雷达、体魄进雷达） */
   'tests/radar.test.mjs',
+  /* 2026-11-08：T6 剧情承接 —— 魔道入口有条件、选项里的人名先被介绍、童年结果都有下文 */
+  'scripts/audit-plot.mjs',
+  'tests/plot.test.mjs',
 ];
 
 

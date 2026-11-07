@@ -73,6 +73,13 @@ export function echoKind(s){
  const teacher=!!(m.herbs||m.teacher_notes||m.teacher_route||m.route_contact);
  const relic=!!(m.old_page||m.relic_route);
  /*
+  * 「铜匣换粮」也是铜匣线的一条（sold_page）——
+  *   铜匣换成了两袋粮，玩家手里既没有旧页也没有拓印，
+  *   原来这里**不认它** ⇒ 那次童年选择选完就断了，后面什么也没有。
+  *   现在规则十二里它也算 relic 这条线（旧版本保持原样，逐值不变）。
+  */
+ const relic12=!!(m.old_page||m.relic_route||m.sold_page);
+ /*
   * 「旧联系人」这条线，**先认出谁**决定了整条线走哪一版（friend / relic / teacher）。
   *
   * ⚠ 旧版本（5–11）保持原顺序（旧物在前）：逐值不变。
@@ -82,7 +89,7 @@ export function echoKind(s){
   *   「授业者回响」整条线（echo_teacher / echo_teacher_check / echo_teacher_visit）
   *   **永远发不出来** ⇒ 实测 0/120 可达。
   */
- if(c(s).rulesVersion===12)return teacher?'teacher':relic?'relic':null;
+ if(c(s).rulesVersion===12)return teacher?'teacher':relic12?'relic':null;
  return relic?'relic':teacher?'teacher':null;
 }
 /**

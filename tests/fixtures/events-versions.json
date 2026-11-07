@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-11-06T19:18:51.502Z",
+  "generatedAt": "2026-11-07T05:40:38.461Z",
   "tool": "verify-events-fidelity",
   "versions": {
     "CULTIVATION_EVENTS": {
       "count": 285,
-      "digest": "0905214c562f2326",
+      "digest": "0cc7e0cedb5f2393",
       "ids": [
         "advance_material_3_0_0",
         "advance_material_3_0_0_resume",

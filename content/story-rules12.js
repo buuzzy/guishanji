@@ -109,6 +109,7 @@ export function installRules12(events){
  // A family with secular means sends household news, not spirit cultivation aid.
  events.family_support.text=s=>s.birth.family==='clan'?'族中管事经商队问起你的修炼，愿按族中剩下的积蓄送来家传笔记或药材。东西还在族里，必须有人走完商路才能交到你手中。':'家人托熟悉的商队送来旧屋近况，信里说粮价又涨了。他们没有能助你修炼的丹药，只问你在外是否安顿，也想知道以后该把消息送到哪里。';
  for(const o of events.family_support.choices)if(['supplies','notes'].includes(o.id))o.visible=s=>s.birth.family==='clan';
+  installPlotFixes(events);
 }
 function installBranches(events){
  events.road_turn.title='书商拿出一页残卷';
@@ -135,4 +136,96 @@ function installBranches(events){
  events.sect_trial_2.choices[1].hint=s=>trial(s).herbs?'先让药师验过手里的药，再问下一次授业。':'只交实际带回的药，没有药便先说明撤退原因。';
  events.sect_trial_2.choices[0].reply=s=>trial(s).rescued?'你画出绕行的山路，陶宁在药师身边补上堵路的位置。执事收好记录，安排他回药院休养，又请你下次替新队带路。':'你只标出自己走过的路，执事按实际名单处理归来与未归的人，把下一队的行程另作安排。';
  events.garden_accident.choices=events.garden_accident.choices.filter(o=>o.id!=='leave');
+}
+/*
+ * ══════════════════════════════════════════════════════════════════════
+ * 剧情承接（T6 · 规则十二专属）
+ * ══════════════════════════════════════════════════════════════════════
+ *
+ * 依据：`docs/剧情复盘-2026-11-06.md` §2（幽灯堂的选项为什么突兀）与 §3（铜匣剧情的承接断了在哪）。
+ *
+ * ① **幽灯堂的接引人先在山门外露过面。**
+ *    突兀的根子不是「条件」，而是**这个人是凭空出现的**：
+ *    玩家刚测完灵根，就看见一个陌生人管他叫「顾魇」，还知道他刚测完灵根。
+ *    ⇒ 现在排队那张卡（reception）里先铺一句：
+ *      **队伍外面站着一个穿黑衣的人，自称幽灯堂接引人，从队头看到队尾。**
+ *      玩家是先见过他，后来才谈得上「问一问他」。
+ *
+ * ② **选项改回「玩家能做的动作」，不再是一则招人告示。**
+ *    原来那句「听取幽灯堂招收弟子的条件」是**从招人的人那边写的口吻** ——
+ *    玩家不是幽灯堂弟子，看到「幽灯堂招弟子」当然突兀。
+ *    现在是「问一问门外的黑衣修士」；而且**提示语按灵根等级分两种说法**：
+ *      · 测灵石没收下你 ⇒「他说测灵石不收的禁术他肯教，但要先见堂规；现在还没有拜师。」
+ *      · 宗门已经收下你 ⇒「他说他那里有些测灵石不收的禁术；先听条件还是随执事进山门，由你定。」
+ *    同一条路，对不同处境的人意义不同 —— 这就是「条件化」。
+ *    ⚠ 这条**不能藏**（`visible`）：藏了以后，十六岁入幽灯堂这条路就没了，
+ *      魔道那几条长线（药库、禁术、追捕、献祭）在模拟里一条都发不出来
+ *      （实测 `chains` 门禁直接报红：dark_method 1→0、dark_pursuit 2→0）。
+ *      ⇒ 改成「同一张卡、两种说法」，魔道路线与全部内容覆盖都不受影响。
+ *
+ * ③ **选项里不再点名顾魇。**
+ *    顾魇第一次出现应当在「药铺后堂的入堂条件」（dark_invitation）那张卡的正文
+ *    —— 那里会给他的身份注解（幽灯堂药库师兄），玩家才知道他是谁。
+ *    原来选项提示里先抛出「顾魇能教测灵石不收的禁术」，
+ *    而这张卡的正文里根本没有他 ⇒ 玩家先看见一个不认识的名字
+ *    （实测：54 条人生里提到顾魇，54 条都是「第一次提到他之前没有任何介绍」）。
+ *
+ * ④ **铜匣换粮那条路也有下文。**
+ *    童年卡「旧屋梁上落下一只铜匣」（child_relic）三个结果：
+ *    留下口诀（old_page）／换粮（sold_page）／请匠人拓印（relic_route）。
+ *    原来只有「留下口诀」与「请匠人拓印」接得上「旧联系人」那条线（echo_relic），
+ *    「交给家人换粮」那个换了两袋粮食就没了 ⇒ 选完等于没选。
+ *    现在 sold_page 也算铜匣线（`packages/adventure/story-rules10.js` 的 echoKind），
+ *    并且三张回响卡按「匣子已经转手」另写一版 ——
+ *    这条线要找的不再是「残卷的真伪」，而是「那只匣子去了哪里」。
+ *
+ * ⚠⚠ 为什么这几处**只在规则十二**改，不去改共享文件：
+ *   `content/decision-details.js` 与 `content/story-network.js` 是**九个版本共用**的
+ *   （装配链在「规则五」那一段就装了它们）⇒ 改它们会让规则 5–11 的事件表也变，
+ *   违反「旧版本逐值不变」这条硬规矩。
+ *   ⇒ 全部改在规则十二专属的这份文件里（装配链的最后一步才装）。
+ */
+function installPlotFixes(events){
+ /* ① 铺垫：山门外的队伍里，先有那个穿黑衣的人 */
+ const reception=events.reception;
+ if(reception){
+  const base=reception.text;
+  reception.text=s=>v(base,s)+'队伍外面站着一个穿黑衣的人，自称幽灯堂接引人，从队头看到队尾。';
+ }
+ /* ② + ③ 测灵石上的记录 —— 选项改回动作，提示按灵根分说，不点名顾魇 */
+ const entry=events.root_result&&events.root_result.choices.find(o=>o.id==='dark');
+ if(entry){
+  entry.label='问一问门外的黑衣修士';
+  entry.hint=s=>ROOTS[s.player.root].grade<0
+   ?'他说测灵石不收的禁术他肯教，但要先见堂规；现在还没有拜师。'
+   :'他说他那里有些测灵石不收的禁术；先听条件还是随执事进山门，由你定。';
+  entry.reply='黑衣修士带你到药铺，拿出试读卷与堂规，让你先问清条件。';
+ }
+ /*
+  * ④：铜匣换粮那条路的接续。
+  *   「sold_page」这条线要找的不再是「残卷的真伪」，而是「那只匣子去了哪里」。
+  */
+ const sold=s=>!!c(s).network.marks.sold_page;
+ const soldText={
+  echo_relic:'商队带来修器匠的消息。他记得你家旧屋那只铜匣 —— 当年你家人拿它换了两袋粮，如今不知落在谁手里。他只能确认那只匣子曾在你家；要对上记号，得先把它找回来。',
+  echo_relic_check:'匠铺回信附了记号的简单摹图，与你记忆里的铜匣纹路相近。匠人说当年那只匣子已经换给了走商的货商，他手里没有实物；他要你找到当年的买主，或去旧船籍上查同批货印。对错不能靠一封信定下。',
+  echo_relic_visit:'匠人没有匣子可给你看，只摊开旧船籍抄本：那一批货印确实存在，装的是运药船的货。他能确认你家的匣子进了那批货，不能确认它后来落在谁手里、里面那页口诀是否真出自宗门。要不要接着追，由你决定。',
+  echo_relic_check_resume:'匠铺回信附了记号的简单摹图，与你记忆里的铜匣纹路相近。匠人说当年那只匣子已经换给了走商的货商，他手里没有实物；他要你找到当年的买主，或去旧船籍上查同批货印。对错不能靠一封信定下。',
+  echo_relic_visit_resume:'匠人没有匣子可给你看，只摊开旧船籍抄本：那一批货印确实存在，装的是运药船的货。他能确认你家的匣子进了那批货，不能确认它后来落在谁手里、里面那页口诀是否真出自宗门。要不要接着追，由你决定。',
+ };
+ const soldChoice={
+  echo_relic:{id:'follow',label:'托商队打听铜匣的下落',reply:'你写下当年换粮的货商商号，请商队把问话带到信上的地址。'},
+  echo_relic_visit:{id:'compare',label:'请匠人翻旧船籍，记下当年那条船',reply:'匠人翻出旧船籍，抄下当年那条船的编号和货主商号。船还在不在、货主是谁，得再沿商路问。他没有把这份记录说成传承。'},
+  echo_relic_visit_resume:{id:'compare',label:'请匠人翻旧船籍，记下当年那条船',reply:'匠人翻出旧船籍，抄下当年那条船的编号和货主商号。船还在不在、货主是谁，得再沿商路问。他没有把这份记录说成传承。'},
+ };
+ for(const id of Object.keys(soldText)){
+  const card=events[id];if(!card)continue;
+  const text=card.text;
+  card.text=s=>sold(s)?soldText[id]:(typeof text==='function'?text(s):text);
+  const patch=soldChoice[id];if(!patch)continue;
+  const choice=card.choices.find(o=>o.id===patch.id);if(!choice)continue;
+  const label=choice.label,reply=choice.reply;
+  choice.label=s=>sold(s)?patch.label:(typeof label==='function'?label(s):label);
+  choice.reply=s=>sold(s)?patch.reply:(typeof reply==='function'?reply(s):reply);
+ }
 }

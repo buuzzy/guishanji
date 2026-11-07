@@ -6,7 +6,7 @@ import { projectRoot } from './serve.mjs';
 const commands = [
   ['preview-assets', ['scripts/build-preview-assets.mjs']],
   ['check', ['scripts/check.mjs']],
-  ['unit', ['--test', 'tests/adventure.test.mjs', 'tests/adventure-feedback.test.mjs','tests/cultivation.test.mjs','tests/decision-clarity.test.mjs','tests/life-richness.test.mjs','tests/story-network.test.mjs','tests/progression.test.mjs','tests/revision9.test.mjs','tests/story-rules10.test.mjs','tests/radar.test.mjs','tests/items.test.mjs']],
+  ['unit', ['--test', 'tests/adventure.test.mjs', 'tests/adventure-feedback.test.mjs','tests/cultivation.test.mjs','tests/decision-clarity.test.mjs','tests/life-richness.test.mjs','tests/story-network.test.mjs','tests/progression.test.mjs','tests/revision9.test.mjs','tests/story-rules10.test.mjs','tests/radar.test.mjs','tests/items.test.mjs','tests/plot.test.mjs']],
   ['mundane-unit', ['--test','tests/mundane-life.test.mjs']],
   ['rules12-unit', ['--test','tests/story-rules12.test.mjs']],
   /* ── 发卡闸门禁（2026-11-07 · T2）────────────────────────────────────
@@ -103,6 +103,18 @@ const commands = [
      ⚠ 它是护栏 ⇒ 光看「跑一遍没报错」证明不了它有用 ⇒ 反向验证在
        tests/items.test.mjs（造坏数据逐条证明四条判据真抓得住）。 */
   ['items', ['scripts/audit-items.mjs', '--count=120']],
+  /* ── 剧情承接门禁 ─────────────────────────────────────────────────────
+     用户 2026-11-06 提的三条剧情问题：
+     · 幽灯堂选项突兀 —— 十六岁测灵那张卡上，魔道的接引人是凭空出现的，
+       选项还写成了一则「幽灯堂招弟子」的告示；
+     · 顾魇凭空出现 —— 选项提示里先抛出一个玩家还没见过的名字；
+     · 铜匣线接不上童年钩子 —— 童年铜匣卡有一个结果选完就没有下文。
+     这道门禁守的就是这三条：接引人必须先露过面、选项得像玩家能做的一件事
+     （按灵根分说法、且不点名）、选项里的人名必须先被介绍过、童年卡的每个结果
+     都要接上一条后续线。
+     ⚠ 它是护栏 ⇒ 光看「跑一遍没报错」证明不了它有用 ⇒ 反向验证在
+       tests/plot.test.mjs（造坏数据逐条证明判据真抓得住）。 */
+  ['plot', ['scripts/audit-plot.mjs', '--count=120']],
 ];
 const report = { startedAt: new Date().toISOString(), node: process.version, platform: process.platform, results: [] };
 await mkdir(join(projectRoot, 'artifacts'), { recursive: true });

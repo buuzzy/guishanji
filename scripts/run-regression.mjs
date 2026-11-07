@@ -231,7 +231,6 @@ await writeFile(join(projectRoot, 'artifacts', 'regression.json'), JSON.stringif
    ⚠ 只在**干净**的树上记台账：dirty 时树哈希描述的是 HEAD、不含工作区改动，
      记下来会变成一个「看起来验过、其实没验过」的假记录。 */
 const LEDGER_FILE = join(projectRoot, 'artifacts', 'gate-ledger.json');
-const scope = only ? 'only:' + only : (group || 'all');
 if (!report.code.dirty && report.code.tree) {
   let ledger = { trees: {} };
   try {

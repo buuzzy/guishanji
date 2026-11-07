@@ -20,10 +20,12 @@ var engine = require('../runtime/engine.js');
 /* 与 HTML 端一致的标签表。 */
 var LABELS = {
   progress: '修行', sword: '御剑', array: '阵法', alchemy: '丹术',
-  insight: '悟性', courage: '胆识', empathy: '仁心', health: '体力', mind: '心境',
+  insight: '悟性', courage: '胆识', empathy: '仁心', health: '体力', mind: '心境', constitution: '体魄',
 };
-/* 五轴的固定顺序（五边形雷达的角序）。 */
-var ABILITY_KEYS = ['insight', 'courage', 'empathy', 'health', 'mind'];
+/* 五轴的固定顺序（五边形雷达的角序）。
+ * ⚠ 2026-11-07 · T4：体力（资源）出雷达、体魄（能力）进雷达 ——
+ *   与网页端 apps/preview/life-panels.js 的 abilityRadar() 同一份顺序。 */
+var ABILITY_KEYS = ['insight', 'courage', 'empathy', 'mind', 'constitution'];
 var SECT_PHASES = {intact: '原山门', camp: '撤离后的临时营地', rebuilt: '重新建立的山门'};
 var SECT_ROLES = {core: '守山与护法', leader: '领事与议事', supporter: '已交接管理'};
 var PROPERTY_STATUS = {kept: '保有', damaged: '损坏', lost: '已失去'};
@@ -247,9 +249,13 @@ function identityCard(run) {
  *   「仁心反映待人倾向；身体与心境会因伤病、遭遇改变。」
  * ⇒ 五个轴只解释了「仁心」，另外四个没有半个字（用户 2026-11-05 反馈）。
  *
- * 现在的写法：**先说当前最强与最弱的是哪两个轴**，再解释那三句会变的意思。
+ * 现在的写法：**先说当前最强与最弱的是哪两个轴**，再解释那几句会变的意思。
  *   · 前半句是本轮新增（用户已在示意稿上点头）；
- *   · 后半句沿用上游的说法，只是把轴名换成页面上的同一个词（体力/心境）。
+ *   · 后半句沿用上游的说法，只是把轴名换成页面上的同一个词。
+ *
+ * ⚠ 2026-11-07 · T4：五轴换过（体力出去、体魄进来）⇒ 这句也跟着一改：
+ *   「体力与心境会因伤病、遭遇改变」里的「体力」已经不是轴了
+ *   （体力是资源，在顶部状态条里；体魄是能力，只增不减）⇒ 改成说体魄与心境。
  *
  * @param {Array} abilities [{key, label, value}]
  * @returns {string}
@@ -265,8 +271,10 @@ function radarHint(abilities) {
     head = '当前最强：' + hi.label + ' ' + hi.value.toFixed(1)
       + '；最弱：' + lo.label + ' ' + lo.value.toFixed(1) + '。';
   }
-  return head + LABELS.empathy + '反映待人倾向；'
-    + LABELS.health + '与' + LABELS.mind + '会因伤病、遭遇改变。';
+  return head + '五根轴都是修出来的本事；'
+    + LABELS.constitution + '是筋骨，只增不减；'
+    + LABELS.mind + '会因伤病、遭遇改变。'
+    + LABELS.health + '不在图上，它在页面顶部的状态条里。';
 }
 
 /** 修行本事：境界积累 + 三技艺 + 五轴 + 心法 + 高阶材料。 */
@@ -300,7 +308,8 @@ function practice(run) {
     });
   });
   var abilities = ABILITY_KEYS.map(function (key) {
-    return {key: key, label: LABELS[key], value: num(run.player[key])};
+    /* 体魄不在 run.player 上（在规则层的 body 里）⇒ 数只能问引擎。 */
+    return {key: key, label: LABELS[key], value: key === 'constitution' ? num(engine.constitution12(run)) : num(run.player[key])};
   });
   var network = cultivation.network || null;
   var method = network && network.method ? network.method : null;
@@ -799,19 +808,23 @@ function grounds(run) {
 }
 
 /**
- * 五轴（悟性 / 胆识 / 仁心 / 体力 / 心境）的**快照**。
+ * 五轴（悟性 / 胆识 / 仁心 / 心境 / **体魄**）的**快照**。
  * ⚠ 每次都造一个**新对象**：
  *   引擎是就地改 `run.player` 的 ⇒ 直接把 `run.player` 塞给组件，
  *   引用一直没变 ⇒ 小程序的数据监听可能不触发 ⇒ 雷达图不刷新。
  *   造一个新对象，引用必变 ⇒ 组件一定收到通知。
+ *
+ * ⚠ 2026-11-07 · T4：五轴里**没有体力**了 —— 体力是资源，在页面顶部的状态条里；
+ *   这里放的是体魄（练出来的筋骨，只增不减）。数从引擎取（`constitution12`），
+ *   旧档没有这个数时是 0（引擎自己兜底）。
  */
 function axes(run) {
   return {
     insight: num(run.player.insight),
     courage: num(run.player.courage),
     empathy: num(run.player.empathy),
-    health: num(run.player.health),
     mind: num(run.player.mind),
+    constitution: num(engine.constitution12(run)),
   };
 }
 

@@ -209,7 +209,7 @@ Page({
       top.year, top.month, top.realm, top.stones, top.place,
       view.pending ? 1 : 0, view.waiting ? 1 : 0, view.ended ? 1 : 0,
       dec ? dec.choices.map(function (c) { return c.id + (c.enabled ? '1' : '0'); }).join(',') : '',
-      axes.insight, axes.courage, axes.empathy, axes.health, axes.mind,
+      axes.insight, axes.courage, axes.empathy, axes.mind, axes.constitution,
       view.inventory ? view.inventory.count : 0,
       view.people ? view.people.length : 0,
       view.feed ? view.feed.length : 0,

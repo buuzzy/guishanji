@@ -29,16 +29,6 @@
       {
         "sourceRepo": "buuzzy/1in8b",
         "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
-        "sourcePath": "miniprogram/subpkg/xianxia/art/radar.js",
-        "sourceBytes": 4885,
-        "sourceSha256": "100150dd391a1a94f50bfc2d30d85612a6ddbb623cd38929475ad00044c3e80f",
-        "path": "miniprogram/subpkg/xianxia/art/radar.js",
-        "bytes": 4885,
-        "sha256": "100150dd391a1a94f50bfc2d30d85612a6ddbb623cd38929475ad00044c3e80f"
-      },
-      {
-        "sourceRepo": "buuzzy/1in8b",
-        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
         "sourcePath": "miniprogram/subpkg/xianxia/art/scene.js",
         "sourceBytes": 21514,
         "sourceSha256": "a603aa1daf767f5ae842afd7511f7b021694868987344b00849ad262651c5445",
@@ -125,16 +115,6 @@
         "path": "miniprogram/subpkg/xianxia/components/map/index.wxss",
         "bytes": 618,
         "sha256": "43a35e7e355d287578b330505d80ea7c8123dedca1ae4a935b4d5d3f6caee826"
-      },
-      {
-        "sourceRepo": "buuzzy/1in8b",
-        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
-        "sourcePath": "miniprogram/subpkg/xianxia/components/radar/index.js",
-        "sourceBytes": 2752,
-        "sourceSha256": "addbacd69705a7ad67d532497c7f17bd6d65cb452e7209046026630b6bbfbecb",
-        "path": "miniprogram/subpkg/xianxia/components/radar/index.js",
-        "bytes": 2752,
-        "sha256": "addbacd69705a7ad67d532497c7f17bd6d65cb452e7209046026630b6bbfbecb"
       },
       {
         "sourceRepo": "buuzzy/1in8b",
@@ -1176,8 +1156,8 @@
         "sourceBytes": 19905,
         "sourceSha256": "66fdcd029b48e2843ea4fc90463440d00bcbc37fe5b9f0a1b2ce6e911de0a48c",
         "path": "miniprogram/subpkg/xianxia/pages/life/life.js",
-        "currentBytes": 20818,
-        "currentSha256": "f122f3aae41074b706e01b8037c24088d1e43ed92fb053f3ef9c05e737ee0bd2",
+        "currentBytes": 20824,
+        "currentSha256": "599bfd26c94defd36b1cddb2f69f99b2c56697b502a1e8b99103b631d292024e",
         "reason": "失败兜底不再跳 1in8b 的 /subpkg/engine/pages/index/index，改跳新产品首页；续档参数与上面一致"
       },
       {
@@ -1210,7 +1190,7 @@
         "sourceSha256": "66026f8b72b80fc179a98f3f31fe2c736ff0d8c96a74e4c8ad26cde58edd5875",
         "path": "miniprogram/subpkg/xianxia/runtime/build-manifest.json",
         "currentBytes": 13301,
-        "currentSha256": "f42da7ec9dc484d35da5f29e5cb5d468dfd9a007e3ada6b38931889c391ec114",
+        "currentSha256": "0239c1abb687f19288ff4ed47ee79d55f5c460c97d64f9b4c925f5296084b710",
         "reason": "生成物：来源改为本仓库源码，并新增 upstreamOrigin 段"
       },
       {
@@ -1220,8 +1200,8 @@
         "sourceBytes": 1738614,
         "sourceSha256": "ba0720f2c21c1babe39c605739e90243d7de00db5f920bd5078704d6952fed3f",
         "path": "miniprogram/subpkg/xianxia/runtime/engine.js",
-        "currentBytes": 1247189,
-        "currentSha256": "5ba73cd21337c7cf50c2c97aefc7e2d4e04954e8f9a68bb285c2b308afcfd968",
+        "currentBytes": 1247223,
+        "currentSha256": "53a4f7fdee3c9864efa85289f56410b8ad04957c8a25abdb871776679de3792c",
         "reason": "生成物：由本仓库源码重新构建（除文件头注释外与迁移进来的那份逐字节一致，见 reference/migrated-runtime/）"
       },
       {
@@ -1242,8 +1222,8 @@
         "sourceBytes": 20247,
         "sourceSha256": "d48d08f49db0a696826670bc1395f2d894091aa747cbe1494e9078f765d16883",
         "path": "scripts/build-xianxia-mp.mjs",
-        "currentBytes": 33395,
-        "currentSha256": "48084499f5c2edef7786ced02b3a24aa13566b78c145f0ca8f63d6c0dad3536c",
+        "currentBytes": 33592,
+        "currentSha256": "e3e9c90f3a4c3450ba5072902545919a5d1c4b24ad3db9562336bbb7e5889f0e",
         "reason": "构建来源改为本仓库自己的源码（vendor 快照降级为历史证据），新增 app.wxss 生成；2026-11-07 补充说明「上游 xianxia-life 已删除，门禁现在核对仓库内的 vendor 锁定快照」"
       },
       {
@@ -1264,8 +1244,8 @@
         "sourceBytes": 49291,
         "sourceSha256": "69b09f587ba41e73ad2b46c3a75bb931f9434b3f25bb2862d94b51b11a7f9d87",
         "path": "scripts/test-xianxia-mp.mjs",
-        "currentBytes": 54794,
-        "currentSha256": "7cadab2d5653936779ca5c5fa6f574f50cf356b30d846da74b504705d12a8ba5",
+        "currentBytes": 55033,
+        "currentSha256": "02fd187aa2141843dd2f4eaf96d5c933b6d9f31326bfde2dff3185297a2fd17b",
         "reason": "新增首页仿真断言；路径层级按独立启动层调整"
       },
       {
@@ -1341,8 +1321,8 @@
         "sourceBytes": 40479,
         "sourceSha256": "e1c5c6ce21837c8bb0c518a23eab2362b33c8abc70fe132d77440c71b6edcaca",
         "path": "miniprogram/subpkg/xianxia/bridge/view-model.js",
-        "currentBytes": 42289,
-        "currentSha256": "9c4e6c295c09012632c03b1ac9d55ae3abe1e53dda55699e6f94554bb8b66d92",
+        "currentBytes": 43350,
+        "currentSha256": "5a5508d79e36de0f5d5eba09347c95be30c5cb738886504859a987366aedc402",
         "reason": "S5 角色域：修行本事面板加「体魄」（只增不减的能力），体质行补「力竭」提示"
       },
       {
@@ -1366,6 +1346,28 @@
         "currentBytes": 8970,
         "currentSha256": "ec6c757a33d52e1f277af3750dfa176393e6f6da0fef569b93593b8c0a092aca",
         "reason": "S8 呈现域：点阵地图从「一次画四块大陆」改成「只画当前所在 + 走过的大洲」并居中；「该显示哪几块」改由规则层给（engine.mapView）"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "miniprogram/subpkg/xianxia/art/radar.js",
+        "sourceBytes": 4885,
+        "sourceSha256": "100150dd391a1a94f50bfc2d30d85612a6ddbb623cd38929475ad00044c3e80f",
+        "path": "miniprogram/subpkg/xianxia/art/radar.js",
+        "currentBytes": 5431,
+        "currentSha256": "e1c0fca128a66e5bd8725511dfb8fb5945c75ba3ee202988f97770aebc138ffd",
+        "reason": "2026-11-08 T4 雷达换轴：五轴改成「悟性/胆识/仁心/心境/体魄」（体力是资源，退回状态条）"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "miniprogram/subpkg/xianxia/components/radar/index.js",
+        "sourceBytes": 2752,
+        "sourceSha256": "addbacd69705a7ad67d532497c7f17bd6d65cb452e7209046026630b6bbfbecb",
+        "path": "miniprogram/subpkg/xianxia/components/radar/index.js",
+        "currentBytes": 2758,
+        "currentSha256": "3da342884bb0d6c1a91267dc39fed175de6131b743a1fa56faa05e22e6057fac",
+        "reason": "2026-11-08 T4 雷达换轴：组件注释同步（轴的来源与顺序由桥接层给）"
       }
     ],
     "moved": [
@@ -1507,8 +1509,8 @@
       },
       {
         "path": "scripts/gen-source-manifest.mjs",
-        "bytes": 24204,
-        "sha256": "3211187906d621e509d6902802f955f112c5f3ac912909fb6d955e326e053fbb"
+        "bytes": 25039,
+        "sha256": "0cf8a10b27310f29b4762789e6ef4de1054dab582ea25a08c6b4d726132e1451"
       },
       {
         "path": "scripts/test-xianxia-standalone.mjs",
@@ -1527,8 +1529,8 @@
       },
       {
         "path": "AGENTS.md",
-        "bytes": 13955,
-        "sha256": "2af39105152155eafb2e895b146df22405b95643cd69240bf9b72bfe990e99f6"
+        "bytes": 11622,
+        "sha256": "20cb4c2efe599e26713cbd8522aca9cdf68a2a8013504706a7c30c01daea9033"
       },
       {
         "path": "README.md",
@@ -1704,6 +1706,11 @@
         "path": "tests/fixtures/metrics-baseline.json",
         "bytes": 3324,
         "sha256": "3ba26f1a7de9c55fd2bb0232bd876d07cdcc0b57d49eba80531914810af30c83"
+      },
+      {
+        "path": "tests/radar.test.mjs",
+        "bytes": 5845,
+        "sha256": "3b5053eb755f0bc2eb523dd1e334adf708ef3282f64792546ac3ee1a9a9824a8"
       }
     ]
   }

@@ -9,7 +9,7 @@ var radar = require('../../art/radar.js');
 
 Component({
   properties: {
-    /** 玩家状态（读 insight / courage / empathy / health / mind） */
+    /** 玩家状态（读 insight / courage / empathy / mind / constitution） */
     player: { type: Object, value: null },
     /** 'light' | 'dark' */
     theme: { type: String, value: 'light' },

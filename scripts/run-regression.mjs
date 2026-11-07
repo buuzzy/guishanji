@@ -6,7 +6,7 @@ import { projectRoot } from './serve.mjs';
 const commands = [
   ['preview-assets', ['scripts/build-preview-assets.mjs']],
   ['check', ['scripts/check.mjs']],
-  ['unit', ['--test', 'tests/adventure.test.mjs', 'tests/adventure-feedback.test.mjs','tests/cultivation.test.mjs','tests/decision-clarity.test.mjs','tests/life-richness.test.mjs','tests/story-network.test.mjs','tests/progression.test.mjs','tests/revision9.test.mjs','tests/story-rules10.test.mjs']],
+  ['unit', ['--test', 'tests/adventure.test.mjs', 'tests/adventure-feedback.test.mjs','tests/cultivation.test.mjs','tests/decision-clarity.test.mjs','tests/life-richness.test.mjs','tests/story-network.test.mjs','tests/progression.test.mjs','tests/revision9.test.mjs','tests/story-rules10.test.mjs','tests/radar.test.mjs']],
   ['mundane-unit', ['--test','tests/mundane-life.test.mjs']],
   ['rules12-unit', ['--test','tests/story-rules12.test.mjs']],
   /* ── 发卡闸门禁（2026-11-07 · T2）────────────────────────────────────

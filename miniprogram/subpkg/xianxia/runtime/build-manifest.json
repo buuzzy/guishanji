@@ -3,8 +3,8 @@
   "source": {
     "repo": "buuzzy/guishanji",
     "branch": "main",
-    "commit": "3d14838786b3cf13f27eee48130202928bcb4593",
-    "tree": "102b823a762867fce67840b02a99d6d1ba1f4931",
+    "commit": "a5ad714f9e3ccbb15c6e1e6a804034812a1eae3f",
+    "tree": "0b7ea1ec11c9b860ff1750681bfbfb117c5a5ac4",
     "note": "构建那一刻本仓库的 HEAD 身份（快照信息，不参与逐字节复现校验）",
     "paths": [
       "packages/adventure/",
@@ -396,8 +396,8 @@
   ],
   "output": {
     "file": "engine.js",
-    "bytes": 1247189,
-    "sha256": "5ba73cd21337c7cf50c2c97aefc7e2d4e04954e8f9a68bb285c2b308afcfd968"
+    "bytes": 1247223,
+    "sha256": "53a4f7fdee3c9864efa85289f56410b8ad04957c8a25abdb871776679de3792c"
   },
   "styleOutput": {
     "file": "pixel-style.js",

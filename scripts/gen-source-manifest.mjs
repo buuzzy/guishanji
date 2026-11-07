@@ -93,23 +93,25 @@ const headOf = (dir) => execFileSync('git', ['-C', dir, 'rev-parse', 'HEAD'], {e
  */
 const CHANGED_REASON = {
   'miniprogram/subpkg/xianxia/bridge/session.js': '首页「继续人生」改为接最近动过的那一段人生（原来接最老那段），并支持 ?resume=<编号> 点名',
-  'miniprogram/subpkg/xianxia/pages/life/life.js': '失败兜底不再跳 1in8b 的 /subpkg/engine/pages/index/index，改跳新产品首页；续档参数与上面一致',
+  'miniprogram/subpkg/xianxia/pages/life/life.js': '失败兜底不再跳 1in8b 的 /subpkg/engine/pages/index/index，改跳新产品首页；续档参数与上面一致；2026-11-08 T4 雷达换轴：雷达的轴列表与小程序端画布同步',
   'miniprogram/subpkg/xianxia/pages/past/past.js': '失败兜底不再跳 1in8b 的 /subpkg/engine/pages/index/index，改跳新产品首页',
   'miniprogram/subpkg/xianxia/pages/roll/roll.js': '命盘页适配独立启动层（首页进入路径）',
   'miniprogram/subpkg/xianxia/runtime/build-manifest.json': '生成物：来源改为本仓库源码，并新增 upstreamOrigin 段',
   'miniprogram/subpkg/xianxia/runtime/engine.js': '生成物：由本仓库源码重新构建（除文件头注释外与迁移进来的那份逐字节一致，见 reference/migrated-runtime/）',
   'miniprogram/subpkg/xianxia/runtime/pixel-style.js': '生成物：由本仓库源码重新构建（与迁移进来的那份逐字节一致）',
-  'scripts/build-xianxia-mp.mjs': '构建来源改为本仓库自己的源码（vendor 快照降级为历史证据），新增 app.wxss 生成；2026-11-07 补充说明「上游 xianxia-life 已删除」；S8 表达域与呈现域：新增 mapView / lifespanPlan12 / 寿元句式的导出；S9 内容模块拆分：小程序端要的那几张表改从各自域文件取（content/realms.js、content/regions.js、content/items.js、content/ends.js），不再从什么都有的门面取',
+  'scripts/build-xianxia-mp.mjs': '构建来源改为本仓库自己的源码（vendor 快照降级为历史证据），新增 app.wxss 生成；2026-11-07 补充说明「上游 xianxia-life 已删除」；S8 表达域与呈现域：新增 mapView / lifespanPlan12 / 寿元句式的导出；S9 内容模块拆分：小程序端要的那几张表改从各自域文件取（content/realms.js、content/regions.js、content/items.js、content/ends.js），不再从什么都有的门面取；2026-11-08 T4 雷达换轴：导出表加 constitution12（雷达要读体魄）',
   'docs/miniprogram-xianxia-integration.md': '2026-11-07：给 --refresh=../xianxia-life 这条已失效的旧命令加提示（该仓库已删除，build 脚本现在只读本仓库源码）；正文其余部分保持原样',
   'docs/xianxia-mini-program-integration.md': '2026-11-07：给 --source=../xianxia-life 这条已失效的旧命令加提示（该仓库已删除，build 脚本现在只读本仓库源码）；正文其余部分保持原样',
   'scripts/test-xianxia-art.mjs': '对照基准改为本仓库 reference/ 与 apps/preview/，不再依赖 1in8b 的 frozen-baseline',
   'scripts/test-xianxia-build.mjs': '新增「与迁移进来的产物逐字节一致」断言；不再依赖 1in8b 的 frozen-baseline',
   'scripts/test-xianxia-equivalence.mjs': '对照源改为本仓库 packages/ + content/（源码 vs 产物逐值全等）',
-  'scripts/test-xianxia-mp.mjs': '新增首页仿真断言；路径层级按独立启动层调整',
+  'scripts/test-xianxia-mp.mjs': '新增首页仿真断言；路径层级按独立启动层调整；2026-11-08 T4 雷达换轴：五轴断言改新轴（并断言体力不在雷达里）',
   'scripts/test-xianxia-storage.mjs': '不再依赖 1in8b 的 frozen-baseline，改用本仓库自己的哈希校验',
   'scripts/test-xianxia-style.mjs': '官方对照源改读 reference/official/（本仓库内的锁定副本）+ 新的 app.wxss',
   'miniprogram/subpkg/xianxia/bridge/page-model.js': 'S5 角色域：登记卡的「预期寿元」改读规则层算好的实际寿元；S8 呈现域：顶栏加「还能活多久」，登记卡加「下一境死线」（整句在 JS 侧拼好，WXML 不支持字符串拼接）',
-  'miniprogram/subpkg/xianxia/bridge/view-model.js': 'S5 角色域：修行本事面板加「体魄」（只增不减的能力），体质行补「力竭」提示',
+  'miniprogram/subpkg/xianxia/bridge/view-model.js': 'S5 角色域：修行本事面板加「体魄」（只增不减的能力），体质行补「力竭」提示；2026-11-08 T4 雷达换轴：五轴改成「悟性/胆识/仁心/心境/体魄」（体力是资源，退回状态条）',
+  'miniprogram/subpkg/xianxia/art/radar.js': '2026-11-08 T4 雷达换轴：五轴改成「悟性/胆识/仁心/心境/体魄」（体力是资源，退回状态条）',
+  'miniprogram/subpkg/xianxia/components/radar/index.js': '2026-11-08 T4 雷达换轴：组件注释同步（轴的来源与顺序由桥接层给）',
   'miniprogram/subpkg/xianxia/pages/life/life.wxml': 'S5 角色域：修行本事面板加「体魄」一行；S8 呈现域：顶栏常驻显示「还能活多久」（用官方已有的 .age-yr .t 类，不新造视觉类）',
   'content/cultivation-stories.js': 'S7 表达域：事件条目统一带上 voice 字段（表达成熟度：inline=已定稿 / pending=未定稿），在装配链末尾补一次，保证每个条目都有',
   'content/readable-stories.js': 'S7 表达域：内容按故事线拆到 content/expressions/ 下，本文件改成门面转发（旧路径还有人在用）',
@@ -156,6 +158,8 @@ const ADDED = [
   'scripts/audit-metrics.mjs',
   'tests/fixtures/metrics-baseline.json',
   'docs/遗留问题清单-2026-11-07.md',
+  /* 2026-11-08：T4 雷达换轴 —— 两端雷达的轴必须一致（体力退出雷达、体魄进雷达） */
+  'tests/radar.test.mjs',
 ];
 
 

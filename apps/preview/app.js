@@ -1,4 +1,4 @@
-import {lifespan12,lifespanPlan12} from '../../packages/adventure/story-rules12.js';
+import {lifespan12,lifespanPlan12,constitution12} from '../../packages/adventure/story-rules12.js';
 import {mundanePeople,mundane,activeMundane} from '../../packages/adventure/mundane-life.js';
 import {autoChoice} from '../../packages/adventure/auto-choice.js';
 import {storyPeople,rootLabel,rootDescription,canCultivate,active10} from '../../packages/adventure/story-rules10.js';
@@ -187,7 +187,9 @@ function updateLifeClock() {
    for(const el of document.querySelectorAll('[data-value]')){const k=el.dataset.value;el.textContent=k==='money'?mundane(state).money:k==='mundaneDebt'?mundane(state).debt:k==='stones'?Math.floor(p.stones):k==='progress'?(p.realm<4?Math.round(Math.min(100,c.progress/[80,140,220,320][p.realm]*100))+'%':'已臻元婴'):(p.skills[k]??p[k]).toFixed(1);}
    const pct=p.realm<4?Math.min(100,c.progress/[80,140,220,320][p.realm]*100):100;const meter=document.querySelector('[data-progress-meter]');if(meter)meter.style.width=pct+'%';
    for(const el of document.querySelectorAll('.visible-meter')){const v=el.parentElement.querySelector('[data-value]');if(v)el.firstElementChild.style.width=(p.skills[v.dataset.value]??p[v.dataset.value])+'%';}
-   const radar=document.querySelector('.ability-radar');if(radar&&radar.dataset.values!==['insight','courage','empathy','health','mind'].map(k=>p[k]).join(',')){radar.outerHTML=abilityRadar(p);document.querySelector('.ability-radar').dataset.values=['insight','courage','empathy','health','mind'].map(k=>p[k]).join(',');}
+   /* 雷达图（2026-11-07 · T4）：五轴 = 悟性 / 胆识 / 仁心 / 心境 / **体魄** ——
+      体力是资源，出雷达（它在页面顶部的状态条里），体魄是能力，进雷达。 */
+   const radar=document.querySelector('.ability-radar'),radarValues=['insight','courage','empathy','mind','constitution'].map(k=>k==='constitution'?constitution12(state):p[k]).join(',');if(radar&&radar.dataset.values!==radarValues){radar.outerHTML=abilityRadar(p,constitution12(state));document.querySelector('.ability-radar').dataset.values=radarValues;}
    for(const el of document.querySelectorAll('.activity-tile')){const id=el.dataset.activity;el.querySelector('.activity-time').textContent='已练 '+(c.activityMonths?.[id]||0)+' 个月';}
   }
 }

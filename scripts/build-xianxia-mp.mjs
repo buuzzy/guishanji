@@ -156,6 +156,9 @@ const EXPORTS = {
      不能拿 REALMS[].lifespan 顶（那只是旧规则与境界基础值）。 */
   'packages/adventure/story-rules12.js': [
     'rules12', 'lifespan12', 'lifespanPlan12', 'stage12', 'sectProfile', 'active12',
+    /* 2026-11-07（T4）：雷达图换轴后，小程序端要画「体魄」——
+       它的数只能从规则层取（两端同一份），不许界面自己编。 */
+    'constitution12',
   ],
   'content/expressions/lifespan.js': ['LIFESPAN_TEXT', 'fillLifespan'],
   'content/rules12-world.js': ['BODY_TYPES', 'REGIONAL_METHODS'],

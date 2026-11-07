@@ -527,13 +527,15 @@ ok(current.length === 1, '重心里当前选中的那项被标出来了');
     '身份卡排在「修行本事」之前（与网页端 lifePanels() 同序）');
 }
 
-/* 雷达图的数据源：五轴要在视图里，且是**五个数字**。 */
+/* 雷达图的数据源：五轴要在视图里，且是**五个数字**。
+ * ⚠ 2026-11-07 · T4：五轴换过 —— 体力（资源）出雷达、体魄（能力）进雷达。 */
 {
   const axes = life.data.axes;
-  const keys = ['insight', 'courage', 'empathy', 'health', 'mind'];
+  const keys = ['insight', 'courage', 'empathy', 'mind', 'constitution'];
   ok(!!axes, '视图里有五轴数据');
   ok(axes && keys.every((k) => typeof axes[k] === 'number' && isFinite(axes[k])),
-    '五轴都是数字（悟性 / 胆识 / 仁心 / 体力 / 心境）');
+    '五轴都是数字（悟性 / 胆识 / 仁心 / 心境 / 体魄）');
+  ok(axes && typeof axes.health === 'undefined', '雷达五轴里不该再有体力（体力是资源，在状态条里）');
   const wxml = fs.readFileSync(path.join(XIANXIA, 'pages', 'life', 'life.wxml'), 'utf8');
   ok(/x-radar[^>]*player="\{\{axes\}\}"/.test(wxml), '雷达图绑的是五轴，不是身份卡');
 }

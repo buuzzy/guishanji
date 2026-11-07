@@ -1,5 +1,5 @@
 /**
- * radar.js — 五轴能力图（悟性 / 胆识 / 仁心 / 体力 / 心境）
+ * radar.js — 五轴能力图（悟性 / 胆识 / 仁心 / 心境 / 体魄）
  * ============================================================================
  *
  * 来源
@@ -10,12 +10,20 @@
  * 这份移植把 SVG 换成 canvas 画：算法（角序、半径刻度、文字位置）一字不改。
  * 换 canvas 的原因只有一个 —— 小程序里放 SVG 得写成 base64 图片，
  * 而这个图要**跟着状态实时变**，画布更合适。
+ *
+ * ## 换轴（2026-11-07 · T4）
+ * --------------------------
+ * 上游的五轴是 悟性 / 胆识 / 仁心 / **体力** / 心境 ——
+ * 「体力」是**资源**（受伤就掉、调养就回），和其余四根**能力**混在一张图上，
+ * 玩家会误以为「体力高 = 这个人强」。
+ * ⇒ 现在换成 悟性 / 胆识 / 仁心 / 心境 / **体魄**（练出来的筋骨，只增不减）。
+ * ⇒ **体力没消失**：它在页面顶部的状态条（`#miniBar`）第一格，两端都看得到。
  */
 'use strict';
 
-var KEYS = ['insight', 'courage', 'empathy', 'health', 'mind'];
+var KEYS = ['insight', 'courage', 'empathy', 'mind', 'constitution'];
 var LABELS = {
-  insight: '悟性', courage: '胆识', empathy: '仁心', health: '体力', mind: '心境',
+  insight: '悟性', courage: '胆识', empathy: '仁心', mind: '心境', constitution: '体魄',
 };
 
 var W = 240;
@@ -57,7 +65,7 @@ function point(i, r) {
 /**
  * 画五轴图。
  * @param {object} c 画布上下文
- * @param {object} player 玩家状态（要读 insight/courage/empathy/health/mind）
+ * @param {object} player 玩家状态（要读 insight/courage/empathy/mind/constitution）
  * @param {object} [style] {grid, shape, label, value, font}
  */
 function drawRadar(c, player, style) {

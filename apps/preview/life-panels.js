@@ -1,4 +1,4 @@
-import {active12,rules12,lifespan12,stage12,sectProfile} from '../../packages/adventure/story-rules12.js';
+import {active12,rules12,lifespan12,stage12,sectProfile,constitution12} from '../../packages/adventure/story-rules12.js';
 import {progressNeeded} from '../../content/cadence-table.js';
 import {breakthroughStatus} from '../../packages/adventure/cadence.js';
 import {BODY_TYPES} from '../../content/rules12-world.js';
@@ -14,7 +14,7 @@ import {economyQuote} from '../../packages/adventure/cultivation-economy.js';
 import {REALM_ABILITIES} from '../../packages/adventure/realm.js';
 import {PIXEL_STYLE} from './pixel-style.js';
 const esc=x=>String(x??'').replace(/[&<>"']/gu,k=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[k]));
-const labels={progress:'修行',sword:'御剑',array:'阵法',alchemy:'丹术',insight:'悟性',courage:'胆识',empathy:'仁心',health:'体力',mind:'心境'};
+const labels={progress:'修行',sword:'御剑',array:'阵法',alchemy:'丹术',insight:'悟性',courage:'胆识',empathy:'仁心',health:'体力',mind:'心境',constitution:'体魄'};
 const heading=(name,sub='')=>`<h3 class="panel-h"><span>${name}</span><span class="lbl">${sub}</span></h3>`;
 export function activityMeaning(a,s){const mundane=s&&active10(s)&&!canCultivate(s);return [a.trainSkill===false?'':mundane?({sword:'剑术',array:'识字与符纹',alchemy:'辨药'})[a.skill]:SKILLS[a.skill],...['insight','courage','empathy','health','mind'].filter(k=>a[k]).map(k=>labels[k]),...(a.income?['工钱']:[])].filter(Boolean).join('、')+(mundane?'':' · 修行积累');}
 function portrait(s){
@@ -28,15 +28,34 @@ function identity(s){
 }
 const bar=(key,value,s)=>`<div class="visible-skill skill-row"><span>${active10(s)&&!canCultivate(s)?({sword:'防身剑术',array:'经书与识字',alchemy:'辨药手艺'})[key]:labels[key]}</span><div class="visible-meter meter"><i style="width:${value}%"></i></div><b class="mono" data-value="${key}">${value.toFixed(1)}</b></div>`;
 
-export function abilityRadar(p){
- const keys=['insight','courage','empathy','health','mind'],point=(i,r)=>{const a=-Math.PI/2+i*Math.PI*2/5;return [120+Math.cos(a)*r,112+Math.sin(a)*r];},points=r=>keys.map((_,i)=>point(i,r).join(',')).join(' ');
- const valuePoints=keys.map((key,i)=>point(i,Math.max(0,Math.min(100,p[key]))*.76).join(',')).join(' ');
- return '<div class="ability-radar"><svg viewBox="0 0 240 226" role="img" aria-label="悟性、胆识、仁心、体力、心境能力图">'+[19,38,57,76].map(r=>'<polygon class="radar-grid" points="'+points(r)+'"/>').join('')+keys.map((_,i)=>{const [x,y]=point(i,76);return '<path class="radar-grid" d="M120 112L'+x+' '+y+'"/>';}).join('')+'<polygon class="radar-shape" points="'+valuePoints+'"/>'+keys.map((key,i)=>{const [x,y]=point(i,99);return '<text x="'+x+'" y="'+y+'" text-anchor="middle" class="radar-label">'+labels[key]+'</text><text x="'+x+'" y="'+(y+13)+'" text-anchor="middle" class="radar-value">'+p[key].toFixed(1)+'</text>';}).join('')+'</svg><p class="hint">仁心反映待人倾向；身体与心境会因伤病、遭遇改变。</p></div>';
+/**
+ * 五轴能力图 —— **只放能力，不放资源**。
+ *
+ * ## 为什么把「体力」换出去（2026-11-07 · T4）
+ * ---------------------------------------------
+ * 以前五根轴是 悟性 / 胆识 / 仁心 / **体力** / 心境。
+ * 但「体力」是**资源**（受伤就掉、调养就回），其余四根是**能力**（只增不减或慢慢变）
+ * ⇒ 把两者画在同一张图上，玩家会以为「体力高 = 这个人强」，
+ *   而实际它只是「现在还有多少气力」。
+ *
+ * ⇒ 现在五轴是 悟性 / 胆识 / 仁心 / 心境 / **体魄**
+ *   （体魄＝练出来的筋骨，只增不减；S5 起规则层就有这个数）。
+ * ⇒ **体力不出雷达，但也没消失**：它在页面顶部的状态条里（`#miniBar` 的第一格），
+ *   两端（网页端 / 小程序端）都看得到 ⇒ 资源没丢，只是不再冒充能力。
+ *
+ * @param {object} p 玩家状态（读 insight / courage / empathy / mind）
+ * @param {number} constitution 体魄点数（0–100；旧档没有这个数 ⇒ 0）
+ */
+export function abilityRadar(p,constitution){
+ const keys=['insight','courage','empathy','mind','constitution'],point=(i,r)=>{const a=-Math.PI/2+i*Math.PI*2/5;return [120+Math.cos(a)*r,112+Math.sin(a)*r];},points=r=>keys.map((_,i)=>point(i,r).join(',')).join(' ');
+ const values=keys.map(k=>{const v=k==='constitution'?Number(constitution):Number(p[k]);return Number.isFinite(v)?Math.max(0,Math.min(100,v)):0;});
+ const valuePoints=keys.map((_,i)=>point(i,values[i]*.76).join(',')).join(' ');
+ return '<div class="ability-radar"><svg viewBox="0 0 240 226" role="img" aria-label="悟性、胆识、仁心、心境、体魄能力图">'+[19,38,57,76].map(r=>'<polygon class="radar-grid" points="'+points(r)+'"/>').join('')+keys.map((_,i)=>{const [x,y]=point(i,76);return '<path class="radar-grid" d="M120 112L'+x+' '+y+'"/>';}).join('')+'<polygon class="radar-shape" points="'+valuePoints+'"/>'+keys.map((key,i)=>{const [x,y]=point(i,99);return '<text x="'+x+'" y="'+y+'" text-anchor="middle" class="radar-label">'+labels[key]+'</text><text x="'+x+'" y="'+(y+13)+'" text-anchor="middle" class="radar-value">'+values[i].toFixed(1)+'</text>';}).join('')+'</svg><p class="hint">五根轴都是修出来的本事；体魄是筋骨，只增不减；心境会因伤病、遭遇改变。体力不在图上，它在页面顶部的状态条里。</p></div>';
 }
 
 export function practicePanel(s){
  const c=s.life.cultivation,p=s.player;if(!c)return '';
- if(active10(s)&&!canCultivate(s))return `<section class="panel practice-panel">${heading('修行本事','凡身')}${active12(s)?'<p class="hint">'+BODY_TYPES[rules12(s).body.type].name+'</p>':''} ${Object.entries(p.skills).map(([k,v])=>bar(k,v,s)).join('')}${abilityRadar(p)}${methodPanel(s)}<p class="hint">${REALM_ABILITIES[0]}寿元上限 ${lifespan12(s)} 岁。</p></section>`;
+ if(active10(s)&&!canCultivate(s))return `<section class="panel practice-panel">${heading('修行本事','凡身')}${active12(s)?'<p class="hint">'+BODY_TYPES[rules12(s).body.type].name+'</p>':''} ${Object.entries(p.skills).map(([k,v])=>bar(k,v,s)).join('')}${abilityRadar(p,constitution12(s))}${methodPanel(s)}<p class="hint">${REALM_ABILITIES[0]}寿元上限 ${lifespan12(s)} 岁。</p></section>`;
  /*
   * 积累门槛 —— **只从规则层读**（`content/cadence-table.js` 的 `progressNeeded`）。
   *
@@ -52,7 +71,7 @@ export function practicePanel(s){
   * ⚠ 小程序端也显示同一句（整句在 JS 侧拼好再绑定，WXML 不支持拼接）。
   */
  const status=active12(s)?breakthroughStatus(s):null;
- return `<section class="panel practice-panel">${heading('修行本事',stage12(s)||REALMS[p.realm].name)}${active12(s)?'<p class="hint">'+BODY_TYPES[rules12(s).body.type].name+(rules12(s).body.damage?' · 经脉受损':'')+(rules12(s).weak?' · 力竭（判定打折，调养可解）':'')+'</p>':''}${active12(s)?'<div class="stat-line"><span>体魄</span><b class="mono">'+Math.round(rules12(s).body.constitution||0)+'</b></div>':''}<div class="cultivation-progress"><div class="stat-line"><span>境界积累</span><b class="mono" data-value="progress">${threshold?Math.round(pct)+'%':'已臻元婴'}</b></div><div class="prog"><div data-progress-meter style="width:${pct}%"></div></div><div class="realm-steps">${REALMS.map((r,i)=>`<span class="${i<=p.realm?'reached':''}"><i></i>${r.name}</span>`).join('')}</div></div>${status&&status.advice?'<div class="stat-line"><span>冲关还差</span><b class="mono" style="flex:1 1 auto;text-align:right;overflow-wrap:anywhere">'+esc(status.advice)+'</b></div>':''}${Object.entries(p.skills).map(([k,v])=>bar(k,v,s)).join('')}${abilityRadar(p)}${methodPanel(s)}${advancementPanel(s)}<p class="hint">${REALM_ABILITIES[p.realm]}寿元上限 ${lifespan12(s)} 岁。${threshold?'积累到门槛后，再准备材料与闭关。':''}</p></section>`;
+ return `<section class="panel practice-panel">${heading('修行本事',stage12(s)||REALMS[p.realm].name)}${active12(s)?'<p class="hint">'+BODY_TYPES[rules12(s).body.type].name+(rules12(s).body.damage?' · 经脉受损':'')+(rules12(s).weak?' · 力竭（判定打折，调养可解）':'')+'</p>':''}${active12(s)?'<div class="stat-line"><span>体魄</span><b class="mono">'+Math.round(rules12(s).body.constitution||0)+'</b></div>':''}<div class="cultivation-progress"><div class="stat-line"><span>境界积累</span><b class="mono" data-value="progress">${threshold?Math.round(pct)+'%':'已臻元婴'}</b></div><div class="prog"><div data-progress-meter style="width:${pct}%"></div></div><div class="realm-steps">${REALMS.map((r,i)=>`<span class="${i<=p.realm?'reached':''}"><i></i>${r.name}</span>`).join('')}</div></div>${status&&status.advice?'<div class="stat-line"><span>冲关还差</span><b class="mono" style="flex:1 1 auto;text-align:right;overflow-wrap:anywhere">'+esc(status.advice)+'</b></div>':''}${Object.entries(p.skills).map(([k,v])=>bar(k,v,s)).join('')}${abilityRadar(p,constitution12(s))}${methodPanel(s)}${advancementPanel(s)}<p class="hint">${REALM_ABILITIES[p.realm]}寿元上限 ${lifespan12(s)} 岁。${threshold?'积累到门槛后，再准备材料与闭关。':''}</p></section>`;
 }
 function advancementPanel(s){
  if(s.life.cultivation.rulesVersion<8||s.player.realm<2||s.player.realm>=4)return '';

@@ -3,8 +3,8 @@
   "source": {
     "repo": "buuzzy/guishanji",
     "branch": "main",
-    "commit": "c1517360f306685ae0d66f3b9a5624350bde5ab3",
-    "tree": "b73a32799b0b2bd51e695a5c2ed54ae4fa1f230c",
+    "commit": "c718091e886995dd629b33ce32ecd36d18c298ca",
+    "tree": "808550451567725ba94ccde884c1f3d77005473b",
     "note": "构建那一刻本仓库的 HEAD 身份（快照信息，不参与逐字节复现校验）",
     "paths": [
       "packages/adventure/",
@@ -105,13 +105,13 @@
     },
     {
       "id": "content/expressions/cavern.js",
-      "bytes": 2206,
-      "sha256": "f609e74f17882a811f06df2e21cf6a5ca01fe64bdd7ef51ec0cfc59bc41b067c"
+      "bytes": 2516,
+      "sha256": "c07e06ec32a0626997d156037220424be9f7f34859414e51052523a8273ca360"
     },
     {
       "id": "content/expressions/cultivation.js",
-      "bytes": 2976,
-      "sha256": "2372853798d632e22141f6026ca0a43ad383f5833fa4f2ffd54596b6191be2bc"
+      "bytes": 3271,
+      "sha256": "4db80acb34ee065e86d10013e48292a93a3f3afa2f3b841104c04e6f90cc05ca"
     },
     {
       "id": "content/expressions/demonic.js",
@@ -175,8 +175,8 @@
     },
     {
       "id": "content/expressions/homecoming.js",
-      "bytes": 5459,
-      "sha256": "302580ecd865fa4b3abbec5a305db6190583d65f2aea18e198467e2fa92a9543"
+      "bytes": 5744,
+      "sha256": "99c6b351eaf0a3a6dc69a50550ccc6bb84b0530c34b4cc28afea9484911f51cb"
     },
     {
       "id": "content/expressions/index.js",
@@ -185,8 +185,8 @@
     },
     {
       "id": "content/expressions/journey.js",
-      "bytes": 1995,
-      "sha256": "70dbb485125ab98774a4fa1628ffd2fe7fa560bcd928fd05b346537fc1dd15b6"
+      "bytes": 3238,
+      "sha256": "2e4f896dcbe357be5d58a05bebc84af5175b4c3a25b43782fa0d6425e8bbd179"
     },
     {
       "id": "content/expressions/lifespan.js",
@@ -200,8 +200,8 @@
     },
     {
       "id": "content/expressions/outer.js",
-      "bytes": 2729,
-      "sha256": "b04f3e475d2cce3e5f323707c89f61bd537fdcaa980eecb672275d456026e617"
+      "bytes": 3047,
+      "sha256": "a80c19ad83e9e8667ec0a607973622ea397748c03f9be0e05f2cfaaefeae8327"
     },
     {
       "id": "content/expressions/people.js",
@@ -375,8 +375,8 @@
     },
     {
       "id": "packages/adventure/engine.js",
-      "bytes": 61347,
-      "sha256": "3f2ae5fe03b4f28028da62363fe148b06f520196d65a6123b06dff11b4118373"
+      "bytes": 61903,
+      "sha256": "60058a3949ece2928bc6a76a77494a7b5e066ef0b669da993a1efe745b2f06e1"
     },
     {
       "id": "packages/adventure/family.js",
@@ -451,8 +451,8 @@
   ],
   "output": {
     "file": "engine.js",
-    "bytes": 1431053,
-    "sha256": "279824c76252898f396a5992137081868cc61dd73ff9f04681d6d5c1b6742e7f"
+    "bytes": 1433436,
+    "sha256": "29a7f99317c20a84674523a977f4bc970568f95eeba2e33c864865060da5b140"
   },
   "styleOutput": {
     "file": "pixel-style.js",

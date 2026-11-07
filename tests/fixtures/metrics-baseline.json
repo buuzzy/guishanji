@@ -1,5 +1,5 @@
 {
-  "createdAt": "2026-11-07T04:00:26.006Z",
+  "createdAt": "2026-11-07T07:35:15.091Z",
   "count": 120,
   "metrics": {
     "neverSeen": 166,
@@ -8,7 +8,8 @@
     "cooldownRepeats": 0,
     "realmContentMin": 6,
     "endingMissing": 0,
-    "spanMax": 102
+    "spanMax": 102,
+    "spanMedian": 51
   },
   "history": [
     {
@@ -75,6 +76,29 @@
         "realmContentMin": 6,
         "endingMissing": 0,
         "spanMax": 102
+      }
+    },
+    {
+      "at": "2026-11-07T07:35:15.091Z",
+      "reason": "T10：六项指标固化成达标判据 —— 新增「每境内容种数 ≥ 5」与「突破间隔中位数」的硬底线（跨度规格目标 15 年尚未达标，先钉在今天的 51 年）",
+      "from": {
+        "neverSeen": 166,
+        "density10": 4,
+        "density5": 3,
+        "cooldownRepeats": 0,
+        "realmContentMin": 6,
+        "endingMissing": 0,
+        "spanMax": 102
+      },
+      "to": {
+        "neverSeen": 166,
+        "density10": 4,
+        "density5": 3,
+        "cooldownRepeats": 0,
+        "realmContentMin": 6,
+        "endingMissing": 0,
+        "spanMax": 102,
+        "spanMedian": 51
       }
     }
   ]

@@ -26,9 +26,14 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {NODES} from '../content/adventure.js';
+import {CAST} from '../content/regions.js';
+import {NEW_CAST} from '../content/living-world.js';
 import {EPISODES} from '../content/living-episodes.js';
+import {EXPEDITION_CHANGES, CLUE_EVENTS} from '../content/expedition-changes.js';
+import {FAMILY_EVENTS} from '../packages/adventure/family.js';
 import {CULTIVATION_EVENTS} from '../content/cultivation-stories.js';
 import {ROWS, DYNAMIC, makeReadable} from '../content/expressions/index.js';
+import {EVENT_ROWS} from '../content/expressions/events/index.js';
 import {LIFESPAN_TEXT, fillLifespan} from '../content/expressions/lifespan.js';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -58,7 +63,15 @@ if (noVoice.length) for (const id of noVoice.slice(0, 10)) console.error(`      
 
 /* ── 2 & 3. 孤儿 / 漏写 / 选项数对齐 ──────────────────────────────────── */
 
-const nodeTable = {...NODES, ...EPISODES};
+/*
+ * ⚠ 节点表的口径（2026-11-08 · T10 补齐）：
+ *   引擎的 `EVENTS` = 经典节点（45）+ 人生节点（21）+ 探险（4）+ 通知（3）+ 家人（2）
+ *                    + 修仙线（285）= **360 张**。
+ *   早先这里只取 `{...NODES, ...EPISODES}`（66 张）⇒ 后加的探险 / 通知 / 家人这 9 张
+ *   **既不在节点表里、也不在任何门禁的眼里** ⇒ 它们的说法没人管。
+ *   ⇒ 现在按引擎的同一份口径取（360 张），一条不漏。
+ */
+const nodeTable = {...NODES, ...EPISODES, ...EXPEDITION_CHANGES, ...CLUE_EVENTS, ...FAMILY_EVENTS};
 const nodeIds = Object.keys(nodeTable);
 const exprIds = Object.keys(ROWS);
 
@@ -81,6 +94,20 @@ for (const id of exprIds) {
 }
 ok(misaligned.length === 0, `每个说法的选项提示语数量都对得上（对不上 ${misaligned.length} 条）`);
 for (const line of misaligned) console.error(`      ${line}`);
+
+/* ── 2c. 引擎能发的每一张卡都有说法（360 条全覆盖）──────────────────────
+ *
+ * 这是「表达域基线升级到 360 条」那句话的**机器判据**：
+ *   引擎能发的 360 张卡（经典 75 + 修仙 285），
+ *   每一张都要在表达域里有说法（经典分片 ROWS + 修仙分片 EVENT_ROWS）。
+ *   ⇒ 少一张 ⇒ 玩家读到的就是规则层自己的老说法，而且没人盯着 ⇒ 报红。
+ */
+const allEngineIds = Object.keys({...nodeTable, ...CULTIVATION_EVENTS});
+const coveredIds = new Set([...exprIds, ...Object.keys(EVENT_ROWS)]);
+const uncovered = allEngineIds.filter(id => !coveredIds.has(id));
+ok(uncovered.length === 0,
+  `引擎能发的 ${allEngineIds.length} 张卡都有说法（经典 ${exprIds.length} + 修仙 ${Object.keys(EVENT_ROWS).length}，没说法 ${uncovered.length} 条）`);
+for (const id of uncovered) console.error(`      没说法：${id}`);
 
 /* ── 3b. 分片之间不许有重复 id（汇总时后者会悄悄盖掉前者）────────────── */
 
@@ -108,32 +135,60 @@ for (const line of dupIds) console.error(`      ${line}`);
 const VARIANTS = [
   {
     name: 'v1',
+    arc: 'valley',
     people: {master:'captured', sister:'alive', friend:'alive', ally:'alive', rival:'alive', keeper:'alive', trialmate:'missing'},
     flags: {mercy:false, sectLost:false},
     world: {masterDeadline:null}, month: 12, birth: {family:'clan'}, inventory: [],
   },
   {
     name: 'v2',
+    arc: 'cavern',
     people: {master:'dead', sister:'alive', friend:'alive', ally:'dead', rival:'alive', keeper:'alive', trialmate:'dead'},
     flags: {mercy:true, sectLost:true},
     world: {masterDeadline:100}, month: 50, birth: {family:'noble'}, inventory: ['mirror_heart','ember_engine'],
   },
   {
     name: 'v3',
+    arc: 'outer',
     people: {master:'alive', sister:'alive', friend:'alive', ally:'alive', rival:'alive', keeper:'alive', trialmate:'alive'},
     flags: {mercy:true, sectLost:false},
     world: {masterDeadline:0}, month: 0, birth: {family:'mortal'}, inventory: [],
   },
 ];
+/** 全部人物（经典 6 位 + 新增 1 位）—— 与引擎初始化用的是同一份表。 */
+const ALL_CAST = {...CAST, ...NEW_CAST};
+
 const stateOf = (v) => {
+  /* ⚠ 人物要**有名字**（`s.people[id].name`）——
+   *   探险那张卡（同伴被妖兽击伤）正文里拼的就是它，
+   *   没有名字就会拼出「undefined被妖兽爪伤」。 */
   const people = {};
-  for (const [k, status] of Object.entries(v.people)) people[k] = {status};
+  for (const [pid, p] of Object.entries(ALL_CAST)) {
+    const status = v.people[pid] || 'alive';
+    people[pid] = {id: pid, ...p, known: true, alive: status !== 'dead', status, deathMonth: null, location: 'home', bond: 0};
+  }
+  /* ⚠ 家人（`s.life.family`）与探险（`s.life.arc`）也是真实存档里一直有的东西 ——
+   *   家人那两张卡的正文与失败结果都要读它们。 */
+  const family = {
+    kind: v.birth.family,
+    bond: 65,
+    reserve: v.birth.family === 'clan' ? 80 : v.birth.family === 'noble' ? 100 : 28,
+    nextAt: 24,
+    visits: 0,
+    members: [
+      {id: 'parent', name: '家长辈', role: '家族长辈', status: 'alive', location: 'home', deathAt: 600},
+      {id: 'cousin', name: '青禾', role: '族中堂亲', status: 'alive', location: 'home', deathAt: 900},
+    ],
+  };
   return {
     people, flags: {...v.flags}, world: {...v.world}, month: v.month,
     birth: {...v.birth}, inventory: [...v.inventory],
     life: {
       crisis: {channel: v.crisisChannel, message: '山下的人还在等回信。', travel: 3},
-      activity: '练剑', arc: null,
+      activity: '练剑',
+      /* 探险的三个变体各给一个去处 ⇒ 探险卡的两条分支（陶宁 / 嵇萝）都被探到。 */
+      arc: {id: v.arc, stage: 'deep', hazardCount: 1, supplies: 10, threatAt: 0, companion: {status: 'alive', name: '嵇萝'}},
+      family,
       cultivation: {path: 'orthodox', rank: '内门'},
       goal: 'free',
     },
@@ -141,7 +196,7 @@ const stateOf = (v) => {
 };
 
 function snapshot() {
-  const readable = makeReadable({...NODES, ...EPISODES});
+  const readable = makeReadable(nodeTable);
   const out = {};
   for (const id of Object.keys(readable).sort()) {
     const node = readable[id];
@@ -163,6 +218,10 @@ function snapshot() {
 if (!fs.existsSync(BASELINE)) {
   failures++;
   console.error(`  ✗ 缺少表达域基线：${path.relative(ROOT, BASELINE)}`);
+} else if (process.argv.includes('--write')) {
+  /* ── 重生成基线（只在真要改说法时用）───────────────────────────────── */
+  fs.writeFileSync(BASELINE, JSON.stringify(snapshot(), null, 2) + '\n');
+  console.log(`  ✓ 基线已重生成：${path.relative(ROOT, BASELINE)}`);
 } else {
   const expected = JSON.parse(fs.readFileSync(BASELINE, 'utf8'));
   const actual = snapshot();

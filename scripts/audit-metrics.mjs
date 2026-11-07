@@ -49,6 +49,8 @@ import {EVENTS} from '../packages/adventure/engine.js';
 import {isMilestone, SPEC as GATES_SPEC} from '../packages/adventure/gates.js';
 import * as GATES from '../packages/adventure/gates.js';
 import {projectRoot} from './serve.mjs';
+/* ⚠ 底线数字**只住这一份**（浏览器也要用 ⇒ 这个文件不许 import node:*）。 */
+import {REALM_KINDS_MIN} from './lib/completeness-limits.js';
 
 /** 基线文件（跟着源码走 ⇒ 门禁只依赖跟着源码走的文件）。 */
 const BASELINE_FILE = join(projectRoot, 'tests/fixtures/metrics-baseline.json');
@@ -66,6 +68,7 @@ const DIRECTION = {
   realmContentMin: 'up',  // 节奏对齐：每境最少有多少种内容
   endingMissing: 'down',  // 结局覆盖
   spanMax: 'down',        // 阶段跨度：各境突破年龄极差的最大值
+  spanMedian: 'down',     // 阶段跨度：各段突破间隔的中位数（最差的一段）
 };
 
 /**
@@ -76,8 +79,13 @@ const DIRECTION = {
  *   两份数字必须一样 —— 不一样就报红（见下面的「闸与规格对不对得上」）。
  *   分成两份是为了能做**反向验证**：把闸的实现值改小（冷却 60 → 12 个月），
  *   规格这一份不动 ⇒ 实测立刻出现重复 ⇒ 门禁报红 ⇒ 证明这道闸是真的在管事。
+ *
+ * ⚠ `spanMedian` 的规格目标是 **15 年**（`SPAN_TARGET`），但实测是 51 年 ——
+ *   **尚未达标** ⇒ 硬底线先钉在今天的值（不许变宽），
+ *   「未达标」这件事登记在完备度门禁的缺口台账里（`scripts/audit-completeness.mjs`）。
+ *   ⇒ 门禁是绿的，但「还差多少」写在明面上，不是藏起来。
  */
-const HARD_LIMIT = {endingMissing: 0, density10: 5, density5: 3, cooldownRepeats: 0};
+const HARD_LIMIT = {endingMissing: 0, density10: 5, density5: 3, cooldownRepeats: 0, realmContentMin: REALM_KINDS_MIN, spanMedian: 51};
 
 
 /** 跑一条命，把它的指标事实收拢起来。 */
@@ -147,12 +155,23 @@ function runOne(spec) {
       spanByRealm[tier] = Math.max(...list) - Math.min(...list);
     }
     const spanMax = Object.values(spanByRealm).length ? Math.max(...Object.values(spanByRealm)) : 0;
+    /*
+     * 同一里程碑的突破间隔（**这条命里**）——
+     *   `spanMax` 是「最差的一条命隔了多久」，一条命就能把它顶爆；
+     *   这里要的是**中位数口径**（方案里的说法）：多数人隔多久。
+     *   ⇒ 每条命记下「每一境隔了多少年」，由 `spanMedianOf` 汇总。
+     */
+    const tierSpans = {};
+    for (const [tier, span] of Object.entries(spanByRealm)) {
+      if (span > 0) tierSpans[tier] = span;
+    }
     return {
       ok: true,
       density10, density5, cooldownRepeats, spanMax,
       events: run.events,
       realmCounts: Object.fromEntries(Object.entries(perRealm).map(([k, v]) => [k, v.size])),
       noEnding: !(run.state.ending && run.state.ending.title && run.state.ending.text),
+      tierSpans,
       /* 每条命的卡序列快照（年龄 / 卡 id / 境界）——
        * 完备度盘点（`scripts/audit-completeness.mjs`）要用**同一批人生**算
        * 「哪一年发什么卡」，所以这里把它带出来，别让那边再跑一遍。 */
@@ -192,7 +211,48 @@ export function realmCountsOf(good) {
 }
 
 /**
- * 把一批人生算成六项指标（**不跑人生**，只做汇总）。
+ * 各境界段的「突破间隔中位数」（中位数口径）。
+ *
+ * ⚠ 口径：**一条命里**同一境界段的两次突破隔了多少年，再对所有命取中位数。
+ *   为什么不用 `spanMax` 那个口径：它量的是「最差的一条命隔了多久」——
+ *   一条命就能把它顶爆（实测 102 年），既不是典型情况，也不适合当底线。
+ *
+ * 规格目标：每段 ≤ 15 年（`docs/内容架构重构方案-2026-11-06.md` 六项指标第 6 条）。
+ * ⚠ 实测**尚未达标**（炼气 5 · 筑基 4 · 金丹 27 · 元婴 51）⇒
+ *   这条已登记成**已知缺口**（门禁 `completeness` 的缺口台账里），
+ *   门禁本身只守「不许变得更宽」。
+ *
+ * @param {object[]} good 跑成功的命（每条带 `tierSpans`）
+ * @returns {{tiers: object, worst: number, overall: number}}
+ */
+export function spanMedianOf(good) {
+  const perTier = {};
+  for (const life of good) {
+    for (const [tier, span] of Object.entries(life.tierSpans || {})) {
+      (perTier[tier] = perTier[tier] || []).push(span);
+    }
+  }
+  const median = (list) => {
+    if (!list.length) return null;
+    const s = [...list].sort((a, b) => a - b);
+    const mid = Math.floor(s.length / 2);
+    return s.length % 2 ? s[mid] : Math.round((s[mid - 1] + s[mid]) / 2);
+  };
+  const tiers = {};
+  for (const [tier, list] of Object.entries(perTier)) tiers[tier] = median(list);
+  const numbers = Object.values(tiers).filter(v => v !== null);
+  return {
+    tiers,
+    worst: numbers.length ? Math.max(...numbers) : 0,
+    overall: numbers.length ? median(numbers) : 0,
+  };
+}
+
+/** 规格里的目标值（第 6 条：跨度中位数 ≤ 15 年）。 */
+export const SPAN_TARGET = 15;
+
+/**
+ * 算出一批人生的事实（**不跑人生**，只做汇总）。
  *
  * 拆出来是为了让完备度盘点能**只跑一批命**、同时拿到六项指标与逐年的卡分布
  * —— 两边共用同一批命 ⇒ 数字必然对得上。
@@ -207,6 +267,9 @@ export function metricsOf(good, count = good.length) {
   const realmCounts = realmCountsOf(good);
   const realmContentMin = Object.keys(realmCounts).length ? Math.min(...Object.values(realmCounts)) : 0;
 
+  /* ⑥ 阶段跨度：各段突破间隔的**中位数**（口径见 `spanMedianOf`）。 */
+  const span = spanMedianOf(good);
+
   const metrics = {
     neverSeen: neverSeen.length,
     density10: good.length ? Math.max(...good.map(r => r.density10)) : 0,
@@ -215,8 +278,9 @@ export function metricsOf(good, count = good.length) {
     realmContentMin,
     endingMissing: good.filter(r => r.noEnding).length,
     spanMax: good.length ? Math.max(...good.map(r => r.spanMax)) : 0,
+    spanMedian: span.worst,
   };
-  return {count, good: good.length, metrics, realmCounts, neverSeenSample: neverSeen.slice(0, 10)};
+  return {count, good: good.length, metrics, realmCounts, span, neverSeenSample: neverSeen.slice(0, 10)};
 }
 
 /** 跑一批人生，算出六项指标。 */
@@ -240,7 +304,19 @@ export function check(report, baseline) {
       problems.push(`${key} 变差了：${before} → ${now}（只许变好，不许变差）`);
     }
     const limit = HARD_LIMIT[key];
-    if (limit !== undefined && now > limit) problems.push(`${key} 超过硬底线：${now} > ${limit}`);
+    if (limit !== undefined) {
+      /*
+       * ⚠ 硬底线的比较方向**必须跟着指标方向走**：
+       *   `density10` 越小越好 ⇒ 超过上限就报红；
+       *   `realmContentMin` 越大越好 ⇒ **低于**下限才报红。
+       *   （早先写成一律「超过就报红」⇒ 把「6 种内容 ≥ 下限 5 种」误判成超标。）
+       */
+      if (direction === 'down' && now > limit) {
+        problems.push(`${key} 超过硬底线：${now} > ${limit}`);
+      } else if (direction === 'up' && now < limit) {
+        problems.push(`${key} 低于硬底线：${now} < ${limit}`);
+      }
+    }
   }
   /*
    * ⚠ **闸与规格对不对得上** —— 两份数字必须一致。
@@ -285,7 +361,14 @@ async function main() {
   console.log('  冷却（60 个月内重复）  ' + report.metrics.cooldownRepeats + ' 处');
   console.log('  节奏对齐（各境内容种数）  ' + JSON.stringify(report.realmCounts));
   console.log('  结局覆盖（缺结局的人生）  ' + report.metrics.endingMissing + ' 条');
-  console.log('  阶段跨度（各境突破年龄极差的最大值）  ' + report.metrics.spanMax + ' 年');
+  console.log('  阶段跨度（最差的一条命）  ' + report.metrics.spanMax + ' 年');
+  const spanText = Object.entries(report.span.tiers)
+    .sort((a, b) => Number(a[0]) - Number(b[0]))
+    .map(([tier, n]) => `境界 ${tier} ${n} 年`)
+    .join(' · ');
+  console.log('  突破间隔（中位数口径）  ' + spanText + `（最差一段 ${report.metrics.spanMedian} 年）`);
+  console.log(`    ⚠ 规格目标是每段 ≤ ${SPAN_TARGET} 年 —— 金丹以后**尚未达标**`
+    + '（已登记在完备度门禁的缺口台账里；改它要走「有意行为变更」流程）');
   if (report.failed.length) console.log('  ⚠ ' + report.failed.length + ' 条命没跑完（已排除）');
 
   if (argv.includes('--gen')) {

@@ -190,6 +190,10 @@ const ADDED = [
   'scripts/t9-reverse.mjs',
   'tests/fixtures/completeness-gaps.json',
   'docs/内容完备度盘点-2026-11-08.md',
+  /* 2026-11-08：T10 六项指标固化成达标判据 + 表达域补齐到 360 条 */
+  'scripts/t10-reverse.mjs',
+  'tests/fixtures/expressions-pre-t10.json',
+  'scripts/lib/completeness-limits.js',
 ];
 
 

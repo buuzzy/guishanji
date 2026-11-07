@@ -24,7 +24,16 @@ import { ROOTS,SYSTEM_ENDINGS } from '../../content/cultivation-world.js';
 import { annualCultivationSettlement,initializeCultivation,validateCultivation,finishTravel,beginTravel,changeActivity,withdrawCultivation,cultivationText,cultivationActionTrip,cultivationDeliveryMonths } from './cultivation.js';
 import { PREVIEW3_VERSION,PREVIEW3_CONTENT_REVISION } from '../../content/adventure.js';
 import {prose,progressionChoice} from './progression.js';
-const NODES = { ...makeReadable({ ...ORIGINAL_NODES, ...EPISODES }), ...EXPEDITION_CHANGES, ...CLUE_EVENTS, ...FAMILY_EVENTS };
+/*
+ * ⚠ 表达域接管的范围（2026-11-08 · T10 补齐）：
+ *   探险（expedition_*）、各处通知（valley / cavern / outer_notice）、
+ *   家人（family_*）这 **9 张卡**原先**没进表达域** ——
+ *   它们是后来才加进节点表的，加进来时没跟上表达域 ⇒
+ *   玩家读到的还是规则层自己的老说法，而且**没有任何门禁盯着它们**。
+ *   ⇒ 现在一并交给经典表达域（文字原样搬过去，一个字没改），
+ *     门禁 `expressions` 会把它们一起盯住。
+ */
+const NODES = { ...makeReadable({ ...ORIGINAL_NODES, ...EPISODES, ...EXPEDITION_CHANGES, ...CLUE_EVENTS, ...FAMILY_EVENTS }) };
 NODES.beacon.legacyOnly = true;
 Object.assign(NODES,CULTIVATION_EVENTS);
 for(const node of Object.values(CULTIVATION_EVENTS))node.cultivationOnly=true;

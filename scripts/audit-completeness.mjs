@@ -61,17 +61,18 @@ import {NODES} from '../content/adventure.js';
 import {EPISODES} from '../content/living-episodes.js';
 import {ALL_ENDINGS} from '../packages/adventure/engine.js';
 import {EVENT_ROWS} from '../content/expressions/events/index.js';
-import {collectLives, metricsOf, realmCountsOf} from './audit-metrics.mjs';
+import {collectLives, metricsOf, realmCountsOf, spanMedianOf, SPAN_TARGET} from './audit-metrics.mjs';
 import {projectRoot} from './serve.mjs';
+/* ⚠ 底线数字**只住这一份**（开发者面板也要用 ⇒ 这个文件不许 import node:*）。 */
+import {
+  REALM_KINDS_MIN, LATE_AGE, LATE_KINDS_MIN, LATE_DEDICATED_MIN,
+} from './lib/completeness-limits.js';
 
 /** 缺口台账（跟着源码走 ⇒ 门禁只依赖跟着源码走的文件）。 */
 const BASELINE_FILE = join(projectRoot, 'tests/fixtures/completeness-gaps.json');
 
 /** 默认跑多少条命（**台账里记着这个数**，门禁按台账的数跑 ⇒ 可复算）。 */
 const DEFAULT_LIVES = 120;
-
-/** 晚年的起点（岁）。 */
-const LATE_AGE = 75;
 
 /**
  * 应当存在的故事线（11 条）。
@@ -88,11 +89,11 @@ const EXPECTED_LINES = [
 /** 各类下限（**口径都写在这里**，改一个数就能看出它守护的是什么）。 */
 export const LIMITS = {
   lineCards: 1,      // 每条故事线至少 1 张卡
-  realmKinds: 5,     // 每个境界段至少 5 种内容（与指标审计的「节奏对齐」同口径）
+  realmKinds: REALM_KINDS_MIN, // 每个境界段至少 5 种内容（与指标审计的「节奏对齐」同口径）
   chainSteps: 2,     // 每条长线至少 2 步（起 + 承），不然玩家碰到开头就没有下文
   endings: 20,       // 结局至少 20 个
-  lateKinds: 30,     // 晚年至少 30 种卡
-  lateDedicated: 3,  // 一张专讲「收尾」的卡，至少要发 3 次才算晚年有收尾内容
+  lateKinds: LATE_KINDS_MIN,   // 晚年至少 30 种卡
+  lateDedicated: LATE_DEDICATED_MIN, // 一张专讲「收尾」的卡，至少要发 3 次才算晚年有收尾内容
 };
 
 /**
@@ -190,6 +191,21 @@ export const CRITERIA = [
       + `（低于 ${LIMITS.lateDedicated} 次的底线）—— 晚年发的还是备料与冲关，没有一条线专讲收尾`,
     ]),
   },
+  {
+    kind: 'span-too-wide',
+    severity: 'known',
+    title: '高境界段的突破间隔太长',
+    /* 规格目标：每一段的突破间隔中位数 ≤ 15 年（`docs/内容架构重构方案-2026-11-06.md` 六项指标第 6 条）。
+     * ⚠ 实测未达标（炼气 5 · 筑基 4 · 金丹 27 · 元婴 51 年）——
+     *   原因多半是「备料要等」（金丹的内丹、元婴的主药不是想要就有）。
+     *   ⇒ 改它要动内容与节奏 ⇒ 走「有意行为变更」流程 ⇒ 这里只登记，不自己动手。 */
+    test: f => (f.span.worst <= SPAN_TARGET ? [] : [
+      `各境界段的突破间隔中位数：${Object.entries(f.span.tiers)
+        .sort((a, b) => Number(a[0]) - Number(b[0]))
+        .map(([tier, n]) => `${tier} 段 ${n} 年`).join('、')}`
+      + `；最差的一段 ${f.span.worst} 年，超过规格目标 ${SPAN_TARGET} 年`,
+    ]),
+  },
 ];
 
 /* ── 量事实 ───────────────────────────────────────────────────────────── */
@@ -257,6 +273,7 @@ export function collectFacts(lives = DEFAULT_LIVES) {
     lineCounts,
     realmCounts: metrics.realmCounts,
     metrics: metrics.metrics,
+    span: spanMedianOf(good),
     chains: (ROAD_CHAINS || []).map(c => ({
       id: c.id,
       name: c.name || c.id,
@@ -384,6 +401,7 @@ async function main() {
     console.log(`   ${buckets.length} 个岁数段，最挤的是 ${busiest[0]}（${busiest[1]} 张）；100 岁以后共 ${late} 张`);
   }
   console.log(`   ${LATE_AGE} 岁后共 ${facts.lateKinds} 种卡，最常发：${facts.lateTop.slice(0, 5).map(([id, n]) => `${id}×${n}`).join('、')}`);
+  console.log(`   各境突破间隔（中位数）：${Object.entries(facts.span.tiers).sort((a, b) => Number(a[0]) - Number(b[0])).map(([tier, n]) => `${tier} 段 ${n} 年`).join('、')}（规格目标 ≤ ${SPAN_TARGET} 年）`);
   console.log(`   其中「收尾类」（标题直接讲身后事 / 交接）的卡：${facts.lateDedicated.length ? facts.lateDedicated.map(d => `${d.title}×${d.count}`).join('、') : '（无）'}`);
   console.log('\n⑦ 缺口清单');
   if (!gaps.length) console.log('   （无）');

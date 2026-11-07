@@ -138,6 +138,11 @@ const commands = [
      反向验证不是门禁，但它是「门禁有没有用」的证据 ⇒ 也挂进来，
      免得它变成没人跑的孤儿脚本（孤儿 = 假门禁）。 */
   ['t9reverse', ['scripts/t9-reverse.mjs']],
+
+  /* ── 指标门禁与表达域覆盖的体检 ─────────────────────────────────────────
+     这两道门禁原来**都没有反向验证** ⇒ 按 AGENTS.md 的口径属于半个假门禁。
+     T10 补上：注入坏值逐条证明会报红，并证明基线正常时门禁是绿的。 */
+  ['t10reverse', ['scripts/t10-reverse.mjs']],
 ];
 const report = { startedAt: new Date().toISOString(), node: process.version, platform: process.platform, results: [] };
 await mkdir(join(projectRoot, 'artifacts'), { recursive: true });

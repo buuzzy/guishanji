@@ -1189,8 +1189,8 @@
         "sourceBytes": 11494,
         "sourceSha256": "66026f8b72b80fc179a98f3f31fe2c736ff0d8c96a74e4c8ad26cde58edd5875",
         "path": "miniprogram/subpkg/xianxia/runtime/build-manifest.json",
-        "currentBytes": 13301,
-        "currentSha256": "0239c1abb687f19288ff4ed47ee79d55f5c460c97d64f9b4c925f5296084b710",
+        "currentBytes": 13466,
+        "currentSha256": "bf369b0399ac8c2b46940203ead2794e4746a837e07692d328acd0e6af65b5f7",
         "reason": "生成物：来源改为本仓库源码，并新增 upstreamOrigin 段"
       },
       {
@@ -1200,8 +1200,8 @@
         "sourceBytes": 1738614,
         "sourceSha256": "ba0720f2c21c1babe39c605739e90243d7de00db5f920bd5078704d6952fed3f",
         "path": "miniprogram/subpkg/xianxia/runtime/engine.js",
-        "currentBytes": 1247223,
-        "currentSha256": "53a4f7fdee3c9864efa85289f56410b8ad04957c8a25abdb871776679de3792c",
+        "currentBytes": 1264102,
+        "currentSha256": "c0f2512478cdf5e93e1595dcb9b39bd86e71f610185237babc8ae733d455679e",
         "reason": "生成物：由本仓库源码重新构建（除文件头注释外与迁移进来的那份逐字节一致，见 reference/migrated-runtime/）"
       },
       {
@@ -1509,8 +1509,8 @@
       },
       {
         "path": "scripts/gen-source-manifest.mjs",
-        "bytes": 25039,
-        "sha256": "0cf8a10b27310f29b4762789e6ef4de1054dab582ea25a08c6b4d726132e1451"
+        "bytes": 25192,
+        "sha256": "fc692290cc89ce6537f3645e9b287acddcd06c16a30a423534aa56795eb16b05"
       },
       {
         "path": "scripts/test-xianxia-standalone.mjs",
@@ -1674,8 +1674,8 @@
       },
       {
         "path": "content/nodes.js",
-        "bytes": 87993,
-        "sha256": "a43f79016c6137dc82891c3bf7a71bcd09e6693ba585c5d28114409a1a39046b"
+        "bytes": 88102,
+        "sha256": "b5341c063fe9a024ce44e0f33379b858454440bcabbe3f255ccda6270c12c3f7"
       },
       {
         "path": "scripts/verify-content-modules.mjs",
@@ -1684,8 +1684,8 @@
       },
       {
         "path": "tests/fixtures/content-modules.json",
-        "bytes": 147944,
-        "sha256": "6d32727d47f6549ccef526fa6a4977e133b13286c5c1ac2ef3e7c6a8e1862284"
+        "bytes": 147987,
+        "sha256": "66a01e22cc2280d8dbd46ccce04f81733364287885604dd54dc1002ad34b58c9"
       },
       {
         "path": "docs/内容架构重构交付说明-2026-11-07.md",
@@ -1711,6 +1711,21 @@
         "path": "tests/radar.test.mjs",
         "bytes": 5845,
         "sha256": "3b5053eb755f0bc2eb523dd1e334adf708ef3282f64792546ac3ee1a9a9824a8"
+      },
+      {
+        "path": "content/cultivation-findings.js",
+        "bytes": 20340,
+        "sha256": "b43a27961423fb94060cd32afda1589c6f09680fb13f4afccbe547eaec1670db"
+      },
+      {
+        "path": "scripts/audit-items.mjs",
+        "bytes": 16957,
+        "sha256": "46de8a839f6389452634c66743e2c02d1046e70854d14cf598e6c15e09ac5578"
+      },
+      {
+        "path": "tests/items.test.mjs",
+        "bytes": 4941,
+        "sha256": "00a466dcee889c4209bd25472ad9bc43e2f19b2b6cfd09adb87ed6febfc87bc0"
       }
     ]
   }

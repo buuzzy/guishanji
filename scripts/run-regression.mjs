@@ -6,7 +6,7 @@ import { projectRoot } from './serve.mjs';
 const commands = [
   ['preview-assets', ['scripts/build-preview-assets.mjs']],
   ['check', ['scripts/check.mjs']],
-  ['unit', ['--test', 'tests/adventure.test.mjs', 'tests/adventure-feedback.test.mjs','tests/cultivation.test.mjs','tests/decision-clarity.test.mjs','tests/life-richness.test.mjs','tests/story-network.test.mjs','tests/progression.test.mjs','tests/revision9.test.mjs','tests/story-rules10.test.mjs','tests/radar.test.mjs']],
+  ['unit', ['--test', 'tests/adventure.test.mjs', 'tests/adventure-feedback.test.mjs','tests/cultivation.test.mjs','tests/decision-clarity.test.mjs','tests/life-richness.test.mjs','tests/story-network.test.mjs','tests/progression.test.mjs','tests/revision9.test.mjs','tests/story-rules10.test.mjs','tests/radar.test.mjs','tests/items.test.mjs']],
   ['mundane-unit', ['--test','tests/mundane-life.test.mjs']],
   ['rules12-unit', ['--test','tests/story-rules12.test.mjs']],
   /* ── 发卡闸门禁（2026-11-07 · T2）────────────────────────────────────
@@ -93,6 +93,16 @@ const commands = [
      ⚠ 这道门禁补上的是 2026-11-06 那一轮漏掉的洞：当时量指标的脚本
        `scripts/content-map.mjs` 根本没进过 git ⇒ 六项指标长期没人盯着。 */
   ['metrics', ['scripts/audit-metrics.mjs', '--count=120', '--check']],
+  /* ── 道具闭环门禁 ─────────────────────────────────────────────────────
+     用户 2026-11-06 提的第 11 条：「人生经历能产出」＋「道具 87 发 10 耗」。
+     这道门禁守的是**道具的来路与去处**：
+     · 发霉的道具（表里有、源码里一次都没出现）
+     · 拿不到却被消耗（玩家被扣了一个拿不到的东西）
+     · 拿到却无出口（捡到的东西既不能花也没有下文）
+     · 人生经历带道具的比例低于下限（日子只写事、从不产出）
+     ⚠ 它是护栏 ⇒ 光看「跑一遍没报错」证明不了它有用 ⇒ 反向验证在
+       tests/items.test.mjs（造坏数据逐条证明四条判据真抓得住）。 */
+  ['items', ['scripts/audit-items.mjs', '--count=120']],
 ];
 const report = { startedAt: new Date().toISOString(), node: process.version, platform: process.platform, results: [] };
 await mkdir(join(projectRoot, 'artifacts'), { recursive: true });

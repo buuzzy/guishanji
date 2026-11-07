@@ -158,6 +158,10 @@ const ADDED = [
   'scripts/audit-metrics.mjs',
   'tests/fixtures/metrics-baseline.json',
   'docs/遗留问题清单-2026-11-07.md',
+  /* 2026-11-08：T5 人生经历能产出 + 道具闭环 */
+  'content/cultivation-findings.js',
+  'scripts/audit-items.mjs',
+  'tests/items.test.mjs',
   /* 2026-11-08：T4 雷达换轴 —— 两端雷达的轴必须一致（体力退出雷达、体魄进雷达） */
   'tests/radar.test.mjs',
 ];

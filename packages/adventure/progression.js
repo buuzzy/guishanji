@@ -131,6 +131,14 @@ export function progressionAction(s,event,choiceId,success,cb){
  if(event==='sect_rebuild'&&success){pp.sect.phase='rebuilt';pp.sect.role=choiceId==='lead'?'leader':'supporter';pp.sect.nextCouncil=s.month+48;cc.rank=choiceId==='lead'?'新山门领事人':cc.rank;pp.sect.treasury=Math.max(0,pp.sect.treasury-6);if(cc.continent===s.birth.continent)cb.apply({home:choiceId==='lead'?'新山门弟子院':'山下坊市租屋'});if(choiceId==='revenge')pp.sect.revengeDue=s.month+12;add(s,cb,'新山门的账册留下两份','掌事与守库弟子各留一份账册，共同物资没有算进你的行囊。住处和护阵已经能用，后续差事仍要逐项安排。');}
  if(event.startsWith('sect_council_')){pp.sect.councils++;pp.sect.nextCouncil=s.month+60;if(choiceId==='leave')pp.sect.role='supporter';else if(success){pp.sect.development++;pp.sect.treasury+=choiceId==='earn'?6:choiceId==='teach'?4:2;}}
  if(event==='sect_revenge'&&success&&choiceId==='fight')pp.sect.treasury+=6;
+ /* T5 · 旧敌令印有了出口：拿去查，就得押出去。
+  * ⚠ **只改当前版本（规则十二）** —— 旧档（5–11）的执行器与事件表一个字节都不许动。
+  * ⚠ 为什么是「押出去」而不是「用完」：令印是唯一的凭据，查完就交回不来了；
+  *   玩家因此要想清楚，要不要为「把发令者查清楚」花掉这件东西。 */
+ if(cc.rulesVersion===12&&event==='sect_revenge'&&success&&choiceId==='investigate'){
+  cb.apply({remove:['old_enemy_seal']});
+  add(s,cb,'令印押给了药商','你把撤离时留下的敌宗令印押给药商，请他按印记上的旧记号去比对。药商要押物作保，先说三个月未必有回音；后来寄回来的只有一张写明来处的纸。令印没有还你。');
+ }
  if(event.startsWith('parcel_missing')||event.startsWith('parcel_exposed')){
   const parcel=pp.parcel;if(parcel){if(choiceId==='search'||choiceId==='convert'){s.life.family.money+=3000;parcel.status='recovered';}else if(choiceId==='guard'){s.life.family.reserve+=parcel.amount;parcel.status='delivered';}else parcel.status='lost';pp.parcels.push({...parcel,received:s.month});pp.parcel=null;}
   if(pp.interrupted){const old=pp.interrupted;if(choiceId!=='guard'){old.journey.to+=s.month-old.month;pp.resumeJourney=old.journey;cc.context=old.context;add(s,cb,'回到原来停下的进度','代收人处理好传话，你回到先前停下的练习。用于处理急讯的年月另计，原行动还需完成余下的部分。');}else{if(old.journey.event?.startsWith('breakthrough_')){const tier=Number(old.journey.event.split('_')[1]);cc.attempts[tier]=Math.min(3,cc.attempts[tier]+1);cc.retryAt=s.month+36;}if(old.journey.event?.startsWith('advance_material_'))pp.materialAbandoned.push(old.journey.event);add(s,cb,'原来的行动没有完成','你放下先前的差事，亲自回乡。未取得的材料和未完成的冲关不会在这次归来时发放。');}delete pp.interrupted;}

@@ -1,5 +1,6 @@
 import {random,hashText} from '../packages/core/random.js';
 import {ACTIVITIES} from './cultivation-world.js';
+import {FINDINGS,WEAR} from './cultivation-findings.js';
 const years=s=>Math.floor(s.month/12)+(s.birth.startAge||0);
 /**
  * 「这条故事线有没有机会」—— **当前版本（规则十二）由种子决定，不再由随机流决定。**
@@ -182,6 +183,65 @@ function pick(s,key,pool){
  // Linked ordinary acquaintances retain their sequence rather than resetting.
  const i=key==='social'?available[0]:available[Math.floor(random(s,'daily')*available.length)];used.push(i);return pool[i];
 }
+/**
+ * 抽一条「路上捡到的东西」（T5 · 人生经历能产出）。
+ *
+ * ⚠⚠ **为什么不碰随机流**：
+ *   `pick()` 用的是 `random(s,'daily')`。如果在同一条流上多抽一次，
+ *   后面每一次抽签的结果都会跟着变 ⇒ 旧版本人生（规则 5–11）会被连累
+ *   （它们的决策序列必须逐条不变）。
+ * ⇒ 这里只用**种子哈希**：同一条人生、同一段时间，抽到的永远是同一件。
+ *
+ * ⚠ **不记「用过了」**：`dailyMemory` 的结构被门禁盯着
+ *   （每个值必须是整数数组），加新字段会让 `validateCultivation` 报红。
+ *   ⇒ 改为「每月一次哈希」：同一个月的哈希固定 ⇒ 不会在同一个月里重复；
+ *   跨月可能重复，但旁白的冷却闸（60 个月内不重复同标题）本来就管着这件事。
+ */
+const FINDING_CHANCE=3000; /* ‰ 3000/10000 = 30% 的旁白带着东西 */
+function pickFinding(s,key){
+ const pool=FINDINGS[key]||(key.startsWith('chain-')?FINDINGS.chain:key.startsWith('appointment-')?FINDINGS.appointment:null);
+ if(!pool||!pool.length)return null;
+ const c=s.life.cultivation;
+ if(c.rulesVersion!==12)return null; /* 只改当前版本；旧档一字不变 */
+ const stamp=String(s.seed)+':捡到:'+s.month+':'+key;
+ const roll=hashText(stamp)%10000;
+ if(roll>=FINDING_CHANCE)return null;
+ const which=hashText(stamp+':哪件')%pool.length;
+ /* 行囊里已有的那件就跳过，往后顺延 —— 不然抽到重复的就白抽一次。 */
+ for(let i=0;i<pool.length;i++){const row=pool[(which+i)%pool.length];if(row&&!s.inventory.includes(row[2]))return row;}
+ return null;
+}
+/**
+ * 抽一条「东西用旧了」（T5）。
+ *
+ * 为什么需要它：没有损耗，玩家捡一次就攒着 ⇒ 后面再也「捡不到」新的
+ * ⇒ 「人生经历能产出」就变成了「一生只发一次福利」。
+ * ⇒ 这几条把行囊里的旧物拿走（护符裂了 / 药受潮 / 灯号褪了）。
+ */
+const WEAR_CHANCE=1800; /* ‰ 1800/10000 = 18% 的旁白是「东西坏了」 */
+function pickWear(s,key){
+ const c=s.life.cultivation;
+ if(c.rulesVersion!==12)return null; /* 只改当前版本；旧档一字不变 */
+ const stamp=String(s.seed)+':用旧:'+s.month+':'+key;
+ if(hashText(stamp)%10000>=WEAR_CHANCE)return null;
+ const have=WEAR.filter(row=>s.inventory.includes(row[2]));
+ if(!have.length)return null;
+ const which=hashText(stamp+':哪件')%have.length;
+ return have[which];
+}
+/**
+ * 一条旁白可能带的「一件东西」：
+ *   ① 先看有没有东西用旧了（从行囊里拿走一件）；
+ *   ② 再看有没有捡到新的（往行囊里放一件）。
+ * 两者都不碰随机流（只用种子哈希）⇒ 旧版本人生一个字节都不变。
+ */
+function lifeRow(s,key){
+ const worn=pickWear(s,key);
+ if(worn)return {title:worn[0],body:worn[1],discard:[worn[2]]};
+ const found=pickFinding(s,key);
+ if(found)return {title:found[0],body:found[1],items:[found[2]]};
+ return null;
+}
 export function automaticStory(s,context){
  const c=s.life.cultivation;
  if(s.journey?.resolution||s.pending)return null;
@@ -193,9 +253,10 @@ export function automaticStory(s,context){
   ]:[
    ['北坡的钥匙逐把验过','巡阵堂送来几把旧钥匙，你与值守弟子一把把核对阵门。打不开的钥匙单独封存，没有算成你领走后才损坏。'],
    ['运料弟子记下交接时辰','一车阵石到北坡，运料弟子让你在封绳旁落名。你核完数量，再记录这车材料实际送到的时辰，旧库的缺数尚待核查。'],
-  ];const row=pick(s,key,pool);return row?{title:row[0],body:row[1]}:null;
- }
- if(c.activeChain){
+  ];const extra=lifeRow(s,key);
+  if(extra)return {...extra,activity:ACTIVITIES[c.activity].name};
+  const row=pick(s,key,pool);return row?{title:row[0],body:row[1]}:null;
+ } if(c.activeChain){
   const lines={
    sect_repair:['查阵的人重新核过门锁','你把已经查到的阵石领料时辰与钥匙出入逐条对照。对不上的地方仍留空，不能替未到场的人编出证词。'],
    sect_trial:['谷里的脚印被雨冲浅','你整理已走过的路，标出兽群出现过的坡口。谷中消息只能靠同行者和沿路记号核实，山门日常暂时与你隔开。'],
@@ -214,6 +275,9 @@ export function automaticStory(s,context){
    dark_sacrifice:['夜里的领料仍叫旧名字','杜魁核领料时又叫了上一批弟子的名字。你对照已经见过的木牌与换岗时辰，血阵用途仍不能凭堂主口头承诺判断。'],
    beast_eclipse:['骨笛纹路留在拓片上','你把骨笛上的符纹留在拓片，交给能认匠铺印记的人。幼兽尚未认回的部分仍列在失踪名单上，不因一次传话便算获救。'],
   };const pool=lines[c.activeChain]?[lines[c.activeChain]]:[];if(!pool.length)return null;
+  /* T5 · 人生经历能产出：长线期间也一样会捡到东西。 */
+  const extra=lifeRow(s,'chain-'+c.activeChain);
+  if(extra)return {...extra,activity:ACTIVITIES[c.activity].name};
   const row=pick(s,'chain-'+c.activeChain,pool);return row?{title:row[0],body:row[1]}:null;
  }
  if(context==='childhood'&&years(s)<6)return null;
@@ -234,5 +298,8 @@ export function automaticStory(s,context){
  if(key==='orthodox'&&c.continent!==s.birth.continent){key=c.activity;pool=rows[key];}
  if(key==='mortal'&&s.life.family.members[1].status==='dead'){key='rest';pool=rows.rest;}
  if(key==='social'&&years(s)>=75){key='later';pool=laterRows;}
+ /* T5 · 人生经历能产出：这一条旁白有可能带着一件东西（每条最多一件）。 */
+ const extra=lifeRow(s,key);
+ if(extra)return {...extra,activity:ACTIVITIES[c.activity].name};
  const row=pick(s,key,pool);return row?{title:row[0],body:row[1],activity:ACTIVITIES[c.activity].name}:null;
 }

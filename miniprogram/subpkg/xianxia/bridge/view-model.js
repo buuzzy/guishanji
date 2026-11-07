@@ -275,12 +275,16 @@ function practice(run) {
   if (!cultivation) return null;
   var rules = v12(run);
   /**
-   * 积累门槛。
-   * ⚠ 第 12 版炼气→筑基是 **260**，第 8 版是 140 —— 两个数不一样，
-   *   写死一个就会让进度条说谎（上游 `life-panels.js:40` 的口径）。
+   * 积累门槛 —— **只从规则层读**（`engine.progressNeeded`）。
+   * ⚠ 以前这里写死 `[80,260,220,320]`，网页端也写死了一份 ⇒ 两处各写一份，
+   *   规则层一改，界面就说谎（用户 2026-11-07 撞到的「进度条满了却几十年
+   *   不给突破提示」就是这么来的：规则层按 60 算、界面层按 260 画条）。
+   * ⇒ 现在两端都问规则层同一个函数，门槛只有一份。
+   *   旧规则版本（5–11）仍按旧数组走（旧档一个字都不动）。
    */
-  var thresholds = rules ? [80, 260, 220, 320] : [80, 140, 220, 320];
-  var threshold = thresholds[run.player.realm];
+  var threshold = rules && engine.progressNeeded
+    ? engine.progressNeeded(run.player.realm + 1)
+    : [80, 140, 220, 320][run.player.realm];
   var pct = threshold ? Math.min(100, (num(cultivation.progress) / threshold) * 100) : 100;
   var skills = [];
   var skillsMap = engine.SKILLS || {};
@@ -301,11 +305,31 @@ function practice(run) {
   var network = cultivation.network || null;
   var method = network && network.method ? network.method : null;
   var advancement = [];
-  if (cultivation.rulesVersion === 8 && run.player.realm >= 2 && run.player.realm < 4) {
+  /*
+   * 主药清单（金丹 / 元婴两级才有）。
+   * ⚠ 以前只对 `rulesVersion === 8` 显示 ⇒ 当前版本（12）的玩家在手机上
+   *   根本看不到「还缺哪几样主药」，网页端却看得到 ⇒ 两端不一致。
+   * ⇒ 现在规则 8 以上都显示（与网页端 `advancementPanel` 同一口径）。
+   */
+  if (cultivation.rulesVersion >= 8 && run.player.realm >= 2 && run.player.realm < 4) {
     var slots = engine.materialSlots ? engine.materialSlots(run, run.player.realm + 1) : [];
     advancement = slots.map(function (slot) {
       return {ready: !!slot[0], label: slot[1]};
     });
+  }
+  /*
+   * 「冲关还差」整句 —— **由规则层拼好**（`engine.breakthroughStatus`）。
+   * ⚠ WXML 的 `{{}}` 不支持字符串拼接 ⇒ 整句必须在这里拼好再绑定。
+   *   两端显示的是同一句（网页端读同一个函数）。
+   */
+  var advance = '';
+  if (rules && engine.breakthroughStatus) {
+    try {
+      var status = engine.breakthroughStatus(run);
+      advance = status && status.advice ? status.advice : '';
+    } catch (error) {
+      advance = '';
+    }
   }
   /* 上游 methodPanel（life-panels.js:40-43）：差事与试任备注。 */
   var methodRole = network && network.role ? '宗门差事：' + network.role : '';
@@ -366,6 +390,7 @@ function practice(run) {
     methodArc: methodArc,
     role: network && network.role ? network.role : '',
     advancement: advancement,
+    advance: advance,
     /* 雷达图下方那句（2026-11-05 第五轮：改成**动态句**）。
      *
      * 上游原文（`life-panels.js:28` 的 abilityRadar）是固定的一句：

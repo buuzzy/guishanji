@@ -243,6 +243,11 @@
           <view class="row"><text class="fk">境界积累</text><text class="fv mono">{{practice.progressText}}</text></view>
         </view>
         <view class="prog"><view style="width:{{practice.progress}}%"></view></view>
+        <!-- 冲关还差：整句在 JS 侧拼好（引擎的 breakthroughStatus）——
+             WXML 的 {{}} 不支持字符串拼接，所以这里只显示，不拼。 -->
+        <view class="fam" wx:if="{{practice.advance}}">
+          <view class="row"><text class="fk">冲关还差</text><text class="fv mono">{{practice.advance}}</text></view>
+        </view>
         <!-- ⚠ 2026-11-05（用户拍板）：五个境界阶梯已删
              （标题右侧「{{practice.realm}}」已经是当前境界）。 -->
         <view class="statbars">

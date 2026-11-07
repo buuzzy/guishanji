@@ -15,6 +15,14 @@
  * ⇒ 现在：**判断只有这一份**（`breakthroughDue`），
  *   调度器照它发卡，指导卡照它让路。两边永远说同一句话。
  *
+ * ## 本文件对外的两件事
+ * --------------------
+ *   · `breakthroughDue(state)` —— 这个月**该不该**发突破卡（发不发）；
+ *   · `breakthroughStatus(state)` —— **离冲关还差什么**（发不发之外，界面要说的）。
+ *
+ * 后者是 2026-11-07 新增的：以前两端界面各写各的门槛、各写各的提示，
+ * 规则层一改，界面就说谎（用户撞到的「进度条满了却几十年没动静」就是这么来的）。
+ *
  * ## 这份判断归谁管
  * ----------------
  * 节奏域（`pace`）。它只读：
@@ -24,7 +32,7 @@
  *
  * ⚠ 本文件进小程序包 ⇒ **不写 `?.` / `??`**（微信转译会改变作用域边界）。
  */
-import {CADENCE, progressNeeded} from '../../content/cadence-table.js';
+import {CADENCE, progressNeeded, METHOD_MONTHS, MATERIAL_TIERS, cadenceOf} from '../../content/cadence-table.js';
 import {canCultivate} from './story-rules10.js';
 import {materialSlots} from './progression.js';
 
@@ -82,26 +90,150 @@ export function breakthroughDue(state) {
   /* 排好的事先办（家信、战事、长线步骤）—— 里程碑不插队。 */
   if (cultivation.queue.some(q => q.due <= state.month)) return null;
 
-  if (age < window.from) return null;                /* 还没到岁数 */
+  /*
+   * ⚠⚠ **这里没有「不到岁数就不发」的判断**（2026-11-07 改掉）。
+   *
+   * 以前这里有一句 `if (age < window.from) return null;` ——
+   * 「28 岁才能筑基、95 岁才能结丹」。这规矩在修仙小说里根本不存在：
+   * 突破看的是积累、丹药、功法与感悟，年龄只通过**寿元**起作用。
+   * 而且它正是 2026-11-07 用户撞到的那个病的根：
+   * 规则层按 60 算、界面层按 260 画条 ⇒ 条满了也发不出卡 ⇒ 干等 22–90 年。
+   *
+   * ⇒ 现在：**门槛只认进度**（`progressNeeded`）。窗口降为「典型值」，
+   *   只在过了上界时催一把（`urgent`），下界不再拦人。
+   */
   const attempt = cultivation.attempts[realm];
   if (attempt >= 4) return null;                     /* 四次机会用完了 */
   if (state.month < cultivation.retryAt) return null; /* 上次尝试后要歇一阵 */
 
-  /* 筑基以上还要材料与功法 —— 这两样不是「攒进度」能替代的。 */
-  if (player.realm >= 2) {
+  /*
+   * 金丹与元婴要**主药与完整法门**才准发卡 —— 筑基不要。
+   *
+   * ## 为什么筑基不设材料门槛
+   * --------------------------
+   * 筑基这一级的卡上本来就有一条「不备齐护脉药，强行冲关」（可能死），
+   * 而且筑基丹是**加成**不是门票（`packages/adventure/story-rules12.js` 里
+   * 有丹 +16 分，没丹也能硬冲）—— 所以筑基不需要再拦一道。
+   *
+   * ## 为什么金丹与元婴要拦
+   * ----------------------
+   * 这两级的卡上**没有**「强行冲关」那条退路（只有「备好材料，开始闭关」
+   * 与「再准备一段时间」）。若材料没齐也发卡，玩家只能选「再准备」，
+   * 白等一年（冷却 12 个月）—— 那就是**发了一张什么也干不了的卡**。
+   * ⇒ 所以这一级把材料与功法挡在**发卡之前**：不发卡，胜过发一张废卡。
+   *
+   * 门槛数字一律从表里读（`MATERIAL_TIERS` / `METHOD_MONTHS`），
+   * 不在这里另写一份。
+   */
+  if (MATERIAL_TIERS.indexOf(realm) >= 0) {
     const slots = materialSlots(state, realm);
     if (!slots.every(x => x[0])) return null;
     const methodMonths = cultivation.network && cultivation.network.method
       ? cultivation.network.method.months : 0;
-    if (methodMonths < (realm === 3 ? 120 : 240)) return null;
+    if (methodMonths < (METHOD_MONTHS[realm] || 0)) return null;
   }
 
   /* 进度：攒够了就早突破；没攒够、又快过窗口上界了 ⇒ 强推（寿元不等人）。 */
   if (!urgent && cultivation.progress < progressNeeded(realm)) return null;
 
   const id = 'breakthrough_' + realm + '_' + attempt;
-  if (state.decisions.some(d => d.event === id)) return null;
+  /*
+   * ⚠⚠ **「再准备一段时间」（wait）不算「这张卡已经答过」**。
+   *
+   * 以前这里是 `state.decisions.some(d => d.event === id)` ——
+   * 于是玩家一旦在突破卡上选「再准备一段时间」，**这一境的突破卡就再也不发了**
+   * （实测：选一次 wait 之后卡再也不来，人一辈子卡在凡身，79 岁还在原地）。
+   * 而「再准备一段时间」的意思明明是「还没准备好，过些日子再来」——
+   * 规则层也确实把冷却期设成 12 个月（`cultivation.js` 的 `retryAt`），
+   * 显然是想让这张卡**过些日子再来**，结果却被这句判断挡死了。
+   *
+   * ⇒ 现在：只有**真的去冲了**（try / service / force，消耗一次机会）才算答过；
+   *   选「wait」不消耗机会（机会只有四次，不能被「再等等」花光），
+   *   冷却期过后同一张卡重新发出来。
+   */
+  const answered = state.decisions.some(d => d.event === id && d.choice !== 'wait');
+  if (answered) return null;
   if (state.pending && state.pending.event === id) return null;
 
   return {realm, id, urgent};
+}
+
+/**
+ * 突破状态 —— 「离冲关还差什么」的一份**只读**答案。
+ *
+ * ## 谁在用
+ * --------
+ * 两端界面都要回答同一个问题：**进度条满了，接下来还缺什么？**
+ * 以前两边各写一份（还各写各的门槛）⇒ 一次规则改动就让界面说谎。
+ * ⇒ 现在只问规则层这一份函数，两端都照它渲染。
+ *
+ * ## 字段
+ * -----
+ *   realm / realmName  即将突破到的境界
+ *   progress / need / pct  修为：当前值、门槛、百分比（进度条就画这个）
+ *   ready              条件是否齐了（进度够 + 主药齐 + 完整心法够）
+ *   materials          主药槽逐项（`{ready, label}`）
+ *   methodMonths / methodNeed  完整心法：已练月数 / 还差多少月（0 = 这一级不限）
+ *   yearsLeft          还能活几年（寿元压力；不知道时为 null）
+ *   window             这一境的典型年龄窗口 `{from, to}`
+ *   advice             一句话：还差什么（界面直接显示这句，不自己拼）
+ *
+ * ⚠ 本文件进小程序包 ⇒ **不写 `?.` / `??`**（微信转译会改变作用域边界）。
+ *
+ * @param {object} state 当前人生状态
+ * @returns {object|null} 没有下一境时返回 null
+ */
+export function breakthroughStatus(state) {
+  const cultivation = state.life && state.life.cultivation;
+  if (!cultivation) return null;
+  const player = state.player;
+  if (player.realm >= 4) return null;
+
+  const realm = player.realm + 1;
+  const window = cadenceOf(realm);
+  const need = progressNeeded(realm);
+  const progress = cultivation.progress || 0;
+  const pct = need ? Math.min(100, progress / need * 100) : 100;
+
+  /* 主药槽：只有金丹与元婴要（筑基不设材料门槛）。 */
+  const slots = MATERIAL_TIERS.indexOf(realm) >= 0 ? materialSlots(state, realm) : [];
+  const materials = slots.map(x => ({ready: !!x[0], label: x[1]}));
+
+  /* 完整心法：练够多少个月才准冲关。 */
+  const methodNeed = METHOD_MONTHS[realm] || 0;
+  const methodMonths = cultivation.network && cultivation.network.method
+    ? cultivation.network.method.months : 0;
+
+  /* 寿元：读规则层算好的实际寿元（`state.life.cultivation.lifespanLimit`）。
+     ⚠ 刻意**不** import `story-rules12.js` —— 那个文件 import 本文件，
+        反向 import 会成环（小程序打包会直接崩）。 */
+  const limit = cultivation.lifespanLimit;
+  const yearsLeft = typeof limit === 'number' && limit > 0 ? limit - ageOf(state) : null;
+
+  const missing = [];
+  if (need > 0 && progress < need) missing.push('修为还差 ' + Math.ceil(need - progress) + ' 点');
+  const lack = materials.filter(x => !x.ready);
+  if (lack.length) missing.push('主药还缺 ' + lack.length + ' 样（' + lack.map(x => x.label).join('、') + '）');
+  if (methodNeed > 0 && methodMonths < methodNeed) {
+    missing.push('完整心法还差 ' + Math.ceil((methodNeed - methodMonths) / 12) + ' 年');
+  }
+
+  const parts = missing.slice();
+  if (yearsLeft !== null) parts.push('还能活 ' + Math.max(0, yearsLeft) + ' 年');
+
+  return {
+    realm,
+    realmName: window ? window.name : '',
+    progress,
+    need,
+    pct,
+    ready: need === 0 || (progress >= need && lack.length === 0 && (methodNeed === 0 || methodMonths >= methodNeed)),
+    materials,
+    methodMonths,
+    methodNeed,
+    yearsLeft,
+    window: window ? {from: window.from, to: window.to} : null,
+    missing,
+    advice: parts.join(' · '),
+  };
 }

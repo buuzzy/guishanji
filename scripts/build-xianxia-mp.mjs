@@ -139,6 +139,14 @@ const EXPORTS = {
   'packages/adventure/cultivation.js': ['activityOptions', 'routeOptions', 'currentContinent', 'mapView'],
   'packages/adventure/cultivation-economy.js': ['economyQuote'],
   'content/story-network.js': ['METHODS'],
+  /* 2026-11-07（T1）：门槛与「还差什么」必须**只从规则层取** ——
+     以前两端界面各写一份门槛（260 / 140），规则层一改界面就说谎
+     （用户撞到的「进度条满了却几十年不给突破提示」）。
+     ⇒ 小程序端也改成读引擎导出的 `progressNeeded` / `breakthroughStatus`。 */
+  'content/cadence-table.js': [
+    'progressNeeded', 'REQUIRED_PROGRESS', 'METHOD_MONTHS', 'MATERIAL_TIERS', 'CADENCE',
+  ],
+  'packages/adventure/cadence.js': ['breakthroughStatus'],
   'packages/adventure/progression.js': [
     'longAction', 'prose', 'sceneFor', 'materialSlots', 'progressionText',
   ],

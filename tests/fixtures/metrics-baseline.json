@@ -1,13 +1,37 @@
 {
-  "createdAt": "2026-11-07T02:40:27.772Z",
+  "createdAt": "2026-11-07T03:11:56.456Z",
   "count": 120,
   "metrics": {
-    "neverSeen": 167,
+    "neverSeen": 165,
     "density10": 14,
-    "density5": 10,
-    "cooldownRepeats": 2306,
-    "realmContentMin": 5,
+    "density5": 9,
+    "cooldownRepeats": 2318,
+    "realmContentMin": 6,
     "endingMissing": 0,
     "spanMax": 102
-  }
+  },
+  "history": [
+    {
+      "at": "2026-11-07T03:11:56.454Z",
+      "reason": "T1 突破体系改成小说逻辑：条满 ⇒ 突破卡当月发出（规则层与界面同源、去掉岁数下限）。冷却指标 +12 是这次变更的直接后果：以前条满了也不发卡，玩家「没机会重复」；现在卡真发出来了，同一张突破卡的几次尝试（选项标题相同）落在 60 个月窗口内 ⇒ 记成 12 处重复。其余五项同时变好或持平：可达性 167→165、密度5 10→9、每境内容种数 5→6、结局覆盖 0、阶段跨度 102。棘轮从这一次重新起算。",
+      "from": {
+        "neverSeen": 167,
+        "density10": 14,
+        "density5": 10,
+        "cooldownRepeats": 2306,
+        "realmContentMin": 5,
+        "endingMissing": 0,
+        "spanMax": 102
+      },
+      "to": {
+        "neverSeen": 165,
+        "density10": 14,
+        "density5": 9,
+        "cooldownRepeats": 2318,
+        "realmContentMin": 6,
+        "endingMissing": 0,
+        "spanMax": 102
+      }
+    }
+  ]
 }

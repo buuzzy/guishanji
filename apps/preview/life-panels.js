@@ -1,4 +1,6 @@
 import {active12,rules12,lifespan12,stage12,sectProfile} from '../../packages/adventure/story-rules12.js';
+import {progressNeeded} from '../../content/cadence-table.js';
+import {breakthroughStatus} from '../../packages/adventure/cadence.js';
 import {BODY_TYPES} from '../../content/rules12-world.js';
 import {activeMundane,mundane,mundaneQuote} from '../../packages/adventure/mundane-life.js';
 import {materialSlots} from '../../packages/adventure/progression.js';
@@ -35,8 +37,22 @@ export function abilityRadar(p){
 export function practicePanel(s){
  const c=s.life.cultivation,p=s.player;if(!c)return '';
  if(active10(s)&&!canCultivate(s))return `<section class="panel practice-panel">${heading('修行本事','凡身')}${active12(s)?'<p class="hint">'+BODY_TYPES[rules12(s).body.type].name+'</p>':''} ${Object.entries(p.skills).map(([k,v])=>bar(k,v,s)).join('')}${abilityRadar(p)}${methodPanel(s)}<p class="hint">${REALM_ABILITIES[0]}寿元上限 ${lifespan12(s)} 岁。</p></section>`;
- const threshold=(active12(s)?[80,260,220,320]:[80,140,220,320])[p.realm],pct=threshold?Math.min(100,c.progress/threshold*100):100;
- return `<section class="panel practice-panel">${heading('修行本事',stage12(s)||REALMS[p.realm].name)}${active12(s)?'<p class="hint">'+BODY_TYPES[rules12(s).body.type].name+(rules12(s).body.damage?' · 经脉受损':'')+(rules12(s).weak?' · 力竭（判定打折，调养可解）':'')+'</p>':''}${active12(s)?'<div class="stat-line"><span>体魄</span><b class="mono">'+Math.round(rules12(s).body.constitution||0)+'</b></div>':''}<div class="cultivation-progress"><div class="stat-line"><span>境界积累</span><b class="mono" data-value="progress">${threshold?Math.round(pct)+'%':'已臻元婴'}</b></div><div class="prog"><div data-progress-meter style="width:${pct}%"></div></div><div class="realm-steps">${REALMS.map((r,i)=>`<span class="${i<=p.realm?'reached':''}"><i></i>${r.name}</span>`).join('')}</div></div>${Object.entries(p.skills).map(([k,v])=>bar(k,v,s)).join('')}${abilityRadar(p)}${methodPanel(s)}${advancementPanel(s)}<p class="hint">${REALM_ABILITIES[p.realm]}寿元上限 ${lifespan12(s)} 岁。${threshold?'积累到门槛后，再准备材料与闭关。':''}</p></section>`;
+ /*
+  * 积累门槛 —— **只从规则层读**（`content/cadence-table.js` 的 `progressNeeded`）。
+  *
+  * ⚠ 以前这里写死 `[80,260,220,320]`，小程序端也写死了一份（`view-model.js`）。
+  *   两处各写一份 ⇒ 规则层一改，界面就说谎 ——
+  *   2026-11-07 用户撞到的「进度条满了却几十年不给突破提示」就是这么来的。
+  * ⇒ 现在：**门槛只有一份**（规则层），两端都问它。
+  *   旧规则版本（5–11）仍按旧数组走（旧档一个字都不动）。
+  */
+ const threshold=active12(s)?progressNeeded(p.realm+1):[80,140,220,320][p.realm],pct=threshold?Math.min(100,c.progress/threshold*100):100;
+ /*
+  * 「冲关还差什么」—— 整句由**规则层**拼好（`breakthroughStatus`），这里只负责显示。
+  * ⚠ 小程序端也显示同一句（整句在 JS 侧拼好再绑定，WXML 不支持拼接）。
+  */
+ const status=active12(s)?breakthroughStatus(s):null;
+ return `<section class="panel practice-panel">${heading('修行本事',stage12(s)||REALMS[p.realm].name)}${active12(s)?'<p class="hint">'+BODY_TYPES[rules12(s).body.type].name+(rules12(s).body.damage?' · 经脉受损':'')+(rules12(s).weak?' · 力竭（判定打折，调养可解）':'')+'</p>':''}${active12(s)?'<div class="stat-line"><span>体魄</span><b class="mono">'+Math.round(rules12(s).body.constitution||0)+'</b></div>':''}<div class="cultivation-progress"><div class="stat-line"><span>境界积累</span><b class="mono" data-value="progress">${threshold?Math.round(pct)+'%':'已臻元婴'}</b></div><div class="prog"><div data-progress-meter style="width:${pct}%"></div></div><div class="realm-steps">${REALMS.map((r,i)=>`<span class="${i<=p.realm?'reached':''}"><i></i>${r.name}</span>`).join('')}</div></div>${status&&status.advice?'<div class="stat-line"><span>冲关还差</span><b class="mono" style="flex:1 1 auto;text-align:right;overflow-wrap:anywhere">'+esc(status.advice)+'</b></div>':''}${Object.entries(p.skills).map(([k,v])=>bar(k,v,s)).join('')}${abilityRadar(p)}${methodPanel(s)}${advancementPanel(s)}<p class="hint">${REALM_ABILITIES[p.realm]}寿元上限 ${lifespan12(s)} 岁。${threshold?'积累到门槛后，再准备材料与闭关。':''}</p></section>`;
 }
 function advancementPanel(s){
  if(s.life.cultivation.rulesVersion<8||s.player.realm<2||s.player.realm>=4)return '';

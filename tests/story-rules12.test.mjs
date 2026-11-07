@@ -119,7 +119,14 @@ test('稀有筑基丹先验收，核心传承需要现有授业资格',()=>{
  const a=pending('network_archive');a.flags.learningPermit=false;c(a).rank='外门弟子';assert.ok(!options(a).some(o=>o.id==='river'));a.flags.learningPermit=true;assert.ok(options(a).some(o=>o.id==='river'));
 });
 test('体质寿限与修行阶段由同一状态显示，存档拒绝坏字段',()=>{
- const s=pending('r12_direction_0');c(s).progress=135;assert.equal(stage12(s),'炼气后期');assert.ok(lifePanels(s).includes('炼气后期'));assert.ok(lifePanels(s).includes('寿元上限 '+lifespan12(s)));const bad=cloneRun(s);rules12(bad).body.natural=1000;assert.throws(()=>validateRun(bad));
+ const s=pending('r12_direction_0');
+ /* 炼气四段按**筑基门槛的比例**切（25% / 50% / 75%），门槛是 120：
+    初期 0–30 · 中期 30–60 · 后期 60–90 · 圆满 90–120。 */
+ c(s).progress=75;assert.equal(stage12(s),'炼气后期');
+ c(s).progress=30;assert.equal(stage12(s),'炼气中期');
+ c(s).progress=95;assert.equal(stage12(s),'炼气圆满');
+ c(s).progress=135;assert.equal(stage12(s),'炼气圆满');
+ assert.ok(lifePanels(s).includes('炼气圆满'));assert.ok(lifePanels(s).includes('寿元上限 '+lifespan12(s)));const bad=cloneRun(s);rules12(bad).body.natural=1000;assert.throws(()=>validateRun(bad));
 });
 test('当前所有事件选项唯一，重点卡片不堆多个主角概念',()=>{
  for(const [id,n] of Object.entries(CULTIVATION_EVENTS)){assert.equal(new Set(n.choices.map(o=>o.id)).size,n.choices.length,id);assert.ok(n.choices.length>=2,id);}

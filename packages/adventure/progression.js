@@ -3,6 +3,7 @@ import {hashText,random} from '../core/random.js';
 import {NOVEL_NAMES} from '../../content/novel-names.js';
 import {ROOTS,GEOGRAPHY} from '../../content/cultivation-world.js';
 import {mundaneChoice} from './mundane-life.js';
+import {progressNeeded,METHOD_MONTHS} from '../../content/realm-thresholds.js';
 const active=s=>s.life?.cultivation?.rulesVersion>=8;
 const c=s=>s.life.cultivation,p=s=>c(s).progression;
 const age=s=>Math.floor(s.month/12)+(s.birth.startAge||0);
@@ -45,7 +46,7 @@ export function progressionChoice(s,choice,event){
  if(event.startsWith('breakthrough_')){
   const tier=Number(event.split('_')[1]);if(choice.id==='wait'){out.label=s.player.health<75?'先恢复受损的经脉':'留在住处继续准备';out.hint=s.player.health<75?'请药师核过伤势，再决定何时封门。':tier>=3?'先核功法与主药，不急着封门。':'继续学习功法，积攒还缺的闭关材料。';out.reply=s.player.health<75?'你请药师核过经脉，暂时停下冲关。':'你收起封门符，继续学习功法与准备材料。';}
   if(tier>=3&&choice.id==='try'){
-   const slots=materialSlots(s,tier),missing=slots.filter(x=>!x[0]).map(x=>x[1]);out.requires={...(out.requires||{}),items:slots.filter(x=>x[0]).map(x=>x[2])};out.available=()=>!missing.length&&(c(s).network.method?.months||0)>=(tier===3?120:240);out.reason=missing.length?'尚缺 '+missing.join('、'):'这份主修心法还需完整练过一段时间';out.cost={items:slots.slice(1).filter(x=>x[0]).map(x=>x[2])};out.check={...out.check,base:out.check.base+(has(s,'false_core')?-6:0)+(ROOTS[s.player.root].grade>=2?3:0)};
+   const slots=materialSlots(s,tier),missing=slots.filter(x=>!x[0]).map(x=>x[1]);out.requires={...(out.requires||{}),items:slots.filter(x=>x[0]).map(x=>x[2])};out.available=()=>!missing.length&&(c(s).network.method?.months||0)>=(METHOD_MONTHS[tier]||0);out.reason=missing.length?'尚缺 '+missing.join('、'):'这份主修心法还需完整练过一段时间';out.cost={items:slots.slice(1).filter(x=>x[0]).map(x=>x[2])};out.check={...out.check,base:out.check.base+(has(s,'false_core')?-6:0)+(ROOTS[s.player.root].grade>=2?3:0)};
   }
  }
  const op=choice.system||{};
@@ -97,7 +98,8 @@ export function progressionMonth(s,cb){
  if(pp.sect.revengeDue&&s.month>=pp.sect.revengeDue&&!seen(s,'sect_revenge'))return departEvent(s,'sect_revenge',cb,'camp');
  if(pp.sect.phase==='rebuilt'&&pp.sect.role==='leader'&&pp.sect.councils<3&&s.month>=pp.sect.nextCouncil){return departEvent(s,'sect_council_'+pp.sect.councils,cb,'settlement');}
  const tier=s.player.realm+1;
- if(tier>=3&&tier<=4&&cc.progress>=(tier===3?220:320)&&s.month>=cc.retryAt){
+ /* 攒够这一境的门槛才开始备主药 —— 门槛从规则层读，不在这里另写一份。 */
+ if(tier>=3&&tier<=4&&cc.progress>=progressNeeded(tier)&&s.month>=cc.retryAt){
   const attempt=cc.attempts[tier];if(attempt<3&&!pp.materialDeclined.includes(tier)){
    const slots=materialSlots(s,tier),part=slots.findIndex(x=>!x[0]);if(part>=0){let id=`advance_material_${tier}_${attempt}_${part}`;if(seen(s,id)&&pp.materialAbandoned.includes(id))id+='_resume';if(!seen(s,id))return departEvent(s,id,cb,part===1?'valley':'retreat');}
   }

@@ -14,7 +14,7 @@
       "order": 2,
       "name": "角色",
       "question": "人是谁、能走多远",
-      "owns": "境界能力、出生条件、家人与族产、寿元与体力的承载"
+      "owns": "境界能力与门槛、出生条件、家人与族产、寿元与体力的承载"
     },
     {
       "id": "cause",
@@ -28,7 +28,7 @@
       "order": 4,
       "name": "节奏",
       "question": "时间怎么走",
-      "owns": "年月推进、突破门槛与阶段、寿限、期限与调度"
+      "owns": "年月推进、突破窗口与阶段（几岁该到）、寿限、期限与调度"
     },
     {
       "id": "voice",
@@ -144,7 +144,8 @@
     "packages/adventure/story-network.js": "cause",
     "packages/adventure/story-rules10.js": "cause",
     "packages/adventure/story-rules12.js": "pace",
-    "packages/core/random.js": "infra"
+    "packages/core/random.js": "infra",
+    "content/realm-thresholds.js": "role"
   },
   "presentRoots": [
     "apps/",

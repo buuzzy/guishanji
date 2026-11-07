@@ -1,6 +1,6 @@
 import {hashText} from '../core/random.js';
 import {REALMS} from '../../content/adventure.js';
-import {progressNeeded,breakthroughRule,gradeBonus,CADENCE,supplyUntil} from '../../content/cadence-table.js';
+import {progressNeeded,breakthroughRule,gradeBonus,CADENCE,supplyUntil,qigongStage,QIGONG_STAGE_NAMES} from '../../content/cadence-table.js';
 import {BODY_TYPES,SECT_PROFILES,REGIONAL_METHODS} from '../../content/rules12-world.js';
 import {ROOTS,GEOGRAPHY} from '../../content/cultivation-world.js';
 import {canCultivate,route} from './story-rules10.js';
@@ -88,7 +88,9 @@ export function trainConstitution12(s,gain){
 }
 export function stage12(s){
  if(!active12(s)||s.player.realm!==1)return '';
- const p=c(s).progress;return p<65?'炼气初期':p<130?'炼气中期':p<210?'炼气后期':'炼气圆满';
+ /* 分界按**筑基门槛的比例**算（`content/cadence-table.js` 的 `qigongStage`）——
+    原来写死的 65 / 130 / 210 是照着旧门槛 60 定的，门槛一改就对不上。 */
+ return QIGONG_STAGE_NAMES[qigongStage(c(s).progress)];
 }
 export function practiceFactor12(s){
  if(!active12(s))return 1;const r=rules12(s),b=r.body,a=r.action;
@@ -243,7 +245,15 @@ export function month12(s,cb){
  if(cc.queue.some(q=>q.due<=s.month))return false;
  if(s.player.realm===0&&age(s)>=r.body.natural-12&&!done(s,'r12_late_doubt')){cb.arrive('r12_late_doubt');return true;}
  if(cc.path==='orthodox'&&!r.clue.checked&&age(s)>=38&&(cc.rank==='内门弟子'||s.flags.learningPermit)&&roll(s,'secret')<1200){r.clue.checked=true;cb.arrive('r12_sect_clue');return true;}
- if(s.player.realm===1&&cc.progress>=200&&!done(s,'r12_foundation_supply')&&(cc.rank==='内门弟子'||s.birth.family==='clan'||ROOTS[s.player.root].grade>=2)&&roll(s,'pill')<2200){cb.arrive('r12_foundation_supply');return true;}
+ /*
+  * 筑基丹的发放条件：**修为攒到筑基门槛的八成就够**（`progressNeeded(2)` 的 83%）。
+  *
+  * ⚠ 原来写死「进度 ≥ 200」—— 那是照着旧门槛（260）定的，
+  *   而 2026-11-07 筑基门槛改成了 120 ⇒ 200 永远够不着
+  *   ⇒ **筑基丹成了永远拿不到的东西**（而它是筑基时 +16 分的加成）。
+  * ⇒ 现在按门槛的比例算：门槛一改，这道门跟着改，不会再对不上。
+  */
+ if(s.player.realm===1&&cc.progress>=Math.round(progressNeeded(2)*0.8)&&!done(s,'r12_foundation_supply')&&(cc.rank==='内门弟子'||s.birth.family==='clan'||ROOTS[s.player.root].grade>=2)&&roll(s,'pill')<2200){cb.arrive('r12_foundation_supply');return true;}
  /*
   * 修行指导卡（「闭关细练数年」）是**准备**，突破卡是**关口**。
   *
@@ -271,7 +281,7 @@ export function month12(s,cb){
  if(s.player.realm<=1&&!ready&&!cooling&&!due&&yearsLeft*12>=retreatMonths&&cc.network.method&&s.month>=r.practice.next&&s.month-(s.decisions.at(-1)?.month||0)>=24){
   if(index<6){cb.arrive('r12_direction_'+index);return true;}
  }
- if(s.player.realm===1){const stage=cc.progress<65?0:cc.progress<130?1:cc.progress<210?2:3;if(stage>r.practice.stage){r.practice.stage=stage;log(s,cb,'修到了'+stage12(s),'你把真气沿已练熟的经脉运转，过去总会散开的那一段终于接稳。'+(stage===3?'教习让你停下强行加快周天，筑基所需的丹药与护脉准备还没有因此齐全。':'教习让你用这一段稳定的真气练护身，新的口诀仍要慢慢学。'),'cultivation');}}
+ if(s.player.realm===1){const stage=qigongStage(cc.progress);if(stage>r.practice.stage){r.practice.stage=stage;log(s,cb,'修到了'+stage12(s),'你把真气沿已练熟的经脉运转，过去总会散开的那一段终于接稳。'+(stage===3?'教习让你停下强行加快周天，筑基所需的丹药与护脉准备还没有因此齐全。':'教习让你用这一段稳定的真气练护身，新的口诀仍要慢慢学。'),'cultivation');}}
  return false;
 }
 export function validate12(s,fail){

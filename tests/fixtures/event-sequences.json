@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-06T20:12:21.447Z",
+  "generatedAt": "2026-11-07T03:08:53.973Z",
   "tool": "verify-event-sequence",
   "rulesVersions": [
     11,
@@ -1545,8 +1545,8 @@
     {
       "seed": "序列基线-0",
       "rulesVersion": 12,
-      "path": "orthodox",
-      "ending": "guardian",
+      "path": "loose",
+      "ending": "loose_home",
       "steps": [
         [
           "r12_child_body",
@@ -1621,177 +1621,117 @@
         [
           "breakthrough_2_0",
           "service",
-          28
+          25
         ],
         [
           "sect_trial_0",
           "care",
-          31
+          28
         ],
         [
           "sect_trial_1",
           "care",
-          33
+          31
         ],
         [
           "sect_trial_2",
           "care",
-          36
+          32
         ],
         [
           "network_mentor",
           "accept",
-          37
+          33
         ],
         [
           "network_mentor_result",
-          "finish",
-          40
-        ],
-        [
-          "network_senior",
-          "teach",
-          40
+          "escape",
+          37
         ],
         [
           "road_turn",
           "keep",
-          43
+          40
         ],
         [
           "selection_2",
           "sword",
-          46
+          42
         ],
         [
           "selection_2_result",
           "fair",
-          48
+          44
         ],
         [
           "advance_material_3_0_0",
           "learn",
-          51
+          47
         ],
         [
           "advance_material_3_0_1",
           "exchange",
-          57
-        ],
-        [
-          "sect_return_0",
-          "care",
-          65
-        ],
-        [
-          "sect_return_1",
-          "care",
-          67
-        ],
-        [
-          "sect_return_2",
-          "care",
-          68
-        ],
-        [
-          "sect_rebuild",
-          "lead",
-          69
+          53
         ],
         [
           "advance_material_3_0_2",
           "commission",
-          71
-        ],
-        [
-          "sect_council_0",
-          "teach",
-          79
-        ],
-        [
-          "family_grave",
-          "stay",
-          85
-        ],
-        [
-          "r12_home_resolve",
-          "repair",
-          86
-        ],
-        [
-          "r12_home_leave",
-          "return",
-          86
-        ],
-        [
-          "family_home_ambush",
-          "witness",
-          87
-        ],
-        [
-          "sect_council_1",
-          "teach",
-          88
+          61
         ],
         [
           "breakthrough_3_0",
           "try",
-          95
-        ],
-        [
-          "sect_council_2",
-          "teach",
-          105
+          69
         ],
         [
           "years_practice_0",
           "retreat",
-          112
+          82
         ],
         [
           "advance_material_4_0_0",
           "learn",
-          142
+          112
         ],
         [
           "advance_material_4_0_1",
           "exchange",
-          152
+          122
         ],
         [
           "advance_material_4_0_2",
           "commission",
-          167
-        ],
-        [
-          "years_practice_1",
-          "retreat",
-          184
+          137
         ],
         [
           "breakthrough_4_0",
           "try",
-          214
+          152
         ],
         [
           "tribulation_prepare",
           "decline",
-          234
+          172
+        ],
+        [
+          "years_practice_1",
+          "retreat",
+          175
         ],
         [
           "years_practice_2",
           "retreat",
-          236
+          212
         ],
         [
           "years_practice_3",
           "retreat",
-          273
+          250
         ],
         [
           "system_final",
           "guard",
-          311
+          287
         ]
       ]
     },
@@ -2040,19 +1980,49 @@
           30
         ],
         [
-          "breakthrough_2_0",
-          "service",
-          30
-        ],
-        [
           "dark_sacrifice_0",
           "selfish",
-          33
+          30
         ],
         [
           "dark_sacrifice_1",
           "selfish",
+          32
+        ],
+        [
+          "dark_sacrifice_2",
+          "selfish",
+          34
+        ],
+        [
+          "echo_teacher_visit",
+          "notes",
           35
+        ],
+        [
+          "network_clan_call",
+          "check",
+          35
+        ],
+        [
+          "r12_direction_0",
+          "retreat",
+          37
+        ],
+        [
+          "breakthrough_2_0",
+          "try",
+          41
+        ],
+        [
+          "dark_method_0",
+          "selfish",
+          43
+        ],
+        [
+          "dark_method_1",
+          "selfish",
+          46
         ]
       ]
     },
@@ -2113,79 +2083,64 @@
           19
         ],
         [
-          "echo_relic",
-          "follow",
-          23
-        ],
-        [
-          "echo_relic_check",
-          "visit",
-          23
-        ],
-        [
-          "echo_relic_visit",
-          "compare",
-          24
-        ],
-        [
-          "garden_accident",
-          "honest",
-          27
+          "r12_direction_0",
+          "retreat",
+          22
         ],
         [
           "breakthrough_2_0",
           "service",
-          28
+          26
         ],
         [
           "family_gate",
           "return",
-          31
+          29
         ],
         [
           "r12_home_resolve",
           "repair",
-          32
+          30
         ],
         [
           "r12_home_leave",
           "return",
-          32
+          30
+        ],
+        [
+          "garden_accident",
+          "honest",
+          33
         ],
         [
           "selection_2",
           "sword",
-          36
+          37
         ],
         [
           "selection_2_result",
           "fair",
-          38
-        ],
-        [
-          "road_turn",
-          "keep",
-          41
+          39
         ],
         [
           "advance_material_3_0_0",
           "learn",
-          42
+          40
         ],
         [
           "advance_material_3_0_1",
           "exchange",
-          48
+          46
         ],
         [
           "advance_material_3_0_2",
           "commission",
-          56
+          54
         ],
         [
-          "sect_return_0",
-          "care",
-          64
+          "breakthrough_3_0",
+          "try",
+          62
         ],
         [
           "world_raid",
@@ -2193,74 +2148,104 @@
           65
         ],
         [
-          "family_grave",
-          "stay",
-          83
+          "sect_return_0",
+          "care",
+          65
         ],
         [
-          "r12_home_resolve_1",
-          "repair",
+          "sect_return_1",
+          "care",
+          68
+        ],
+        [
+          "sect_return_2",
+          "care",
+          69
+        ],
+        [
+          "sect_rebuild",
+          "lead",
+          70
+        ],
+        [
+          "advance_material_3_1_1",
+          "exchange",
+          72
+        ],
+        [
+          "sect_council_0",
+          "teach",
+          80
+        ],
+        [
+          "advance_material_3_1_2",
+          "commission",
           84
         ],
         [
-          "r12_home_leave_1",
-          "return",
-          84
-        ],
-        [
-          "breakthrough_3_0",
+          "breakthrough_3_1",
           "try",
-          95
+          92
+        ],
+        [
+          "sect_council_1",
+          "teach",
+          102
         ],
         [
           "years_practice_0",
           "retreat",
-          107
+          108
+        ],
+        [
+          "sect_council_2",
+          "teach",
+          138
         ],
         [
           "advance_material_4_0_0",
           "learn",
-          137
+          142
         ],
         [
           "advance_material_4_0_1",
           "exchange",
-          147
+          152
         ],
         [
           "advance_material_4_0_2",
           "commission",
-          162
-        ],
-        [
-          "years_practice_1",
-          "retreat",
-          180
+          167
         ],
         [
           "breakthrough_4_0",
           "try",
-          210
+          182
         ],
         [
           "tribulation_prepare",
           "decline",
-          230
+          202
+        ],
+        [
+          "years_practice_1",
+          "retreat",
+          204
         ],
         [
           "years_practice_2",
           "retreat",
-          233
+          242
         ],
         [
           "years_practice_3",
           "retreat",
-          270
+          280
         ],
         [
           "system_final",
           "guard",
-          308
+          317
         ]
       ]
     },
@@ -2459,7 +2444,7 @@
       "seed": "序列基线-6",
       "rulesVersion": 12,
       "path": "loose",
-      "ending": "battle_lost",
+      "ending": "loose_home",
       "steps": [
         [
           "r12_child_body",
@@ -2537,19 +2522,24 @@
           27
         ],
         [
+          "r12_direction_0",
+          "retreat",
+          29
+        ],
+        [
+          "r12_foundation_supply",
+          "serve",
+          33
+        ],
+        [
           "breakthrough_2_0",
           "service",
-          28
+          33
         ],
         [
-          "system_warrant",
-          "explain",
-          34
-        ],
-        [
-          "family_support",
-          "peace",
-          37
+          "network_clan_call",
+          "check",
+          36
         ],
         [
           "loose_relic_0",
@@ -2560,6 +2550,106 @@
           "loose_relic_1",
           "selfish",
           40
+        ],
+        [
+          "loose_relic_2",
+          "selfish",
+          42
+        ],
+        [
+          "system_warrant",
+          "explain",
+          46
+        ],
+        [
+          "road_turn",
+          "keep",
+          49
+        ],
+        [
+          "selection_2",
+          "sword",
+          52
+        ],
+        [
+          "selection_2_result",
+          "fair",
+          54
+        ],
+        [
+          "advance_material_3_0_0",
+          "learn",
+          54
+        ],
+        [
+          "advance_material_3_0_1",
+          "search",
+          60
+        ],
+        [
+          "advance_material_3_0_2",
+          "refine",
+          65
+        ],
+        [
+          "breakthrough_3_0",
+          "try",
+          70
+        ],
+        [
+          "loose_portal_0",
+          "selfish",
+          80
+        ],
+        [
+          "years_practice_0",
+          "retreat",
+          82
+        ],
+        [
+          "advance_material_4_0_0",
+          "learn",
+          112
+        ],
+        [
+          "advance_material_4_0_1",
+          "search",
+          122
+        ],
+        [
+          "advance_material_4_0_2",
+          "refine",
+          132
+        ],
+        [
+          "breakthrough_4_0",
+          "try",
+          142
+        ],
+        [
+          "tribulation_prepare",
+          "decline",
+          162
+        ],
+        [
+          "years_practice_1",
+          "retreat",
+          165
+        ],
+        [
+          "years_practice_2",
+          "retreat",
+          203
+        ],
+        [
+          "years_practice_3",
+          "retreat",
+          241
+        ],
+        [
+          "system_final",
+          "guard",
+          279
         ]
       ]
     },
@@ -2728,84 +2818,59 @@
           27
         ],
         [
+          "r12_direction_0",
+          "retreat",
+          29
+        ],
+        [
           "breakthrough_2_0",
           "service",
-          28
+          33
         ],
         [
           "breakthrough_2_1",
           "service",
-          32
-        ],
-        [
-          "selection_2",
-          "sword",
           37
-        ],
-        [
-          "selection_2_result",
-          "fair",
-          39
-        ],
-        [
-          "road_turn",
-          "keep",
-          42
-        ],
-        [
-          "family_support",
-          "peace",
-          45
         ],
         [
           "family_dispute",
           "stop",
+          42
+        ],
+        [
+          "selection_2",
+          "sword",
+          45
+        ],
+        [
+          "selection_2_result",
+          "fair",
           47
+        ],
+        [
+          "road_turn",
+          "keep",
+          50
         ],
         [
           "advance_material_3_0_0",
           "learn",
-          54
+          59
         ],
         [
           "advance_material_3_0_1",
           "exchange",
-          60
+          65
         ],
         [
           "advance_material_3_0_2",
           "commission",
-          68
+          73
         ],
         [
-          "dark_pursuit_0",
-          "cautious",
-          76
-        ],
-        [
-          "dark_pursuit_1",
-          "cautious",
-          77
-        ],
-        [
-          "dark_pursuit_2",
-          "cautious",
-          77
-        ],
-        [
-          "family_grave",
-          "stay",
-          83
-        ],
-        [
-          "r12_home_resolve",
-          "repair",
-          84
-        ],
-        [
-          "r12_home_leave",
-          "return",
-          84
+          "breakthrough_3_0",
+          "try",
+          81
         ],
         [
           "world_raid",
@@ -2813,74 +2878,84 @@
           86
         ],
         [
-          "breakthrough_3_0",
+          "dark_pursuit_0",
+          "cautious",
+          86
+        ],
+        [
+          "dark_pursuit_1",
+          "cautious",
+          87
+        ],
+        [
+          "dark_pursuit_2",
+          "cautious",
+          87
+        ],
+        [
+          "advance_material_3_1_1",
+          "exchange",
+          89
+        ],
+        [
+          "advance_material_3_1_2",
+          "commission",
+          97
+        ],
+        [
+          "breakthrough_3_1",
           "try",
-          95
+          105
         ],
         [
           "years_practice_0",
           "retreat",
-          107
+          117
         ],
         [
           "advance_material_4_0_0",
           "learn",
-          137
+          147
         ],
         [
           "advance_material_4_0_1",
           "exchange",
-          147
+          157
         ],
         [
           "advance_material_4_0_2",
           "commission",
-          162
-        ],
-        [
-          "years_practice_1",
-          "retreat",
-          181
+          172
         ],
         [
           "breakthrough_4_0",
           "try",
-          211
-        ],
-        [
-          "advance_material_4_1_1",
-          "exchange",
-          232
-        ],
-        [
-          "advance_material_4_1_2",
-          "commission",
-          247
-        ],
-        [
-          "breakthrough_4_1",
-          "try",
-          262
+          187
         ],
         [
           "tribulation_prepare",
           "decline",
-          282
+          207
+        ],
+        [
+          "years_practice_1",
+          "retreat",
+          210
         ],
         [
           "years_practice_2",
           "retreat",
-          284
+          248
         ],
         [
           "years_practice_3",
           "retreat",
-          321
+          285
         ],
         [
           "system_final",
           "guard",
-          359
+          323
         ]
       ]
     },
@@ -2888,7 +2963,7 @@
       "seed": "序列基线-9",
       "rulesVersion": 12,
       "path": "loose",
-      "ending": "dao",
+      "ending": "battle_lost",
       "steps": [
         [
           "r12_child_body",
@@ -2946,18 +3021,18 @@
           24
         ],
         [
+          "r12_direction_0",
+          "retreat",
+          26
+        ],
+        [
           "breakthrough_2_0",
           "service",
-          28
+          30
         ],
         [
-          "selection_2",
-          "array",
-          34
-        ],
-        [
-          "selection_2_result",
-          "fair",
+          "family_support",
+          "peace",
           36
         ],
         [
@@ -2969,131 +3044,6 @@
           "loose_relic_1",
           "selfish",
           40
-        ],
-        [
-          "loose_relic_2",
-          "selfish",
-          42
-        ],
-        [
-          "road_turn",
-          "keep",
-          45
-        ],
-        [
-          "family_support",
-          "peace",
-          47
-        ],
-        [
-          "system_warrant",
-          "explain",
-          50
-        ],
-        [
-          "advance_material_3_0_0",
-          "learn",
-          54
-        ],
-        [
-          "advance_material_3_0_1",
-          "exchange",
-          60
-        ],
-        [
-          "world_raid",
-          "loot",
-          63
-        ],
-        [
-          "advance_material_3_0_1_resume",
-          "exchange",
-          63
-        ],
-        [
-          "loose_portal_0",
-          "selfish",
-          71
-        ],
-        [
-          "advance_material_3_0_2",
-          "commission",
-          71
-        ],
-        [
-          "system_pursuit",
-          "fight",
-          81
-        ],
-        [
-          "family_grave",
-          "stay",
-          84
-        ],
-        [
-          "r12_home_resolve",
-          "repair",
-          85
-        ],
-        [
-          "r12_home_leave",
-          "return",
-          86
-        ],
-        [
-          "breakthrough_3_0",
-          "try",
-          95
-        ],
-        [
-          "years_practice_0",
-          "retreat",
-          107
-        ],
-        [
-          "advance_material_4_0_0",
-          "learn",
-          137
-        ],
-        [
-          "advance_material_4_0_1",
-          "exchange",
-          147
-        ],
-        [
-          "advance_material_4_0_2",
-          "commission",
-          162
-        ],
-        [
-          "years_practice_1",
-          "retreat",
-          180
-        ],
-        [
-          "breakthrough_4_0",
-          "try",
-          210
-        ],
-        [
-          "tribulation_prepare",
-          "prepare",
-          230
-        ],
-        [
-          "years_practice_2",
-          "retreat",
-          248
-        ],
-        [
-          "years_practice_3",
-          "retreat",
-          286
-        ],
-        [
-          "system_final",
-          "dao",
-          324
         ]
       ]
     },
@@ -3247,169 +3197,154 @@
           30
         ],
         [
-          "breakthrough_2_0",
-          "service",
-          30
-        ],
-        [
           "sect_trial_0",
           "care",
-          33
+          30
         ],
         [
           "sect_trial_1",
           "care",
-          35
+          33
         ],
         [
           "sect_trial_2",
           "care",
-          38
+          35
         ],
         [
           "echo_relic_visit",
           "compare",
+          36
+        ],
+        [
+          "r12_patron",
+          "prepare",
+          37
+        ],
+        [
+          "breakthrough_2_0",
+          "service",
           38
-        ],
-        [
-          "selection_2",
-          "sword",
-          41
-        ],
-        [
-          "selection_2_result",
-          "fair",
-          43
-        ],
-        [
-          "family_support",
-          "peace",
-          46
         ],
         [
           "family_dispute",
           "stop",
-          49
+          43
         ],
         [
           "road_turn",
           "keep",
-          53
+          46
+        ],
+        [
+          "selection_2",
+          "sword",
+          49
+        ],
+        [
+          "selection_2_result",
+          "fair",
+          51
         ],
         [
           "advance_material_3_0_0",
           "learn",
-          58
+          61
         ],
         [
           "advance_material_3_0_1",
           "exchange",
-          64
+          67
         ],
         [
           "advance_material_3_0_2",
           "commission",
-          72
-        ],
-        [
-          "family_grave",
-          "stay",
-          83
-        ],
-        [
-          "r12_home_resolve_1",
-          "repair",
-          84
-        ],
-        [
-          "r12_home_leave_1",
-          "return",
-          85
+          75
         ],
         [
           "breakthrough_3_0",
           "try",
-          95
+          83
         ],
         [
           "advance_material_3_1_1",
           "exchange",
-          106
+          94
         ],
         [
           "advance_material_3_1_2",
           "commission",
-          114
+          102
         ],
         [
           "breakthrough_3_1",
           "try",
-          122
+          110
         ],
         [
           "advance_material_3_2_1",
           "exchange",
-          133
+          121
         ],
         [
           "advance_material_3_2_2",
           "commission",
-          141
+          129
         ],
         [
           "breakthrough_3_2",
           "try",
-          149
+          137
         ],
         [
           "years_practice_0",
           "retreat",
-          162
+          150
         ],
         [
           "advance_material_4_0_0",
           "learn",
-          192
+          180
         ],
         [
           "advance_material_4_0_1",
           "exchange",
-          202
+          190
         ],
         [
           "advance_material_4_0_2",
           "commission",
-          217
+          205
         ],
         [
           "breakthrough_4_0",
           "try",
-          232
+          220
         ],
         [
           "tribulation_prepare",
           "decline",
-          252
+          240
         ],
         [
           "years_practice_1",
           "retreat",
-          255
+          242
         ],
         [
           "years_practice_2",
           "retreat",
-          293
+          281
         ],
         [
           "years_practice_3",
           "retreat",
-          332
+          319
         ],
         [
           "system_final",
           "guard",
-          370
+          356
         ]
       ]
     }

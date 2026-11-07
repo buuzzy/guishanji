@@ -534,9 +534,27 @@ export function validateRun(state) {
   }
   if (!Array.isArray(state.decisions) || state.decisions.length > 100 || !Array.isArray(state.journal) || state.journal.length > 600 || typeof state.waiting !== 'boolean') fail('经历');
   const seen = new Set();
+  /*
+   * 「再答一次」的例外：**上一次选的是「再准备一段时间」**。
+   *
+   * 引擎的老规矩是「一个事件 id 一生只答一次」（`urgent_message` 是唯一的例外）。
+   * 但突破卡上有一个「再准备一段时间」的选项：玩家说的是「还没准备好，过些日子再来」，
+   * 规则层也真的把冷却期设上了（`cultivation.js` 的 `retryAt`）——
+   * 显然是想让这张卡**过些日子再来**。
+   *
+   * ⇒ 以前那句判断把这条路堵死了：选一次「再准备」，**这一境的突破卡就再也不发** ——
+   *   人一辈子卡在原地，进度条永远是满的（实测：79 岁还在凡身）。
+   *   那正是用户 2026-11-07 报的「境界满 100% 不强制触发突破」的另一种形态。
+   *
+   * ⇒ 现在：上一次选「再准备」⇒ 这张卡允许再答一次。
+   *   （引擎里只有突破卡会被重新发出来 —— 别的卡即使有「再准备」选项也没有重发的逻辑。）
+   */
+  const again = new Set();
   for (const d of state.decisions) {
-    if (!eventNode(state,d.event)?.choices.some(c => c.id === d.choice) || !Number.isInteger(d.month) || d.month < 0 || d.month > state.month || typeof d.success !== 'boolean' || (seen.has(d.event) && d.event !== 'urgent_message')) fail('抉择记录');
+    const repeatable = d.event === 'urgent_message' || again.has(d.event);
+    if (!eventNode(state,d.event)?.choices.some(c => c.id === d.choice) || !Number.isInteger(d.month) || d.month < 0 || d.month > state.month || typeof d.success !== 'boolean' || (seen.has(d.event) && !repeatable)) fail('抉择记录');
     seen.add(d.event);
+    if (d.choice === 'wait') again.add(d.event); else again.delete(d.event);
   }
   for (const [i, entry] of state.journal.entries()) if (entry.id !== i + 1 || !Number.isInteger(entry.month) || entry.month < 0 || entry.month > state.month || typeof entry.title !== 'string' || entry.title.length > 160 || typeof entry.body !== 'string' || entry.body.length > 2000 || (entry.changes !== undefined && (!Array.isArray(entry.changes) || entry.changes.some(c => typeof c !== 'string' || c.length > 100)))) fail('经历文字');
   if (state.result && (typeof state.result.title !== 'string' || typeof state.result.body !== 'string' || !Array.isArray(state.result.changes) || state.result.changes.some(c => typeof c !== 'string' || c.length > 100) || typeof state.result.success !== 'boolean' || !Number.isInteger(state.result.months) || state.result.months < 0 || state.result.months > 12000)) fail('抉择结果');
@@ -550,7 +568,7 @@ export function validateRun(state) {
   if (state.phase === 'life') {
     if (state.ending) fail('未结束却已有终章');
     if (Boolean(state.pending) === Boolean(state.journey)) fail('待选与行程互斥');
-    if (state.pending && (!eventNode(state,state.pending.event) || (seen.has(state.pending.event) && state.pending.event !== 'urgent_message') || state.waiting || state.pending.month !== state.month)) fail('待选事件');
+    if (state.pending && (!eventNode(state,state.pending.event) || (seen.has(state.pending.event) && state.pending.event !== 'urgent_message' && !again.has(state.pending.event)) || state.waiting || state.pending.month !== state.month)) fail('待选事件');
     if (state.journey && (!(state.life && state.journey.target === null) && !eventNode(state,state.journey.target) || !Number.isInteger(state.journey.from) || !Number.isInteger(state.journey.to) || state.journey.from > state.month || state.journey.to < state.month || state.journey.to > 12000 || !Object.hasOwn(SKILLS, state.journey.practice))) fail('行程');
     if (state.journey?.interrupt && (!eventNode(state,state.journey.interrupt.target) || !Number.isInteger(state.journey.interrupt.month) || state.journey.interrupt.month <= state.journey.from || state.journey.interrupt.month > state.journey.to || state.journey.interrupt.month < state.month)) fail('中断事件');
     if (state.waiting && (!state.result || !state.journey)) fail('待读结果');

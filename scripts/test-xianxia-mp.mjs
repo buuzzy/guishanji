@@ -865,18 +865,31 @@ section('2026-11-05 第七轮：规则12（体质寿元 / 炼气阶段 / 宗门�
       `寿元不是境界基础值（体质算的是 ${real}，境界值是 ${realmLifespan}）`);
   }
 
-  /* ③ 炼气→筑基的门槛是 **260**（第 8 版是 140）—— 写死 140 进度条会说谎。 */
+  /* ③ 炼气→筑基的门槛**只从规则层取**（引擎导出 `progressNeeded`）——
+        界面不许自己写一份（旧版本这里写死 260 / 140 ⇒ 进度条会说谎，
+        而那正是用户 2026-11-07 报的「进度条满了却几十年不给突破提示」的病根）。 */
   {
     const run = engine.createRun({seed: '第七轮-丁', id: 'life-r12-4'});
     run.player.realm = 1;
-    run.life.cultivation.progress = 130;
+    const need = engine.progressNeeded(2);
+    ok(typeof need === 'number' && need > 0, `引擎给出筑基门槛（${need} 点）`);
+    run.life.cultivation.progress = Math.round(need / 2);
     const practice = viewModel.practice(run);
     ok(practice.progressText === '50%',
-      `130/260 显示 50%（实际 ${practice.progressText}；按旧的 140 会显示 93%）`);
-    run.life.cultivation.progress = 210;
+      `进度 ${Math.round(need / 2)}/${need} 显示 50%（实际 ${practice.progressText}）`);
+    run.life.cultivation.progress = Math.round(need * 0.8);
     const later = viewModel.practice(run);
-    ok(later.progressText === '81%',
-      `210/260 显示 81%（实际 ${later.progressText}）`);
+    ok(later.progressText === '80%',
+      `进度 ${Math.round(need * 0.8)}/${need} 显示 80%（实际 ${later.progressText}）`);
+    run.life.cultivation.progress = need;
+    const full = viewModel.practice(run);
+    ok(full.progressText === '100%',
+      `进度 ${need}/${need} 显示 100%（实际 ${full.progressText}）`);
+    /* ④ 面板写明「还差什么」—— 这一行由规则层整句拼好（`breakthroughStatus`）。 */
+    ok(typeof practice.advance === 'string' && practice.advance.length > 0,
+      `面板写明冲关还差什么（实际「${practice.advance}」）`);
+    ok(/还能活/.test(practice.advance),
+      `面板写明还能活几年（实际「${practice.advance}」）`);
   }
 
   /* ④ 副标题是**炼气阶段**，不是境界名。 */

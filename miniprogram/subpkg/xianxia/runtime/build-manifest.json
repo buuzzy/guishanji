@@ -3,8 +3,8 @@
   "source": {
     "repo": "buuzzy/guishanji",
     "branch": "main",
-    "commit": "9e04d43b0398d3df28d4775b8e76fcb1635364b8",
-    "tree": "98437c2f14dece0bd03d3c2afbe2ecff7cb70ef6",
+    "commit": "071270a914634877519429015a75832a75f29320",
+    "tree": "164fff2c67fa21ae1e20a392da2076e3bdd74ad0",
     "note": "构建那一刻本仓库的 HEAD 身份（快照信息，不参与逐字节复现校验）",
     "paths": [
       "packages/adventure/",
@@ -21,7 +21,7 @@
     "note": "同一批字节的两个来源之一：本仓库的 packages/ + content/ 与上游那个提交逐字节相同（门禁 scripts/test-xianxia-build.mjs 逐个核对）；vendor/xianxia-r12 是当时锁下的历史证据。"
   },
   "rulesVersion": 12,
-  "moduleCount": 71,
+  "moduleCount": 72,
   "inputs": [
     {
       "id": "content/adventure.js",
@@ -40,8 +40,8 @@
     },
     {
       "id": "content/cadence-table.js",
-      "bytes": 13221,
-      "sha256": "385f2b3aa4fb80f7b9baf36bd3a4f3402422d70af08300ad5dcde346455d2669"
+      "bytes": 16996,
+      "sha256": "8c4fc77ec7f5adefce9e00d08821fd2559d0015e3615294490f1547852623a1e"
     },
     {
       "id": "content/cultivation-daily-v6.js",
@@ -204,6 +204,11 @@
       "sha256": "7fb5d2306b9793fe2e00c6a4ef17d53a4047d574c5d0f0e65bf18817c7c08a59"
     },
     {
+      "id": "content/realm-thresholds.js",
+      "bytes": 4480,
+      "sha256": "b3509f97c5484a62427e11c6c395d99082e4a08d06bb7107753879b73340e443"
+    },
+    {
       "id": "content/realms.js",
       "bytes": 655,
       "sha256": "d031fbe8b4e4a1c07dc8747bbaa951cd0d8abc7ca849fda7aed5e7f1803fef07"
@@ -255,8 +260,8 @@
     },
     {
       "id": "packages/adventure/cadence.js",
-      "bytes": 5231,
-      "sha256": "f662f9b30a9a0a8a935b2449cf6e13a19cd2cf2525399f9c02221723f0ea03a8"
+      "bytes": 11875,
+      "sha256": "e26d0ab7fb47ea306bf0f6afb581a02de74e0af53e1f438a3faa193b7d11869a"
     },
     {
       "id": "packages/adventure/context.js",
@@ -305,13 +310,13 @@
     },
     {
       "id": "packages/adventure/cultivation.js",
-      "bytes": 55913,
-      "sha256": "86f4852f9e658b29949d66192633242b79526f3a329ed3cb6817494f83b7c0ad"
+      "bytes": 56871,
+      "sha256": "cb187ec48dd9329d01fec06116a5d6d757367fae5297a35bb22fbf0a326a470f"
     },
     {
       "id": "packages/adventure/engine.js",
-      "bytes": 58207,
-      "sha256": "0a53b1a09f8270088270cb142ccf93d7ef3f37d3a5aedc94aac5c97ff647acb5"
+      "bytes": 59438,
+      "sha256": "313648f4b5d90df866905d1f383bf36b08db2d1a1a361a30be272fc5779e4a82"
     },
     {
       "id": "packages/adventure/family.js",
@@ -330,8 +335,8 @@
     },
     {
       "id": "packages/adventure/progression.js",
-      "bytes": 25883,
-      "sha256": "453c3732966e9d6fbc43f5d18e8cf5e7c0b49d0696f49fdc727e4152241ca457"
+      "bytes": 26080,
+      "sha256": "e96a48a872c9fdfdecbfecece3eb76dc8175d0ef8a7a274501d1b582cc156850"
     },
     {
       "id": "packages/adventure/realm.js",
@@ -370,8 +375,8 @@
     },
     {
       "id": "packages/adventure/story-rules12.js",
-      "bytes": 24734,
-      "sha256": "f476e463833bc23a3e8826ac5e8871bd6056371a4587fbd01c6ef65abbbaa816"
+      "bytes": 25384,
+      "sha256": "4178dca730c22882180077609cc7c26023a12a65752e3011d0780ee3f2dc909f"
     },
     {
       "id": "packages/core/random.js",
@@ -381,8 +386,8 @@
   ],
   "output": {
     "file": "engine.js",
-    "bytes": 1237915,
-    "sha256": "0b6b669b6691a0ce1f3aa4622755d3153d5ae511462de6a26a31a25ab27bf732"
+    "bytes": 1240502,
+    "sha256": "30d1c6a940f90be24ee59cc70ea964cb491448e5abdedcd180ea6b4f8232cb83"
   },
   "styleOutput": {
     "file": "pixel-style.js",

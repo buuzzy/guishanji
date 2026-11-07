@@ -200,7 +200,36 @@ console.log('  阶段跨度（各境突破年龄极差的最大值）  ' + repor
 if (report.failed.length) console.log('  ⚠ ' + report.failed.length + ' 条命没跑完（已排除）');
 
 if (argv.includes('--gen')) {
-  const payload = {createdAt: new Date().toISOString(), count: report.count, metrics: report.metrics};
+  /*
+   * 重生成基线 —— **基线文件自带变更台账**（`history`）。
+   *
+   * 为什么要台账：
+   *   这道门禁的判据是「只许变好，不许变差」⇒ 基线就是一道**棘轮**。
+   *   棘轮要挪，只许在「有意变更」时挪 ⇒ 那一次挪动必须留下理由与前后数字，
+   *   否则半年后没人说得清「为什么这一步允许倒退」。
+   *
+   * 用法：`node scripts/audit-metrics.mjs --gen --reason="为什么允许这次变化"`
+   */
+  const reason = (argv.find(a => a.startsWith('--reason=')) || '').slice('--reason='.length);
+  let history = [];
+  try {
+    const old = JSON.parse(await readFile(BASELINE_FILE, 'utf8'));
+    if (old && Array.isArray(old.history)) history = old.history;
+    if (old && old.metrics && !reason) {
+      console.log('\n⚠ 这次重生成没有写理由（--reason=…）⇒ 台账里会记成「未说明」。');
+    }
+    if (old && old.metrics && reason) {
+      history.push({
+        at: new Date().toISOString(),
+        reason,
+        from: old.metrics,
+        to: report.metrics,
+      });
+    }
+  } catch {
+    /* 第一次生成，没有旧基线 */
+  }
+  const payload = {createdAt: new Date().toISOString(), count: report.count, metrics: report.metrics, history};
   await mkdir(join(projectRoot, 'tests/fixtures'), {recursive: true});
   await writeFile(BASELINE_FILE, JSON.stringify(payload, null, 2) + '\n');
   console.log('\n✓ 基线已写入 ' + BASELINE_FILE);

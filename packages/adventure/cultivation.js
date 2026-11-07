@@ -153,7 +153,20 @@ function revised_completeCultivationAction(s,event,choiceId,cb) {
  }
  if(event.startsWith('selection_')&&event.endsWith('_result'))c.exam=null;
  /* 冲关失败后休养一年就够 —— 原来歇三年，等于把突破窗口直接拖没了。 */
-  if(op.breakthrough||op.retry){const tier=op.breakthrough||op.retry;if(op.breakthrough)c.attempts[tier]++;c.retryAt=s.month+12;if(success&&op.breakthrough){c.progress=0;if(!seen(s,'family_rules')&&storyOpportunity(s,'family_rules',age(s),age(s)+5,.65))schedule(s,'family_rules',12);}}
+ /*
+  * ⚠ **「再准备一段时间」（retry）歇六年，冲关失败（breakthrough）歇一年**。
+  *
+  * 为什么要分开：
+  *   · 冲关失败 ⇒ 一年后可以再试（这是「再来一次」的节奏，一年够）；
+  *   · 「再准备」⇒ 六年后这张卡才再来（2026-11-07 修）——
+  *     以前是一年，而且选完之后这张卡**再也不来**（引擎把「已答过」当成「不必再发」）。
+  *     现在卡会回来，但间隔要够长：
+  *       ① 一年一次太密 —— 同一张卡反复出现在 60 个月内，内容指标门禁会记成「冷却重复」
+  *          （那是「同一件事说两遍」的意思，玩家看到的也是这个）；
+  *       ② 一生抉择不超过 100 条（存档硬上限，顶破了整局判无效）——
+  *          间隔越长，一生能塞进去的「再准备」次数越少 ⇒ 越碰不到那条上限。
+  */
+  if(op.breakthrough||op.retry){const tier=op.breakthrough||op.retry;if(op.breakthrough)c.attempts[tier]++;c.retryAt=s.month+(op.breakthrough?12:72);if(success&&op.breakthrough){c.progress=0;if(!seen(s,'family_rules')&&storyOpportunity(s,'family_rules',age(s),age(s)+5,.65))schedule(s,'family_rules',12);}}
  if(op.chain){
   const chain=ROAD_CHAINS.find(a=>a.id===op.chain),previous=c.chains[chain.id];c.chains[chain.id]={origin:previous?.origin||currentContinent(s),originHome:previous?.originHome||s.player.home,departed:previous?.departed||false,step:op.step,conduct:op.conduct,month:s.month};
   if(op.conduct==='selfish'&&!op.concealed){c.reputation=clamp(c.reputation-8,-100,100);c.wanted=clamp(c.wanted+1,0,10);if(c.rulesVersion>=5)addEvidence(s,event,choiceId,choice.reply);}

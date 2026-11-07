@@ -98,7 +98,14 @@ for (const id of eventIds) {
   const row = EVENT_ROWS[id];
   if (!row) continue;
   const node = CULTIVATION_EVENTS[id];
-  for (const s of PROBES) {
+  /*
+   * ⚠⚠ **要用分支探针，不能只用三态探针**（2026-11-08 实测踩到）：
+   *   三态探针里 `network.offer` 是空的 ⇒ `network_mentor` 只量到「安全」那一支
+   *   ⇒ **危险那一支 129 字，门禁完全没看见**。
+   *   ⇒ 长度判据跟分支判据用**同一批探针**（`branchProbes()`，12 份），
+   *   每个分支都量一遍。
+   */
+  for (const s of branchProbes()) {
     const text = typeof row[1] === 'function' ? row[1](s) : row[1];
     if (typeof text !== 'string') { tooLong.push(`${id}（正文不是字符串）`); break; }
     if (text.length > MAX_TEXT) { tooLong.push(`${id}（${text.length} 字：${text.slice(0, 18)}…）`); break; }
@@ -332,7 +339,12 @@ function fillCultivation(s) {
      少了这个字段，规则层那边在探针下就一条分支都测不出来。 */
   s.life.cultivation.story10.echo = {kind: 'friend', origin: 'home', status: 'message', sent: 10, due: 40, stage: 0};
   s.life.cultivation.network = {
-    method: {months: 24}, marks: {}, contacts: [], arc: null, offer: null, volume: null,
+    method: {months: 24}, marks: {}, contacts: [], arc: null,
+    /* ⚠ 授业邀请要用**真实取值**（理由就是规则层那句原话）：
+     *   少了它 ⇒ `network_mentor` 的正文开头是 "undefined"，
+     *   基线里就存着一串 "undefined …"；而且长度判据量到的不是玩家真看到的字数。 */
+    offer: {reason: '教习把你的表现写进了授业记录。', danger: false, due: 40, expires: 64},
+    volume: null,
   };
   s.life.cultivation.mundane = {
     money: 600, home: '望渡镇', residence: '望渡镇', people: [], spouse: null, child: null,
@@ -467,7 +479,7 @@ function buildBranchProbes() {
 
   const delay = (s) => { s.life.cultivation.mail.delayed = true; s.life.cultivation.mail.sentAge = 12; };
   const withOffer = (s) => {
-    s.life.cultivation.network.offer = {reason: '丹堂顾长老缺一名跟炉弟子。', danger: true};
+    s.life.cultivation.network.offer = {reason: '教习把你的表现写进了授业记录。', danger: true, due: 40, expires: 64};
     s.life.cultivation.network.arc = {danger: true, rash: true};
   };
   const withMarks = (s) => {

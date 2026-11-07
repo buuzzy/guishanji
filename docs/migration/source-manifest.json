@@ -1529,8 +1529,8 @@
       },
       {
         "path": "AGENTS.md",
-        "bytes": 26491,
-        "sha256": "86a370cc599640cd12bfb0a3652a0917ff912fd3b829edc3d8b4691dba69b5d1"
+        "bytes": 26711,
+        "sha256": "cc4a4bb4ee745042850bde45083761cb2a41489cb4e9fcb1d030772a2ac68c26"
       },
       {
         "path": "README.md",
@@ -1849,8 +1849,8 @@
       },
       {
         "path": "scripts/verify-viz-panel.mjs",
-        "bytes": 98168,
-        "sha256": "7c6838d2b609a5d7903bf3f3c9ecc6750928f8e9bec6a0f45fc148b7515338ef"
+        "bytes": 102209,
+        "sha256": "43b1aa0f19d24edf6f1c63179cc1d513238b2d378b36cc407082194f8f406724"
       },
       {
         "path": "apps/viz/index.html",

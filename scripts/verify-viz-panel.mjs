@@ -1038,6 +1038,14 @@ try {
   assert.deepEqual(browserStageAlt, buildStageCoverage(nodeRight.runs, { rulesVersion: 12 }), '随机探索那侧的阶段覆盖与 Node 侧对不上');
   report.checks.push('「两种都跑」时，两边各自的「按阶段 / 境界」都能由各自那批命重算复现');
 
+  /* ⚠ 「两种都跑」时，**与上一次跑批比**也要出**两份**（各玩法各一份）。
+   *   只出一份 ⇒ 其中一个玩法的改动根本没法看。 */
+  const bothHistory = await page.eval('window.vizPanel.history');
+  assert.ok(bothHistory && bothHistory.policy && bothHistory.random, '「两种都跑」时，两边各要有一份「与上一次跑批比」');
+  assert.equal(bothHistory.policy.mode, 'policy', '固定偏好那一份要标对玩法');
+  assert.equal(bothHistory.random.mode, 'random', '随机探索那一份要标对玩法');
+  report.checks.push('「两种都跑」时，「与上一次跑批比」出两份（固定偏好 + 随机探索，各算各的）');
+
   /* ⚠ 并排比的结果必须真的画在流水页上。 */
   await page.click('#tabs [data-tab="journal"]');
   await page.waitFor('window.vizPanel.tab === "journal"');
@@ -1110,6 +1118,43 @@ try {
   const tamperedSnapshot = await page.eval('(() => { const c = JSON.parse(JSON.stringify(window.vizPanel.history)); c.policy.next.metrics.cards += 1; return c; })()');
   assert.throws(() => assertBatchSnapshotMatchesSources(tamperedSnapshot.policy.next, { coverage: coverage2, stageCoverage: stage2, progress: progress2 }), /剧情卡（当前版本）/);
   report.checks.push('反向验证：把页面上的差异 / 快照改坏，重算断言确实报红');
+
+  /* ── ⑫·七 条数不一样 ⇒ 必须**明说**（别让人拿两批样本当同一批看） ────── */
+  await page.eval('document.querySelector("#batch-count").value = "40";');
+  await page.click('#run-batch');
+  await page.waitFor('window.vizPanel.history && window.vizPanel.history.policy && window.vizPanel.history.policy.next.count === 40', 180000);
+  const mixed = await page.eval('window.vizPanel.history');
+  assert.equal(mixed.policy.previous.count, 20, '上一次应当是 20 条');
+  assert.equal(mixed.policy.next.count, 40, '这一次应当是 40 条');
+  assert.ok(mixed.policy.rows.length > 0, '条数变了 ⇒ 数字会变 ⇒ 差异不该是空的');
+  assertDomContainsAll(await page.eval('document.querySelector("#tabpanel").textContent'), ['条数不一样，数字不能直接比'], '流水页的「与上一次跑批比」（条数不一样）');
+  report.checks.push('条数不一样时：面板明说「条数不一样，数字不能直接比」（不拿两批样本当同一批看）');
+
+  /* ── ⑫·八 刷新页面后，本地存的「上一次」还在（最贴近实际用法） ──────────
+   * ⚠ 实际用法是「改完内容 → 刷新页面 → 跑一批 → 看差异」⇒
+   *   存的东西要是刷新就丢，这条功能等于没有。 */
+  await page.navigate(server.url + 'apps/viz/');
+  await page.waitFor('!!window.vizPanel');
+  const keptRaw = await page.eval('localStorage.getItem(' + JSON.stringify(HISTORY_KEY) + ')');
+  assert.ok(keptRaw, '刷新页面后，本地存的「上一次跑批」不该丢');
+  const kept = JSON.parse(keptRaw);
+  assert.ok(kept.policy && kept.policy.metrics, '存着的应当是固定偏好那一份快照');
+  assert.equal(kept.policy.count, 40, '存着的快照应当记着当时跑了多少条');
+  /* ⚠ 刷新后还没跑批 ⇒ 流水页**不该**出现差异块（这一批还没跑，没得比）。 */
+  await page.click('#tabs [data-tab="journal"]');
+  await page.waitFor('window.vizPanel.tab === "journal"');
+  await delay(200);
+  assert.equal(await page.eval('document.querySelectorAll("#tabpanel .viz-hist-entry").length'), 0, '还没跑批 ⇒ 不该画差异块');
+  /* ⚠ 刷新后跑一批（同样 40 条）⇒ 必须拿**存下来的那份**去比。 */
+  await page.eval('document.querySelector("#batch-count").value = "40";');
+  await page.click('#run-batch');
+  await page.waitFor('window.vizPanel.history && window.vizPanel.history.policy && window.vizPanel.history.policy.previous !== null', 180000);
+  const afterReload = await page.eval('window.vizPanel.history');
+  assert.equal(afterReload.policy.previous.count, 40, '比的那一份应当是存下来的 40 条快照');
+  assert.deepEqual(afterReload.policy.rows, [], '同样 40 条跑两遍 ⇒ 数字不该变');
+  assertDomContainsAll(await page.eval('document.querySelector("#tabpanel").textContent'), ['跟上次跑的一模一样'], '流水页的「与上一次跑批比」（刷新后）');
+  report.checks.push('刷新页面后本地存的「上一次」还在 ⇒ 刷新后跑一批照样比得出（改完内容 → 刷新 → 跑 → 看差异，这条路走得通）');
+  assert.deepEqual(page.errors, [], '「与上一次跑批比」这一段（含刷新页面）有脚本报错：' + page.errors.join(' | '));
 
   /* ── ⑭ 自动播放：人一个决定都不用做，系统自己走这条命 ─────────────── */
   /* ⚠ 先换一条**新命** —— 前面点过「跑完一生」，那条命已经走完了，自动播放没东西可走。 */

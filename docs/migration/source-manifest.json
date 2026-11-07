@@ -1209,8 +1209,8 @@
         "sourceBytes": 11494,
         "sourceSha256": "66026f8b72b80fc179a98f3f31fe2c736ff0d8c96a74e4c8ad26cde58edd5875",
         "path": "miniprogram/subpkg/xianxia/runtime/build-manifest.json",
-        "currentBytes": 12985,
-        "currentSha256": "7672aec43cefceb9375feb315341475a73c68795bc461ffa95ed1ebf0329fcf4",
+        "currentBytes": 13301,
+        "currentSha256": "c21db2346892b43c791f36609b58b4401ed7815f736a97ab14345131dbac6513",
         "reason": "生成物：来源改为本仓库源码，并新增 upstreamOrigin 段"
       },
       {
@@ -1220,8 +1220,8 @@
         "sourceBytes": 1738614,
         "sourceSha256": "ba0720f2c21c1babe39c605739e90243d7de00db5f920bd5078704d6952fed3f",
         "path": "miniprogram/subpkg/xianxia/runtime/engine.js",
-        "currentBytes": 1240502,
-        "currentSha256": "30d1c6a940f90be24ee59cc70ea964cb491448e5abdedcd180ea6b4f8232cb83",
+        "currentBytes": 1245899,
+        "currentSha256": "b0bcb3030d39e9db90a0028075f1d338025a39b68b275fc3dba43bca42f2cd91",
         "reason": "生成物：由本仓库源码重新构建（除文件头注释外与迁移进来的那份逐字节一致，见 reference/migrated-runtime/）"
       },
       {
@@ -1527,8 +1527,8 @@
       },
       {
         "path": "AGENTS.md",
-        "bytes": 13606,
-        "sha256": "df86a46697fb3902e7e2d715592438b879eddab8fd62ab1ba1ad676f9a565856"
+        "bytes": 13955,
+        "sha256": "2af39105152155eafb2e895b146df22405b95643cd69240bf9b72bfe990e99f6"
       },
       {
         "path": "README.md",
@@ -1697,13 +1697,13 @@
       },
       {
         "path": "scripts/audit-metrics.mjs",
-        "bytes": 11772,
-        "sha256": "7e722ae190c8bdc851a01b3d13214bb2c658e621dbbd33fa2bfcc99ae25c5d96"
+        "bytes": 15014,
+        "sha256": "cc7e5dee85147eb5495f5754f03b09e1bbda5fbc2dbe850285dbde5baaae16cb"
       },
       {
         "path": "tests/fixtures/metrics-baseline.json",
-        "bytes": 1297,
-        "sha256": "066424fb475ba2e285a5882ba6022fc86d509830f1cddf0950d5f625aa358246"
+        "bytes": 2069,
+        "sha256": "cf779c5ec897800ecc3820ce47fa6dbaef61492d58dad7067d7c8841213be10d"
       }
     ]
   }

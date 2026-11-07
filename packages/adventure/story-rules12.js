@@ -3,8 +3,7 @@ import {REALMS} from '../../content/adventure.js';
 import {progressNeeded,breakthroughRule,gradeBonus,CADENCE,supplyUntil,qigongStage,QIGONG_STAGE_NAMES} from '../../content/cadence-table.js';
 import {BODY_TYPES,SECT_PROFILES,REGIONAL_METHODS} from '../../content/rules12-world.js';
 import {ROOTS,GEOGRAPHY} from '../../content/cultivation-world.js';
-import {canCultivate,route} from './story-rules10.js';
-import {breakthroughDue} from './cadence.js';
+import {canCultivate,route} from './story-rules10.js';import {breakthroughDue} from './cadence.js';
 const c=s=>s.life.cultivation;
 export const active12=s=>s.life?.cultivation?.rulesVersion===12;
 export const rules12=s=>c(s).v12;
@@ -244,7 +243,10 @@ export function month12(s,cb){
  if(cc.path==='orthodox'&&s.player.realm<2&&age(s)>=r.patron.until&&!r.patron.stopped){r.patron.stopped=true;log(s,cb,'执事收回了耗材领取签','先前说过的供料年限已到。执事收回领取基础耗材的木签，住处与已借到的卷册仍准你保留；往后的修行材料要另筹。','institution');}
  if(cc.queue.some(q=>q.due<=s.month))return false;
  if(s.player.realm===0&&age(s)>=r.body.natural-12&&!done(s,'r12_late_doubt')){cb.arrive('r12_late_doubt');return true;}
- if(cc.path==='orthodox'&&!r.clue.checked&&age(s)>=38&&(cc.rank==='内门弟子'||s.flags.learningPermit)&&roll(s,'secret')<1200){r.clue.checked=true;cb.arrive('r12_sect_clue');return true;}
+ if(cc.path==='orthodox'&&!r.clue.checked&&age(s)>=38&&(cc.rank==='内门弟子'||s.flags.learningPermit)&&roll(s,'secret')<1200){
+  /* ⚠ 闸检查**在置标记之前** —— 被拦就当这个月没这回事，下个月还会再抽一次。 */
+  if(!cb.gate('r12_sect_clue'))return false;
+  r.clue.checked=true;cb.arrive('r12_sect_clue');return true;}
  /*
   * 筑基丹的发放条件：**修为攒到筑基门槛的八成就够**（`progressNeeded(2)` 的 83%）。
   *

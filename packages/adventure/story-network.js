@@ -104,7 +104,10 @@ export function networkMonth(s,cb){
  const quiet=free&&!c.activeChain&&!c.context;
  if(a.method&&age(s)>=16&&!c.detained&&!c.inquiry&&s.month>=c.punishmentUntil&&!['travel','work'].includes(c.context)&&!s.journey?.resolution&&c.revision9?.methodFinishedAt!==s.month){a.method.months++;a.progressMonths++;}
  if(age(s)<16){
-  if(free){const ticket=a.childhood.find(x=>!x.done&&x.due<=s.month);if(ticket){ticket.done=true;cb.arrive(ticket.event);return true;}}
+  if(free){const ticket=a.childhood.find(x=>!x.done&&x.due<=s.month);if(ticket){
+   /* ⚠ 闸检查**在置标记之前** —— 被拦就当这个月没这回事，下个月还会再抽一次。 */
+   if(!cb.gate(ticket.event))return false;
+   ticket.done=true;cb.arrive(ticket.event);return true;}}
   return false;
  }
  if(active10(s)&&!canCultivate(s))return false;

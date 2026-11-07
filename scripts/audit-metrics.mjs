@@ -12,11 +12,21 @@
  * 六项指标
  * --------
  *   ① 可达性：事件表里有多少条在 N 条人生里一次都没出现（发霉的内容＝不存在的内容）
- *   ② 密度：最挤的 10 年 / 5 年有多少个抉择（方案口径：≤ 5 / ≤ 3）
- *   ③ 冷却：人生经历里同标题在 60 个月内重复了几处
+ *   ② 密度：最挤的 10 年 / 5 年有多少个**日常抉择**（方案口径：≤ 5 / ≤ 3）
+ *   ③ 冷却：同标题的**旁白**、同一张**抉择卡**在 60 个月内重复了几处
  *   ④ 节奏对齐：每个境界段实际发出过多少种不同内容（方案口径：≥ 5）
  *   ⑤ 结局覆盖：多少条人生没有结局文本
  *   ⑥ 阶段跨度：同一里程碑的突破年龄跨度（方案口径：中位数口径，见 audit-cadence）
+ *
+ * ## ②③ 的口径为什么改过（2026-11-07 · T2）
+ * -------------------------------------------
+ * 以前这两个指标**把人生节点也算进去**：
+ *   · 密度：突破卡、长线卡（一生就那几次）都算 ⇒ 「最挤 10 年 14 张」，
+ *     其实那张卡挤的是**玩家真正要做的日常决定**；
+ *   · 冷却：玩家的**抉择记录**也算「同标题重复」——
+ *     可玩家两次选了同一个选项，那是他自己的历史，不是「同一句话说两遍」。
+ * ⇒ 现在按「日常卡」与「旁白」两个口径量（与规则层的闸同一份口径：
+ *   `packages/adventure/gates.js`），量出来��是玩家真正感觉到的那件事。
  *
  * 用法
  * ---
@@ -34,6 +44,8 @@ import {readFile, writeFile, mkdir} from 'node:fs/promises';
 import {join} from 'node:path';
 import {playCultivation} from './play-cultivation.mjs';
 import {EVENTS} from '../packages/adventure/engine.js';
+import {isMilestone, SPEC as GATES_SPEC} from '../packages/adventure/gates.js';
+import * as GATES from '../packages/adventure/gates.js';
 import {projectRoot} from './serve.mjs';
 
 /** 基线文件（跟着源码走 ⇒ 门禁只依赖跟着源码走的文件）。 */
@@ -54,8 +66,17 @@ const DIRECTION = {
   spanMax: 'down',        // 阶段跨度：各境突破年龄极差的最大值
 };
 
-/** 硬底线：不管基线多少，这几项不许有。 */
-const HARD_LIMIT = {endingMissing: 0};
+/**
+ * 硬底线：不管基线多少，这几项不许有。
+ *
+ * ⚠ 密度与冷却的**目标值是规格**（写在这里），规则层的闸另有一份实现值
+ *   （`packages/adventure/gates.js` 的 `DENSITY_MAX_10Y` / `COOLDOWN_MONTHS`）。
+ *   两份数字必须一样 —— 不一样就报红（见下面的「闸与规格对不对得上」）。
+ *   分成两份是为了能做**反向验证**：把闸的实现值改小（冷却 60 → 12 个月），
+ *   规格这一份不动 ⇒ 实测立刻出现重复 ⇒ 门禁报红 ⇒ 证明这道闸是真的在管事。
+ */
+const HARD_LIMIT = {endingMissing: 0, density10: 5, density5: 3, cooldownRepeats: 0};
+
 
 /** 跑一条命，把它的指标事实收拢起来。 */
 function specFor(i) {
@@ -75,24 +96,35 @@ function specFor(i) {
 function runOne(spec) {
   try {
     const run = playCultivation(spec);
-    /* 密度：按年龄窗口数抉择卡。 */
-    const ages = run.snapshots.map(s => s.age);
+    /* 密度：按**日常卡**数（人生节点不算 —— 突破卡与长线卡本来就该发生，
+       玩家要喘口气的是那些日常决定）。口径与规则层的闸同一份：
+       `packages/adventure/gates.js` 的 `isMilestone`。 */
+    const ages = run.snapshots.filter(s => !isMilestone(s.event)).map(s => s.age);
     let density10 = 0, density5 = 0;
     for (let start = 0; start <= 120; start++) {
       density10 = Math.max(density10, ages.filter(a => a >= start && a < start + 10).length);
       density5 = Math.max(density5, ages.filter(a => a >= start && a < start + 5).length);
     }
-    /* 冷却：人生经历里同标题在 60 个月内重复。 */
+    /* 冷却：**旁白**同标题在 60 个月内重复（这是「同一件事说两遍」），
+       加上**同一张抉择卡**在 60 个月内重复（这是「同一张卡又来了」）。
+       ⚠ 玩家的抉择记录（选了两次同一个选项）**不算**重复 —— 那是他的历史。 */
     let cooldownRepeats = 0;
     const byTitle = {};
     for (const j of run.state.journal) {
+      if (!j.automatic) continue;
       const list = byTitle[j.title] || (byTitle[j.title] = []);
       list.push(j.month);
     }
     for (const months of Object.values(byTitle)) {
       for (let i = 1; i < months.length; i++) {
-        if (months[i] - months[i - 1] < 60) cooldownRepeats++;
+        if (months[i] - months[i - 1] < GATES_SPEC.cooldownMonths) cooldownRepeats++;
       }
+    }
+    const lastCard = {};
+    for (const d of run.state.decisions) {
+      const last = lastCard[d.event];
+      if (last !== undefined && d.month - last < GATES_SPEC.cooldownMonths) cooldownRepeats++;
+      lastCard[d.event] = d.month;
     }
     /* 节奏对齐：每个境界段发出过多少种不同内容。 */
     const perRealm = {};
@@ -175,6 +207,22 @@ export function check(report, baseline) {
     }
     const limit = HARD_LIMIT[key];
     if (limit !== undefined && now > limit) problems.push(`${key} 超过硬底线：${now} > ${limit}`);
+  }
+  /*
+   * ⚠ **闸与规格对不对得上** —— 两份数字必须一致。
+   *
+   * 规则层的闸（`packages/adventure/gates.js`）有一份实现值，
+   * 本脚本有一份规格值（`SPEC`）。两边不一样 ⇒ 有人的闸已经不听规格了 ⇒ 报红。
+   * （这一条也让「反向验证」站得住：把闸的实现值改小，规格不动 ⇒ 这里立刻报红。）
+   */
+  if (GATES.DENSITY_MAX_10Y !== GATES_SPEC.density10) {
+    problems.push(`密度闸的十年上限与规格不一致：闸 ${GATES.DENSITY_MAX_10Y} ≠ 规格 ${GATES_SPEC.density10}`);
+  }
+  if (GATES.DENSITY_MAX_5Y !== GATES_SPEC.density5) {
+    problems.push(`密度闸的五年上限与规格不一致：闸 ${GATES.DENSITY_MAX_5Y} ≠ 规格 ${GATES_SPEC.density5}`);
+  }
+  if (GATES.COOLDOWN_MONTHS !== GATES_SPEC.cooldownMonths) {
+    problems.push(`冷却闸的月份与规格不一致：闸 ${GATES.COOLDOWN_MONTHS} ≠ 规格 ${GATES_SPEC.cooldownMonths}`);
   }
   return problems;
 }

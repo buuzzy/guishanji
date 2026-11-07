@@ -18,6 +18,7 @@ import {random,hashText} from '../core/random.js';
 import {PATHS,ROOTS,ACTIVITIES,GEOGRAPHY,OFFICERS} from '../../content/cultivation-world.js';
 import {CONSTITUTION_GAIN} from '../../content/rules12-world.js';
 import {ROAD_CHAINS,CULTIVATION_EVENTS,LEGACY_CULTIVATION_EVENTS} from '../../content/cultivation-stories.js';
+import {allowDaily} from './gates.js';
 const copy=x=>JSON.parse(JSON.stringify(x));
 const clamp=(v,min=0,max=100)=>Math.max(min,Math.min(max,v));
 const age=s=>Math.floor(s.month/12)+(s.birth.startAge||0);
@@ -239,8 +240,52 @@ function revised_beginTravel(s,id,cb){const r=routeOptions(s).find(p=>p.id===id)
 function revised_finishTravel(s,cb){const trip=s.journey.cultivationTravel,c=s.life.cultivation;c.continent=trip.location;cb.apply({location:trip.location,home:GEOGRAPHY.find(p=>p.id===trip.location).places[1]+'租屋'});c.spot=s.player.home;registerDwelling(s);for(const id of trip.route)if(!c.visited.includes(id))c.visited.push(id);if(trip.route.length>1)c.routes.push(copy(trip.route));record(s,cb,'抵达新的住处','你到达'+s.player.home+'，沿路经过的地点已记入地图。');cb.open();}
 function revised_withdrawCultivation(s,cb){const c=s.life.cultivation;if(!c.activeChain||s.pending||s.phase!=='life')throw Error('目前没有可离开的探险');const chain=c.activeChain;c.queue=c.queue.filter(q=>!q.event.startsWith(chain+'_'));c.context=null;c.activeChain=null;s.journey={from:s.month,to:s.month+6,target:null,practice:s.player.focus,cultivationTravel:{location:currentContinent(s),route:[currentContinent(s)]}};s.revision++;record(s,cb,'离开当前探险','你带走已取得的物品，沿已知出口返回。尚未取得的奖励与后续阶段取消。','plan');return s;}
 function automaticCultivation(s,cb){const c=s.life.cultivation;if(!canCultivate(s)||c.v12?.action||c.v12?.visit)return;if(c.revision9?.arc||s.month<c.dailyAt)return;const mundane=mundaneDaily(s),row=mundane===undefined?automaticStory(s,cultivationContext(s)):mundane;if(row)record(s,cb,row.title,row.body);c.dailyAt=s.month+delay(s,c.activeChain?18:24,c.activeChain?36:48);}
+/**
+ * 发卡闸的回调外套 —— 把「发卡」这件事过一遍闸。
+ *
+ * ⚠ 只有当前版本（规则十二）用得上；旧版本各有自己的执行器，不走这里。
+ *
+ * @param {object} s 当前人生状态
+ * @param {object} cb 引擎给的回调
+ * @returns {object} 包过闸的回调
+ */
+function gateCallbacks(s,cb){
+ return {
+  ...cb,
+  gate:(event)=>allowDaily(s,event),
+  arrive:(event)=>{if(!allowDaily(s,event))return;cb.arrive(event);},
+  /*
+   * `arriveRaw` —— **不过闸**地发一张卡。
+   *
+   * 给「已经排好了的事」用：队列里排好的家信／战事／长线步骤、
+   * 长线本身的第一张卡。这些不是「这个月挑一张日常卡」，
+   * 而是「早就说好的那一件事到了」⇒ 拦它＝让人家白等。
+   */
+  arriveRaw:(event)=>cb.arrive(event),
+ };
+}
 function revised_cultivationMonth(s,cb){
  const c=s.life.cultivation,context=cultivationContext(s);
+ /*
+  * ⚠⚠ **发卡闸**（2026-11-07 · T2）：这里把回调**换一副**再往下传。
+  *
+  * 三道闸（密度 / 冷却 / 阶段）只有一份实现（`packages/adventure/gates.js`），
+  * 全仓库谁都不许另写一份口径。这里是**发卡**的唯一接入点：
+  *   · `arrive` —— 这张**日常卡**现在发不发得出去？
+  *     发不出去就不发（规则层那个月就算没安排事），下个月条件合适了还会再发。
+  *     豁免名单里的卡（突破卡、长线卡、后续卡、终章、入门那一串）不受影响。
+  *   · `gate`   —— 规则层自己判断「这张卡现在发不发得出去」时用这一句
+  *     （放在**置标记之前**，免得被拦一次那张卡就永远没了）。
+  *
+  * ⚠ 冷却闸（旁白那一半）**不在这里**：旁白有两个入口
+  *   （规则层的 cb.log 与长行动结束时引擎自己记的），
+  *   只堵一个会漏 ⇒ 它接在引擎记旁白的唯一入口
+  *   （`packages/adventure/engine.js` 的 log）。
+  *
+  * ⚠ **只包当前版本（规则十二）**：旧版本（5–11）各有自己的执行器，
+  *   一个字节都不动 ⇒ 历史基线逐值全等。
+  */
+ cb=gateCallbacks(s,cb);
  if(age(s)>=16){
   const activity=s.month<c.punishmentUntil?'work':c.activity,a=ACTIVITIES[activity],restricted=['travel','valley','cavern','outer','work'].includes(context)||c.detained||c.inquiry||s.month<c.punishmentUntil&&c.punishmentKind==='confinement';
   if(!restricted){
@@ -279,12 +324,12 @@ function revised_cultivationMonth(s,cb){
  if(alert&&!c.detained&&(context!=='outer'||['moon_key','gate_anchor','sky_scroll'].some(id=>s.inventory.includes(id)))){
   c.suspended={context:c.context,chain:c.activeChain,month:s.month,journey:copy(s.journey),queue:c.queue.filter(q=>ROAD_CHAINS.some(a=>q.event.startsWith(a.id+'_'))).map(q=>({event:q.event,remaining:Math.max(1,q.due-s.month)}))};
   c.queue=c.queue.filter(q=>q!==alert&&!ROAD_CHAINS.some(a=>q.event.startsWith(a.id+'_')));c.context=null;c.activeChain=null;
-  record(s,cb,'中转者送来战事急讯','争夺灵泉的战事波及住处，可靠的中转者带来了具体位置。','world');cb.arrive('world_raid');return;
+  record(s,cb,'中转者送来战事急讯','争夺灵泉的战事波及住处，可靠的中转者带来了具体位置。','world');cb.arriveRaw('world_raid');return;
  }
  if(scheduleMonth(s,cb))return;
  if(!s.journey?.open)return;
  const due=c.queue.filter(q=>q.due<=s.month&&(!c.detained||q.event.startsWith('custody_'))&&(!c.inquiry||['dark_invitation','dark_oath','beast_invitation','beast_acceptance','departure_terms'].includes(q.event))&&(!c.activeChain||q.event.startsWith(c.activeChain+'_'))&&(!q.event.startsWith('selection_')||!q.event.endsWith('_result')||c.path!=='orthodox'||currentContinent(s)===s.birth.continent)).sort((a,b)=>a.due-b.due);
- if(due.length){const next=due[0];c.queue=c.queue.filter(q=>q!==next);if(!seen(s,next.event))cb.arrive(next.event);return;}
+ if(due.length){const next=due[0];c.queue=c.queue.filter(q=>q!==next);if(!seen(s,next.event))cb.arriveRaw(next.event);return;}
  if(c.activeChain||c.detained||c.inquiry||!c.admissionDone||s.month<c.choiceAt)return;
  const possible=[];
  /* 突破卡不在这里抽 —— 它归「里程碑档」管（packages/adventure/scheduler.js）：
@@ -320,7 +365,16 @@ function revised_cultivationMonth(s,cb){
  // Offer a conclusion after a settled period, without cutting off a promised task.
  const settled=!c.network.offer&&!c.network.arc&&!c.network.next&&!c.queue.length&&!c.mail&&!c.story10.echo&&s.month-(s.decisions.at(-1)?.month||0)>=60;
  if(settled&&(!canCultivate(s)&&age(s)>=70||c.path==='mortal'&&age(s)>=45||c.worldDone&&age(s)>=100&&s.player.realm>=1||s.player.realm>=3&&Object.values(c.chains).filter(a=>a.step===2).length>=3&&age(s)>=100||age(s)>=180)){if(!seen(s,'system_final'))possible.push('system_final');}
- if(possible.length){const id=possible[Math.floor(random(s,'events')*possible.length)];if(id==='system_warrant'||id==='system_pursuit')c.trackedEvidence=copy(evidence);cb.arrive(id);}else c.choiceAt=s.month+12;
+ /*
+  * ⚠ 闸：先过滤再抽签 —— 被拦的卡**不占这个月**，抽签也不白抽
+  * （随机流保持干净：被拦的那次不消耗随机数）。
+  * 池里全被拦住 ⇒ 下个月再试（`choiceAt` 推到下个月），
+  * 条件合适了它还会再出现 —— 不会「一张卡被拦一次就永远没了」。
+  */
+ const allowed=possible.filter(id=>allowDaily(s,id));
+ if(allowed.length){const id=allowed[Math.floor(random(s,'events')*allowed.length)];if(id==='system_warrant'||id==='system_pursuit')c.trackedEvidence=copy(evidence);cb.arrive(id);}
+ else if(possible.length)c.choiceAt=s.month+1;
+ else c.choiceAt=s.month+12;
  s.life.activity=cultivationActivity(s);
 }
 function revised_validateCultivation(s,fail){

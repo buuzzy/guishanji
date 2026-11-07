@@ -1,11 +1,11 @@
 {
-  "createdAt": "2026-11-07T03:11:56.456Z",
+  "createdAt": "2026-11-07T03:35:46.868Z",
   "count": 120,
   "metrics": {
     "neverSeen": 165,
-    "density10": 14,
-    "density5": 9,
-    "cooldownRepeats": 2318,
+    "density10": 4,
+    "density5": 3,
+    "cooldownRepeats": 0,
     "realmContentMin": 6,
     "endingMissing": 0,
     "spanMax": 102
@@ -28,6 +28,28 @@
         "density10": 14,
         "density5": 9,
         "cooldownRepeats": 2318,
+        "realmContentMin": 6,
+        "endingMissing": 0,
+        "spanMax": 102
+      }
+    },
+    {
+      "at": "2026-11-07T03:35:46.868Z",
+      "reason": "T2 三道闸：密度改按『日常卡』量（人生节点不算），冷却改按『旁白 + 同一张卡』量（玩家自己的抉择记录不算重复）。实测密度 10→4、5 年 9→3、冷却 2318→0；可达性 165 与节奏对齐与基线一致（零内容损失）。",
+      "from": {
+        "neverSeen": 165,
+        "density10": 14,
+        "density5": 9,
+        "cooldownRepeats": 2318,
+        "realmContentMin": 6,
+        "endingMissing": 0,
+        "spanMax": 102
+      },
+      "to": {
+        "neverSeen": 165,
+        "density10": 4,
+        "density5": 3,
+        "cooldownRepeats": 0,
         "realmContentMin": 6,
         "endingMissing": 0,
         "spanMax": 102

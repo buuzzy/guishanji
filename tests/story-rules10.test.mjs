@@ -84,7 +84,7 @@ test('战事打断旧约后可继续核实拜访，没有重复决定同一事�
  choose(s,'escape');finish(s);assert.equal(c(s).story10.echo.status,'deferred');
  s.month=Math.max(s.month,c(s).story10.echo.due);s.pending=null;s.journey={open:true,from:s.month,to:13000};
  c(s).admissionDone=true;c(s).activeChain=null;c(s).context=null;c(s).queue=[];let arrived;
- assert.equal(month10(s,{arrive:id=>arrived=id,log:()=>{}}),true);assert.equal(arrived,'echo_resume');
+ assert.equal(month10(s,{arrive:id=>arrived=id,log:()=>{},gate:()=>true}),true);assert.equal(arrived,'echo_resume');
  s.pending={event:arrived,month:s.month};s.journey=null;choose(s,'continue');assert.equal(c(s).story10.echo.status,'checking');
 });
 test('旧友卡回顾实际帮助，随机姓名在童年与成年一致',()=>{
@@ -103,7 +103,7 @@ test('商队介绍陌生药师时不伪称童年已认识，铜匣线不默认�
 });
 test('跨大陆童年消息须等待路线送达，封路时不能瞬间来信',()=>{
  const s=pending('echo_friend');s.pending=null;s.journey={open:true,from:s.month,to:13000};s.birth.continent='home';c(s).continent='sky';c(s).network.echoChecked=true;c(s).story10.echo={kind:'friend',origin:'home',status:'message',due:s.month,sent:s.month,stage:0};
- let arrived=null;const cb={arrive:id=>arrived=id,log:()=>{}};month10(s,cb);assert.equal(arrived,null);s.month+=36;month10(s,cb);assert.equal(arrived,'echo_friend');
+ let arrived=null;const cb={arrive:id=>arrived=id,log:()=>{},gate:()=>true};month10(s,cb);assert.equal(arrived,null);s.month+=36;month10(s,cb);assert.equal(arrived,'echo_friend');
  arrived=null;c(s).closed=['home-tide','ember-home'];month10(s,cb);assert.equal(arrived,null);
 });
 test('重要人物正文带职责，人物查询保持纯函数',()=>{

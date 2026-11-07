@@ -114,7 +114,13 @@ export function longChainMonth(state, callbacks) {
   if (due.chain.path === 'loose' && state.people.ally.status === 'alive') {
     callbacks.apply({people: {ally: {known: true, location: state.player.location}}});
   }
-  callbacks.arrive(due.chain.id + '_0');
+  /*
+   * 长线卡**不过发卡闸**（密度 / 冷却 / 阶段）——
+   * 它是「人生的某一段该开始的那件事」，不是「这个月挑一张日常卡」。
+   * 拦它 ⇒ 这条线永远开不了头（而且中间一段被拦，整条线就断了）。
+   */
+  const chainId=due.chain.id+'_0';
+  if(callbacks.arriveRaw)callbacks.arriveRaw(chainId);else callbacks.arrive(chainId);
   return true;
 }
 

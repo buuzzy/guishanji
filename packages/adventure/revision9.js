@@ -115,6 +115,8 @@ export function revisionMonth(s,cb){
   return true;
  }
  if(canCultivate(s)&&!r.hardshipChecked&&age(s)>=24&&age(s)<=55&&c.admissionDone&&ROOTS[s.player.root].grade<=0&&s.player.realm<=1&&!c.activeChain&&!c.inquiry&&s.month-c.entered>=60){
+  /* ⚠ 闸检查**在置标记之前** —— 被拦就当这个月没这回事，下个月还会再抽一次。 */
+  if(!cb.gate('thin_root_offer'))return false;
   r.hardshipChecked=true;
   if(random(s,'events')<.8){cb.arrive('thin_root_offer');return true;}
  }

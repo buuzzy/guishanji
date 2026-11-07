@@ -9,7 +9,7 @@ import {activityOptions,routeOptions} from '../packages/adventure/cultivation.js
 const c=s=>s.life.cultivation,r=s=>c(s).revision9;
 function pending(event){const s=createRun({seed:'因果核验-'+event});s.month=264;s.player.practice=264;c(s).path='demonic';c(s).admissionDone=true;c(s).entered=192;c(s).worldDone=true;c(s).queue=[];r(s).membership.path='demonic';s.pending={event,month:s.month};s.journey=null;return s;}
 function finish(s){while(s.phase==='life'&&s.journey&&!s.journey.open&&!s.pending)advance(s,1);}
-function probe(s){let arrived=null;revisionMonth(s,{arrive:id=>{arrived=id;},log:e=>s.journal.push({id:s.journal.length+1,month:s.month,act:s.act,...e})});return arrived;}
+function probe(s){let arrived=null;revisionMonth(s,{arrive:id=>{arrived=id;},log:e=>s.journal.push({id:s.journal.length+1,month:s.month,act:s.act,...e}),gate:()=>true});return arrived;}
 test('凡人和凡俗富户没有出生灵石，世家赠予有独立来源',()=>{
  for(const origin of ['village','noble','clan']){const s=createRun({seed:'资产-'+origin,origin});assert.equal(s.player.stones,origin==='clan'?4:0);assert.equal(c(s).rulesVersion,9);assert.equal(s.journal.some(e=>e.title==='长辈为你留下的灵石'),origin==='clan');}
 });

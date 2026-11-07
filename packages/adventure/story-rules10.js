@@ -173,7 +173,10 @@ export function month10(s,cb){
  if(!canCultivate(s))cc.progress=0;
  if(!free||age(s)<16||!cc.admissionDone)return false;
  if(cc.queue.some(q=>q.due<=s.month))return false;
- if(!rr.reviewChecked&&rr.rootStatus==='unverified'&&rr.body==='human'&&age(s)>=18){rr.reviewChecked=true;cb.arrive('root_review');return true;}
+ if(!rr.reviewChecked&&rr.rootStatus==='unverified'&&rr.body==='human'&&age(s)>=18){
+  /* ⚠ 闸检查**在置标记之前** —— 被拦就当这个月没这回事，下个月还会再抽一次。 */
+  if(!cb.gate('root_review'))return false;
+  rr.reviewChecked=true;cb.arrive('root_review');return true;}
  if(rr.echo){
   const e=rr.echo,path=route(s,e.origin,cc.continent);
   if(!path&&s.month-e.sent>=240){rr.echo=null;add(s,cb,'旧地址一直没有回音','商路多年不通，代收人未能核实旧联系人的去处。你收好旧信，结束这次未能赴约的安排。');}
@@ -195,7 +198,10 @@ export function month10(s,cb){
   if(kind&&random(s,'events')<.65){rr.echo={kind,origin:s.birth.continent,status:'message',sent:s.month,due:s.month,stage:0};return month10(s,cb);}
  }
  if(cc.rulesVersion===11&&!canCultivate(s))return false;
- if(!canCultivate(s)&&!rr.workChecked&&age(s)>=22){rr.workChecked=true;cb.arrive('mortal_assessment');return true;}
+ if(!canCultivate(s)&&!rr.workChecked&&age(s)>=22){
+  /* ⚠ 闸检查**在置标记之前** —— 被拦就当这个月没这回事，下个月还会再抽一次。 */
+  if(!cb.gate('mortal_assessment'))return false;
+  rr.workChecked=true;cb.arrive('mortal_assessment');return true;}
  if(!canCultivate(s)&&rr.workCount<3&&s.month>=rr.workDue&&age(s)>=26){
   const id='mortal_life_'+rr.workCount;rr.workCount++;rr.workDue=s.month+72;
   if(!seen(s,id)){cb.arrive(id);return true;}

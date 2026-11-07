@@ -8,6 +8,7 @@ import { NEW_CAST, EXTRA_ENDINGS, FAMILIES, BIRTHPLACES, WORLD_ERAS, LIFE_GOALS 
 import { birthConfiguration } from './birth.js';
 import { initializeLife, regionInfo, contextualText, openJourney, livingMonth, beginAction, completeAction, continuation, markEvent, respondToCrisis, emergencyArrival, income, practiceRate, trainingOptions } from './life.js';
 import { activityContext, personHere } from './context.js';
+import { titleAllows } from './gates.js';
 
 import { makeReadable } from '../../content/expressions/index.js';
 import { EXPEDITION_CHANGES, CLUE_EVENTS } from '../../content/expedition-changes.js';
@@ -59,6 +60,20 @@ export function nodeText(node, state) { const text=value(node.text,state);return
 
 function log(state, entry) {
   if(state.life?.cultivation?.rulesVersion>=8){entry={...entry,title:prose(entry.title,state),body:prose(entry.body,state)};}
+  /*
+   * ⚠⚠ **冷却闸（旁白）**（2026-11-07 · T2）：同一句旁白，60 个月内不说第二遍。
+   *
+   * 为什么在这里判：
+   *   自动旁白有两个入口 —— 规则层用 `cb.log` 记的，和「长行动」结束时引擎自己记的
+   *   （`kind:'plan'` 那种）—— 只堵一个入口会漏。
+   *   ⇒ 统一放在**所有人生经历的唯一入口**（这个函数），
+   *     口径只有一份（`packages/adventure/gates.js` 的 `titleAllows`）。
+   *
+   * ⚠ **只对当前版本（规则十二）生效**：旧档（5–11）逐值全等，一个字节都不动。
+   * ⚠ **只压自动旁白**：玩家的抉择记录（`kind:'choice'`）是**他自己的历史**，
+   *   选过两次同一个选项就该记两次 —— 那不是「重复」，那是「他就是这么选的」。
+   */
+  if(state.life?.cultivation?.rulesVersion===12&&entry.automatic&&!titleAllows(state,entry.title))return;
   if(active10(state)){entry={...entry,body:introduceText(entry.body,state)};encounterPeople(state,entry.body,entry.event||'experience');}
   state.journal.push({ id: state.journal.length + 1, month: state.month, act: state.act, ...entry });
 }
@@ -415,7 +430,7 @@ export function acknowledge(state) {
 }
 
 function callbacks(state) {
-  return { apply: effect => applyEffects(state, effect), log: entry => log(state, entry), arrive: event => arrive(state, event),open:()=>openJourney(state),end:id=>end(state,id) };
+  return { apply: effect => applyEffects(state, effect), log: entry => log(state, entry), arrive: event => arrive(state, event),open:()=>openJourney(state),end:id=>end(state,id), gate: () => true };
 }
 
 function finishJourney(state) {

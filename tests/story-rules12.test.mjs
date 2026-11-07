@@ -112,7 +112,7 @@ test('长期做工完成前不领取换料奖励，不叠加自由做工收入',
  const s=pending('r12_direction_0'),stones=s.player.stones;choose(s,'work');assert.equal(s.player.stones,stones);assert.equal(economyQuote(s).gross,1);advance(s,29);assert.ok(s.player.stones<=stones+3);finish(s);assert.equal(rules12(s).action,null);assert.ok(s.player.stones>=stones+2);
 });
 test('宗门停供提前告知，到期才改变收入，不扣已有财产',()=>{
- const s=pending('r12_patron',{years:40});rules12(s).patron.until=45;choose(s,'prepare');assert.equal(rules12(s).patron.noticed,true);assert.equal(rules12(s).patron.stopped,false);s.month=45*12;s.player.practice=s.month;s.pending=null;s.journey={open:true,from:s.month,to:12000,target:null,practice:s.player.focus};const stones=s.player.stones;month12(s,{arrive:()=>{},log:()=>{}});assert.equal(rules12(s).patron.stopped,true);assert.equal(s.player.stones,stones);assert.equal(economyQuote(s).gross,0);validateRun(s);
+ const s=pending('r12_patron',{years:40});rules12(s).patron.until=45;choose(s,'prepare');assert.equal(rules12(s).patron.noticed,true);assert.equal(rules12(s).patron.stopped,false);s.month=45*12;s.player.practice=s.month;s.pending=null;s.journey={open:true,from:s.month,to:12000,target:null,practice:s.player.focus};const stones=s.player.stones;month12(s,{arrive:()=>{},log:()=>{},gate:()=>true});assert.equal(rules12(s).patron.stopped,true);assert.equal(s.player.stones,stones);assert.equal(economyQuote(s).gross,0);validateRun(s);
 });
 test('稀有筑基丹先验收，核心传承需要现有授业资格',()=>{
  const s=pending('r12_foundation_supply');choose(s,'serve');assert.ok(!s.inventory.includes('foundation_pill'));advance(s,5);assert.ok(!s.inventory.includes('foundation_pill'));finish(s);validateRun(s);

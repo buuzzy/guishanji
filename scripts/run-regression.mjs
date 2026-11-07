@@ -9,6 +9,12 @@ const commands = [
   ['unit', ['--test', 'tests/adventure.test.mjs', 'tests/adventure-feedback.test.mjs','tests/cultivation.test.mjs','tests/decision-clarity.test.mjs','tests/life-richness.test.mjs','tests/story-network.test.mjs','tests/progression.test.mjs','tests/revision9.test.mjs','tests/story-rules10.test.mjs']],
   ['mundane-unit', ['--test','tests/mundane-life.test.mjs']],
   ['rules12-unit', ['--test','tests/story-rules12.test.mjs']],
+  /* ── 发卡闸门禁（2026-11-07 · T2）────────────────────────────────────
+     密度 / 冷却 / 阶段三道闸。闸是**护栏**：今天的内容本来就达标，
+     所以它在正式跑里很少真的拦下什么 ⇒ 光看「跑一遍没报错」证明不了它有用。
+     ⇒ 这道门禁用**造出来的状态**逐条证明三道闸真的拦得住，
+       并且守「闸的口径 == 指标审计的规格」（谁把闸改松了，这里立刻报红）。 */
+  ['gates-unit', ['--test','tests/gates.test.mjs']],
   ['rules12-audit', ['scripts/audit-story-rules12.mjs','--count=600']],
   ['mundane-audit', ['scripts/audit-mundane-life.mjs','--count=600']],
   ['story-audit', ['scripts/audit-story-rules10.mjs']],

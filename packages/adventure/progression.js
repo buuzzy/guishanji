@@ -5,6 +5,8 @@ import {ROOTS,GEOGRAPHY} from '../../content/cultivation-world.js';
 import {mundaneChoice} from './mundane-life.js';
 import {progressNeeded,METHOD_MONTHS} from '../../content/realm-thresholds.js';
 import {REALMS} from '../../content/realms.js';
+import {JOINT_CARD_IDS} from '../../content/cultivation-joints.js';
+const JOINT_IDS=new Set(JOINT_CARD_IDS);
 const active=s=>!!s.life?.cultivation;
 const c=s=>s.life.cultivation,p=s=>c(s).progression;
 const age=s=>Math.floor(s.month/12)+(s.birth.startAge||0);
@@ -12,7 +14,12 @@ const seen=(s,id)=>s.decisions.some(d=>d.event===id)||s.pending?.event===id;
 const has=(s,id)=>s.inventory.includes(id);
 const add=(s,cb,title,body,kind='institution')=>cb.log({kind,title,body,automatic:true,location:s.player.location,context:c(s).context||'home'});
 const usedNames=new Set(),reservedAliases=new Set();
-const EXTRA_NAMES=[['余衡','M'],['阿宁','M'],['白苓','F'],['杜魁','M'],['顾长老','M'],['余掌柜','M'],['顾渊','M'],['陆岑','M'],['秦岳','M'],['顾临川','M'],['沈长老','M'],['林长老','M']];
+const EXTRA_NAMES=[['余衡','M'],['阿宁','M'],['白苓','F'],['杜魁','M'],['顾长老','M'],['余掌柜','M'],['顾渊','M'],['陆岑','M'],['秦岳','M'],['顾临川','M'],['沈长老','M'],['林长老','M'],
+ /* 缺陷 E（2026-11-08 清旧档时挖出）：幽灯堂药库那两个人物（顾魇 / 阿栾）也要跟着换名 ——
+  * 他们出现在 `content/allegiance-stories.js` 与 `content/decision-details.js` 的正文里，
+  * 但不在名册里 ⇒ 别人都换名、就他们两个是固定的，看着不像同一世界的人。
+  * （规则九时是单独加的两条，规则十二没跟上。） */
+ ['顾魇','M'],['阿栾','M']];
 function routeFrom(s,from,target){const cc=c(s),todo=[[from]],visited=new Set([from]);while(todo.length){const route=todo.shift(),at=route.at(-1);if(at===target)return route;for(const next of GEOGRAPHY.find(g=>g.id===at).connections){if(visited.has(next)||cc.closed.includes([at,next].sort().join('-')))continue;visited.add(next);todo.push([...route,next]);}}return null;}
 function homeRoute(s){return routeFrom(s,c(s).continent,s.birth.continent);}
 function notify(s,cb,title,body){if(s.journey?.open&&!s.pending)add(s,cb,title,body,'people');else p(s).notices.push({month:s.month,title,body});}
@@ -187,6 +194,28 @@ const CHILDHOOD_AGE = 6;          // 童年分界
 const CHILDHOOD_SECONDS = 8;      // 童年：一年 8 秒
 const LATE_FROM_AGE = 95;         // 后期起点
 const LATE_MAX_SECONDS = 3;       // 95 岁后一年封顶几秒
+/*
+ * ⚠⚠ **凡身档单独一档**（2026-11-08 · 阶段 2「出生→筑基」调优）
+ *
+ * 原来「1 年 = K ÷ 境界基础寿元」对所有境界一视同仁 ⇒ 境界 0（凡身，寿元 88）
+ * 拿到 **61.4 秒/年**，是**全程最慢的一段**。而这一段恰好是：
+ *   · 6–16 岁那十年（玩家还没引气，什么也做不了）
+ *   · 16 岁到炼气（约 5 年）
+ * 实测（40 条命，规则十二）：6–16 岁要 **10.2 分钟**才走完，而这一段只有 3 张童年卡
+ * ⇒ 「出生→筑基」中位 **28.8 分钟**，其中 15 分钟花在**还没有玩法**的那段。
+ *
+ * ⇒ 现在凡身档单独一档：**30 秒/年**（5 秒/月）。
+ *   · 6–16 岁：10.2 分钟 → 5 分钟
+ *   · 16 岁→炼气：4.9 分钟 → 2.4 分钟
+ *   · 「出生→筑基」：28.8 分钟 → 约 19 分钟
+ *   · 炼气往后的各境界**一律不动**（仍按 K ÷ 寿元，与官方同量级）。
+ *
+ * ⚠ 代价（写在这里，别当没这回事）：开局那十年的「相邻两张卡间隔」从 61 秒降到约 30 秒，
+ *   **低于官方 43–67 秒那条带**。这是有意的取舍：官方一生 56 张卡、我们 45 张，
+ *   撑得住更慢的节奏；我们撑不住 ⇒ 开局该快的地方就快。
+ *   ⚠ 纯**呈现层**改动：状态逐月推进、决策序列、事件表、结局一个字节都不变。
+ */
+const MORTAL_BODY_SECONDS = 30;  // 凡身档（境界 0）：一年 30 秒
 
 export function playbackSeconds(s){
  const j=longAction(s);
@@ -198,11 +227,22 @@ export function playbackSeconds(s){
     基础寿元是稳定的档位（88/120/210/350/560），
     按体质算出来的寿元会随人物变 ⇒ 同一个境界速度忽快忽慢。 */
  const cap=REALMS[s.player.realm]?.lifespan||88;
- let sec=Math.min(YEAR_SECONDS_MAX,Math.max(YEAR_SECONDS_MIN,YEAR_SECONDS_K/cap));
+ /* 凡身档（境界 0）单独一档：见上面 MORTAL_BODY_SECONDS 的说明。 */
+ let sec=s.player.realm===0?MORTAL_BODY_SECONDS:Math.min(YEAR_SECONDS_MAX,Math.max(YEAR_SECONDS_MIN,YEAR_SECONDS_K/cap));
  if(a>=LATE_FROM_AGE)sec=Math.min(sec,LATE_MAX_SECONDS);
  return sec/12;
 }
-export function sceneFor(s){if(!active(s))return null;const pp=p(s),cc=c(s),event=s.pending?.event||s.journey?.event;if(s.journey?.cultivationActionTravel?.route.length>1&&s.month<s.journey.to)return 'travel';if(event?.startsWith('sect_return_'))return cc.continent===s.birth.continent?'siege':null;if(event==='world_raid')return cc.suspended?.journey&&!cc.suspended.journey.open?cc.suspended.context:'siege';if(cc.revision9?.arc==='mine'||event==='thin_root_mine')return 'mine';if(pp.scene)return pp.scene==='camp'&&cc.continent!==s.birth.continent?null:pp.scene;if(pp.sect.phase==='camp'&&cc.continent===s.birth.continent)return 'camp';if(pp.sect.phase==='rebuilt'&&cc.continent===s.birth.continent)return 'settlement';if(event==='tribulation_prepare'||event==='system_final'&&pp.tribulationReady)return 'tribulation';return null;}
+/*
+ * 画哪一张画面。
+ *
+ * ⚠⚠ **接头卡不算战场**（缺陷 F · 2026-11-08 清旧档时挖出）：
+ *   画面靠「事件 id 以 `sect_return_` 开头」来认战场
+ *   ⇒ 接头卡 `sect_return_joint_settled`（线走完之后的那张承接卡）也被判成战场
+ *   ⇒ 仗打完了、人已经扎营，屏幕上还画着战场。
+ * ⇒ 用 `JOINT_IDS`（内容层给的接头卡清单）把它们排除掉。
+ *   （`content/cultivation-joints.js` 是叶子文件 ⇒ 这么 import 不会成环。）
+ */
+export function sceneFor(s){if(!active(s))return null;const pp=p(s),cc=c(s),event=s.pending?.event||s.journey?.event;if(s.journey?.cultivationActionTravel?.route.length>1&&s.month<s.journey.to)return 'travel';if(event?.startsWith('sect_return_')&&!JOINT_IDS.has(event))return cc.continent===s.birth.continent?'siege':null;if(event==='world_raid')return cc.suspended?.journey&&!cc.suspended.journey.open?cc.suspended.context:'siege';if(cc.revision9?.arc==='mine'||event==='thin_root_mine')return 'mine';if(pp.scene)return pp.scene==='camp'&&cc.continent!==s.birth.continent?null:pp.scene;if(pp.sect.phase==='camp'&&cc.continent===s.birth.continent)return 'camp';if(pp.sect.phase==='rebuilt'&&cc.continent===s.birth.continent)return 'settlement';if(event==='tribulation_prepare'||event==='system_final'&&pp.tribulationReady)return 'tribulation';return null;}
 export function validateProgression(s,fail){
  if(!active(s))return;const pp=p(s);if(!pp||pp.format!==1||!pp.names||Array.isArray(pp.names)||Object.keys(pp.names).length>128||Object.values(pp.names).some(n=>typeof n!=='string'||!n||n.length>16))fail('人物名册');
  if(!Array.isArray(pp.early)||pp.early.length!==3||pp.early.some((e,i)=>e.due!==[12,30,54][i]||typeof e.done!=='boolean'))fail('幼年经历');

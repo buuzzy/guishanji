@@ -137,6 +137,19 @@ function topbar(run) {
  * ⚠ **不含成功率**（option.chance）—— HTML 端也不给玩家看。
  * ⚠ 不可选时的说法是「暂时无法这样做：…」；可选时那一行只写代价。
  */
+/**
+ * 一段时长怎么说（12 个月以上说「年」，其余说「月」）。
+ * ⚠ 只排版，不改数 —— 数是规则层给的 `option.months`。
+ */
+function monthsText(months) {
+  var m = Math.max(0, Math.round(months || 0));
+  if (m >= 12) {
+    var years = Math.round(m / 12 * 10) / 10;
+    return years + ' 年';
+  }
+  return m + ' 个月';
+}
+
 function decision(run) {
   if (!run.pending) return null;
   var node = engine.currentNode(run);
@@ -165,6 +178,10 @@ function decision(run) {
             return (engine.ITEMS[id] && engine.ITEMS[id].name) || id;
           }).join('、');
         }
+        /* 2026-11-08：时间也是代价 —— 「闭三年关」「誊抄家传笔记要一年」
+         * 原来一个字都不显示 ⇒ 玩家不知道自己把多少年押在了这一句上。
+         * ⚠ `option.months` 是规则层给的（`engine.options`）⇒ 界面不自己算。 */
+        if (option.months) meta += (meta ? ' · ' : '') + '要花掉 ' + monthsText(option.months);
       } else {
         meta = '暂时无法这样做：' + (option.reasons || []).join('；');
       }
@@ -715,6 +732,22 @@ function activityMeaning(activity) {
   return parts.filter(Boolean).join('、') + ' · 修行积累';
 }
 
+/**
+ * 重心档位那一行（规则层给的月数与倍率，这里只排版）。
+ * ⚠ 数字一律读 `engine.activityOptions(run)` 的返回（规则层算的），
+ *   界面自己不算 —— 免得两边口径不一样。
+ * ⚠ 2026-11-08：修行那一半**只在筑基之前**给（规则层已经按境界算好了
+ *   `mult`）⇒ 筑基之后这里自然只剩「技艺 +X%」，
+ *   界面**不许**自己补一句「筑基后修行不再加快」—— 那是规则的说明，不是选项的收益。
+ */
+function focusTierText(item) {
+  if (!item || !item.months) return '';
+  var parts = [];
+  if (item.mult && item.mult > 1) parts.push('修行 +' + Math.round((item.mult - 1) * 100) + '%');
+  if (item.skillMult && item.skillMult > 1) parts.push('技艺 +' + Math.round((item.skillMult - 1) * 100) + '%');
+  return (item.tier || '') + '（' + item.months + ' 个月）' + (parts.length ? ' · ' + parts.join(' · ') : '');
+}
+
 /** 重心可选项（activities）。
  *  ⚠ 用引擎的 `activityOptions(run)`（带 enabled / reason），
  *    不用静态表 ACTIVITIES —— 静态表不知道「现在能不能选」。
@@ -733,10 +766,13 @@ function activities(run) {
       reason: item.reason || '',
       current: id2current(item.id, current),
       /* ⚠ 上游 showFocus 那一行有「说明 · 影响：… · 不可选的理由」三段；
-       *   官方 `.dec .ch button` 的标记列右边只放得下两行 ⇒ 合成一行（见 places()）。 */
+       *   官方 `.dec .ch button` 的标记列右边只放得下两行 ⇒ 合成一行（见 places()）。
+       *   2026-11-08：中间加了「档位（练了多久 · 修行快多少）」——
+       *   玩家要看得见「同一个重心待久了会变快」这件事。 */
       line: [
         item.description || '',
         meaning ? ('影响：' + meaning) : '',
+        focusTierText(item),
         item.reason || '',
       ].filter(Boolean).join(' · '),
     };

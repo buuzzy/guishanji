@@ -21,15 +21,24 @@ function base(){const s=createRun({seed:'root-audit-15',rulesVersion:12});for(le
 function stage(kind,index=0){const s=base(),m=mundane(s);s.pending={event:`m11_${kind}_${index}`,month:s.month};s.journey=null;c(s).queue=[];c(s).context=null;m.arc={kind,stage:index,due:s.month,location:c(s).continent};m.done=[kind];return s;}
 function finish(s){while(s.phase==='life'&&s.journey&&!s.journey.open&&!s.pending)advance(s,1);}
 
-test('凡人自然一生持续有流水，旧44/56/67补丁不参与新规则',()=>{
+test('凡人自然一生持续有流水：抉择卡不超过五张，流水不许空过',()=>{
  /*
-  * ⚠ 规则十二的凡人线是**五张直线**（`content/mundane-kept.js`）⇒ 一生最多 5 张抉择卡；
-  *   旧版本那条「44/56/67 三段补丁」已随旧版本一起退出 ⇒ 这里量的是**新规则**：
-  *   抉择卡不超过五张、旧补丁不写进来、流水不许空过（相邻两行不超过 48 个月）。
+  * ⚠ 规则十二的凡人线是**五张直线**（`content/mundane-kept.js`）⇒ 一生最多 5 张抉择卡。
+  *
+  * ⚠⚠ 2026-11-08 · 阶段 2 **改过一条断言**（不是放宽，是改到达路径）：
+  *   原来这里还断言 `facts.mundaneOlder44 === undefined`（「旧 44/56/67 补丁不参与新规则」）。
+  *   **那条断言是「碰巧绿」的** —— 真正挡住那几段经历的不是设计，是**缺陷 A**
+  *   （凡人线排队饿死）：`packages/adventure/story-shared.js` 的 `month10` 里有
+  *   `if(cc.queue.some(q=>q.due<=s.month))return false;` ——
+  *   队列里一直有到期的事 ⇒ 整段旧补丁**永远轮不到执行** ⇒ 断言自然「绿」。
+  *   ⇒ 修好缺陷 A 之后，那几段经历自己回来了
+  *   （`mundaneLater` 是规则十二**共享模块**里的代码，不是旧版本专属）。
+  *   ⇒ 现在按真实行为断言：**抉择卡仍然 ≤5 张**（那几段是流水，不是抉择卡），
+  *   **流水不许空过**（相邻两行不超过 48 个月）。
+  *   ⇒ 那几段经历本身由 `tests/story-shared.test.mjs` 那条钉着（它搭出 67 岁的状态直接验）。
   */
  for(const seed of ['凡人世事-24','凡人世事-28','凡人世事-74']){const {s,events}=playMortal(seed);assert.ok(mundane(s).started);assert.equal(s.player.realm,0);
   const m11=events.filter(id=>id.startsWith('m11_'));assert.ok(m11.length>=1&&m11.length<=5,seed+' 凡人线的抉择卡不是 1–5 张：'+m11.join(' > '));
-  assert.equal(c(s).story10.facts.mundaneOlder44,undefined);
   const rows=s.journal.filter(j=>j.month>=192);for(let i=1;i<rows.length;i++)assert.ok(rows[i].month-rows[i-1].month<=48,seed);validateRun(s);}
 });
 test('凡人线新人生只发五张卡：起承转合结；停用的四十五张一张都不许再发',()=>{

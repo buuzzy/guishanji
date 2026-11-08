@@ -149,7 +149,25 @@ export function mundaneMonth(s,cb){
  }
  if(m.child?.status==='alive'&&!m.child.tested&&s.month-m.child.born>=120&&!plan12(s)){m.child.tested=true;beginArc(s,cb,'child');return true;}
  if(s.month>=m.quietAt)ordinary(s,cb);
- if(s.month<m.next)return true;
+ /*
+  * ⚠⚠ **缺陷 A（2026-11-08 清旧档时挖出）· 凡人线排队饿死** ——
+  *
+  * 这一行原来 `return true`，意思是「本月我管过了」。
+  * 但 `packages/adventure/cultivation.js` 的月度调度是**先问各个模块「有事吗」**，
+  * 谁回答「有」就当月收工（`if(scheduleMonth(s,cb))return;`），
+  * **队列的消费排在它后面**（`const due=c.queue.filter(...)`）。
+  * ⇒ 凡人线每个月都回答「有」（这里就是这一行）⇒ 队列**永远轮不到被消费**
+  * ⇒ 45 岁该发的「安顿余生」收尾卡发不出来，家族抉择永远排在队里。
+  *
+  * ⚠ 修仙者那条线不受影响：`packages/adventure/story-network.js` 对凡人直接
+  *   `if(...||c.path==='mortal')return false;`，修仙线的 `mundaneMonth` 也在
+  *   「能引气」时提前 `return false`（上面第 142 行）⇒ 只有凡人线被卡住。
+  *
+  * ⇒ 这里改成 `false`：意思是「本月**没有**该发的东西」，
+  *   让调度继续往下走，把队列里到期的事发出来。
+  *   （控制流没变：`s.month<m.next` 时后面的五张直线照旧被跳过。）
+  */
+ if(s.month<m.next)return false;
  /*
   * ⚠⚠ **五张直线**（规则十二 · 阶段 3.3）——
   *   只发 `MUNDANE_KEPT` 那五张，其余 45 张**保留但不再发**。

@@ -11,7 +11,7 @@ const commands = [
        它按官方原文重新生成一遍，并与锁定快照逐字节比对。 */
   ['pixelstyle', ['scripts/build-pixel-style.mjs']],
   ['check', ['scripts/check.mjs']],
-  ['unit', ['--test', 'tests/adventure.test.mjs', 'tests/adventure-feedback.test.mjs','tests/cultivation.test.mjs','tests/decision-clarity.test.mjs','tests/life-richness.test.mjs','tests/story-network.test.mjs','tests/progression.test.mjs','tests/revision9.test.mjs','tests/story-shared.test.mjs','tests/radar.test.mjs','tests/items.test.mjs','tests/plot.test.mjs']],
+  ['unit', ['--test', 'tests/adventure.test.mjs', 'tests/adventure-feedback.test.mjs','tests/cultivation.test.mjs','tests/decision-clarity.test.mjs','tests/life-richness.test.mjs','tests/story-network.test.mjs','tests/progression.test.mjs','tests/revision9.test.mjs','tests/focus.test.mjs','tests/story-shared.test.mjs','tests/radar.test.mjs','tests/items.test.mjs','tests/plot.test.mjs']],
   ['mundane-unit', ['--test','tests/mundane-life.test.mjs']],
   ['rules12-unit', ['--test','tests/story-rules12.test.mjs']],
   /* ── 发卡闸门禁（2026-11-07 · T2）────────────────────────────────────
@@ -51,7 +51,7 @@ const commands = [
   /* ── 内容保真门禁 ───────────────────────────────────────────────────
      这两个必须全绿：
      · eventsfid —— 当前事件表（347 张卡）逐值全等 + **旧执行器不许回来**；
-     · eventseq  —— 固定种子的完整人生决策序列逐条全等（12 条人生 / 366 步）。
+     · eventseq  —— 固定种子的完整人生决策序列逐条全等（12 条人生 / 364 步）。
      ⚠ 2026-11-08 清旧档后，这里守的是**唯一在跑的那一版**（规则十二）。
        有意行为变更阶段（突破必发 / 体力拆分 / 长线区间）才允许
        eventseq 变，且必须先存旧基线、逐条审差异、再更新基线。 */

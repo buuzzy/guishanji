@@ -95,14 +95,16 @@ test.todo('同一生的自动日常不重复（缺陷 D：日常池绕圈）',()
   * ⇒ 这条断言现在**故意是红的**：修好那天把它从 `todo` 改回 `test` 就自动转绿。 */
  const patterns=new Set();for(let i=0;i<80;i++){const s=playCultivation({seed:'万千道途-'+i,path:['orthodox','loose','demonic','beast'][i%4],method:i%3===0?'ember':'clear',childhood:i%2?'bold':'care'}).state;const prose=s.journal.filter(e=>e.automatic&&e.kind==='life').map(e=>e.body);assert.equal(new Set(prose).size,prose.length);patterns.add(s.decisions.filter(d=>d.event.startsWith('child_')||d.event.startsWith('network_')).map(d=>d.event+'/'+d.choice).join('|'));validateRun(s);}assert.ok(patterns.size>30);
 });
-test('时间节奏按境界基础寿元分档：一年不再只值几秒，重要任务不会随着高境界极速略过',()=>{
- /* 2026-11-08：年速改成「1 年 = K ÷ 境界基础寿元」（K=5400）。
+test('年速分档：凡身档单独一档，其余按境界基础寿元，越高境界一年过得越快',()=>{
+ /* 2026-11-08：年速改成「1 年 = K ÷ 境界基础寿元」（K=5400），
+  * 后来（阶段 2）又给**凡身档（境界 0）单独一档**（30 秒/年）。
   * ⇒ 这条断言不再钉死三个魔法数，改钉**规则本身**：
   *   ① 童年（0–6 岁）固定 8 秒/年；
-  *   ② 一年 = K ÷ 境界基础寿元（凡身 88 ⇒ 61.4 秒；炼气 120 ⇒ 45 秒）；
-  *   ③ **境界越高，一年过得越快**（秒数更少）—— 与官方同构：
+  *   ② **凡身档（境界 0）固定 30 秒/年**（那一段玩家什么都做不了，不能是最慢的）；
+  *   ③ 其余境界：一年 = K ÷ 境界基础寿元（炼气 120 ⇒ 45 秒；筑基 210 ⇒ 25.7 秒）；
+  *   ④ **境界越高，一年过得越快**（秒数更少）—— 与官方同构：
   *      活得久的人，一生总时长大致恒定。 */
- const K=5400,LIFESPAN={0:88,1:120,2:210,3:350,4:560};
+ const K=5400,LIFESPAN={0:88,1:120,2:210,3:350,4:560},MORTAL_BODY=30;
  /* ⚠ 期望值在这里**把规则重写一遍**（不 import 实现里的常量）——
     改了实现而没改这条 ⇒ 门禁报红；反之改了这条而没改实现 ⇒ 也报红。 */
  const yearSec=x=>Math.round(monthSeconds(x)*12*100)/100;
@@ -110,7 +112,7 @@ test('时间节奏按境界基础寿元分档：一年不再只值几秒，重�
   const a=(s.birth?.startAge??16)+Math.floor(s.month/12);
   if(a<6)return 8;
   const cap=LIFESPAN[s.player.realm]??88;
-  let sec=Math.min(120,Math.max(4,K/cap));
+  let sec=s.player.realm===0?MORTAL_BODY:Math.min(120,Math.max(4,K/cap));
   if(a>=95)sec=Math.min(sec,3);
   return Math.round(sec*100)/100;
  };
@@ -119,24 +121,26 @@ test('时间节奏按境界基础寿元分档：一年不再只值几秒，重�
  const childhood=find('child_school');assert.equal(yearSec(childhood),expect(childhood),'童年之后按境界基础寿元那档');
  const duty=find('network_ward');assert.equal(yearSec(duty),expect(duty),'宗门差事那一年按境界基础寿元那档');
  choose(duty,'accept');resolve(duty);assert.equal(yearSec(duty),expect(duty),'境界没变 ⇒ 速度也不变');
- for(const [realm,sec] of [[1,45],[2,25.71],[3,15.43],[4,9.64]])assert.equal(yearSec(at(duty,realm)),Math.round(sec*100)/100,`境界 ${realm} 一年 ${sec} 秒`);
+ for(const [realm,sec] of [[0,30],[1,45],[2,25.71],[3,15.43],[4,9.64]])assert.equal(yearSec(at(duty,realm)),Math.round(sec*100)/100,`境界 ${realm} 一年 ${sec} 秒`);
  assert.ok(yearSec(at(duty,4))<yearSec(at(duty,1)),'境界越高，一年过得越快（官方同构：一生总时长大致恒定）');
+ assert.ok(yearSec(at(duty,0))<yearSec(at(duty,1)),'凡身档单独提速 ⇒ 比炼气档快');
  const old=at(duty,4);old.month=95*12;assert.equal(yearSec(old),3,'95 岁以后一年封顶 3 秒');
 });
-test.todo('凡人不必等待寿命以外的世界变故，安顿余生的收尾仍可自然抵达（缺陷 A：凡人线排队饿死）',()=>{
- /* 缺陷 A（AGENTS.md §1.11）：凡人线排在 `c.queue` 里的事件永远发不出来
-  * （`packages/adventure/cultivation.js` 的调度顺序 + `packages/adventure/mundane-life.js`
-  * 的 `if(s.month<m.next)return true;`）⇒ 45 岁该发的 `system_final` 收尾卡发不出来，
-  * 家族抉择（`family_gate`）也永远排在队里。
-  * ⇒ 这条断言现在**故意是红的**：修好那天把它从 `todo` 改回 `test` 就自动转绿。 */
- const s=playCultivation({seed:'万千道途-109',path:'mortal',family:'sever',childhood:'bold'}).state;
+test('凡人不必等待寿命以外的世界变故，安顿余生的收尾仍可自然抵达',()=>{
+ /* 缺陷 A 已修（2026-11-08 · `packages/adventure/mundane-life.js` 那一行 `return false`）
+  * ⇒ 凡人线的队列不再被饿死，45 岁该发的「安顿余生」收尾卡发得出来了。
+  * ⚠ 种子换成了「万千道途-19」：原种子在规则十二下会**迟入道**（32 岁转散修），
+  *   走的是修仙者的收尾线，不是凡人线 ⇒ 换一个始终留在凡俗路的种子。 */
+ const s=playCultivation({seed:'万千道途-19',path:'mortal',family:'sever',childhood:'bold'}).state;
+ assert.equal(s.life.cultivation.path,'mortal','这条命要确实留在凡俗路上');
  const end=s.decisions.find(d=>d.event==='system_final');assert.ok(end);assert.ok(end.month>=45*12&&end.month<50*12);assert.ok(s.life.cultivation.worldAt>end.month);assert.equal(s.life.cultivation.network.arc,null);assert.equal(s.life.cultivation.network.offer,null);validateRun(s);
 });
-test.todo('未入道的凡人经历实际坊市生活，不会练出凭空的灵光或同一日常循环（缺陷 A）',()=>{
- /* 缺陷 A（AGENTS.md §1.11）：凡人线的坊市事件同样排在 `c.queue` 里被饿死
-  * ⇒ 旁白里连「学徒 / 契书」这类实际谋生的内容都没有。
-  * ⇒ 这条断言现在**故意是红的**：修好那天把它从 `todo` 改回 `test` 就自动转绿。 */
- const s=playCultivation({seed:'万千道途-74',path:'mortal'}).state;
+test('未入道的凡人经历实际坊市生活，不会练出凭空的灵光或同一日常循环',()=>{
+ /* 缺陷 A 已修：凡人线的日常旁白池（`mortalDays`）重新走得到 ⇒ 谋生内容回来了。
+  * ⚠ 种子换成「万千道途-6」：原种子在规则十二下会**迟入道**（转散修），
+  *   走的是修仙者的旁白池，不是凡俗坊市那一池。 */
+ const s=playCultivation({seed:'万千道途-6',path:'mortal'}).state;
+ assert.equal(s.life.cultivation.path,'mortal','这条命要确实留在凡俗路上');
  const prose=s.journal.filter(e=>e.automatic&&e.kind==='life'&&e.month>=192).map(e=>e.body);assert.ok(prose.some(t=>t.includes('学徒')||t.includes('契书')));assert.ok(prose.every(t=>!t.includes('掌心灵光')&&!t.includes('护身术')));assert.equal(new Set(prose).size,prose.length);const returnIndex=prose.findIndex(t=>t.includes('师傅嫌他算料太慢'));if(returnIndex>=0)assert.ok(prose.findIndex(t=>t.includes('没被宗门收下'))>=0&&prose.findIndex(t=>t.includes('没被宗门收下'))<returnIndex);validateRun(s);
 });
 test('新存档拒绝伪造童年窗口、未知功法、负熟练和倒置邀请期限',()=>{

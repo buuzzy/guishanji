@@ -40,10 +40,6 @@
       "breakthrough_3_3",
       "breakthrough_4_3"
     ],
-    "接头卡收尾档": [
-      "dark_pursuit_joint_hidden",
-      "loose_portal_joint_pending"
-    ],
     "旧线索兜底": [
       "echo_friend_check_resume",
       "echo_friend_visit_resume",
@@ -121,6 +117,7 @@
       "parcel_missing_7"
     ],
     "规则十二备用编号": [
+      "r12_direction_3",
       "r12_direction_4",
       "r12_direction_5",
       "r12_home_leave_2",
@@ -151,7 +148,6 @@
     "突破卡变体": "`breakthrough_<境>_3` 是「第三次冲关」的变体；玩家多数在前两次就过去了 ⇒ 实测极少走到（交接文档已登记为已知）",
     "宗门评议后段": "`selection_3/4` 及其 `_result`：宗门评议的第三、四轮，需要先当上掌事",
     "人脉网络支线": "`network_bottleneck` / `network_volume`：心法卡住之后的两张支线，需要特定心法与特定进度",
-    "接头卡收尾档": "`_joint_pending` / `_joint_hidden`：接头卡的另两档；对应线的第 0 步选「留退路」/「自己拿」就是**主动退出这条线** ⇒ 线没走完 ⇒ 不发接头卡",
     "宗门复仇线": "`sect_revenge`：宗门被毁后的复仇，需要先经历宗门崩散（`sect.phase` 变 `camp`）",
     "其它": "散卡，各有各的前置（出身/选择顺序），实测 400 条命走不到"
   }

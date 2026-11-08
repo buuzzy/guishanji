@@ -1,11 +1,11 @@
 {
-  "createdAt": "2026-11-08T08:42:36.426Z",
+  "createdAt": "2026-11-08T09:25:21.608Z",
   "count": 120,
   "metrics": {
     "neverSeen": 173,
     "density10": 4,
     "density5": 3,
-    "dailyDensity10": 7,
+    "dailyDensity10": 8,
     "dailyDensity5": 6,
     "totalDensity10": 13,
     "totalDensity5": 9,
@@ -403,6 +403,38 @@
         "density10": 4,
         "density5": 3,
         "dailyDensity10": 7,
+        "dailyDensity5": 6,
+        "totalDensity10": 13,
+        "totalDensity5": 9,
+        "cooldownRepeats": 0,
+        "realmContentMin": 6,
+        "endingMissing": 0,
+        "spanMax": 102,
+        "spanMedian": 51
+      }
+    },
+    {
+      "at": "2026-11-08T09:25:21.608Z",
+      "reason": "修缺陷 A（凡人线队列饿死：packages/adventure/mundane-life.js 的凡人线不再被队列卡住）⇒ 真正走凡人线的命现在能一路走到收尾卡（45–51 岁拿到 system_final，结局 mortal_home），十年窗口里的日常决定从 7 张变成 8 张 ⇒ dailyDensity10 7 → 8。这是**有意多出来的一张**（凡人线终于走完了，不是内容变挤）⇒ 硬底线本来就是 8（scripts/audit-metrics.mjs 的 HARD_LIMIT.dailyDensity10），这里只重生成棘轮基线。其余各项持平：neverSeen 173、密度 4/3、日常 5 年 6、全卡 13/9、冷却 0、结局 0、跨度 102、节奏对齐 6。重心加成（熟手 ×1.10 / 专精 ×1.20，修行那一半只管到筑基之前）实测对指标零影响：把加成全关掉重跑，dailyDensity10 仍是 8、neverSeen 172。",
+      "from": {
+        "neverSeen": 173,
+        "density10": 4,
+        "density5": 3,
+        "dailyDensity10": 7,
+        "dailyDensity5": 6,
+        "totalDensity10": 13,
+        "totalDensity5": 9,
+        "cooldownRepeats": 0,
+        "realmContentMin": 6,
+        "endingMissing": 0,
+        "spanMax": 102,
+        "spanMedian": 51
+      },
+      "to": {
+        "neverSeen": 173,
+        "density10": 4,
+        "density5": 3,
+        "dailyDensity10": 8,
         "dailyDensity5": 6,
         "totalDensity10": 13,
         "totalDensity5": 9,

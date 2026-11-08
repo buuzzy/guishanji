@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-08T08:41:45.172Z",
+  "generatedAt": "2026-11-08T09:23:57.276Z",
   "tool": "verify-event-sequence",
   "rulesVersions": [
     12
@@ -246,7 +246,7 @@
     {
       "seed": "序列基线-1",
       "rulesVersion": 12,
-      "path": "orthodox",
+      "path": "loose",
       "ending": "mundane_family",
       "steps": [
         [
@@ -313,6 +313,51 @@
           "echo_relic_check",
           "visit",
           27
+        ],
+        [
+          "family_gate",
+          "return",
+          28
+        ],
+        [
+          "r12_home_resolve",
+          "repair",
+          29
+        ],
+        [
+          "r12_home_leave",
+          "return",
+          30
+        ],
+        [
+          "echo_relic_visit",
+          "compare",
+          30
+        ],
+        [
+          "mortal_life_1",
+          "go",
+          32
+        ],
+        [
+          "method_choice",
+          "take",
+          32
+        ],
+        [
+          "first_method",
+          "alchemy",
+          32
+        ],
+        [
+          "mortal_life_2",
+          "teach",
+          38
+        ],
+        [
+          "family_dispute",
+          "stop",
+          41
         ],
         [
           "m11_end",
@@ -435,7 +480,7 @@
         [
           "r12_home_leave",
           "return",
-          30
+          29
         ],
         [
           "dark_sacrifice_0",
@@ -450,7 +495,7 @@
         [
           "dark_sacrifice_2",
           "selfish",
-          34
+          33
         ],
         [
           "dark_sacrifice_joint_hidden",
@@ -887,6 +932,31 @@
           32
         ],
         [
+          "method_choice",
+          "take",
+          32
+        ],
+        [
+          "first_method",
+          "array",
+          32
+        ],
+        [
+          "family_support",
+          "peace",
+          35
+        ],
+        [
+          "mortal_life_2",
+          "teach",
+          38
+        ],
+        [
+          "family_dispute",
+          "stop",
+          40
+        ],
+        [
           "m11_end",
           "settle",
           54
@@ -1099,7 +1169,7 @@
     {
       "seed": "序列基线-7",
       "rulesVersion": 12,
-      "path": "orthodox",
+      "path": "loose",
       "ending": "old_age",
       "steps": [
         [
@@ -1166,6 +1236,46 @@
           "echo_teacher_check",
           "visit",
           27
+        ],
+        [
+          "family_gate",
+          "return",
+          28
+        ],
+        [
+          "r12_home_resolve",
+          "repair",
+          29
+        ],
+        [
+          "r12_home_leave",
+          "return",
+          30
+        ],
+        [
+          "echo_teacher_visit",
+          "notes",
+          30
+        ],
+        [
+          "mortal_life_1",
+          "go",
+          32
+        ],
+        [
+          "method_choice",
+          "take",
+          32
+        ],
+        [
+          "first_method",
+          "alchemy",
+          32
+        ],
+        [
+          "mortal_life_2",
+          "teach",
+          38
         ]
       ]
     },
@@ -1541,8 +1651,8 @@
     {
       "seed": "序列基线-11",
       "rulesVersion": 12,
-      "path": "loose",
-      "ending": "loose_home",
+      "path": "orthodox",
+      "ending": "guardian",
       "steps": [
         [
           "child_noble_school",
@@ -1685,159 +1795,129 @@
           37
         ],
         [
-          "network_mentor",
-          "accept",
+          "breakthrough_2_0",
+          "service",
           37
         ],
         [
-          "network_mentor_result",
-          "escape",
-          40
-        ],
-        [
-          "loose_relic_0",
-          "care",
-          40
-        ],
-        [
-          "breakthrough_2_0",
-          "service",
-          42
-        ],
-        [
-          "loose_relic_1",
-          "care",
-          45
-        ],
-        [
-          "loose_relic_2",
-          "care",
-          47
-        ],
-        [
-          "loose_relic_joint_settled",
-          "open",
-          47
+          "family_support",
+          "peace",
+          43
         ],
         [
           "road_turn",
           "keep",
-          51
+          46
         ],
         [
           "selection_2",
           "sword",
-          54
+          49
         ],
         [
           "selection_2_result",
           "fair",
-          56
+          51
         ],
         [
           "advance_material_3_0_0",
           "learn",
-          68
-        ],
-        [
-          "loose_portal_0",
-          "care",
-          74
-        ],
-        [
-          "loose_portal_1",
-          "care",
-          77
-        ],
-        [
-          "loose_portal_2",
-          "care",
-          78
-        ],
-        [
-          "loose_portal_joint_settled",
-          "open",
-          81
+          60
         ],
         [
           "advance_material_3_0_1",
           "exchange",
-          81
+          66
         ],
         [
           "advance_material_3_0_2",
           "commission",
-          89
+          74
         ],
         [
           "breakthrough_3_0",
           "try",
-          97
+          82
+        ],
+        [
+          "advance_material_3_1_1",
+          "exchange",
+          93
+        ],
+        [
+          "advance_material_3_1_2",
+          "commission",
+          101
+        ],
+        [
+          "breakthrough_3_1",
+          "try",
+          109
+        ],
+        [
+          "advance_material_3_2_1",
+          "exchange",
+          120
+        ],
+        [
+          "advance_material_3_2_2",
+          "commission",
+          128
+        ],
+        [
+          "breakthrough_3_2",
+          "try",
+          136
         ],
         [
           "years_practice_0",
           "retreat",
-          110
+          149
         ],
         [
           "advance_material_4_0_0",
           "learn",
-          140
+          179
         ],
         [
           "advance_material_4_0_1",
           "exchange",
-          150
+          189
         ],
         [
           "advance_material_4_0_2",
           "commission",
-          165
+          204
         ],
         [
           "breakthrough_4_0",
           "try",
-          180
-        ],
-        [
-          "advance_material_4_1_1",
-          "exchange",
-          201
-        ],
-        [
-          "advance_material_4_1_2",
-          "commission",
-          216
-        ],
-        [
-          "breakthrough_4_1",
-          "try",
-          231
+          219
         ],
         [
           "tribulation_prepare",
           "decline",
-          251
+          239
         ],
         [
           "years_practice_1",
           "retreat",
-          253
+          242
         ],
         [
           "years_practice_2",
           "retreat",
-          291
+          281
         ],
         [
           "years_practice_3",
           "retreat",
-          329
+          319
         ],
         [
           "system_final",
           "guard",
-          366
+          357
         ]
       ]
     }

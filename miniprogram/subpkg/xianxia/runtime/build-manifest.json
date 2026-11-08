@@ -3,8 +3,8 @@
   "source": {
     "repo": "buuzzy/guishanji",
     "branch": "main",
-    "commit": "df74efd7b5c8fcfc6ae98b2cac8e26ed01fbc29e",
-    "tree": "3137bbbffbe964d5af6c3f0ad2c387eeada24bda",
+    "commit": "4330db4157e5ae7141da425ada3128cb8b40afc0",
+    "tree": "26c98ceecf47f7401944c68999e1f16f14d1ab12",
     "note": "构建那一刻本仓库的 HEAD 身份（快照信息，不参与逐字节复现校验）",
     "paths": [
       "packages/adventure/",
@@ -350,8 +350,8 @@
     },
     {
       "id": "packages/adventure/cultivation.js",
-      "bytes": 67185,
-      "sha256": "54061878dc36c4e9543166d86f152ec3776d52e42fe9ad426266a818b9cce691"
+      "bytes": 71974,
+      "sha256": "1402e8562241af2dbc2362a943e0601bde02d288e445dd41727f7c46f1545460"
     },
     {
       "id": "packages/adventure/engine.js",
@@ -375,13 +375,13 @@
     },
     {
       "id": "packages/adventure/mundane-life.js",
-      "bytes": 35939,
-      "sha256": "460c5e230e6db88fdbc4c355a438f855ef6c8adc6adeee0e66d5773856085b2d"
+      "bytes": 37115,
+      "sha256": "8052206f5e8afe2589c6e68457369496dc3e318d57670080f63f81a31e07dc2f"
     },
     {
       "id": "packages/adventure/progression.js",
-      "bytes": 30206,
-      "sha256": "c4cfeb1837749a227572a0b5549effbe6b7d00b9af9b0cb9447d29f8fc520f4d"
+      "bytes": 32924,
+      "sha256": "f3712b38eaa048a3c8491e7a33b032ea98ea6054beb9d2804005bed8aefb6e40"
     },
     {
       "id": "packages/adventure/realm.js",
@@ -421,8 +421,8 @@
   ],
   "output": {
     "file": "engine.js",
-    "bytes": 1079814,
-    "sha256": "673b157e05fe2631efaaaeeb4925a532e3a233a5075e0e6e015ec0b4fd646fe2"
+    "bytes": 1081122,
+    "sha256": "58f9168ff7c4c976776eef2dd6002873a7f8286838366e38d2bbb3e197302bc2"
   },
   "styleOutput": {
     "file": "pixel-style.js",

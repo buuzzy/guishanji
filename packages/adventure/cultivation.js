@@ -149,6 +149,86 @@ function revised_cultivationActivity(s) {
  if(s.month<c.punishmentUntil)return c.punishmentKind==='confinement'?'封住法力，在思过洞禁闭':'在山门服役，偿还损失';
  return ACTIVITIES[c.activity].name+' · '+s.player.home;
 }
+/*
+ * 重心档位（2026-11-08 · 阶段 2「重心有后果」）
+ * ==========================================
+ *
+ * ## 为什么要有这一档
+ * ------------------
+ * 玩家可以随时改重心（`setActivity`），而**改到哪、待多久都没有后果**：
+ *   · 进度系数本来就在各项之间差着（调养 0.35 / 练剑 1.2，三倍多），
+ *     但那个数玩家**看不见**；
+ *   · `c.activityMonths`（每项重心累计待了几个月）只被 `packages/adventure/story-network.js`
+ *     读了一次，而且读出来的三个变量**一个都没用上** ⇒ 重心历史等于没记。
+ * ⇒ 所以要做的有两件事：**① 看得见**（面板写清收益与档位）、**② 待久了有加成**。
+ *
+ * ## 档位怎么算
+ * ------------
+ * 用**累计月数**（`c.activityMonths[重心]`），不用「连续月数」：
+ *   · 累计 ⇒ 换来换去的人每一项都攒不到 12 个月 ⇒ 永远拿不到加成 ⇒ 换是要付代价的；
+ *   · 连续 ⇒ 需要新增状态字段（存档格式、校验、小程序端都要跟着改），不值当。
+ *
+ * | 档位 | 累计月数 | 修行积累 | 技艺成长 |
+ * | --- | --- | --- | --- |
+ * | 生疏 | 0–11 | ×1.00 | ×1.00 |
+ * | 熟手 | 12–35 | ×1.10 | ×1.15 |
+ * | 专精 | ≥36 | ×1.20 | ×1.30 |
+ *
+ * ## 「修行积累」那一列**只管到筑基之前**
+ * --------------------------------------
+ * 境界 0/1（凡身与炼气）给修行加成；**境界 2（筑基）及以上一律不给**。
+ * 「技艺成长」那一列全程都给。
+ *
+ * 为什么这么切：
+ *   · **筑基之前**，修行进度是你走多快的**唯一**变量 ⇒ 重心的取舍看得见、
+ *     也算数 —— 这正是这一轮要做的「重心有后果」。
+ *   · **筑基之后**，瓶颈换成了**主药与完整心法**
+ *     （`content/realm-thresholds.js` 的 `MATERIAL_TIERS` / `METHOD_MONTHS`），
+ *     每天怎么安排时间不再是主要变量 ⇒ 剩下的只有技艺还在长。
+ *   · ⚠ 早期版本（×1.25 **全程**）把金丹与元婴的踏入年龄推早了 8–14 岁，
+ *     打破了 `content/cadence-table.js` 里那几扇**拍板到年龄**的窗口
+ *     ⇒ `cadence` 门禁报红（金丹 87 岁 < 95、元婴 186 岁 < 200）。
+ *     那几个数不是随手写的，改之前先想清楚后果。
+ *
+ * ⚠ **纯规则层改动**（进度与技艺的涨速变了）⇒
+ *   冲关时机与整条决策序列会变 ⇒ `eventseq` 基线要重算。
+ */
+export const FOCUS_TIERS = [
+  {tier:'fresh', label:'生疏', min:0, mult:1, skillMult:1},
+  {tier:'familiar', label:'熟手', min:12, mult:1.1, skillMult:1.15},
+  {tier:'special', label:'专精', min:36, mult:1.2, skillMult:1.3},
+];
+
+/** 某个重心累计待了 N 个月 ⇒ 落在哪一档（档位本身与境界无关）。 */
+export function focusTierOf(months) {
+  const n = Number.isSafeInteger(months) && months > 0 ? months : 0;
+  let hit = FOCUS_TIERS[0];
+  for (const t of FOCUS_TIERS) if (n >= t.min) hit = t;
+  return {...hit, months:n};
+}
+
+/**
+ * 这一档在**修行进度**上实际给多少倍率。
+ *
+ * ⚠ 筑基之后（境界 ≥ 2）一律给 1.0 —— 理由见文件上方 FOCUS_TIERS 的说明。
+ *   界面**不许自己判境界**：要显示什么，读 `focusTier12(s)` 的返回值。
+ *
+ * @param {object} s 当前人生状态
+ * @param {object} tier 档位（`focusTierOf` 的返回）
+ * @returns {number} 修行进度倍率
+ */
+export function focusProgressMult(s, tier) {
+  const realm = s && s.player && Number.isFinite(s.player.realm) ? s.player.realm : 0;
+  return realm <= 1 ? tier.mult : 1;
+}
+
+/** 当前重心的档位（规则层算，界面只读）。 */
+export function focusTier12(s) {
+  const c = s.life && s.life.cultivation;
+  const tier = focusTierOf(c ? ((c.activityMonths && c.activityMonths[c.activity]) || 0) : 0);
+  return {...tier, mult:focusProgressMult(s, tier)};
+}
+
 function revised_activityOptions(s) {
  const c=s.life.cultivation,context=cultivationContext(s);
  return Object.entries(ACTIVITIES).map(([id,a])=>{
@@ -162,7 +242,9 @@ function revised_activityOptions(s) {
   else if(['travel','retreat','valley','cavern','outer','work'].includes(context))reason='先结束或离开当前经历';
   else if(s.month<c.punishmentUntil&&(c.punishmentKind==='confinement'||id!=='work'&&id!=='rest'))reason=c.punishmentKind==='confinement'?'思过洞禁闭未满，不能自行安排修行':'服役期间只能做工或调养';
   else if(c.rank==='杂役'&&['alchemy','array'].includes(id)&&!s.flags.learningPermit&&canCultivate(s))reason='需先获得授业许可；可以读经或做工';
-  return{id,...a,enabled:!reason,reason};
+  /* 重心档位：面板要看得见「这一项我练了多久、现在几档、修行快多少」。 */
+  const tier=focusTierOf((c.activityMonths&&c.activityMonths[id])||0);
+  return{id,...a,enabled:!reason,reason,months:tier.months,tier:tier.label,tierKey:tier.tier,mult:focusProgressMult(s,tier),skillMult:tier.skillMult};
  });
 }
 function revised_changeActivity(s,id) {
@@ -519,9 +601,15 @@ function revised_cultivationMonth(s,cb){
  if(age(s)>=16){
   const activity=s.month<c.punishmentUntil?'work':c.activity,a=ACTIVITIES[activity],restricted=['travel','valley','cavern','outer','work'].includes(context)||c.detained||c.inquiry||s.month<c.punishmentUntil&&c.punishmentKind==='confinement';
   if(!restricted){
-    const before=c.progress;c.progress=canCultivate(s)?clamp(c.progress+(a.progress||1)*ROOTS[s.player.root].rate*(s.birth.era==='ebb'?.8:1)*networkRate(s)*practiceFactor12(s),0,1000):0;
+    /* 重心档位加成（见文件上方 FOCUS_TIERS 的说明）：同一重心待得越久，
+    * 修行积累与技艺成长越快 ⇒ 换来换去的人拿不到加成。
+    * ⚠ 修行那一半**只在筑基之前**给（`focusProgressMult`）——
+    *   筑基之后瓶颈是主药与完整心法，再加修行会把金丹/元婴推得太早。 */
+   const tier=focusTierOf((c.activityMonths&&c.activityMonths[activity])||0);
+   const focus={mult:focusProgressMult(s,tier),skillMult:tier.skillMult};
+   const before=c.progress;c.progress=canCultivate(s)?clamp(c.progress+(a.progress||1)*ROOTS[s.player.root].rate*(s.birth.era==='ebb'?.8:1)*networkRate(s)*practiceFactor12(s)*focus.mult,0,1000):0;
    c.activityMonths[activity]=(c.activityMonths[activity]||0)+1;const gains=c.activityGains[activity]||={};gains.progress=(gains.progress||0)+c.progress-before;
-   if(s.month%6===0){const beforeSkills=s.player.skills[a.skill],prior=Object.fromEntries(['insight','courage','empathy','health','mind'].map(k=>[k,s.player[k]]));cb.apply({skills:a.trainSkill===false?{}:{[a.skill]:.5},stats:Object.fromEntries(['insight','courage','empathy','health','mind'].filter(k=>a[k]).map(k=>[k,a[k]]))});
+   if(s.month%6===0){const beforeSkills=s.player.skills[a.skill],prior=Object.fromEntries(['insight','courage','empathy','health','mind'].map(k=>[k,s.player[k]]));cb.apply({skills:a.trainSkill===false?{}:{[a.skill]:.5*focus.skillMult},stats:Object.fromEntries(['insight','courage','empathy','health','mind'].filter(k=>a[k]).map(k=>[k,a[k]]))});
     {const gains=c.activityGains[activity];gains[a.skill]=(gains[a.skill]||0)+s.player.skills[a.skill]-beforeSkills;for(const k of Object.keys(prior))if(a[k])gains[k]=(gains[k]||0)+s.player[k]-prior[k];}
     /*
      * 体魄 —— **出力的事**才长（练剑、做工、丹术），静坐读书不长。

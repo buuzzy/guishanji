@@ -72,11 +72,9 @@ test('矿役换得的丹药有实际用途，配药时消耗，不能留下无�
  const s=pending('thin_root_return');s.inventory.push('thin_root_pill');const o=options(s).find(o=>o.id==='learn');assert.deepEqual(o.cost.items,['thin_root_pill']);choose(s,'learn');assert.ok(!s.inventory.includes('thin_root_pill'));advance(s,12);assert.match(s.result.body,/丹药已经用尽/);validateRun(s);
 });
 
-test.todo('新药库人物同局称呼稳定，不同人生不共用固定姓名（缺陷 E：魔门人物不在随机名册里）',()=>{
- /* 缺陷 E（AGENTS.md §1.11）：随机名册 `EXTRA_NAMES`（`packages/adventure/progression.js`）
-  * 里没有「顾魇」「阿栾」这两个药库人物 ⇒ 魔门线上他们保持固定名字，
-  * 与其他所有人都不一样。
-  * ⇒ 这条断言现在**故意是红的**：修好那天把它从 `todo` 改回 `test` 就自动转绿。 */
+test('新药库人物同局称呼稳定，不同人生不共用固定姓名',()=>{
+ /* 缺陷 E 已修（2026-11-08 · `packages/adventure/progression.js` 的 `EXTRA_NAMES`
+  * 补上了「顾魇」「阿栾」）⇒ 魔门线上这两个人物也跟着换名。 */
  const a=createRun({seed:'药库人物甲'}),b=createRun({seed:'药库人物乙'});for(const alias of ['顾魇','阿栾']){const name=c(a).progression.names[alias];assert.ok(name&&name!==alias);assert.notEqual(name,c(b).progression.names[alias]);}
 });
 

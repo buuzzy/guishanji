@@ -110,7 +110,7 @@ const CHANGED_REASON = {
   'scripts/test-xianxia-storage.mjs': '不再依赖 1in8b 的 frozen-baseline，改用本仓库自己的哈希校验；2026-11-08 清旧档：新增第 ⑪ 节（旧版本存档一律拒收且清干净，含三条反向验证）',
   'scripts/test-xianxia-style.mjs': '官方对照源改读 reference/official/（本仓库内的锁定副本）+ 新的 app.wxss',
   'miniprogram/subpkg/xianxia/bridge/page-model.js': 'S5 角色域：登记卡的「预期寿元」改读规则层算好的实际寿元；S8 呈现域：顶栏加「还能活多久」，登记卡加「下一境死线」（整句在 JS 侧拼好，WXML 不支持字符串拼接）',
-  'miniprogram/subpkg/xianxia/bridge/view-model.js': 'S5 角色域：修行本事面板加「体魄」（只增不减的能力），体质行补「力竭」提示；2026-11-08 T4 雷达换轴：五轴改成「悟性/胆识/仁心/心境/体魄」（体力是资源，退回状态条）',
+  'miniprogram/subpkg/xianxia/bridge/view-model.js': 'S5 角色域：修行本事面板加「体魄」（只增不减的能力），体质行补「力竭」提示；2026-11-08 T4 雷达换轴：五轴改成「悟性/胆识/仁心/心境/体魄」（体力是资源，退回状态条）；2026-11-08 阶段 2「重心有后果 / 代价看得见」：决策卡的 meta 行加「要花掉 N 年/N 个月」，重心那一行加「档位（练了多久 · 修行快多少 · 技艺快多少）」——数字一律读规则层给的 activityOptions，界面自己不算',
   'miniprogram/subpkg/xianxia/art/radar.js': '2026-11-08 T4 雷达换轴：五轴改成「悟性/胆识/仁心/心境/体魄」（体力是资源，退回状态条）',
   'miniprogram/subpkg/xianxia/components/radar/index.js': '2026-11-08 T4 雷达换轴：组件注释同步（轴的来源与顺序由桥接层给）',
   'miniprogram/subpkg/xianxia/pages/life/life.wxml': 'S5 角色域：修行本事面板加「体魄」一行；S8 呈现域：顶栏常驻显示「还能活多久」（用官方已有的 .age-yr .t 类，不新造视觉类）',
@@ -247,6 +247,9 @@ const ADDED = [
   /* 2026-11-08：`rng.js` —— 确定性随机数（原先在面板的 batch.js 里）。
    * `audit-reach.mjs` 的「随机探索」策略用它。 */
   'scripts/lib/rng.js',
+  /* 2026-11-08：阶段 2「重心有后果」—— 重心档位的规则层用例（生疏/熟手/专精三档、
+   * 修行加成只管到筑基之前、面板读的就是规则层算的那份）。 */
+  'tests/focus.test.mjs',
 ];
 
 

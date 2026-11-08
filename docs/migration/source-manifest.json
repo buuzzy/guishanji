@@ -1170,7 +1170,7 @@
         "sourceSha256": "66026f8b72b80fc179a98f3f31fe2c736ff0d8c96a74e4c8ad26cde58edd5875",
         "path": "miniprogram/subpkg/xianxia/runtime/build-manifest.json",
         "currentBytes": 14100,
-        "currentSha256": "ce11457e39aa26e7449b2b6283dcdcdee5171d409858629c76f3d60ad820d381",
+        "currentSha256": "4893a4305e344a8accfd8d5c675c9a39cdbbe45388cd8705cb89da97aa043fb8",
         "reason": "生成物：来源改为本仓库源码，并新增 upstreamOrigin 段"
       },
       {
@@ -1180,8 +1180,8 @@
         "sourceBytes": 1738614,
         "sourceSha256": "ba0720f2c21c1babe39c605739e90243d7de00db5f920bd5078704d6952fed3f",
         "path": "miniprogram/subpkg/xianxia/runtime/engine.js",
-        "currentBytes": 1079814,
-        "currentSha256": "673b157e05fe2631efaaaeeb4925a532e3a233a5075e0e6e015ec0b4fd646fe2",
+        "currentBytes": 1081122,
+        "currentSha256": "58f9168ff7c4c976776eef2dd6002873a7f8286838366e38d2bbb3e197302bc2",
         "reason": "生成物：由本仓库源码重新构建（除文件头注释外与迁移进来的那份逐字节一致，见 reference/migrated-runtime/）"
       },
       {
@@ -1301,8 +1301,8 @@
         "sourceBytes": 40479,
         "sourceSha256": "e1c5c6ce21837c8bb0c518a23eab2362b33c8abc70fe132d77440c71b6edcaca",
         "path": "miniprogram/subpkg/xianxia/bridge/view-model.js",
-        "currentBytes": 43047,
-        "currentSha256": "55b51a5addb8255d48b2fafe48fc7bff2560d5c0161f96beda6cb5ac08a51b23",
+        "currentBytes": 44971,
+        "currentSha256": "e91c0e44388bf38c00424808756a83bf422008984960691bfc24b0c530d5fc8f",
         "reason": "S5 角色域：修行本事面板加「体魄」（只增不减的能力），体质行补「力竭」提示"
       },
       {
@@ -1511,8 +1511,8 @@
       },
       {
         "path": "scripts/gen-source-manifest.mjs",
-        "bytes": 31314,
-        "sha256": "a3f3f7ecdc5b717747ce4a6d95112f308e3ba05510eaf6635c0816cc725637dc"
+        "bytes": 31827,
+        "sha256": "cac817a771c0ec4c01bd9731cd9ae36a3f269d0ddba9599a3954b3d0f73bb61f"
       },
       {
         "path": "scripts/test-xianxia-standalone.mjs",
@@ -1531,8 +1531,8 @@
       },
       {
         "path": "AGENTS.md",
-        "bytes": 31686,
-        "sha256": "d736e9008658d5c6f2112d2d5e58e7c806643b35dae0458e6128eb1da2c0313a"
+        "bytes": 37372,
+        "sha256": "e41fadcd0d4edc74a5232aa43878a8ed298fd8883d846ea7d7ec6d348991c888"
       },
       {
         "path": "README.md",
@@ -1706,8 +1706,8 @@
       },
       {
         "path": "tests/fixtures/metrics-baseline.json",
-        "bytes": 16374,
-        "sha256": "1f23a35c3a183653b4b000cebf8f5589e5c53da3f04c2b4d6136cac47a924d19"
+        "bytes": 17976,
+        "sha256": "2b824e993c57362d87eb16ffe63bd6c8b6196ccd44a3f5047c945dc46034089b"
       },
       {
         "path": "tests/radar.test.mjs",
@@ -1926,13 +1926,13 @@
       },
       {
         "path": "tests/fixtures/reach-gaps.json",
-        "bytes": 5549,
-        "sha256": "a1300063b4105050595173f931070e073409bfe171de88d1f96b6930de4f7806"
+        "bytes": 5255,
+        "sha256": "6cf57de85f2714d5dd4f188ca0fc3c2b76aa70f1b69d1a6b35d931330e139585"
       },
       {
         "path": "docs/chain-reach.md",
-        "bytes": 11305,
-        "sha256": "af8ba14e1c9fe09adbe8cb089b4f16ce6b26bdd71c568e0ca97a82b35bc12108"
+        "bytes": 12011,
+        "sha256": "6ea59c9f97705ed16cb20581beefd893c86dcd9ca4fa281fb7d806e74efb9a93"
       },
       {
         "path": "content/cultivation-scenes.js",
@@ -1973,6 +1973,11 @@
         "path": "docs/refactor-origin-2026-11-08.md",
         "bytes": 7907,
         "sha256": "182d77deb46ca1b22417f4d21d5d0ec28a8c3cd19def271a9c285f3c3e3b0645"
+      },
+      {
+        "path": "tests/focus.test.mjs",
+        "bytes": 6833,
+        "sha256": "3520886d29201af3ed6f34e365fe76ff7f2f2907c48c3775f0af3358fdd92191"
       }
     ]
   }

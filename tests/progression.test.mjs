@@ -85,10 +85,9 @@ test('战后扎营有重建邀请，交接之后成为协助者',()=>{
  assert.equal(s.pending?.event||probe(s).arrived,'sect_rebuild','接头卡答完才有重建邀请');
  s.pending={event:'sect_rebuild',month:s.month};s.journey=null;choose(s,'delegate');resolve(s);assert.equal(cc(s).progression.sect.phase,'rebuilt');assert.equal(cc(s).progression.sect.role,'supporter');assert.equal(cc(s).progression.sect.treasury,12);
 });
-test.todo('扎营之后画面不再停在战场（缺陷 F：接头卡 id 前缀撞车）',()=>{
- /* 缺陷 F（AGENTS.md §1.11）：`sceneFor` 认画面靠「事件 id 以 `sect_return_` 开头」
-  * ⇒ 接头卡 `sect_return_joint_settled` 也被判成战场，人已经扎营、屏幕上还是战场。
-  * ⇒ 这条断言现在**故意是红的**：修好那天把它从 `todo` 改回 `test` 就自动转绿。 */
+test('扎营之后画面不再停在战场',()=>{
+ /* 缺陷 F 已修（2026-11-08 · `packages/adventure/progression.js` 的 `sceneFor`
+  * 用接头卡清单把 `sect_return_joint_*` 排除在战场之外）。 */
  const s=pending('sect_return_2');choose(s,'care');resolve(s);assert.equal(cc(s).progression.sect.phase,'camp');assert.equal(sceneFor(s),'camp');
 });
 test('多年行动整程稳定播放，逐月推进并在战事上暂停，逃离不发材料',()=>{

@@ -11,7 +11,7 @@
       <view class="agebox">
         <view class="age-num">{{top.age}}<text class="wx-small">岁</text></view>
         <view class="age-yr">
-          <text class="t">{{top.year}} 年 · {{top.name}} · 1月≈{{top.monthSec}}秒</text>
+          <text class="t">{{top.year}} 年 · {{top.name}} · 1年≈{{top.yearSec}}秒</text>
           <!-- ⚠ 「还能活多久」常驻显示：整句在 JS 侧拼好（WXML 不支持字符串拼接）。
                ⚠ 用官方已有的 .age-yr .t 类，不新造视觉类。 -->
           <text class="t" wx:if="{{top.lifespanText}}">{{top.lifespanText}}</text>

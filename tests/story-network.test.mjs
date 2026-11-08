@@ -52,8 +52,33 @@ test('凡人家庭没有索取修炼资源的选项，作证也不会被挂赔�
 test('同一生的自动日常不重复，不同人生的童年与邀请组合不同',()=>{
  const patterns=new Set();for(let i=0;i<80;i++){const s=playCultivation({seed:'万千道途-'+i,path:['orthodox','loose','demonic','beast'][i%4],method:i%3===0?'ember':'clear',childhood:i%2?'bold':'care'}).state;const prose=s.journal.filter(e=>e.automatic&&e.kind==='life').map(e=>e.body);assert.equal(new Set(prose).size,prose.length);patterns.add(s.decisions.filter(d=>d.event.startsWith('child_')||d.event.startsWith('network_')).map(d=>d.event+'/'+d.choice).join('|'));validateRun(s);}assert.ok(patterns.size>30);
 });
-test('新版时间节奏不再一秒过一年，重要任务不会随着高境界极速略过',()=>{
- const s=createRun({seed:'慢读节奏'});assert.equal(monthSeconds(s)*12,3);const childhood=find('child_school');assert.equal(monthSeconds(childhood)*12,6);const duty=find('network_ward');assert.equal(monthSeconds(duty)*12,8);choose(duty,'accept');resolve(duty);assert.equal(monthSeconds(duty)*12,8);
+test('时间节奏按境界基础寿元分档：一年不再只值几秒，重要任务不会随着高境界极速略过',()=>{
+  /* 2026-11-08：年速改成「1 年 = K ÷ 境界基础寿元」（K=5400）。
+   * ⇒ 这条断言不再钉死三个魔法数，改钉**规则本身**：
+   *   ① 童年（0–6 岁）固定 8 秒/年；
+   *   ② 一年 = K ÷ 境界基础寿元（凡身 88 ⇒ 61.4 秒；炼气 120 ⇒ 45 秒）；
+   *   ③ **境界越高，一年过得越快**（秒数更少）—— 与官方同构：
+   *      活得久的人，一生总时长大致恒定。 */
+ const K=5400,LIFESPAN={0:88,1:120,2:210,3:350,4:560};
+ /* ⚠ 期望值在这里**把规则重写一遍**（不 import 实现里的常量）——
+    改了实现而没改这条 ⇒ 门禁报红；反之改了这条而没改实现 ⇒ 也报红。 */
+ const yearSec=x=>Math.round(monthSeconds(x)*12*100)/100;
+ const expect=s=>{
+  const a=(s.birth?.startAge??16)+Math.floor(s.month/12);
+  if(a<6)return 8;
+  const cap=LIFESPAN[s.player.realm]??88;
+  let sec=Math.min(120,Math.max(4,K/cap));
+  if(a>=95)sec=Math.min(sec,3);
+  return Math.round(sec*100)/100;
+ };
+ const at=(base,realm)=>{const t=cloneRun(base);t.player.realm=realm;return t;};
+ const s=createRun({seed:'慢读节奏'});assert.equal(yearSec(s),8,'童年固定 8 秒/年');
+ const childhood=find('child_school');assert.equal(yearSec(childhood),expect(childhood),'童年之后按境界基础寿元那档');
+ const duty=find('network_ward');assert.equal(yearSec(duty),expect(duty),'宗门差事那一年按境界基础寿元那档');
+ choose(duty,'accept');resolve(duty);assert.equal(yearSec(duty),expect(duty),'境界没变 ⇒ 速度也不变');
+ for(const [realm,sec] of [[1,45],[2,25.71],[3,15.43],[4,9.64]])assert.equal(yearSec(at(duty,realm)),Math.round(sec*100)/100,`境界 ${realm} 一年 ${sec} 秒`);
+ assert.ok(yearSec(at(duty,4))<yearSec(at(duty,1)),'境界越高，一年过得越快（官方同构：一生总时长大致恒定）');
+ const old=at(duty,4);old.month=95*12;assert.equal(yearSec(old),3,'95 岁以后一年封顶 3 秒');
 });
 test('凡人不必等待寿命以外的世界变故，安顿余生的收尾仍可自然抵达',()=>{
  const s=playCultivation({seed:'万千道途-109',path:'mortal',family:'sever',childhood:'bold'}).state;

@@ -1190,7 +1190,7 @@
         "sourceSha256": "66026f8b72b80fc179a98f3f31fe2c736ff0d8c96a74e4c8ad26cde58edd5875",
         "path": "miniprogram/subpkg/xianxia/runtime/build-manifest.json",
         "currentBytes": 15643,
-        "currentSha256": "5720e5b9cd22fde9bf511a9cf867a85c25574131949fa754fbd90b54cef455fb",
+        "currentSha256": "2512ca74ae06ae4bcea919d181de6093272f3225deac5b8fe44ac15aec0d34fd",
         "reason": "生成物：来源改为本仓库源码，并新增 upstreamOrigin 段"
       },
       {
@@ -1200,8 +1200,8 @@
         "sourceBytes": 1738614,
         "sourceSha256": "ba0720f2c21c1babe39c605739e90243d7de00db5f920bd5078704d6952fed3f",
         "path": "miniprogram/subpkg/xianxia/runtime/engine.js",
-        "currentBytes": 1479729,
-        "currentSha256": "dd65c1104549bce1c8a88ce40413a40ea0db0066d399fd72a33d5c6550befa67",
+        "currentBytes": 1480045,
+        "currentSha256": "cff155413c53cc8d921edaf3b784acec94e196da3aa24c996983553bb73d3e03",
         "reason": "生成物：由本仓库源码重新构建（除文件头注释外与迁移进来的那份逐字节一致，见 reference/migrated-runtime/）"
       },
       {
@@ -1310,8 +1310,8 @@
         "sourceBytes": 15560,
         "sourceSha256": "6066d06f5368a0de077cf8afbe5c8c46480125eb2d4d4fe249283fc7643109f4",
         "path": "miniprogram/subpkg/xianxia/bridge/page-model.js",
-        "currentBytes": 18163,
-        "currentSha256": "769bee00c082dd53858288960d9212dd798aa9ae0621857c5e2cbc7c927ebee2",
+        "currentBytes": 18390,
+        "currentSha256": "6d4299d28f13e7e1bef6077e1cfe220a7fce4c103a7b028283b772fa16b81110",
         "reason": "S5 角色域：登记卡的「预期寿元」改读规则层算好的实际寿元（state.life.cultivation.lifespanLimit），不再读境界表的基础数字"
       },
       {
@@ -1332,8 +1332,8 @@
         "sourceBytes": 27403,
         "sourceSha256": "9cf05497ca24b2e7aba1ad64c81c267ddc198202935f4c8c796df12b4856b4b6",
         "path": "miniprogram/subpkg/xianxia/pages/life/life.wxml",
-        "currentBytes": 28382,
-        "currentSha256": "127c6c3d205700157a1884582b0fca248ddc424abd6e57b79f96910824676d5d",
+        "currentBytes": 28381,
+        "currentSha256": "08f6372c71819ac162188574628dbb47ff3c61a7b824dcd08d84f90ef11943a7",
         "reason": "S5 角色域：修行本事面板加「体魄」一行"
       },
       {
@@ -1529,8 +1529,8 @@
       },
       {
         "path": "AGENTS.md",
-        "bytes": 27410,
-        "sha256": "15d53016d71b3e9f79d8c6d0703d7b17e939dd12f76192f6528e5deeb9ed3bd6"
+        "bytes": 28598,
+        "sha256": "e6665ea618c3e36907ed39c1a922a4e99abd5eeeba4a33aa6d08b7daa7ada5f7"
       },
       {
         "path": "README.md",

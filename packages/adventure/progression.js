@@ -4,6 +4,7 @@ import {NOVEL_NAMES} from '../../content/novel-names.js';
 import {ROOTS,GEOGRAPHY} from '../../content/cultivation-world.js';
 import {mundaneChoice} from './mundane-life.js';
 import {progressNeeded,METHOD_MONTHS} from '../../content/realm-thresholds.js';
+import {REALMS} from '../../content/realms.js';
 const active=s=>s.life?.cultivation?.rulesVersion>=8;
 const c=s=>s.life.cultivation,p=s=>c(s).progression;
 const age=s=>Math.floor(s.month/12)+(s.birth.startAge||0);
@@ -150,7 +151,58 @@ export function progressionAction(s,event,choiceId,success,cb){
  for(const contact of cc.network.contacts||[]){contact.name=prose(contact.name,s);contact.description=prose(contact.description,s);}
 }
 export function longAction(s){if(!active(s))return null;const j=s.journey;if(!j||j.open||!j.resolution||j.to-j.from<(c(s).rulesVersion===11&&j.event?.startsWith('m11_')?24:60))return null;return {from:j.from,to:j.to,months:j.to-j.from,event:j.event};}
-export function playbackSeconds(s){const j=longAction(s);return j?Math.max(10,Math.min(18,j.months/24))/j.months:(age(s)<6?3:age(s)<16?6:8)/12;}
+/* ── 播放速度（2026-11-08 · 「一年太短」那件事的正解）──────────────────────
+ *
+ * ## 为什么改
+ *
+ * 实测（60 条命逐月采样）：一条命 11.8 分钟走完，而**「一年」只值 8 秒**
+ * ⇒ 一年里塞不下旁白 ⇒ 叙述 : 决策 = 1.29 : 1（官方 6.5 : 1）
+ * ⇒ 玩家读到的全是「一句里塞三件事」。
+ *
+ * ⚠ **根因不是「卡太多」**（每命决策卡 45 张，官方 56 张，同一量级），
+ *   是**一年太短**。所以改的是**时间刻度**，不是内容。
+ *
+ * ## 新公式
+ *
+ *   1 年 = clamp(K ÷ 境界基础寿元, floor, 120) 秒
+ *
+ * 寿元越长 ⇒ 一年过得**越快**（秒数更少）⇒ 一生总时长大致恒定
+ * ⇒ 与官方同构（官方：1 年 = 3600 ÷ 预期寿命 ⇒ 一生 ≈ 61 分钟恒定）。
+ *   我们把 K 从 3600 提到 5400 ⇒ 一生 ≈ 90 分钟；再被童年、95 岁封顶与
+ *   长途行动三条例外压到 **实测 40.4 分钟**（见 docs/refactor-divergence.json T12）。
+ *
+ * ## 三处例外（各有意图，别乱删）
+ *
+ *   ① 童年（0–6 岁）固定 8 秒/年 —— 童年没决策也没内容，别拖。
+ *   ② 95 岁及以后封顶 3 秒/年 —— 元婴期还有两百多年，只有一打卡，
+ *      不封顶的话后半生会变成一段没画面的等待。
+ *   ③ 长途行动（闭关 / 远行 / 渡劫准备）保持现状 —— 一年只走 1–5 秒，
+ *      那是「闭关跳过」的设计语义，不是速度问题。
+ *
+ * ⚠ 这些数是**呈现层**：不进任何规则、不进任何门禁基线。
+ *   旧档（rules 8–11）读档后节奏也会变，但**规则结果一个字都不改**。 */
+const YEAR_SECONDS_K = 5400;      // 一年的秒数 = K ÷ 境界基础寿元
+const YEAR_SECONDS_MIN = 4;       // 秒/年 下限
+const YEAR_SECONDS_MAX = 120;     // 秒/年 上限（与官方同档）
+const CHILDHOOD_AGE = 6;          // 童年分界
+const CHILDHOOD_SECONDS = 8;      // 童年：一年 8 秒
+const LATE_FROM_AGE = 95;         // 后期起点
+const LATE_MAX_SECONDS = 3;       // 95 岁后一年封顶几秒
+
+export function playbackSeconds(s){
+ const j=longAction(s);
+ /* 长途行动：保持现状（那是「闭关跳过」的语义）。 */
+ if(j)return Math.max(10,Math.min(18,j.months/24))/j.months;
+ const a=age(s);
+ if(a<CHILDHOOD_AGE)return CHILDHOOD_SECONDS/12;
+ /* ⚠ 用**境界基础寿元**，不用这条命算出来的寿元：
+    基础寿元是稳定的档位（88/120/210/350/560），
+    按体质算出来的寿元会随人物变 ⇒ 同一个境界速度忽快忽慢。 */
+ const cap=REALMS[s.player.realm]?.lifespan||88;
+ let sec=Math.min(YEAR_SECONDS_MAX,Math.max(YEAR_SECONDS_MIN,YEAR_SECONDS_K/cap));
+ if(a>=LATE_FROM_AGE)sec=Math.min(sec,LATE_MAX_SECONDS);
+ return sec/12;
+}
 export function sceneFor(s){if(!active(s))return null;const pp=p(s),cc=c(s),event=s.pending?.event||s.journey?.event;if(cc.rulesVersion===11&&event?.startsWith('m11_siege_'))return event==='m11_siege_0'?'siege':'camp';if(cc.rulesVersion===11&&event==='m11_corpse_0')return 'travel';if(cc.rulesVersion===11&&event?.startsWith('m11_gift_')&&s.journey?.resolution)return 'retreat';if(s.journey?.cultivationActionTravel?.route.length>1&&s.month<s.journey.to)return 'travel';if(event?.startsWith('sect_return_'))return cc.continent===s.birth.continent?'siege':null;if(event==='world_raid')return cc.suspended?.journey&&!cc.suspended.journey.open?cc.suspended.context:'siege';if(cc.revision9?.arc==='mine'||event==='thin_root_mine')return 'mine';if(pp.scene)return pp.scene==='camp'&&cc.continent!==s.birth.continent?null:pp.scene;if(pp.sect.phase==='camp'&&cc.continent===s.birth.continent)return 'camp';if(pp.sect.phase==='rebuilt'&&cc.continent===s.birth.continent)return 'settlement';if(event==='tribulation_prepare'||event==='system_final'&&pp.tribulationReady)return 'tribulation';return null;}
 export function validateProgression(s,fail){
  if(!active(s))return;const pp=p(s);if(!pp||pp.format!==1||!pp.names||Array.isArray(pp.names)||Object.keys(pp.names).length>128||Object.values(pp.names).some(n=>typeof n!=='string'||!n||n.length>16))fail('人物名册');

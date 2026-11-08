@@ -134,6 +134,9 @@ function topbar(run) {
     year: yearOf(run),
     name: run.player.name,
     monthSec: Math.round(seconds * 100) / 100,
+    /* ⚠ 顶栏显示「1年≈X秒」（官方原文：`1년 ≈ ${Math.round(S.yearSec)}초`）。
+       ⚠ WXML 的 `{{}}` 不支持字符串拼接 ⇒ 整句在 JS 侧拼好。 */
+    yearSec: Math.round(seconds * 12),
     /* 官方 yearProgress()：((month % 12 + fraction) / 12 * 100) */
     prog: Math.round(((run.month % 12) / 12) * 100),
     /* ⚠ 还能活多久（整句在 JS 侧拼好，WXML 不支持字符串拼接）。 */

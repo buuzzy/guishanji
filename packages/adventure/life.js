@@ -74,8 +74,18 @@ export function activityLabel(state) {
   if (state.life.mode === 'refuge') return '在渡口修器、疗伤，照看离散的人';
   return '在' + regionInfo(state).dwelling + '练' + SKILLS[state.player.focus] + '，过寻常日子';
 }
+/* 凡人线（「与修仙无缘」）的年速：**固定 8 秒/年**，不套修士那套公式。
+ * ⚠ 用 `mundane.started` 判定，**不 import `mundane-life.js`**（会成环）。
+ * ⚠ 为什么不套修士公式：凡人一生没有突破，境界一直停在「凡身」⇒
+ *   按公式会一直按 88 岁那档走（61 秒/年）⇒ 一生七十多年要坐四十多分钟，
+ *   而凡人线的内容密度撑不住那么长 ⇒ 固定 8 秒/年。 */
+const MUNDANE_YEAR_SECONDS = 8;
+
 export function monthSeconds(state) {
-  if(state.life?.cultivation?.rulesVersion>=8)return playbackSeconds(state);
+  if(state.life?.cultivation?.rulesVersion>=8){
+    if(state.life?.cultivation?.mundane?.started)return MUNDANE_YEAR_SECONDS/12;
+    return playbackSeconds(state);
+  }
   if(state.life?.cultivation?.rulesVersion===7){
     const years=age(state),c=state.life.cultivation;
     const seconds=years<6?3:years<16?6:c.activeChain||c.network?.arc?8:state.journey?.resolution?6:years<30?8:state.player.realm<2?6:state.player.realm<3?4:3;

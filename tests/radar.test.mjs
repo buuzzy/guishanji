@@ -4,7 +4,8 @@ import {readFileSync} from 'node:fs';
 import vm from 'node:vm';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
-import {abilityRadar} from '../apps/preview/life-panels.js';
+import {createRun} from '../packages/adventure/engine.js';
+import {mpView} from './helpers/mp-view.mjs';
 
 /**
  * 雷达图门禁（2026-11-07 · T4）
@@ -17,9 +18,11 @@ import {abilityRadar} from '../apps/preview/life-panels.js';
  * ⇒ 现在五轴是 悟性 / 胆识 / 仁心 / 心境 / **体魄**（练出来的筋骨，只增不减）。
  *
  * ⚠ 同时守住两条不能破的：
- *   ① **两端必须一样** —— 网页端画 SVG、小程序端画 canvas，
- *      两份代码各写各的 ⇒ 不比对就会走偏（玩家在两端看到的不是同一张图）。
- *   ② **体力不能消失** —— 它出雷达了，但还在页面顶部的状态条里（两端都在）。
+ *   ① **两份代码必须一样** —— `art/radar.js`（画）与 `bridge/view-model.js`（喂）
+ *      各写各的轴表 ⇒ 不比对就会走偏（画出来的图和喂进去的数不是一回事）。
+ *   ② **体力不能消失** —— 它出雷达了，但还在页面顶部的状态条里。
+ *
+ * ⚠ 2026-11-08：网页端已清理 ⇒ 这里守的是**小程序端**（当前唯一的产品端）。
  */
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -62,7 +65,7 @@ function fakeCanvas(){
   };
 }
 
-test('两端雷达的五轴一样：悟性 / 胆识 / 仁心 / 心境 / 体魄，体力不在图上',()=>{
+test('雷达的五轴是悟性 / 胆识 / 仁心 / 心境 / 体魄，体力不在图上（画图与喂图两份代码必须一致）',()=>{
   /* 小程序端：canvas 画的那张。 */
   const mpRadar = loadCjs(path.join(ROOT, 'miniprogram/subpkg/xianxia/art/radar.js'));
   assert.deepEqual(mpRadar.KEYS,AXES,'小程序端雷达的轴顺序不对');
@@ -81,29 +84,24 @@ test('两端雷达的五轴一样：悟性 / 胆识 / 仁心 / 心境 / 体魄�
   assert.equal(mpView.LABELS.constitution,'体魄','小程序端没有「体魄」这个词');
   assert.equal(mpView.LABELS.health,RESOURCE,'小程序端状态条里的体力还得在');
 
-  /* 网页端：SVG 画的那张。 */
-  const html=abilityRadar({insight:40,courage:50,empathy:60,health:70,mind:30},45);
-  for(const label of LABELS)assert.ok(html.includes('>'+label+'<'),`网页端雷达少了「${label}」`);
-  assert.ok(!html.includes('>'+RESOURCE+'<'),'网页端雷达不该再画体力');
-  assert.ok(html.includes('>45.0<'),'网页端的体魄数没画出来');
   /* 旧档没有体魄这个数时不能画崩，也不能凭空造一个数。 */
-  const old=abilityRadar({insight:40,courage:50,empathy:60,health:70,mind:30},0);
-  assert.ok(old.includes('>体魄<'),'旧档也要有体魄这一根轴');
-  assert.ok(old.includes('>0.0<'),'旧档的体魄应是 0');
+  const oldCanvas=fakeCanvas();
+  mpRadar.drawRadar(oldCanvas,{insight:40,courage:50,empathy:60,health:70,mind:30});
+  assert.ok(oldCanvas.texts.includes('体魄'),'旧档也要有体魄这一根轴');
+  assert.ok(oldCanvas.texts.includes('0.0'),'旧档的体魄应是 0');
+  assert.ok(!oldCanvas.texts.includes(RESOURCE),'旧档的雷达也不该画体力');
 });
 
-test('体力出雷达了，但还在两端顶部的状态条里（资源没丢）',()=>{
-  /* 网页端：#miniBar 的第一格就是体力。 */
-  const app=readFileSync(path.join(ROOT, 'apps/preview/app.js'),'utf8');
-  assert.ok(/\['体力',\s*p\.health\]/.test(app),'网页端的状态条里没有体力');
-
-  /* 小程序端：状态条的四格里第一格也是体力。 */
+test('体力出雷达了，但还在页面顶部的状态条里（资源没丢）',()=>{
+  /* 小程序端：状态条里也有体力。 */
   const pageModel=readFileSync(path.join(ROOT, 'miniprogram/subpkg/xianxia/bridge/page-model.js'),'utf8');
   assert.ok(/k:\s*'health',\s*n:\s*'体力'/.test(pageModel),'小程序端的状态条里没有体力');
 
-  /* 两端的说法也要一致：雷达下面那句话要说清「体力在状态条里」。 */
+  /* 说法也要一致：雷达下面那句话要说清「体力在状态条里」。 */
   const view=readFileSync(path.join(ROOT, 'miniprogram/subpkg/xianxia/bridge/view-model.js'),'utf8');
   assert.ok(view.includes('页面顶部的状态条里'),'小程序端没有说清体力去了哪儿');
-  const html=abilityRadar({insight:40,courage:50,empathy:60,health:70,mind:30},45);
-  assert.ok(html.includes('页面顶部的状态条里'),'网页端没有说清体力去了哪儿');
+  /* 且这句话是**当场生成出来**的，不只是写在源码里。 */
+  const hint=mpView.practice(createRun({seed:'雷达校验',rulesVersion:12})).radarHint;
+  assert.ok(hint.includes('页面顶部的状态条里'),'雷达下面那句话没生成出来');
+  assert.ok(!hint.includes(RESOURCE+'在图上'),'雷达下面那句话不该说体力在图上');
 });

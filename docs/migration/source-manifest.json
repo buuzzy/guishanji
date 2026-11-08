@@ -1,6 +1,6 @@
 {
   "label": "归山记 · 迁移导入来源清单",
-  "generatedAt": "2026-11-07",
+  "generatedAt": "2026-11-08",
   "sources": [
     {
       "repo": "buuzzy/1in8b",
@@ -1509,8 +1509,8 @@
       },
       {
         "path": "scripts/gen-source-manifest.mjs",
-        "bytes": 28066,
-        "sha256": "7fc75cfc2923a2f649e37b8336e1023debdcbaa8c81ce63a625794f4c93db2b1"
+        "bytes": 28452,
+        "sha256": "9ba2b207ebab03fbc9a5247e55ac5d704ddb12c307767d49826c1c7005748a4c"
       },
       {
         "path": "scripts/test-xianxia-standalone.mjs",
@@ -1519,8 +1519,8 @@
       },
       {
         "path": "scripts/test-repo-hygiene.mjs",
-        "bytes": 9683,
-        "sha256": "38e117cd70acf8be6ded91e01b397966feb24f77ce7fd6effa40d167879b6565"
+        "bytes": 9698,
+        "sha256": "fd90600b21e2b9eeee104b85c49181424fed407fd1dabc7ab0c2af059edad5c4"
       },
       {
         "path": "scripts/measure-mp-package-size.mjs",
@@ -1529,13 +1529,13 @@
       },
       {
         "path": "AGENTS.md",
-        "bytes": 26956,
-        "sha256": "cccd6aace819187171eb51766559dbf09689deaf3ece01907da9baa4bcf08994"
+        "bytes": 27410,
+        "sha256": "15d53016d71b3e9f79d8c6d0703d7b17e939dd12f76192f6528e5deeb9ed3bd6"
       },
       {
         "path": "README.md",
-        "bytes": 3026,
-        "sha256": "8f6a9ca21edfc04f5de3aaa460f0b3723fc6f9af3a7ab87667b475c9813d1111"
+        "bytes": 3163,
+        "sha256": "e6f0f85e28bfe2221ad65ed6c9baea183921fc3d0310874b085f5528c35ace65"
       },
       {
         "path": "docs/migration/ledger.md",
@@ -1709,8 +1709,8 @@
       },
       {
         "path": "tests/radar.test.mjs",
-        "bytes": 5845,
-        "sha256": "3b5053eb755f0bc2eb523dd1e334adf708ef3282f64792546ac3ee1a9a9824a8"
+        "bytes": 5720,
+        "sha256": "ba2029c6c52ec7a49d96f5cb97d4e8bee0473e5b421622ead8b4921e5ac885b4"
       },
       {
         "path": "content/cultivation-findings.js",
@@ -1719,8 +1719,8 @@
       },
       {
         "path": "scripts/audit-items.mjs",
-        "bytes": 16957,
-        "sha256": "46de8a839f6389452634c66743e2c02d1046e70854d14cf598e6c15e09ac5578"
+        "bytes": 17128,
+        "sha256": "d21de94aae4b86b7cbfd84be758b5e150c3ce9d0c4c0a3bcc19f56e040870789"
       },
       {
         "path": "tests/items.test.mjs",
@@ -1789,8 +1789,8 @@
       },
       {
         "path": "scripts/verify-event-expressions.mjs",
-        "bytes": 36413,
-        "sha256": "73d6a429ecfd21e90112cb2e6b6cd82b876b9282ba79326c641e177204d545b9"
+        "bytes": 38343,
+        "sha256": "fedc667acc8d9d787271e12f0555308408e5890e7de9dd391eccf0d2917b6fe1"
       },
       {
         "path": "scripts/t7-reverse.mjs",
@@ -1971,6 +1971,31 @@
         "path": "apps/viz/history.js",
         "bytes": 8358,
         "sha256": "cc85c5116a566e1a486a0c4ce5b8ee722f63fb0cbe76ae4f157b5631fd162d89"
+      },
+      {
+        "path": "docs/browser-gate-coverage.md",
+        "bytes": 15635,
+        "sha256": "cdbb3847dfd1e5c03f10d2ee11e721283923e4a37f4ff5d3e99d5e0b0f0f8865"
+      },
+      {
+        "path": "docs/story-gap-ledger.md",
+        "bytes": 3740,
+        "sha256": "0f477558e9da271ef484d6d8f3a4cce1f2a908fdaccef6d5bde8221cc7debafe"
+      },
+      {
+        "path": "scripts/build-pixel-style.mjs",
+        "bytes": 4241,
+        "sha256": "79c0633bad4dbbb122b55242dac00bd0fe55a17edcc83d8f73fe1ddc40be7ea9"
+      },
+      {
+        "path": "scripts/t11-reverse.mjs",
+        "bytes": 9703,
+        "sha256": "595cb03d57ca24e3faa4225b542b1a243c567b89877f79629908238ffe044cdd"
+      },
+      {
+        "path": "tests/helpers/mp-view.mjs",
+        "bytes": 2689,
+        "sha256": "eb8fe7da5327a0fe4049c16121c2d90b5367dea52b7a45d0d94ca1bcd6a9256d"
       }
     ]
   }

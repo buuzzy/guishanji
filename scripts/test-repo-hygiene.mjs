@@ -88,8 +88,8 @@ section('不许有浏览器临时档案目录');
  * 这道断言会盯住「有人又把 profile 写回仓库里」——
  * 只要 `.local/browser-*` 又出现，直接红。
  *
- * ⚠ 注意别误伤 `.local/previous-dist-*`：那是 `scripts/build.mjs` 存的
- *   「上一版构建产物」备份（正常体积几 MB），不是垃圾，也不是浏览器档案。
+ * ⚠ 注意别误伤 `.local/previous-dist-*`：那是旧网页端构建（`scripts/build.mjs`，
+ *   2026-11-08 已删）留下的「上一版产物」备份，不是垃圾，也不是浏览器档案。
  */
 const LOCAL_DIR = path.join(ROOT, '.local');
 let browserProfiles = [];

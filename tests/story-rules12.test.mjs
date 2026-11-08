@@ -6,7 +6,8 @@ import {rules12,active12,lifespan12,sectProfile,practiceFactor12,stage12,month12
 import {canCultivate,hasMana} from '../packages/adventure/story-rules10.js';
 import {CULTIVATION_EVENTS,RULES11_CULTIVATION_EVENTS} from '../content/cultivation-stories.js';
 import {economyQuote} from '../packages/adventure/cultivation-economy.js';
-import {lifePanels} from '../apps/preview/life-panels.js';
+import {mpView} from './helpers/mp-view.mjs';
+import {mapView} from '../packages/adventure/cultivation.js';
 const c=s=>s.life.cultivation;
 function pending(event,{root='五行杂灵根',realm=1,path='orthodox',years=32}={}){
  const s=createRun({seed:'rules12-case-'+event});s.month=years*12;s.player.practice=s.month;s.player.root=root;s.player.realm=realm;s.player.stones=30;
@@ -250,7 +251,32 @@ test('体质寿限与修行阶段由同一状态显示，存档拒绝坏字段',
  c(s).progress=30;assert.equal(stage12(s),'炼气中期');
  c(s).progress=95;assert.equal(stage12(s),'炼气圆满');
  c(s).progress=135;assert.equal(stage12(s),'炼气圆满');
- assert.ok(lifePanels(s).includes('炼气圆满'));assert.ok(lifePanels(s).includes('寿元上限 '+lifespan12(s)));const bad=cloneRun(s);rules12(bad).body.natural=1000;assert.throws(()=>validateRun(bad));
+ /* 面板上要显示的是「炼气圆满」与寿元上限 —— 现在产品端是小程序，
+    所以问**小程序端那套面板**（网页端 2026-11-08 已清理）。 */
+ const panel=mpView.practice(s);
+ assert.equal(panel.realm,'炼气圆满','修行本事面板要把炼气四段显示出来');
+ assert.ok(panel.hint.includes('寿元上限 '+lifespan12(s)),'修行本事面板要写清寿元上限');
+ const bad=cloneRun(s);rules12(bad).body.natural=1000;assert.throws(()=>validateRun(bad));
+});
+test('地图标的「当前所在」与存档一致（期望值不从 mapView 拿）',()=>{
+  /* ⚠ 这里**故意不调用 mapView()** 算期望值：
+     地图画什么由 mapView 决定，门禁若也用它算期望 ⇒ 两边同源 ⇒ 地图画错了也看不出来。
+     ⇒ 从**存档本身**独立算一遍（脚下的大陆 / 最近一趟旅程的落点），再跟 mapView 比。 */
+  const hereOf=s=>{
+    const c=s.life.cultivation;
+    const last=(c.routes||[]).at(-1);
+    if(last)return last.at(-1);
+    const loc=s.player.location;
+    return ['home','refuge'].includes(loc)?s.birth.continent:loc;
+  };
+  for(let i=0;i<40;i++){
+    const s=createRun({seed:'地图当前所在-'+i});
+    const view=mapView(s);
+    assert.equal(view.current,hereOf(s),'地图标的「当前所在」与玩家脚下的大陆不一致');
+    assert.equal(view.unlocked[0],view.current,'当前所在必须是解锁集合里的第一个（画地图时标的就是它）');
+    assert.ok(view.unlocked.includes(view.current));
+    validateRun(s);
+  }
 });
 test('当前所有事件选项唯一，重点卡片不堆多个主角概念',()=>{
  for(const [id,n] of Object.entries(CULTIVATION_EVENTS)){assert.equal(new Set(n.choices.map(o=>o.id)).size,n.choices.length,id);assert.ok(n.choices.length>=2,id);}

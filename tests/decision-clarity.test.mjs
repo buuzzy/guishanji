@@ -5,7 +5,7 @@ import {createRun,choose,advance,advanceToChoice,options,cloneRun,validateRun,se
 import {activityOptions,routeOptions,currentContinent,discoverableEvidence} from '../packages/adventure/cultivation.js';
 import {RULES9_CULTIVATION_EVENTS as CULTIVATION_EVENTS,LEGACY_CULTIVATION_EVENTS,ROAD_CHAINS} from '../content/cultivation-stories.js';
 import {decide} from './helpers/rules9-play.mjs';
-import {lifePanels} from '../apps/preview/life-panels.js';
+import {mpView,mpPanelTitles} from './helpers/mp-view.mjs';
 const resolve=s=>{while(s.journey&&!s.journey.open&&!s.pending&&s.phase==='life')advance(s,1);};
 function follow(s,id,policy={}){for(let i=0;i<140&&s.phase==='life';i++){if(!s.pending)advanceToChoice(s);if(s.pending?.event===id)return s;if(!s.pending)return null;choose(s,decide(s,policy).id);if(policy.activity&&activityOptions(s).find(o=>o.id===policy.activity)?.enabled)setActivity(s,policy.activity);}return null;}
 function find(id,policy={},filter=()=>true){for(let i=0;i<400;i++){const s=follow(createRun({seed:'决策查验-'+i}),id,policy);if(s&&filter(s))return s;}throw Error('未自然到达 '+id);}
@@ -48,7 +48,15 @@ test('严酷处罚可以死亡，斗法与脱逃也都实际有失败分支',()=
 test('七种日常都可查实际变化，交游不刷阵法，调养不刷丹术',()=>{
  const original=find('first_method',{path:'loose'});choose(original,'array');resolve(original);
  for(const id of ['study','sword','alchemy','array','work','social','rest']){const s=cloneRun(original),before=cloneRun(s.player),months=s.life.cultivation.activityMonths[id]||0;setActivity(s,id);advance(s,6);assert.equal(s.life.cultivation.activityMonths[id]-months,6);assert.ok(s.life.cultivation.activityGains[id].progress>0);if(id==='social'){assert.equal(s.player.skills.array,before.skills.array);assert.ok(s.player.empathy>before.empathy);}if(id==='rest'){assert.equal(s.player.skills.alchemy,before.skills.alchemy);assert.ok(s.player.health>before.health);}validateRun(s);}
- const markup=lifePanels(original);assert.equal((markup.match(/class="activity-tile/g)||[]).length,0);for(const title of ['灵石与家产','随身行囊','修行本事'])assert.ok(markup.includes(title));assert.ok(!markup.includes('家中人与来信'));assert.ok(!markup.includes('data-action="item"'));assert.equal((markup.match(/data-value=/g)||[]).length,5);assert.ok(markup.includes('ability-radar'));for(const label of ['悟性','胆识','仁心','体力','心境'])assert.ok(markup.includes(label));
+ /* 面板内容现在守**小程序端**（网页端 2026-11-08 已清理）：
+    主栏给的是「修行本事 / 灵石与家产 / 随身行囊」三块 + 雷达那五根轴。 */
+ const panel=mpView.practice(original);
+ assert.deepEqual(panel.abilities.map(a=>a.key),['insight','courage','empathy','mind','constitution'],'雷达必须是那五根轴');
+ for(const label of ['悟性','胆识','仁心','心境','体魄'])assert.ok(panel.abilities.some(a=>a.label===label),'雷达少了「'+label+'」');
+ assert.ok(!panel.abilities.some(a=>a.label==='体力'),'体力是资源，不在雷达上');
+ assert.equal(mpView.statusPanel(original).bars.length,5,'状态条就是那五根轴');
+ assert.equal(mpView.inventory(original).count,original.inventory.length,'行囊件数要与存档一致');
+ for(const title of ['修行本事','灵石与家产','随身行囊'])assert.ok(mpPanelTitles().includes(title),'人生页少了「'+title+'」这一块');
 });
 test('真实旧preview.4导出保留规则、出生、往事和随机流，不植入新追查记录',async()=>{
  const raw=await readFile(new URL('./fixtures/adventure-preview4-original.json',import.meta.url),'utf8'),doc=JSON.parse(raw),s=upgradeRun(doc.state);assert.deepEqual(s,doc.state);assert.equal(s.life.cultivation.rulesVersion,undefined);assert.equal(s.life.cultivation.evidence,undefined);const reached=follow(s,'road_turn',{path:'mortal'});assert.ok(reached);assert.equal(currentNode(s),LEGACY_CULTIVATION_EVENTS.road_turn);validateRun(s);assert.equal(await readFile(new URL('./fixtures/adventure-preview4-original.json',import.meta.url),'utf8'),raw);

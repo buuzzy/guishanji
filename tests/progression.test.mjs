@@ -31,6 +31,22 @@ test('最终引劫只给完成护法准备的元婴，阵药用于实际渡劫',
 test('新山门的公产不能自由拿走，营建支出与个人灵石分开',()=>{
  const s=pending('sect_council_0');Object.assign(cc(s).progression.sect,{phase:'rebuilt',role:'leader',treasury:7});assert.equal(options(s).find(o=>o.id==='ward').enabled,false);cc(s).progression.sect.treasury=18;const stones=s.player.stones;choose(s,'ward');assert.equal(cc(s).progression.sect.treasury,10);assert.equal(s.player.stones,stones);assert.equal(cc(s).progression.sect.development,0);resolve(s);assert.equal(cc(s).progression.sect.development,1);
 });
+test('议事的两笔公产支出与领队身份都落在具体数字上',()=>{
+  /* 「安排授业与药园」要公库出六枚；「先保住护阵」要八枚。公库不够就不许选。 */
+  const s=pending('sect_council_0');Object.assign(cc(s).progression.sect,{phase:'rebuilt',role:'leader',treasury:5});
+  assert.equal(options(s).find(o=>o.id==='teach').enabled,false,'公库只有五枚时不该能选六枚的安排');
+  cc(s).progression.sect.treasury=6;
+  assert.equal(options(s).find(o=>o.id==='teach').enabled,true,'公库刚好六枚就该能选');
+  const stones=s.player.stones,treasury=cc(s).progression.sect.treasury;
+  choose(s,'teach');
+  assert.equal(cc(s).progression.sect.treasury,treasury-6,'公库要真的扣掉六枚');
+  assert.equal(s.player.stones,stones,'公产支出不许从玩家自己的灵石里出');
+  /* 留下建山门才是领队；交给留下的人管理只是协助者。 */
+  const t=pending('sect_return_2');choose(t,'care');resolve(t);assert.equal(cc(t).progression.sect.phase,'camp');
+  t.pending={event:'sect_rebuild',month:t.month};t.journey=null;choose(t,'lead');resolve(t);
+  assert.equal(cc(t).progression.sect.role,'leader','自己留下建山门就该是领队');
+  assert.equal(cc(t).rank,'新山门领事人','领事的身份要写进名头');
+});
 test('战后扎营有重建邀请，交接之后成为协助者',()=>{
  const s=pending('sect_return_2');choose(s,'care');resolve(s);assert.equal(cc(s).progression.sect.phase,'camp');assert.equal(sceneFor(s),'camp');cc(s).network.offer=null;cc(s).network.arc=null;assert.equal(s.pending?.event||probe(s).arrived,'sect_rebuild');s.pending={event:'sect_rebuild',month:s.month};s.journey=null;choose(s,'delegate');resolve(s);assert.equal(cc(s).progression.sect.phase,'rebuilt');assert.equal(cc(s).progression.sect.role,'supporter');assert.equal(cc(s).progression.sect.treasury,12);
 });

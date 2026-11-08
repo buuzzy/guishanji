@@ -54,7 +54,9 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 /* ══════════════════════════════════════════════ 一、静态扫描 */
 
 /** 要扫的目录（内容与规则源码）。 */
-export const SCAN_DIRS = ['content', 'packages/adventure', 'apps/preview'];
+/* ⚠ 2026-11-08：网页端已删 ⇒ `apps/preview` 不再扫。
+   那三个留下的文件是**画面数据**（调色板与像素画），不是文案，扫了也没有产出。 */
+export const SCAN_DIRS = ['content', 'packages/adventure'];
 
 /** 收集源码文件。 */
 function collect(dir, out = []) {

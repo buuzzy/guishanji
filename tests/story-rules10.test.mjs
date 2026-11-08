@@ -5,7 +5,6 @@ import {createRun as createLatest,choose,advance,advanceToChoice,options,current
 import {decide,playCultivation as playLatest} from '../scripts/play-cultivation.mjs';
 import {canCultivate,hasMana,rootLabel,rootDescription,storyPeople,month10} from '../packages/adventure/story-rules10.js';
 import {RULES10_CULTIVATION_EVENTS as CULTIVATION_EVENTS} from '../content/cultivation-stories.js';
-import {practicePanel} from '../apps/preview/life-panels.js';
 const createRun=input=>createLatest({...input,rulesVersion:input?.rulesVersion??10});
 const playCultivation=input=>playLatest({...input,rulesVersion:input?.rulesVersion??10});
 const c=s=>s.life.cultivation;
@@ -56,7 +55,11 @@ test('真正的出生妖身可以另循妖族吐纳，改路径标签不产生�
 test('没有灵根仍可学习凡俗本事，手艺职位不会成为内门资格',()=>{
  const s=pending('mortal_assessment',{root:'未显灵根',realm:0});s.player.skills.alchemy=100;s.player.skills.array=100;
  choose(s,'medicine');assert.ok(!['外门弟子','内门弟子','亲传弟子'].includes(c(s).rank));assert.equal(s.player.realm,0);
- const html=practicePanel(s);assert.match(html,/防身剑术|经书与识字/);assert.ok(!html.includes('data-progress-meter'));
+ /* 「没有灵根仍可学凡俗本事」这句话的源头在**规则层**：
+    网页端曾把它画在「修行本事」面板上（`life-panels.js` 的 practicePanel），
+    网页端 2026-11-08 已清理 ⇒ 现在直接问规则层，门禁才不是守着一个已删的产品。 */
+ assert.equal(rootLabel(s),'未显灵根','没有灵根的人身份牌上要写清楚');
+ assert.match(rootDescription(s),/未能发现灵根|走凡俗道路|防身剑术/,'规则层要说明「没有灵根也还能学什么」');
  s.pending={event:'first_method',month:s.month};s.journey=null;assert.match(nodeText(currentNode(s),s),/不用法力/);assert.equal(options(s).find(o=>o.id==='alchemy').enabled,true);validateRun(s);
 });
 test('复测确认结果，没有童年前因者不会凭复测自动得到灵根',()=>{

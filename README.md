@@ -2,7 +2,8 @@
 
 > 松风有信，人生有归处。
 
-一套共享剧情与修行规则源码，两个端：**网页端** + **微信小程序端**。
+一套共享剧情与修行规则源码，产品界面是**微信小程序端**
+（网页端 2026-11-08 已清理 ⇒ 见 [docs/browser-gate-coverage.md](docs/browser-gate-coverage.md)）。
 2026-11-06 从 `buuzzy/1in8b` 与 `buuzzy/xianxia-life` 迁出为独立产品。
 2026-11-07 来源仓库 `buuzzy/xianxia-life` 已删除（字节已完整迁入本仓库）⇒
 **本仓库自足**：不读任何相邻目录，不联网，构建与门禁都在这一份代码里跑。
@@ -11,15 +12,14 @@
 
 ```sh
 npm install          # 装依赖（acorn / terser / babel，仅构建与测试用）
-npm run dev          # 本地跑网页端 → http://localhost:8877/
-npm run build        # 静态构建
-npm run regression   # 全量回归（网页 + 小程序门禁）
+npm run dev          # 本地起开发者面板 → http://127.0.0.1:8866/apps/viz/
+npm run regression   # 全量回归（规则层 + 小程序端门禁）
 ```
 
 > ⚠ **没有自动检查了**（2026-11-07 删除了 GitHub Actions 配置）⇒
 > **合并进 main 前手动跑一遍回归，并确认退出码是 0**：
-> `node scripts/run-regression.mjs --group=fast`（小程序端相关，约几分钟）
-> ／ `node scripts/run-regression.mjs`（全量 38 道，网页端上线前必须跑）。
+> `node scripts/run-regression.mjs --group=fast`（快组 35 道，约 4 分钟）
+> ／ `node scripts/run-regression.mjs`（全量 36 道，约 8 分钟）。
 
 小程序端：
 
@@ -34,10 +34,10 @@ npm run check:mp     # 逐字节校验产物可复现
 ## 目录
 
 ```text
-apps/preview/        网页端（当前产品）
+apps/preview/        画面基准三文件 + 官方素材副本（不是网页端了）
 packages/            共享状态、规则、推进、存档
 content/             剧情、地域、功法、历史冻结表
-miniprogram/         微信小程序端（主包 + subpkg/xianxia 分包）
+miniprogram/         微信小程序端（主包 + subpkg/xianxia 分包）—— **当前唯一的产品界面**
 reference/           官方对照源与哈希锁（对齐基准，不作远程依赖）
 vendor/              迁移时带来的锁定快照（历史证据）
 scripts/             构建、门禁、验收

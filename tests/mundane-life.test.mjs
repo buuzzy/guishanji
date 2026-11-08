@@ -6,7 +6,6 @@ import {mundane,person,mundaneMonth,mundaneQuote,mundanePeople} from '../package
 import {canCultivate,hasMana} from '../packages/adventure/story-rules10.js';
 import {longAction} from '../packages/adventure/progression.js';
 import {CULTIVATION_EVENTS} from '../content/cultivation-stories.js';
-import {lifePanels} from '../apps/preview/life-panels.js';
 import {playMortal,mortalChoice} from '../scripts/audit-mundane-life.mjs';
 const c=s=>s.life.cultivation;
 function base(){const s=createRun({seed:'root-audit-15',rulesVersion:11});for(let i=0;i<40&&s.phase==='life';i++){advanceToChoice(s);if(s.pending?.event==='m11_start'){choose(s,'shop');return s;}if(s.pending)choose(s,mortalChoice(s).id);}throw Error('凡人出生路线未到达');}
@@ -76,8 +75,16 @@ test('营地粮房差事不授宗主身份，也不把公粮变成私人灵石',
 test('家产汇款按路程等待，收物人已故时退回而非交给死者',()=>{
  const s=stage('inheritance'),m=mundane(s);const family=s.life.family.money;choose(s,'send');assert.equal(s.life.family.money,family);for(const p of s.life.family.members)p.status='dead';finish(s);assert.equal(s.life.family.money,family);assert.equal(m.money,24+m.earned-m.spent);assert.ok(s.journal.some(j=>j.title==='没有收物人的钱退回来了'));validateRun(s);
 });
-test('凡俗人物与钱粮进入现有组件，查询不改人生状态',()=>{
- const s=base(),before=cloneRun(s);assert.ok(mundanePeople(s).some(p=>p.role==='药铺师傅'));assert.match(lifePanels(s),/钱粮与家产/);assert.deepEqual(s,before);
+test('凡俗人物与钱粮在规则层登记得清清楚楚，查询不改人生状态',()=>{
+ const s=base(),before=cloneRun(s);
+ assert.ok(mundanePeople(s).some(p=>p.role==='药铺师傅'),'凡人线的人要登记在册');
+ assert.ok(Number.isFinite(mundane(s).money),'凡人线的钱粮要记着数');
+ /* ⚠ 网页端曾把「钱粮与家产」画成一块面板，并逐个人名上屏；
+    网页端 2026-11-08 已清理 ⇒ 这里守的是**规则层**（人物名册与钱粮账）。
+    ⚠ **已知缺口**：小程序端的人物面板目前只列家人 / 后代 / 旧相识 / 同行者，
+      **凡人线结识的人（药铺师傅、同住的伙计…）还没有落屏** ——
+      登记在 `docs/story-gap-ledger.md`，随阶段 3（凡人线精简到 5 张）一起补。 */
+ assert.deepEqual(s,before);
 });
 test('拒绝租契的熟手不会在后续凭空成为掌柜',()=>{
  const s=stage('shop',2);mundane(s).notes.push('shop:worker');assert.equal(options(s).find(o=>o.id==='keep').label,'继续在铺里做验药熟手');choose(s,'keep');assert.equal(c(s).rank,'药铺熟手');assert.equal(mundane(s).assets.length,0);validateRun(s);
@@ -98,5 +105,33 @@ test('不同人生的平静期抉择次序稳定且不同，不是固定章节',
  const a=createRun({seed:'凡人世事-24'}),b=createRun({seed:'凡人世事-28'}),copy=createRun({seed:'凡人世事-24'});assert.notDeepEqual(mundane(a).lifeOrder,mundane(b).lifeOrder);assert.deepEqual(mundane(a).lifeOrder,mundane(copy).lifeOrder);
 });
 test('新决策卡选项唯一，正文可读取且不公开内部成功率',()=>{
- const s=base();mundane(s).corpse={truth:1,taken:true};for(const n of Object.values(CULTIVATION_EVENTS).filter(n=>n.id.startsWith('m11_'))){assert.equal(n.choices.length,new Set(n.choices.map(o=>o.id)).size,n.id);if(n.id.includes('gift'))mundane(s).gift={stage:'prepared'};const text=typeof n.text==='function'?n.text(s):n.text;assert.ok(text.length>35,n.id);assert.ok(!/\d+%/.test(text),n.id);}
+ const s=base();mundane(s).corpse={truth:1,taken:true};
+ for(const n of Object.values(CULTIVATION_EVENTS).filter(n=>n.id.startsWith('m11_'))){
+  assert.equal(n.choices.length,new Set(n.choices.map(o=>o.id)).size,n.id);
+  if(n.id.includes('gift'))mundane(s).gift={stage:'prepared'};
+  const text=typeof n.text==='function'?n.text(s):n.text;assert.ok(text.length>35,n.id);assert.ok(!/\d+%/.test(text),n.id);
+  /* ⚠ 2026-11-08：原来**只量正文** ⇒ 选项名与选项提示语没人管。
+     网页端那道浏览器门禁量的是整段弹层文本（标题 + 正文 + 选项）⇒ 这里补齐。 */
+  for(const o of n.choices){
+   assert.ok(!/\d+%/.test(String(o.label||'')),n.id+' 的选项名「'+o.label+'」不该有内部成功率');
+   let hint='';if(typeof o.hint==='function'){try{hint=String(o.hint(s)??'');}catch{hint='';}}else hint=String(o.hint||'');
+   assert.ok(!/\d+%/.test(hint),n.id+' 的选项提示语不该有内部成功率');
+  }
+ }
+});
+test('凡人线可以迟入：走到「转机」最后一段的人真的入了道',()=>{
+ const {s,events}=playMortal('凡人世事-177','sell');
+ assert.ok(events.includes('m11_gift_3'),'迟入的那条路要走到 m11_gift_3');
+ assert.ok(s.player.realm>=1,'迟入的人最后要入了道（境界 ≥ 1）');
+});
+test('收殓之后走不到「取物出售」那一段',()=>{
+ /* 五条自然人生在**收殓**走法下真的会走到 m11_corpse_0，但**永远到不了** m11_corpse_2。 */
+ for(const seed of ['凡人世事-38','凡人世事-74','凡人世事-89','凡人世事-152','凡人世事-177']){
+  const {events}=playMortal(seed,'burial');
+  assert.ok(events.includes('m11_corpse_0'),seed+'：这条命要真的走到收殓那一段（否则下面那句是空跑）');
+  assert.ok(!events.includes('m11_corpse_2'),seed+'：收殓之后不该走到「取物出售」');
+ }
+ /* 正面对照：同一个种子换个走法就会走到 corpse_2 ⇒ 上面那句不是恒真。 */
+ const {events}=playMortal('凡人世事-38','farm');
+ assert.ok(events.includes('m11_corpse_2'),'换个走法就该走到 corpse_2（证明上面那句真的在管事）');
 });

@@ -4,7 +4,12 @@ import { join } from 'node:path';
 import { projectRoot } from './serve.mjs';
 
 const commands = [
-  ['preview-assets', ['scripts/build-preview-assets.mjs']],
+  /* ── 画面调色板门禁（2026-11-08 · 网页端清理后保留）──────────────────────
+     `apps/preview/pixel-style.js` 是**小程序包的构建输入**（`build-xianxia-mp.mjs`
+     的 `ALLOWED` 精确清单），来源是官方 1in8b 的 `reference/art.cjs`。
+     ⇒ 网页端删掉后，这个文件**没有别的生成器** ⇒ 必须留着这道门禁：
+       它按官方原文重新生成一遍，并与锁定快照逐字节比对。 */
+  ['pixelstyle', ['scripts/build-pixel-style.mjs']],
   ['check', ['scripts/check.mjs']],
   ['unit', ['--test', 'tests/adventure.test.mjs', 'tests/adventure-feedback.test.mjs','tests/cultivation.test.mjs','tests/decision-clarity.test.mjs','tests/life-richness.test.mjs','tests/story-network.test.mjs','tests/progression.test.mjs','tests/revision9.test.mjs','tests/story-rules10.test.mjs','tests/radar.test.mjs','tests/items.test.mjs','tests/plot.test.mjs']],
   ['mundane-unit', ['--test','tests/mundane-life.test.mjs']],
@@ -26,26 +31,11 @@ const commands = [
   ['mundane-audit', ['scripts/audit-mundane-life.mjs','--count=600']],
   ['story-audit', ['scripts/audit-story-rules10.mjs']],
   ['life-simulation', ['scripts/verify-life-richness.mjs']],
-  ['build', ['scripts/build.mjs']],
-  ['adventure-browser', ['scripts/verify-cultivation-browser.mjs']],
-  ['decision-browser', ['scripts/verify-decision-clarity-browser.mjs']],
-  ['network-browser', ['scripts/verify-story-network-browser.mjs']],
-  ['progression-browser', ['scripts/verify-progression-browser.mjs']],
-  ['revision9-browser', ['scripts/verify-revision9-browser.mjs']],
-  ['rules10-browser', ['scripts/verify-story-rules10-browser.mjs']],
-  ['mundane-browser', ['scripts/verify-mundane-browser.mjs']],
-  ['rules12-browser', ['scripts/verify-story-rules12-browser.mjs']],
-  ['family-browser', ['scripts/verify-family-transfer-browser.mjs']],
-  ['static-build', ['scripts/verify-build.mjs']],
-  ['adventure-static', ['scripts/verify-cultivation-browser.mjs', '--built']],
-  ['decision-static', ['scripts/verify-decision-clarity-browser.mjs', '--built']],
-  ['network-static', ['scripts/verify-story-network-browser.mjs', '--built']],
-  ['progression-static', ['scripts/verify-progression-browser.mjs','--built']],
-  ['revision9-static', ['scripts/verify-revision9-browser.mjs', '--built']],
-  ['rules10-static', ['scripts/verify-story-rules10-browser.mjs', '--built']],
-  ['mundane-static', ['scripts/verify-mundane-browser.mjs', '--built']],
-  ['rules12-static', ['scripts/verify-story-rules12-browser.mjs', '--built']],
-  ['family-static', ['scripts/verify-family-transfer-browser.mjs', '--built']],
+  /* ⚠ 2026-11-08：**网页端的 19 道浏览器/static 门禁与两道构建门禁已删**
+     （`verify-*-browser.mjs` ×9、`verify-build.mjs`、`build.mjs`）。
+     删之前先做了「浏览器门禁 → Node 门禁」断言对照表
+     （`docs/browser-gate-coverage.md`）：状态类断言全部有 Node 侧接手，
+     其中 6 条原来没人守的**已在本轮补进 Node 侧**（并做了反向验证）。 */
   /* ── 开发者面板门禁 ───────────────────────────────────────────────────
      `apps/viz/` 是**给我们自己看**的面板（人生进程轴 / 决策框 / 世界结构）。
      它最大的风险不是画得丑，而是「显示的跟游戏里发生的不是一回事」——
@@ -156,6 +146,11 @@ const commands = [
      这两道门禁原来**都没有反向验证** ⇒ 按 AGENTS.md 的口径属于半个假门禁。
      T10 补上：注入坏值逐条证明会报红，并证明基线正常时门禁是绿的。 */
   ['t10reverse', ['scripts/t10-reverse.mjs']],
+  /* ── 2026-11-08 新增断言的体检 ───────────────────────────────────────────
+     网页端清理时补进 Node 侧的 6 条断言（选项不泄露成功率 / 凡人线迟入 /
+     收殓路线 / 地图当前所在 / 议事公库支出与领队身份）——
+     没有反向验证就等于「可能只是永远绿」⇒ 每条都注入坏值验一遍。 */
+  ['t11reverse', ['scripts/t11-reverse.mjs']],
 ];
 const report = { startedAt: new Date().toISOString(), node: process.version, platform: process.platform, results: [] };
 await mkdir(join(projectRoot, 'artifacts'), { recursive: true });
@@ -238,8 +233,8 @@ if (argv.includes('--status')) {
   const allGates = commands.map(([name]) => name);
   const howToRun = () => {
     if (need === 'all') {
-      console.log('  跑法：node scripts/run-regression.mjs --group=fast   （小程序端，约 1 分半）');
-      console.log('       node scripts/run-regression.mjs                （全量，约 22 分钟）');
+      console.log('  跑法：node scripts/run-regression.mjs --group=fast   （快组，约 4 分钟）');
+      console.log('       node scripts/run-regression.mjs                （全量，约 8 分钟）');
     } else {
       console.log(`  跑法：node scripts/run-regression.mjs --group=${need}`);
     }
@@ -287,9 +282,9 @@ async function run([name, args]) {
   await writeFile(join(projectRoot, 'artifacts', 'regression-' + name + '.log'), output);
   console.log(`  ▸ ${name} ${code === 0 ? 'PASS' : 'FAIL'} (${((Date.now() - started) / 1000).toFixed(1)}s)`);
 }
-// Assets and build mutations finish before any page opens. Each browser gate
-// owns its server, profile and artifacts, so two independent gates can run.
-const boundary=selected.findIndex(([name])=>name==='build')+1;
+// 画面调色板是**唯一会在门禁里改文件**的那一步（重新生成 pixel-style.js）。
+// 它必须排在最前面跑完，后面的门禁才读得到新产物。
+const boundary=selected.findIndex(([name])=>name==='pixelstyle')+1;
 for(const entry of selected.slice(0,boundary))await run(entry);
 const pending=selected.slice(boundary);let index=0;
 async function worker(){while(index<pending.length){const entry=pending[index++];await run(entry);}}

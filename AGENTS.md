@@ -1,7 +1,7 @@
 # 归山记 · 开发约定
 
 > 本仓库是「归山记 · 修仙人生」的**独立产品仓库**：一套共享剧情与规则源码，
-> 两端界面（网页端 + 微信小程序端）。
+> **产品界面只有微信小程序端**（网页端 2026-11-08 已清理 ⇒ 见 [docs/browser-gate-coverage.md](docs/browser-gate-coverage.md)）。
 > 2026-11-06 从 `buuzzy/1in8b` 与 `buuzzy/xianxia-life` 迁出独立。
 > 2026-11-07 来源仓库 `buuzzy/xianxia-life` **已删除**（字节已完整迁入本仓库）、
 > 旧 0.2.0 产品的快照 `legacy/old-web/` **已清理**（历史仍在 git 里）。
@@ -14,8 +14,8 @@
 | 位置 | 是什么 |
 | --- | --- |
 | `packages/adventure/`、`packages/core/`、`content/` | **当前剧情与规则的唯一编辑来源** |
-| `apps/preview/` | 网页端源码（`apps/preview/pixel-style.js` 等三个画面文件同时是小程序画面的构建输入，**逐字节冻结**） |
-| `apps/viz/` | **开发者面板**（给我们自己看的，不给玩家看）：人生进程轴 / 决策框 / 六个观测页签，跑的是与游戏**同一份**规则代码；**不进小程序包、不进 dist 静态产物** |
+| `apps/preview/` | ⚠ **只剩三个画面基准文件**（`pixel-style.js` / `cultivation-pixel.js` / `continent-atlas.js`）与官方素材 `reference/`：网页端源码 2026-11-08 已删除。`pixel-style.js` 是小程序包的构建输入（**逐字节冻结**，由 `scripts/build-pixel-style.mjs` 重新生成并与锁定快照比对） |
+| `apps/viz/` | **开发者面板**（给我们自己看的，不给玩家看）：人生进程轴 / 决策框 / 六个观测页签，跑的是与游戏**同一份**规则代码；**不进小程序包** |
 | `miniprogram/` | 微信小程序端（主包 + `subpkg/xianxia/` 分包） |
 | `miniprogram/subpkg/xianxia/runtime/engine.js` | **生成物**，由 `node scripts/build-xianxia-mp.mjs` 生成，禁止手改 |
 | `vendor/xianxia-r12/`、`vendor/xianxia-r12-art/` | 迁移时从上游带来的**锁定快照**，作为历史证据保留，**不再是构建输入** |
@@ -68,7 +68,7 @@ node scripts/run-regression.mjs        # 全量回归
 | `xianxiastyle` | `scripts/test-xianxia-style.mjs` | 与官方**对齐**：样式逐字节一致、倍速/转盘/雕版同源、字号口径 |
 | `xianxiastandalone` | `scripts/test-xianxia-standalone.mjs` | 独立产品：运行代码不碰 1in8b 任何路径与存档键 |
 | `repohygiene` | `scripts/test-repo-hygiene.mjs` | 仓库不许长胖到把微信开发者工具压垮（文件数 / 体积 / 浏览器临时档案） |
-| `eventexpressions` | `scripts/verify-event-expressions.mjs` | 修仙线 285 张卡的表达域：一条不漏、提示语数对齐、正文 ≤ 90 字、分支一致、专名双向、逐值全等 |
+| `eventexpressions` | `scripts/verify-event-expressions.mjs` | 修仙线 285 张卡的表达域：一条不漏、提示语数对齐、正文 ≤ 90 字、分支一致、专名双向、**选项不泄露内部成功率**、逐值全等 |
 | `completeness` | `scripts/audit-completeness.mjs` | 内容完备度：硬底线（故事线/各境内容/长线/结局/灵根/晚年）+ 已知缺口台账 |
 | `t9reverse` | `scripts/t9-reverse.mjs` | 完备度门禁的体检：注入坏值必须报红，且该绿的时候要绿 |
 | `t10reverse` | `scripts/t10-reverse.mjs` | 指标门禁与表达域覆盖的体检（含真改规则层源码那道） |
@@ -82,7 +82,7 @@ node scripts/run-regression.mjs        # 全量回归
 
 2026-11-07 起**删除了 GitHub Actions 配置**（`.github/workflows/ci.yml` 已不在库里）：
 
-- 原因：网页端暂不上线 ⇒ 浏览器组 20 道用不上；账户额度/付费也一直失败。
+- 原因：网页端已清理（2026-11-08）⇒ 浏览器组只剩开发者面板那 1 道；账户额度/付费也一直失败。
 - ⇒ **没有 PR 自动检查了**。所以合并前要手动跑，但**不是每次都跑**。
 
 #### 3.0.1 先问一句「这棵树验过没有」
@@ -111,17 +111,17 @@ node scripts/run-regression.mjs --status
 | 改了什么 | 跑哪组 | 大约多久 |
 | --- | --- | --- |
 | 只改文档 | 不用跑 | 0 |
-| 改小程序端（`miniprogram/`） | `--group=fast` | 约 1 分半 |
-| 改规则层（`packages/` / `content/`）或网页端 | 全量 | 约 22 分钟 |
+| 改小程序端（`miniprogram/`） | `--group=fast` | 约 4 分钟 |
+| 改规则层（`packages/` / `content/`） | 全量 | 约 8 分钟 |
 | 合并进 main | 按上表选，**把结果贴出来** | — |
 
 ```sh
-node scripts/run-regression.mjs --group=fast   # 小程序端 + 内容层相关的 37 道
-node scripts/run-regression.mjs                # 全量 57 道（网页端上线前必须跑）
+node scripts/run-regression.mjs --group=fast   # 快组 35 道（规则层 + 小程序端 + 内容层）
+node scripts/run-regression.mjs                # 全量 36 道（= 快组 + 开发者面板那 1 道浏览器门禁）
 ```
 
 - 跑完**确认退出码是 0**（`node … > log 2>&1; echo $?` —— 别用管道，管道后面取到的是最后一条命令的码）。
-- ⚠ 只跑快组**不能**代替全量：浏览器组验的是网页端，只有它绿了才能说网页端没坏。
+- ⚠ 只跑快组**不能**代替全量：全量多跑的是开发者面板那道浏览器门禁（`viz-browser`），它要起浏览器。
 
 #### 3.0.3 ⚠ 别把「开发流程」和「同步」叠成两遍
 
@@ -134,7 +134,7 @@ node scripts/run-regression.mjs                # 全量 57 道（网页端上线
      → GREEN 就直接推 ⇒ 不要再跑一遍
 ```
 
-反例（浪费 22 分钟且什么都没证明）：
+反例（浪费 8 分钟且什么都没证明）：
 ```
 开发 → 跑门禁 → 提交 → 推 → 又跑一遍门禁   ← 这一遍是白跑
 ```
@@ -257,11 +257,12 @@ node scripts/run-regression.mjs                # 全量 57 道（网页端上线
   「得到凝丹真解」这类文字，没有结构化的「哪件道具、哪个月」字段
   ⇒ 面板按月 diff `state.inventory` 自己还原。
   ⚠ 道具**会进也会出**（会被消耗掉）⇒ 记的是完整的**进出序列**，不只是「拿到」。
-- **不许进小程序包、不进 dist**。构建脚本只搬 `apps/preview/`；
+- **不许进小程序包**。构建脚本只搬规则层与内容层；
   小程序白名单里也没有 `apps/viz/` ⇒ 包体余量一分不占。
 - **视觉类名可以自己一套**（它是开发者工具，不是玩家界面）；
-  但**玩家界面**那条「只用官方类名」的规矩仍然管着 `apps/preview/`。
+  但**玩家界面**那条「只用官方类名」的规矩仍然管着**小程序端**（`miniprogram/`）。
 - **地图只补内容维度**：点阵山海图是玩家端画面（`apps/preview/continent-atlas.js`，
+  小程序端 `miniprogram/subpkg/xianxia/art/atlas.js` 照抄它，
   在 `docs/art-divergence.json` 有登记）⇒ 面板那版**不碰**它，
   只补地名 / 描述 / 特产 / 通路 / 走过与没走过 / 能去哪儿。
 - **覆盖率必须按规则版本分桶**。全部剧情卡 360 张，但当前版本真正会走的只有 285 张，

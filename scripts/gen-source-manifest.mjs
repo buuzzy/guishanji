@@ -196,6 +196,13 @@ const ADDED = [
   'scripts/lib/completeness-limits.js',
   /* 2026-11-08：T11 第二轮内容改造交付说明 */
   'docs/第二轮内容改造交付说明-2026-11-08.md',
+  /* 2026-11-08：网页端清理 —— 浏览器门禁 → Node 门禁的断言对照表 + 六条新断言的体检 +
+     调色板生成器（网页端删掉后 `apps/preview/pixel-style.js` 没有别的生成器了） */
+  'docs/browser-gate-coverage.md',
+  'docs/story-gap-ledger.md',
+  'scripts/build-pixel-style.mjs',
+  'scripts/t11-reverse.mjs',
+  'tests/helpers/mp-view.mjs',
   /* 2026-11-08：开发者面板（`apps/viz/`）—— 观测台，不进小程序包也不进 dist。
    * `decide-policy.js` 是从 `play-cultivation.mjs` 里搬出来的同一份策略，
    * 搬出来是为了让浏览器也能 import 它（面板的「固定偏好」与各审计脚本同源）。 */

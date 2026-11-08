@@ -230,6 +230,45 @@ ok(dropped.length === 0, `规则层有的专名表达域都留着（丢了 ${dro
 for (const line of dropped.slice(0, 12)) console.error(`      ${line}`);
 if (dropped.length > 12) console.error(`      …还有 ${dropped.length - 12} 处`);
 
+/* ── 5.5 选项不许泄露内部成功率（2026-11-08 · 网页端清理后补上）──────── */
+
+/*
+ * 以前这条只由**网页端**那道浏览器门禁守着
+ * （`verify-cultivation-browser.mjs`：「选项文本不含 成功率/成功机会/这次安排/\d+%」）
+ * ⇒ 网页端 2026-11-08 删掉后，这条规矩**没人守了**。
+ *
+ * ⇒ 现在守在**表达域门禁**里：285 张卡 × 每张卡的每个选项 × 每条分支，
+ *   规则层的选项名 / 提示语 与 表达域的提示语 **两份都查**。
+ *
+ * ⚠ 为什么这条值得单独守：内部成功率是**给作者看的数**，不是给玩家看的。
+ *   玩家看到「成功率 40%」就等于知道哪个选项是「正确答案」⇒ 选择就没意义了。
+ */
+const LEAK = /成功率|成功机会|这次安排|\d+%/u;
+const leaks = [];
+for (const id of eventIds) {
+  const node = CULTIVATION_EVENTS[id];
+  const row = EVENT_ROWS[id];
+  for (const c of (node.choices || [])) {
+    const label = String(c.label || '');
+    if (LEAK.test(label)) leaks.push(`${id}（选项名「${label}」）`);
+    for (const s of branchProbes()) {
+      let hint = '';
+      if (typeof c.hint === 'function') { try { hint = String(c.hint(s) ?? ''); } catch { hint = ''; } }
+      else hint = String(c.hint || '');
+      if (LEAK.test(hint)) { leaks.push(`${id}（选项提示「${hint.slice(0, 20)}」）`); break; }
+    }
+  }
+  if (row && Array.isArray(row[2])) {
+    for (const h of row[2]) {
+      const t = typeof h === 'function' ? '' : String(h ?? '');
+      if (LEAK.test(t)) leaks.push(`${id}（表达域提示语「${t.slice(0, 20)}」）`);
+    }
+  }
+}
+ok(leaks.length === 0, `选项与提示语都不泄露内部成功率（漏的 ${leaks.length} 条）`);
+for (const line of leaks.slice(0, 12)) console.error(`      ${line}`);
+if (leaks.length > 12) console.error(`      …还有 ${leaks.length - 12} 条`);
+
 /* ── 6. 逐值全等（与基线一致）──────────────────────────────────────── */
 
 const VARIANTS = ['v1', 'v2', 'v3'];

@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>归山记 · 六阶段进度汇报（2026-11-08）</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#f7f5f0;
+    --card:#ffffff;
+    --line:#e9e3d6;
+    --line-soft:#f1ece1;
+    --ink:#14171e;
+    --ink-2:#3a4256;
+    --muted:#7c7a72;
+    --accent:#2f6f5e;
+    --accent-soft:rgba(47,111,94,.08);
+    --accent-line:rgba(47,111,94,.28);
+    --warn:#c97b3f;
+    --warn-soft:rgba(201,123,63,.10);
+    --shadow:0 2px 8px rgba(0,0,0,.04);
+    --shadow-lg:0 4px 16px -2px rgba(0,0,0,.06);
+    --sans:"Outfit","PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;
+    --serif:"DM Serif Display","Songti SC","STSong",Georgia,serif;
+    --mono:"JetBrains Mono","SF Mono",Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--sans);
+    font-size:15px;
+    line-height:1.62;
+    -webkit-font-smoothing:antialiased;
+  }
+  body::before,body::after{
+    content:"";position:fixed;width:520px;height:520px;border-radius:50%;
+    pointer-events:none;z-index:0;
+  }
+  body::before{top:-220px;right:-160px;background:radial-gradient(circle,rgba(47,111,94,.06),transparent 70%)}
+  body::after{bottom:-240px;left:-180px;background:radial-gradient(circle,rgba(201,123,63,.05),transparent 70%)}
+  .wrap{position:relative;z-index:1;max-width:1024px;margin:0 auto;padding:0 24px}
+  @media (min-width:768px){.wrap{padding:0 32px}}
+
+  h1,h2,h3{font-weight:400}
+  h1{
+    font-family:var(--serif);
+    font-size:34px;line-height:1.25;letter-spacing:-.005em;
+    margin:0 0 14px;color:var(--ink);
+  }
+  h2{
+    font-family:var(--serif);
+    font-size:24px;line-height:1.3;letter-spacing:-.004em;
+    margin:0 0 6px;color:var(--ink);
+  }
+  h3{font-size:16px;font-weight:600;margin:0 0 6px;color:var(--ink)}
+  p{margin:0 0 10px}
+  a{color:var(--accent)}
+  code{font-family:var(--mono);font-size:.88em;background:var(--accent-soft);padding:1px 5px;border-radius:4px;color:var(--accent)}
+
+  .eyebrow{
+    font-size:12px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--accent);font-weight:600;margin:0 0 14px;
+  }
+  .lead{font-size:16px;color:var(--ink-2);max-width:70ch;margin:0 0 8px}
+  .muted{color:var(--muted)}
+  .small{font-size:13px}
+
+  section{margin-top:48px}
+  @media (min-width:768px){section{margin-top:56px}}
+
+  .sec-head{display:flex;align-items:baseline;gap:10px;margin-bottom:6px}
+  .sec-head svg{width:18px;height:18px;color:var(--accent);flex:none;transform:translateY(2px)}
+  .sec-sub{color:var(--muted);font-size:13px;margin:0 0 20px;max-width:74ch}
+
+  .card{
+    background:var(--card);border:1px solid var(--line);border-radius:16px;
+    box-shadow:var(--shadow);padding:20px;
+  }
+
+  /* ── hero ── */
+  .hero{padding-top:64px}
+  .hero-strip{
+    display:grid;grid-template-columns:repeat(4,1fr);
+    border:1px solid var(--line);border-radius:16px;background:var(--card);
+    box-shadow:var(--shadow);overflow:hidden;margin-top:26px;
+  }
+  .hero-strip div{padding:16px 18px;border-right:1px solid var(--line-soft)}
+  .hero-strip div:last-child{border-right:0}
+  .hero-strip .k{font-family:var(--mono);font-size:22px;font-weight:500;color:var(--accent);display:block;line-height:1.2}
+  .hero-strip .k.warnish{color:var(--warn)}
+  .hero-strip .l{font-size:12px;color:var(--muted);display:block;margin-top:2px}
+  @media (max-width:700px){
+    .hero-strip{grid-template-columns:repeat(2,1fr)}
+    .hero-strip div:nth-child(2){border-right:0}
+    .hero-strip div:nth-child(-n+2){border-bottom:1px solid var(--line-soft)}
+  }
+
+  .notice{
+    display:flex;gap:10px;align-items:flex-start;
+    border:1px solid var(--accent-line);background:var(--accent-soft);
+    border-radius:12px;padding:12px 16px;margin-top:22px;font-size:14px;color:var(--ink-2);
+  }
+  .notice svg{width:17px;height:17px;color:var(--accent);flex:none;margin-top:3px}
+
+  /* ── timeline ── */
+  .timeline{list-style:none;padding:0;margin:0;position:relative}
+  .timeline::before{content:"";position:absolute;left:8px;top:10px;bottom:10px;width:2px;background:var(--accent);opacity:.3}
+  .timeline li{position:relative;padding:0 0 22px 32px}
+  .timeline li:last-child{padding-bottom:0}
+  .timeline li::before{content:"";position:absolute;left:2px;top:5px;width:14px;height:14px;border-radius:50%;background:var(--bg);border:2px solid var(--accent)}
+  .tl-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px;margin-bottom:2px}
+  .tl-stage{font-family:var(--mono);font-size:12px;color:var(--accent);background:var(--accent-soft);padding:1px 7px;border-radius:5px;font-weight:500}
+  .tl-sha{font-family:var(--mono);font-size:12px;color:var(--muted)}
+  .tl-stat{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--muted)}
+  .tl-title{font-size:15px;font-weight:600;color:var(--ink);margin-bottom:2px}
+  .tl-player{font-size:13.5px;color:var(--ink-2)}
+
+  /* ── compare bars ── */
+  .cmp-list{display:grid;gap:18px}
+  .cmp{border-bottom:1px solid var(--line-soft);padding-bottom:16px}
+  .cmp:last-child{border-bottom:0;padding-bottom:0}
+  .cmp-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px;margin-bottom:9px}
+  .cmp-name{font-size:14.5px;font-weight:600;color:var(--ink)}
+  .cmp-dir{font-size:12px;color:var(--warn);background:var(--warn-soft);padding:1px 7px;border-radius:5px}
+  .cmp-row{display:grid;grid-template-columns:44px 1fr 84px;gap:10px;align-items:center;margin-bottom:5px}
+  .cmp-tag{font-size:12px;color:var(--muted)}
+  .cmp-track{height:13px;background:var(--line-soft);border-radius:5px;overflow:hidden}
+  .cmp-fill{height:100%;border-radius:5px}
+  .cmp-fill.before{background:#cfc8b8}
+  .cmp-fill.after{background:var(--accent)}
+  .cmp-fill.official{background:repeating-linear-gradient(135deg,var(--ink-2) 0 4px,rgba(58,66,86,.45) 4px 8px)}
+  .cmp-val{font-family:var(--mono);font-size:12.5px;color:var(--ink-2);text-align:right}
+
+  /* ── gate chips ── */
+  .gate-group{margin-bottom:16px}
+  .gate-group h3{font-size:13px;color:var(--muted);font-weight:500;letter-spacing:.04em;margin-bottom:8px;display:flex;align-items:center;gap:7px}
+  .gate-group h3 span{font-family:var(--mono);font-size:11px;color:var(--accent)}
+  .chips{display:flex;flex-wrap:wrap;gap:6px}
+  .chip{
+    display:inline-flex;align-items:center;gap:5px;
+    border:1px solid var(--line);background:var(--card);border-radius:999px;
+    padding:4px 10px 4px 8px;font-family:var(--mono);font-size:11.5px;color:var(--ink-2);
+  }
+  .chip svg{width:12px;height:12px;color:var(--accent)}
+
+  /* ── gap list ── */
+  .gap-list{display:grid}
+  .gap{
+    display:grid;grid-template-columns:190px 1fr 210px;gap:4px 22px;
+    padding:16px 0;border-bottom:1px solid var(--line-soft);
+  }
+  .gap:last-child{border-bottom:0;padding-bottom:0}
+  .gap-name{font-size:14.5px;font-weight:600;color:var(--ink);line-height:1.45}
+  .gap-now{font-size:12.5px;color:var(--muted);margin-top:3px}
+  .gap-why{font-size:13.5px;color:var(--ink-2)}
+  .gap-eff{font-size:13.5px;color:var(--ink-2)}
+  @media (max-width:860px){
+    .gap{grid-template-columns:1fr;gap:8px}
+  }
+
+  /* ── decisions ── */
+  .dec-list{display:grid}
+  .dec{
+    display:grid;grid-template-columns:210px 1fr 104px;gap:3px 22px;
+    padding:15px 0;border-bottom:1px solid var(--line-soft);
+  }
+  .dec:last-child{border-bottom:0;padding-bottom:0}
+  .dec-name{font-size:14.5px;font-weight:600;color:var(--ink);line-height:1.45}
+  .dec-opts{font-size:12.5px;color:var(--muted);margin-top:3px}
+  .dec-rec{font-size:13.5px;color:var(--ink-2)}
+  .dec-rec b{color:var(--ink)}
+  .dec-eff{grid-column:2;font-size:12.5px;color:var(--muted)}
+  .dec-eff::before{content:"不决策的后果 · ";color:var(--warn)}
+  .dec-score{align-self:start;display:flex;align-items:center;gap:8px;justify-content:flex-end;padding-top:2px}
+  @media (max-width:860px){
+    .dec{grid-template-columns:1fr;gap:6px}
+    .dec-eff{grid-column:auto}
+    .dec-score{justify-content:flex-start;padding-top:4px}
+  }
+  .score-track{flex:1;height:6px;background:var(--line-soft);border-radius:4px;overflow:hidden;min-width:44px;max-width:70px}
+  .score-fill{height:100%;background:var(--accent);border-radius:4px}
+  .score-num{font-family:var(--mono);font-size:12px;color:var(--ink-2)}
+  .tag{display:inline-block;font-size:11px;padding:1px 7px;border-radius:5px;border:1px solid var(--line);color:var(--muted);white-space:nowrap;margin-bottom:4px}
+  .tag.hold{color:var(--warn);border-color:rgba(201,123,63,.4);background:var(--warn-soft)}
+  .tag.done{color:var(--accent);border-color:var(--accent-line);background:var(--accent-soft)}
+  .legend{
+    display:flex;flex-wrap:wrap;gap:18px;font-size:12px;color:var(--muted);
+    border-top:1px solid var(--line);margin-top:14px;padding-top:12px;
+  }
+  .legend b{color:var(--ink-2);font-weight:600}
+
+  /* ── next steps ── */
+  .steps{list-style:none;padding:0;margin:0;counter-reset:s}
+  .steps li{
+    counter-increment:s;position:relative;padding:0 0 18px 42px;
+  }
+  .steps li::before{
+    content:counter(s);position:absolute;left:0;top:1px;
+    width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;
+    font-family:var(--mono);font-size:13px;display:flex;align-items:center;justify-content:center;
+  }
+  .steps li::after{
+    content:"";position:absolute;left:13px;top:30px;bottom:2px;width:2px;background:var(--accent);opacity:.2;
+  }
+  .steps li:last-child::after{display:none}
+  .steps li:last-child{padding-bottom:0}
+  .steps strong{display:block;font-size:15px;color:var(--ink);margin-bottom:2px}
+  .steps span{font-size:13.5px;color:var(--ink-2)}
+
+  footer{
+    margin-top:56px;padding:20px 0 48px;border-top:1px solid var(--line);
+    font-size:12.5px;color:var(--muted);
+  }
+  .foot-grid{display:flex;flex-wrap:wrap;gap:8px 26px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <p class="eyebrow">归山记 · 剧情重构</p>
+    <h1>六个阶段全部做完，39 道门禁全绿</h1>
+    <p class="lead">
+      按《剧情重构完整交接文档》拆的六个阶段都已落地：每一阶段是一次本地提交，六个阶段就是六个回滚单位。
+      规则层改的每一处都重新生成了小程序产物，39 道门禁在干净的代码树上跑完、退出码 0。
+    </p>
+    <div class="hero-strip">
+      <div><span class="k">6 / 6</span><span class="l">阶段已完成</span></div>
+      <div><span class="k">39</span><span class="l">门禁全绿 · 退出码 0</span></div>
+      <div><span class="k">6</span><span class="l">可独立回滚的提交</span></div>
+      <div><span class="k warnish">0</span><span class="l">已推送 GitHub</span></div>
+    </div>
+    <div class="notice">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+      <div>当前 <code>--status</code> 判定为 <b>GREEN</b>（树哈希 <code>80721579</code>）—— 这棵树已经验过，不需要再跑一遍门禁。所有成果只在本地，没有推 GitHub。</div>
+    </div>
+  </header>
+
+  <section>
+    <div class="sec-head">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      <h2>六个阶段，做了什么</h2>
+    </div>
+    <p class="sec-sub">下面每条写的是「玩家能感觉到什么」，不是代码改在哪个文件。</p>
+    <ol class="timeline">
+      <li>
+        <div class="tl-head"><span class="tl-stage">阶段 0</span><span class="tl-sha">be47686</span><span class="tl-stat">43 文件 · +895 / −4987</span></div>
+        <div class="tl-title">清理网页端，只留小程序端</div>
+        <div class="tl-player">玩家感觉不到变化——这是给内部减负。原来挂在浏览器上的状态断言全部搬回 Node 侧跑，顺带砍掉近 5000 行网页端代码。</div>
+      </li>
+      <li>
+        <div class="tl-head"><span class="tl-stage">阶段 1</span><span class="tl-sha">d10ab06</span><span class="tl-stat">10 文件 · +138 / −24</span></div>
+        <div class="tl-title">年速改成「按境界基础寿元分档」</div>
+        <div class="tl-player">以前一年的白描一眨眼就过去了，读不完。现在每一年的时间被拉长到「读得完」的节奏——这一项是六阶段里玩家体感最强的一条。</div>
+      </li>
+      <li>
+        <div class="tl-head"><span class="tl-stage">阶段 2</span><span class="tl-sha">0b90675</span><span class="tl-stat">11 文件 · +868 / −91</span></div>
+        <div class="tl-title">密度指标不再假绿</div>
+        <div class="tl-player">玩家当下感觉不到，但决定了以后「会不会又把游戏做得太挤」。原来的豁免名单一刀切掉了 68% 的卡，密度闸永远是绿的；现在拆成「结构性 / 日常」两类，改成三把尺各量各的。</div>
+      </li>
+      <li>
+        <div class="tl-head"><span class="tl-stage">阶段 3</span><span class="tl-sha">48f2963</span><span class="tl-stat">35 文件 · +4133 / −911</span></div>
+        <div class="tl-title">剧情结构成型</div>
+        <div class="tl-player">每条命开头有一段只属于你的身世（12 条背景，必答）；一条长线走完，接缝卡把它接到下一段；凡人线从 50 张收窄到 5 张，其余 45 张停用但没删，放回来只改一处。</div>
+      </li>
+      <li>
+        <div class="tl-head"><span class="tl-stage">阶段 4</span><span class="tl-sha">e4ba13f</span><span class="tl-stat">13 文件 · +775 / −29</span></div>
+        <div class="tl-title">触达复量 + 修两个真 bug</div>
+        <div class="tl-player">接头卡被队列过滤误删（走完一条长线接不上下一段）、急讯打断行动会崩存档——两个都修了。另外确认了「抽中机会却没发出来」在结构上不可能发生。</div>
+      </li>
+      <li>
+        <div class="tl-head"><span class="tl-stage">阶段 5</span><span class="tl-sha">64097e9</span><span class="tl-stat">14 文件 · +963 / −34</span></div>
+        <div class="tl-title">旁白加密：人生经历与选择配平</div>
+        <div class="tl-player">官方是每 1 张决策卡配 6.5 条人生经历，我们是 4.0 —— 白描太少、选项太挤。现在补到 6.45，且决策卡一张没多（41 张不变），加的是「当时正在发生」的场景。</div>
+      </li>
+    </ol>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+      <h2>玩家能感觉到的变化</h2>
+    </div>
+    <p class="sec-sub">四组数字全部用同一批 120 条命量出来的，改前改后同种子对照。条形长度按同一把尺换算。</p>
+    <div class="card">
+      <div class="cmp-list">
+
+        <div class="cmp">
+          <div class="cmp-head"><span class="cmp-name">一生总时长</span><span class="muted small">从「来不及读」变成「读得完」</span></div>
+          <div class="cmp-row"><span class="cmp-tag">改前</span><div class="cmp-track"><div class="cmp-fill before" style="width:19%"></div></div><span class="cmp-val">11.8 分</span></div>
+          <div class="cmp-row"><span class="cmp-tag">改后</span><div class="cmp-track"><div class="cmp-fill after" style="width:66%"></div></div><span class="cmp-val">40.4 分</span></div>
+          <div class="cmp-row"><span class="cmp-tag">官方</span><div class="cmp-track"><div class="cmp-fill official" style="width:100%"></div></div><span class="cmp-val">61 分</span></div>
+        </div>
+
+        <div class="cmp">
+          <div class="cmp-head"><span class="cmp-name">相邻两张卡的间隔</span><span class="muted small">16–26 岁那段，正是玩家最需要喘口气的时候</span></div>
+          <div class="cmp-row"><span class="cmp-tag">改前</span><div class="cmp-track"><div class="cmp-fill before" style="width:16%"></div></div><span class="cmp-val">10.7 秒</span></div>
+          <div class="cmp-row"><span class="cmp-tag">改后</span><div class="cmp-track"><div class="cmp-fill after" style="width:92%"></div></div><span class="cmp-val">61.4 秒</span></div>
+          <div class="cmp-row"><span class="cmp-tag">官方</span><div class="cmp-track"><div class="cmp-fill official" style="width:100%"></div></div><span class="cmp-val">43–67 秒</span></div>
+        </div>
+
+        <div class="cmp">
+          <div class="cmp-head"><span class="cmp-name">人生经历 : 决策卡</span><span class="muted small">条越长代表白描越足、选项不被淹没</span></div>
+          <div class="cmp-row"><span class="cmp-tag">改前</span><div class="cmp-track"><div class="cmp-fill before" style="width:62%"></div></div><span class="cmp-val">4.00</span></div>
+          <div class="cmp-row"><span class="cmp-tag">改后</span><div class="cmp-track"><div class="cmp-fill after" style="width:99.8%"></div></div><span class="cmp-val">6.45</span></div>
+          <div class="cmp-row"><span class="cmp-tag">官方</span><div class="cmp-track"><div class="cmp-fill official" style="width:100%"></div></div><span class="cmp-val">6.46</span></div>
+        </div>
+
+        <div class="cmp">
+          <div class="cmp-head"><span class="cmp-name">真实时间里，两条经历隔多久</span><span class="cmp-dir">↓ 越低越密（官方最密）</span></div>
+          <div class="cmp-row"><span class="cmp-tag">改前</span><div class="cmp-track"><div class="cmp-fill before" style="width:100%"></div></div><span class="cmp-val">18.0 秒</span></div>
+          <div class="cmp-row"><span class="cmp-tag">改后</span><div class="cmp-track"><div class="cmp-fill after" style="width:69%"></div></div><span class="cmp-val">12.5 秒</span></div>
+          <div class="cmp-row"><span class="cmp-tag">官方</span><div class="cmp-track"><div class="cmp-fill official" style="width:51%"></div></div><span class="cmp-val">9.2 秒</span></div>
+        </div>
+
+      </div>
+      <div class="legend">
+        <span><b>决策卡数没变</b>　41 张（官方 56 张），阶段 5 加的全是旁白不是选项</span>
+        <span><b>决策卡节奏对上了</b>　0.87 张/分，官方同为 0.87</span>
+        <span><b>一生经历条数</b>　162 → 263 条（官方 362）</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+      <h2>门禁现状：39 道全绿</h2>
+    </div>
+    <p class="sec-sub">在干净代码树上跑完，退出码 0。其中 7 道是「反向验证」——故意注入坏值，必须报红才算数。</p>
+    <div class="card">
+      <div class="gate-group">
+        <h3>规则层与内容 <span>20</span></h3>
+        <div class="chips">
+          <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>unit</span>
+          <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>mundane-unit</span>
+          <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>rules12-unit</span>
+          <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>gates-unit</span>
+          <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>joint-unit</span>
+          <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>rules12-audit</span>
+          <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>mundane-audit</span>
+          <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>story-audit</span>
+          <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>life-simulation</span>
+          <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>eventsfid</span>
+          <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>eventseq</span>
+          <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>boundaries</span>
+          <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>cadence</span>
+          <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>chains</span>
+          <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>reach</span>
+          <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>narration</span>
+          <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>expressions</span>
+          <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>eventexpressions</span>
+          <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>contentmodules</span>
+          <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>metrics</span>
+        </div>
+      </div>
+      <div class="gate-group">
+        <h3>完备度与反向体检 <span>6</span></h3>
+        <div class="chips">
+          <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>items</span>
+          <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>plot</span>
+          <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>completeness</span>
+          <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>t9reverse</span>
+          <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>t10reverse</span>
+          <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>t11reverse</span>
+        </div>
+      </div>
+      <div class="gate-group">
+        <h3>小程序端 <span>8</span></h3>
+        <div class="chips">
+          <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>xianxiabuild</span>
+          <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>xianxiacycle</span>
+          <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>xianxiaeq</span>
+          <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>xianxiastore</span>
+          <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>xianxiaart</span>
+          <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>xianxiamp</span>
+          <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>xianxiastyle</span>
+          <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>xianxiastandalone</span>
+        </div>
+      </div>
+      <div class="gate-group" style="margin-bottom:0">
+        <h3>仓库与工具 <span>5</span></h3>
+        <div class="chips">
+          <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>pixelstyle</span>
+          <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>check</span>
+          <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>import</span>
+          <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>repohygiene</span>
+          <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>viz-browser</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+      <h2>还没做完的（4 项已知缺口）</h2>
+    </div>
+    <p class="sec-sub">这四项都不是漏掉了，是有理由留到后面。每一项都写清了「为什么现在不动」和「不动会怎样」。</p>
+    <div class="card">
+      <div class="gap-list">
+        <div class="gap">
+          <div>
+            <div class="gap-name">原有旁白通道<br>漏 77.6%</div>
+            <div class="gap-now">每条命到期 63 次，只发出 14 次</div>
+          </div>
+          <div class="gap-why">修它会动到「这一批候选卡发哪一张」的随机流 ⇒ 整条决策序列跟着变 ⇒ 得单走一轮行为变更流程、独立提交、独立基线。</div>
+          <div class="gap-eff"><span class="tag hold">影响中</span><br>旁白还能再涨一截（14 → 63 条），但现在已经到官方 6.46 附近，不急。</div>
+        </div>
+        <div class="gap">
+          <div>
+            <div class="gap-name">全卡口径<br>5 年密度</div>
+            <div class="gap-now">规格目标 8，实测 P90 = 9</div>
+          </div>
+          <div class="gap-why">先按「今天实测值」钉住硬底线，缺口写在明面上（沿用此前同一套先例），等密度真的超标再动。</div>
+          <div class="gap-eff"><span class="tag hold">影响小</span><br>只比规格松一格，闸口径与日常口径都还在限内。</div>
+        </div>
+        <div class="gap">
+          <div>
+            <div class="gap-name">高境界<br>突破间隔</div>
+            <div class="gap-now">规格 ≤ 15 年；实测 炼气 5 / 筑基 4 / 金丹 27 / 元婴 51 年</div>
+          </div>
+          <div class="gap-why">已登记进完备度缺口台账（门禁盯着它，缺口被悄悄补上也会报红）。</div>
+          <div class="gap-eff"><span class="tag hold">影响大</span><br>玩家到了金丹以后升级很慢 —— 这是四项里最值得下一轮处理的。</div>
+        </div>
+        <div class="gap">
+          <div>
+            <div class="gap-name">零触达卡<br>115 张</div>
+            <div class="gap-now">凡人线有意停用 45 + 矩阵空格 19 + 备用编号 25 + 兜底 7 + 变体 4 + 接头收尾 2 + 人脉 2 + 宗门 5</div>
+          </div>
+          <div class="gap-why">分族登记在台账里，每族写一句「为什么到不了」；用两种策略（固定偏好 ∪ 随机探索）各跑 200 条命交叉验证过。</div>
+          <div class="gap-eff"><span class="tag done">已查清</span><br>结构上到不了，不是内容缺口 —— 不用修。</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      <h2>需要你决策的（8 项）</h2>
+    </div>
+    <p class="sec-sub">每一项我都给了推荐方案和一个分。<b>推荐分 = 我有多确定这个推荐是对的</b>（0–100）；分越低说明它越依赖你的口味，而不是技术事实。</p>
+    <div class="card">
+      <div class="dec-list">
+        <div class="dec">
+          <div>
+            <div class="dec-name">六阶段成果<br>要不要推 GitHub</div>
+            <div class="dec-opts">选项：推 / 先不推</div>
+          </div>
+          <div>
+            <div class="dec-rec"><b>推</b>——门禁已 GREEN、六阶段各自独立可回滚，本地存着反而有丢失风险。</div>
+            <div class="dec-eff">成果只在本机，换台机器就没了。</div>
+          </div>
+          <div class="dec-score"><div class="score-track"><div class="score-fill" style="width:80%"></div></div><span class="score-num">80</span></div>
+        </div>
+        <div class="dec">
+          <div>
+            <div class="dec-name">旧档 rules 8–11<br>要不要套新年速</div>
+            <div class="dec-opts">选项：一起套 / 只套新档</div>
+          </div>
+          <div>
+            <div class="dec-rec"><b>一起套</b>——年速是纯呈现层，规则结果一个字节都不变；分开套会让同一款游戏在不同存档里节奏不一致。</div>
+            <div class="dec-eff">老存档还是「一年一眨眼」，读不完。</div>
+          </div>
+          <div class="dec-score"><div class="score-track"><div class="score-fill" style="width:88%"></div></div><span class="score-num">88</span></div>
+        </div>
+        <div class="dec">
+          <div>
+            <div class="dec-name">开发者面板<br>删不删</div>
+            <div class="dec-opts">选项：A 保留不扩展 / B 一起删</div>
+          </div>
+          <div>
+            <div class="dec-rec"><b>A（保留、不扩展）</b>——新对话里它是最快的「看现状」入口；删了要动 3 个脚本 + 文档一整节，收益只是省 332 KB 代码。</div>
+            <div class="dec-eff">维持现状（保留、不扩展）也能继续推进。</div>
+          </div>
+          <div class="dec-score"><div class="score-track"><div class="score-fill" style="width:82%"></div></div><span class="score-num">82</span></div>
+        </div>
+        <div class="dec">
+          <div>
+            <div class="dec-name">凡人线<br>最终留哪 5 张</div>
+            <div class="dec-opts">选项：沿用当前 5 张 / 换候选</div>
+          </div>
+          <div>
+            <div class="dec-rec"><b>沿用当前 5 张</b>——其余 45 张是「停用不删」，放回来只改一处 ⇒ 现在定错的成本很低，随时能换。</div>
+            <div class="dec-eff">当前 5 张已经在跑，不影响交付。</div>
+          </div>
+          <div class="dec-score"><div class="score-track"><div class="score-fill" style="width:78%"></div></div><span class="score-num">78</span></div>
+        </div>
+        <div class="dec">
+          <div>
+            <div class="dec-name">年速系数 K<br>最终定多少</div>
+            <div class="dec-opts">选项：5400（现）/ 4800 / 6000</div>
+          </div>
+          <div>
+            <div class="dec-rec"><b>先定 5400</b>——相邻卡间隔 61.4 秒已经落在官方 43–67 秒区间内；K 只是一个常数，想调随时可调。</div>
+            <div class="dec-eff">维持 5400，等真机手感再调。</div>
+          </div>
+          <div class="dec-score"><div class="score-track"><div class="score-fill" style="width:75%"></div></div><span class="score-num">75</span></div>
+        </div>
+        <div class="dec">
+          <div>
+            <div class="dec-name">原有旁白漏出<br>现在修不修</div>
+            <div class="dec-opts">选项：现在修 / 单走一轮</div>
+          </div>
+          <div>
+            <div class="dec-rec"><b>单走一轮</b>——改它会动整条决策序列，得独立提交 + 重新基线；收益（旁白 14→63）比风险小，但值得单独一次。</div>
+            <div class="dec-eff">维持现状，缺口挂在台账上。</div>
+          </div>
+          <div class="dec-score"><div class="score-track"><div class="score-fill" style="width:72%"></div></div><span class="score-num">72</span></div>
+        </div>
+        <div class="dec">
+          <div>
+            <div class="dec-name">背景故事线表<br>12 条具体条目</div>
+            <div class="dec-opts">选项：你过目定稿 / 直接沿用</div>
+          </div>
+          <div>
+            <div class="dec-rec"><b>你过目定稿</b>——12 条已在跑（8+4 起草），但文字没经过你拍板；这是「内容口味」而不是技术判断。</div>
+            <div class="dec-eff">沿用现稿，措辞以后再润。</div>
+          </div>
+          <div class="dec-score"><div class="score-track"><div class="score-fill" style="width:70%"></div></div><span class="score-num">70</span></div>
+        </div>
+        <div class="dec">
+          <div>
+            <div class="dec-name">宗门部门<br>具体是哪些</div>
+            <div class="dec-opts">选项：只做可选项 / 连数值一起做</div>
+          </div>
+          <div>
+            <div class="dec-rec"><b>只做可选项</b>（照交接文档原话）——需要你给一个部门方向，否则这层没法开工。</div>
+            <div class="dec-eff">这一项本轮没开工，不影响前六阶段。</div>
+          </div>
+          <div class="dec-score"><div class="score-track"><div class="score-fill" style="width:65%"></div></div><span class="score-num">65</span></div>
+        </div>
+      </div>
+      <div class="legend">
+        <span><b>推荐分 ≥ 85</b>　技术事实撑着，直接照做就行</span>
+        <span><b>70–84</b>　工程上稳，但可以按你口味换</span>
+        <span><b>&lt; 70</b>　纯内容口味，得你拍板</span>
+        <span><b>影响面</b>　由大到小：高境界突破间隔 &gt; 旁白漏出 &gt; 推 GitHub &gt; 其余</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      <h2>接下来建议这么做</h2>
+    </div>
+    <ol class="steps">
+      <li>
+        <strong>先推 GitHub</strong>
+        <span>六阶段已完成、门禁 GREEN、本地领先 21 个提交。推之前不用再跑门禁——代码树没动，跑第二遍什么都不多证明。</span>
+      </li>
+      <li>
+        <strong>过目 12 条背景 + 凡人线 5 张</strong>
+        <span>这两项是纯内容口味，改起来便宜（背景是必答卡、凡人线停用可随时放回），但改完要重跑内容层门禁。</span>
+      </li>
+      <li>
+        <strong>下一轮攻「高境界突破间隔」</strong>
+        <span>这是四项已知缺口里玩家感知最强的——金丹以后 27 年、元婴以后 51 年才破一境。它是「内容多少」问题，不是规则问题，动了不用重做基线以外的东西。</span>
+      </li>
+      <li>
+        <strong>最后才碰原有旁白通道</strong>
+        <span>它会动整条决策序列，值得单独一次提交、单独一次基线，别跟别的混在一起。</span>
+      </li>
+    </ol>
+  </section>
+
+  <footer>
+    <div class="foot-grid">
+      <span>归山记 · 剧情重构六阶段进度汇报</span>
+      <span>数据截止 2026-11-08 · HEAD <code>64097e9</code></span>
+      <span>门禁树哈希 <code>80721579</code> · GREEN</span>
+      <span>六阶段全部仅本地提交，未推送 GitHub</span>
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>

@@ -1509,8 +1509,8 @@
       },
       {
         "path": "scripts/gen-source-manifest.mjs",
-        "bytes": 30028,
-        "sha256": "f979e256a84b08abe22cc170851677d4de0cff03a2c7804245c004e66f0eaf47"
+        "bytes": 30256,
+        "sha256": "260c95a88bcdf3f4b7e162dc2340bfb03af5f0534dbed36b03fabb2b7f5c3f31"
       },
       {
         "path": "scripts/test-xianxia-standalone.mjs",
@@ -1529,8 +1529,8 @@
       },
       {
         "path": "AGENTS.md",
-        "bytes": 38199,
-        "sha256": "58ea316a15c2f48f2f5a3646f5a6504af26c12e194afde2bd7a7c1ee5a28d0b3"
+        "bytes": 38651,
+        "sha256": "58e3a920aa216008bba0b5aeeb052c7cf6b5790f389d712e6bb0120610740919"
       },
       {
         "path": "README.md",
@@ -2051,6 +2051,11 @@
         "path": "docs/narration-density.md",
         "bytes": 9650,
         "sha256": "3c081c9741494739eb2a0adc17517b39bb49162608f13b60dc04b79278382ac5"
+      },
+      {
+        "path": "docs/refactor-progress-2026-11-08.html",
+        "bytes": 38874,
+        "sha256": "8886442cd010efa3f38abb9b45ea8457a808ce768f658bab85f0a47faf8e2287"
       }
     ]
   }

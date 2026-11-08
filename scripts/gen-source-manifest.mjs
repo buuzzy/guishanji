@@ -226,6 +226,9 @@ const ADDED = [
   'content/cultivation-scenes.js',
   'scripts/audit-narration.mjs',
   'docs/narration-density.md',
+  /* 2026-11-08：六阶段进度汇报页（给人看的一页 HTML：做了什么 / 还没做什么 /
+   * 需要拍板的项）。纯文档，不进小程序包、不进 dist。 */
+  'docs/refactor-progress-2026-11-08.html',
   /* 2026-11-08：开发者面板（`apps/viz/`）—— 观测台，不进小程序包也不进 dist。
    * `decide-policy.js` 是从 `play-cultivation.mjs` 里搬出来的同一份策略，
    * 搬出来是为了让浏览器也能 import 它（面板的「固定偏好」与各审计脚本同源）。 */

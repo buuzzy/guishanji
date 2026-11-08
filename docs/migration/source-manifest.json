@@ -1367,8 +1367,8 @@
         "sourceBytes": 10904,
         "sourceSha256": "40de1002d7f850a8dfee57259230dd3568ec5efeabe8b7879b891a6f34e7b50b",
         "path": "docs/xianxia-device-checklist.md",
-        "currentBytes": 11059,
-        "currentSha256": "8ccd00d00ca084d8852bc776d7397b18070ab1e0330dd5ae98f0577a49a16335",
+        "currentBytes": 13254,
+        "currentSha256": "da138612d26aad7779b92d5148c92829adfc003a993e852a7ad12ab6d68007b9",
         "reason": "2026-11-08 清旧档：第 42 条「旧存档还在」改成「旧存档被清掉」——旧版一律拒收且清干净（清不掉就存不进新档），清单同步改了验法"
       }
     ],
@@ -1511,8 +1511,8 @@
       },
       {
         "path": "scripts/gen-source-manifest.mjs",
-        "bytes": 31827,
-        "sha256": "cac817a771c0ec4c01bd9731cd9ae36a3f269d0ddba9599a3954b3d0f73bb61f"
+        "bytes": 32105,
+        "sha256": "ad134abd6fb6352b1eb4fae0f271b675b13e4763e8b6786445afe9e43c62107f"
       },
       {
         "path": "scripts/test-xianxia-standalone.mjs",
@@ -1531,8 +1531,8 @@
       },
       {
         "path": "AGENTS.md",
-        "bytes": 37372,
-        "sha256": "e41fadcd0d4edc74a5232aa43878a8ed298fd8883d846ea7d7ec6d348991c888"
+        "bytes": 37790,
+        "sha256": "8f436c8a99cdbe4e365c5dce003ad598d25f913b97ce0f072b02921bf20823d0"
       },
       {
         "path": "README.md",
@@ -1951,8 +1951,8 @@
       },
       {
         "path": "docs/refactor-progress-2026-11-08.html",
-        "bytes": 39006,
-        "sha256": "24e88c712cbc1508e9dd7674043a45cbd57d7d66716b2373ec18ca36f6581ca2"
+        "bytes": 41811,
+        "sha256": "62a15ba0a683e2c9c4318bfd55ea59b7aeb3f81f1ee9303d72d84068002d1198"
       },
       {
         "path": "docs/refactor-decision-2026-11-08.html",
@@ -1978,6 +1978,11 @@
         "path": "tests/focus.test.mjs",
         "bytes": 6833,
         "sha256": "3520886d29201af3ed6f34e365fe76ff7f2f2907c48c3775f0af3358fdd92191"
+      },
+      {
+        "path": "docs/剧情设计框架.md",
+        "bytes": 85211,
+        "sha256": "4bb5fa6e71a3a6c0d6d250c2bd741d08eca1e8015f6e9da6d36d40632fecd49f"
       }
     ]
   }

@@ -60,11 +60,15 @@
 ⇒ 这三条都有**反向验证**（`scripts/test-xianxia-storage.mjs` 第 ⑪ 节）：
 坏清单不被删、同号人生的新分片不被连累、旧档后到时新人生也存得进去。
 
-**⚠ 零行为变化（已逐条验过）：**
+**⚠ 清旧档那一步是零行为变化（已逐条验过）：**
 
-- 事件表 `CULTIVATION_EVENTS` **347 张卡、摘要 `fe61d69dafbeeec2` 一个字节没变**。
-- 固定种子的 **12 条人生 / 366 步决策序列逐条全等**（`eventseq` 基线重算后与旧基线逐条相同）。
+- 事件表 `CULTIVATION_EVENTS` **一个字节没变**（清旧档只删文件，不动内容层；
+  ⚠ 原来这里写的「347 张卡、摘要 `fe61d69dafbeeec2`」是抄旧文档的 —— 
+  **现在是 352 张、摘要 `3edb546862a00a80`**（以 `tests/fixtures/events-versions.json` 为准）。
+- 固定种子的 **12 条人生 / 348 步**决策序列逐条全等（清旧档当时 `eventseq` 基线与旧基线逐条相同）。
 - ⇒ 清旧档只删了「跑不到的那条路」，**没有动任何一条现在在跑的路**。
+- ⚠ **但阶段 2「体验优化」是有意行为变更**（重心加成改了冲关时机）⇒
+  `eventseq` 基线重算为 **364 步**，理由写在那次提交的说明里。
 
 ## 1.5 播放速度（年速）是**呈现层**，不是规则
 
@@ -127,7 +131,7 @@
 
 | 清单 | 住在哪 | 管什么 |
 | --- | --- | --- |
-| **背景故事线表**（12 条） | `content/background-stories.js`（叶子文件） | 一条背景 = 一张必答卡，**只指向一条路**；模数按「这条命能走的路」取（无缘的命只从 4 条无缘故事里选）；**绝不改灵根** |
+| **背景故事线表**（15 条） | `content/background-stories.js`（叶子文件） | 一条背景 = 一张必答卡，**只指向一条路**；模数按「这条命能走的路」取（无缘的命只从 4 条无缘故事里选）；**绝不改灵根** |
 | **凡人线在用的五张** | `content/mundane-kept.js`（叶子文件） | 凡人线单命 ≤ 5 张；其余 45 张**停用但不删**（正文、选项、表达域说法全在）⇒ 放回来只改这一处 |
 | **下一拍（接头卡）** | `content/cultivation-joints.js` | 规则函数 `nextBeat12(线, 收尾)` 决定下一条路的可达集合：`open` 全开 / `hold` 只开「接一半」/ `take` 两档都关 |
 
@@ -315,7 +319,7 @@ node scripts/run-regression.mjs        # 全量回归
 | `xianxiastyle` | `scripts/test-xianxia-style.mjs` | 与官方**对齐**：样式逐字节一致、倍速/转盘/雕版同源、字号口径 |
 | `xianxiastandalone` | `scripts/test-xianxia-standalone.mjs` | 独立产品：运行代码不碰 1in8b 任何路径与存档键 |
 | `repohygiene` | `scripts/test-repo-hygiene.mjs` | 仓库不许长胖到把微信开发者工具压垮（文件数 / 体积 / 浏览器临时档案） |
-| `eventexpressions` | `scripts/verify-event-expressions.mjs` | 修仙线 285 张卡的表达域：一条不漏、提示语数对齐、正文 ≤ 90 字、分支一致、专名双向、**选项不泄露内部成功率**、逐值全等 |
+| `eventexpressions` | `scripts/verify-event-expressions.mjs` | 修仙线 352 张卡的表达域：一条不漏、提示语数对齐、正文 ≤ 90 字、分支一致、专名双向、**选项不泄露内部成功率**、逐值全等 |
 | `reach` | `scripts/audit-reach.mjs` | 触达：**两种策略**（固定偏好 ∪ 随机探索）各 200 条命 ⇒ 零崩溃、真零触达不超台账、每条长线「有机会必发出」 |
 | `narration` | `scripts/audit-narration.mjs` | 叙述密度：一生流水 ÷ 一生决策卡落在 **[6.3, 8.0]**（官方 6.46）、每条路径 ≥ 5.5、场景池没有发霉（且走池步长与池长互素）、**场景通道不许消耗任何随机流** |
 | `completeness` | `scripts/audit-completeness.mjs` | 内容完备度：硬底线（故事线/各境内容/长线/结局/灵根/晚年）+ 已知缺口台账 |

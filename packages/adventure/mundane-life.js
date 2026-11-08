@@ -1,6 +1,7 @@
 import {hashText} from '../core/random.js';
 import {GEOGRAPHY} from '../../content/cultivation-world.js';
 import {NOVEL_NAMES} from '../../content/novel-names.js';
+import {MUNDANE_KEPT} from '../../content/mundane-kept.js';
 import {canCultivate,route} from './story-rules10.js';
 
 export const activeMundane=s=>s.life?.cultivation?.rulesVersion>=11;
@@ -8,6 +9,25 @@ export const mundane=s=>s.life?.cultivation?.mundane;
 const c=s=>s.life.cultivation;
 const years=s=>(s.birth.startAge||0)+Math.floor(s.month/12);
 const roll=(s,key)=>hashText(s.seed+':mortal11:'+key)%100;
+/*
+ * ⚠ **凡人线五张直线**（2026-11-08 · 阶段 3.3）
+ * ------------------------------------------------
+ * 交接文档要求：**凡人线单命触发 ≤ 5 张卡**（改前实测 12–20 张）。
+ *
+ * ⇒ 新的人生（规则十二）走 `MUNDANE_KEPT` 那五张：
+ *   起（落选选活计）→ 承（立业）→ 转（成家的打算）→ 合（河滩遗物与代价）→ 结（交代后事）。
+ *
+ * ⚠ **只有新人生走这条路**：
+ *   · 规则十一（旧版本）的事件表是冻结快照 ⇒ 它的人生必须继续走原来的弧制
+ *     ⇒ `step` 只在规则十二的新人生里才有；
+ *   · 阶段 3.3 之前存的规则十二旧档也没有 `step` ⇒ 继续走原来的弧制（**旧档不卡住**）。
+ *
+ * ⚠ **停用的 45 张卡一个字都没删**（正文、选项、表达域说法全在），
+ *   只是不再发出去 ⇒ 放回来只要改 `content/mundane-kept.js` 一处。
+ */
+const plan12=s=>c(s).rulesVersion>=12&&typeof mundane(s).step==='number'&&mundane(s).step>=0;
+/** 凡人的收尾之年（与版本无关的那个口径抽成一处）。 */
+const endAge=s=>c(s).rulesVersion===12?Math.max(45,c(s).v12.body.natural-c(s).v12.body.loss-4):78;
 const log=(s,cb,title,body,kind='life')=>{cb.log({kind,title,body,automatic:true,location:s.player.location,context:c(s).context||'home'});s.life.automaticCount++;mundane(s).lastVisible=s.month;};
 export const JOBS={yard:'外院杂役',shop:'药铺伙计',farm:'田户',carrier:'商队脚夫'};
 export function initializeMundane(s){
@@ -15,7 +35,10 @@ export function initializeMundane(s){
  function name(role,sex){const pool=NOVEL_NAMES.filter(p=>p.sex===sex);let i=hashText(s.seed+':mundane-person:'+role)%pool.length;for(let n=0;n<pool.length;n++,i=(i+1)%pool.length)if(!used.has(pool[i].name)){used.add(pool[i].name);return pool[i].name;}throw Error('人物姓名池耗尽');}
  c(s).mundane={format:1,started:false,job:null,home:c(s).continent,money:0,grain:0,debt:0,earned:0,spent:0,workMonths:0,trust:0,stage:0,next:0,quietAt:0,lastVisible:0,cycle:0,daily:[],done:[],arc:null,action:null,
   people:[{id:'employer',name:name('employer','M'),role:'药铺师傅',status:'alive',born:-360,deathAt:660,location:c(s).continent,known:false},{id:'worker',name:name('worker',s.player.sex==='M'?'F':'M'),role:'同住的伙计',status:'alive',born:-12,deathAt:1020,location:c(s).continent,known:false},{id:'boatman',name:name('boatman','M'),role:'运药船工',status:'alive',born:-240,deathAt:816,location:c(s).continent,known:false},{id:'healer',name:name('healer','F'),role:'游方修士，懂残缺植灵法',status:'alive',born:-720,deathAt:2400,location:c(s).continent,known:false}],
-  spouse:null,child:null,lifeOrder:Array.from({length:12},(_,i)=>i).sort((a,b)=>hashText(s.seed+':life-card:'+a)-hashText(s.seed+':life-card:'+b)),local:{place:c(s).continent,regime:0,kind:null,until:0,tax:0,history:[]},corpse:null,gift:null,ledger:null,notes:[],assets:[],lastChoice:0};
+  spouse:null,child:null,lifeOrder:Array.from({length:12},(_,i)=>i).sort((a,b)=>hashText(s.seed+':life-card:'+a)-hashText(s.seed+':life-card:'+b)),local:{place:c(s).continent,regime:0,kind:null,until:0,tax:0,history:[]},corpse:null,gift:null,ledger:null,notes:[],assets:[],lastChoice:0,
+ /* ⚠ 五张直线走到第几张了（**只有规则十二的新人生有**这个键；旧版本 / 旧档没有 ⇒ 走原来的弧制）。
+    ⚠ 键是「有或没有」，不能写成 `step: undefined` —— 那会给存档多出一个空键。 */
+ ...(c(s).rulesVersion>=12?{step:0}:{})};
 }
 export const person=(s,id)=>mundane(s).people.find(p=>p.id===id);
 export const personName=(s,id)=>person(s,id)?.name||'当地人';
@@ -124,10 +147,26 @@ export function mundaneMonth(s,cb){
    else alert(s,cb,id);
   }return true;
  }
- if(m.child?.status==='alive'&&!m.child.tested&&s.month-m.child.born>=120){m.child.tested=true;beginArc(s,cb,'child');return true;}
+ if(m.child?.status==='alive'&&!m.child.tested&&s.month-m.child.born>=120&&!plan12(s)){m.child.tested=true;beginArc(s,cb,'child');return true;}
  if(s.month>=m.quietAt)ordinary(s,cb);
  if(s.month<m.next)return true;
- if(years(s)>=(c(s).rulesVersion===12?Math.max(45,c(s).v12.body.natural-c(s).v12.body.loss-4):78)){alert(s,cb,'m11_end');return true;}
+ /*
+  * ⚠⚠ **五张直线**（规则十二 · 阶段 3.3）——
+  *   只发 `MUNDANE_KEPT` 那五张，其余 45 张**保留但不再发**。
+  *   ⇒ 凡人线单命触发 ≤ 5 张（交接文档的验收口径）。
+  *
+  * ⚠ **「结」那张不是接在「合」后面就发** —— 它要等到寿限那几年
+  *   （与原来的口径一样：凡人的收尾在将尽之年，不在壮年）。
+  */
+ if(plan12(s)){
+  const next=MUNDANE_KEPT[m.step];
+  if(next==='m11_end'){
+   if(years(s)>=endAge(s)){alert(s,cb,'m11_end');return true;}
+   m.next=s.month+12;return true;
+  }
+  if(next){alert(s,cb,next);return true;}
+ }
+ if(years(s)>=endAge(s)){alert(s,cb,'m11_end');return true;}
  const candidates=[];
  if(m.workMonths>=24&&!m.done.includes('work')&&roll(s,'work')<75)candidates.push('work');
  if(m.job==='shop'&&m.workMonths>=72&&person(s,'employer').status==='alive'&&!m.done.includes('shop')&&roll(s,'shop')<70)candidates.push('shop');
@@ -153,7 +192,38 @@ export function mundaneBegin(s,selected){
 export function mundaneComplete(s,event,id,cb){
  const m=mundane(s);if(!m?.started)return;const success=s.decisions.find(d=>d.event===event&&d.choice===id)?.success!==false;
  c(s).context=null;m.action=null;m.lastVisible=s.month;
- if(event==='m11_start'){changeJob(s,id);done(s,24);return;}
+ if(event==='m11_start'){changeJob(s,id);if(plan12(s))m.step=1;done(s,24);return;}
+ /*
+  * ⚠⚠ **五张直线**（规则十二 · 阶段 3.3）——
+  *   这三张原来是各自弧里的**某一步**，各有各的前因；
+  *   现在它们**单独成卡** ⇒ 前因由这里就地补上（自足）。
+  *
+  * ⚠ **旧档 / 规则十一**不走这里（`plan12` 为假）⇒ 继续走原来的弧制，一字不改。
+  */
+ if(plan12(s)){
+  if(event==='m11_work_2'){
+   /* 承：立业 —— 管事把带新人的差事交给你；或你交清旧活，去药铺谋生。 */
+   if(id==='lead'){m.stage=2;c(s).rank={yard:'外院管事',shop:'药铺熟手',farm:'田庄熟手',carrier:'商队领工'}[m.job];}
+   if(id==='leave')changeJob(s,'shop');
+   m.step=2;done(s,24);return;
+  }
+  if(event==='m11_family_1'){
+   /* 转：一次意外（家事）—— 同住熟人问你要不要正式一起过日子。 */
+   if(id==='marry'){const p=person(s,'worker');m.spouse={...p,id:'spouse',role:'伴侣',known:true};p.known=false;m.trust+=4;}
+   m.step=3;done(s,24);return;
+  }
+  if(event==='m11_corpse_0'){
+   /* 合：转机与代价 —— 河滩上那具修士尸身，取走还是报信。 */
+   const truth=roll(s,'corpse-truth')%3;
+   m.corpse={truth,origin:c(s).continent,found:s.month,taken:false,witness:false,sale:false,report:false,buried:false,trace:false,closed:false,warning:false};
+   person(s,'boatman').known=true;person(s,'boatman').location=c(s).continent;
+   if(id==='report')m.corpse.report=true;
+   if(id==='bury'){m.corpse.buried=true;m.notes.push('corpse-mark');}
+   if(id==='take'){m.corpse.taken=true;m.corpse.witness=true;cb.apply({items:['mortal_wood','mortal_sword']});}
+   if(id==='leave')m.corpse.closed=true;
+   m.step=4;done(s,24);return;
+  }
+ }
  if(event.startsWith('m11_life_')){
   if(id==='move'){changeJob(s,m.job==='shop'?'carrier':'shop');log(s,cb,'在镇上安顿新的活计','你交清旧雇主的差事，在'+s.player.home+'落脚。原来的工具和积下的工钱没有因此变成仙家资源。');}
   if(id==='steady'){m.stage=Math.min(2,m.stage+1);m.trust+=2;earn(s,12);}
@@ -251,7 +321,9 @@ export function validateMundane(s,fail){
  for(const p of [...m.people,m.spouse,m.child].filter(Boolean))if(!['alive','dead','missing'].includes(p.status)||!Number.isSafeInteger(p.born)||!int(p.deathAt)||p.born>s.month||typeof p.name!=='string'||p.name.length>16||typeof p.location!=='string')fail('凡俗人物生平');
  if(m.child&&!m.spouse)fail('孩子没有家庭前因');
  if(m.arc&&(!m.done.includes(m.arc.kind)||!int(m.arc.due)||!Number.isSafeInteger(m.arc.stage)||m.arc.stage<0||m.arc.stage>4||!GEOGRAPHY.some(g=>g.id===m.arc.location)))fail('凡俗长事件');
- if(s.pending?.event.startsWith('m11_')&&!['m11_start','m11_end'].includes(s.pending.event)&&!s.pending.event.startsWith('m11_life_')&&(!m.arc||s.pending.event!=='m11_'+m.arc.kind+'_'+m.arc.stage))fail('凡俗待选与故事不对应');
+ if(s.pending?.event.startsWith('m11_')&&!['m11_start','m11_end'].includes(s.pending.event)&&!s.pending.event.startsWith('m11_life_')&&!(plan12(s)&&MUNDANE_KEPT.includes(s.pending.event))&&(!m.arc||s.pending.event!=='m11_'+m.arc.kind+'_'+m.arc.stage))fail('凡俗待选与故事不对应');
+ /* ⚠ 五张直线的进度（规则十二的新人生才有；旧版本 / 旧档没有这个字段）。 */
+ if(m.step!==undefined&&(!Number.isSafeInteger(m.step)||m.step<0||m.step>MUNDANE_KEPT.length))fail('凡俗进度');
  if(m.action&&(!int(m.action.from)||m.action.from>s.month||!s.journey&&!s.pending))fail('凡俗未完成行为');
  if(m.gift?.changed&&(!m.gift.materials||m.gift.source!=='river-remains'||!m.corpse||m.gift.relicFound!==m.corpse.found||!['changed','entered'].includes(m.gift.stage)))fail('植灵没有真实来源');
  if(m.gift&&!['offered','verified','prepared','declined','failed','given-away','changed','entered'].includes(m.gift.stage))fail('植灵阶段');

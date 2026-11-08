@@ -153,11 +153,21 @@ function stopArc(s){const a=n(s);a.arc=null;a.next=null;a.quietUntil=s.month+60;
 export function networkAction(s,event,id,success,cb){
  const a=n(s),c=s.life.cultivation,choice=(c.rulesVersion===12?NETWORK_EVENTS:FROZEN_NETWORK_EVENTS)[event]?.choices.find(o=>o.id===id),op=choice?.system||{};
  if(op.childMark){a.marks[op.childMark]={month:s.month,event};const ticket=a.childhood.find(x=>x.event===event);if(ticket)ticket.done=true;}
- if(op.method&&success){
+ /*
+  * ⚠ `op.method12` 是「入门心法由规矩定」的标记（交接文档 §3.2 的「心法选定」环）：
+  *   心法 id 由**规则层**算出来（`packages/adventure/story-rules12.js` 的 `methodId12`），
+  *   卡上只写标记 ⇒ 必答卡上的两个选项走的是**同一门**心法（表达的是两种态度，不是两条岔路）。
+  * ⚠ **本文件在因果域（cause 3），不能反过来依赖节奏域（pace 4）的 `story-rules12.js`**
+  *   ⇒ 心法 id 由**入口层**（`packages/adventure/cultivation.js`，枢纽）算好后写进
+  *     `c.v12.entryMethod`，这里只**读状态**（与 `c.v12.department` 同一个套路）。
+  * ⚠ 只对当前版本（规则十二）生效 —— 旧版本（7–11）的心法仍由玩家自己挑。
+  */
+ const methodId=op.method||(op.method12?(c.v12&&c.v12.entryMethod)||null:null);
+ if(methodId&&success){
   if(a.method){const previous=a.methods.findLast(m=>m.id===a.method.id);if(previous)previous.months=a.method.months;}
-  const method={id:op.method,acquired:s.month,months:0,source:event};
+  const method={id:methodId,acquired:s.month,months:0,source:event};
   a.methods.push(method);a.method={...method};
-  log(s,cb,'主修心法已定',METHODS[op.method].name+'：'+METHODS[op.method].detail+' 灵根适配影响积累效率，熟悉周天仍需日常练习。');
+  log(s,cb,'主修心法已定',METHODS[methodId].name+'：'+METHODS[methodId].detail+' 灵根适配影响积累效率，熟悉周天仍需日常练习。');
  }
  /*
   * ⚠ **规则十二：主修心法隔 12 个月再问**（2026-11-08 · 炼气期收束）。
@@ -258,7 +268,14 @@ export function networkMonth(s,cb){
    a.summary={month:s.month,activity:c.activity,months:practice,skill:s.player.skills[skill]};
   }
  }
- if(a.methodDue&&s.month>=a.methodDue&&!seen(s,'network_method')){
+ /*
+  * ⚠ **心法已定 ⇒ 不再发「授业者先问你怎样运气」那张卡**（2026-11-08 · 阶段 3.2）。
+  * 入门心法改由 `method_choice`（必答环）在**测灵根之后**定下 ⇒
+  * 这张卡再来一次只会把心法的月数清零（金丹那一关的门槛重新开始数）⇒ 停用。
+  * ⚠ 卡**没删**（交接文档：不删任何现有卡）；旧档（心法已定）本来也不该再发。
+  * ⚠ 对旧版本（7–11）没有影响：它们的心法就是这张卡定的，发之前 `a.method` 一定是空的。
+  */
+ if(a.methodDue&&s.month>=a.methodDue&&!seen(s,'network_method')&&!a.method){
   cb.arrive('network_method');return true;}
  if(!active10(s)&&!a.echoChecked&&age(s)>=23&&s.month>=a.quietUntil){
   a.echoChecked=true;const related=['friend_witness','friend_hide','herbs','old_page','relic_route','teacher_notes','teacher_route','route_contact'].some(k=>a.marks[k]);

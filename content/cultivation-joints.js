@@ -50,6 +50,8 @@
 
 /* ── 小工具（与 `cultivation-stories.js` 同一套写法）──────────────────── */
 
+import {EXTRA_LINES} from './joint-lines-extra.js';
+
 const c = (id, label, hint, reply, data = {}) => ({ id, label, hint, reply, ...data });
 const n = (id, title, text, choices, data = {}) => ({ id, act: 0, title, text, choices, ...data });
 
@@ -354,6 +356,25 @@ const LINES = {
   },
 };
 
+/*
+ * ⚠⚠ **2026-11-08 · 阶段 3.4：另外七条线也补上桥**
+ * --------------------------------------------------------------
+ * 以前只有九条线有接头卡（`LINES`）⇒ 另外七条
+ * （`sect_return` / `loose_portal` / `dark_method` / `dark_pursuit`
+ *   / `beast_form` / `beast_war` / `beast_eclipse`）
+ * **走完之后没有承接卡** ⇒ 线与线之间断在那里，玩家感觉不到「这件事有结果」。
+ *
+ * ⇒ 它们的接头卡内容在 `content/joint-lines-extra.js`（**叶子文件，不 import 任何东西**
+ *   ⇒ 永远不在环里）⇒ 这里并进来，十六条线待遇一样。
+ *
+ * ⚠ **「补桥」不会提高长线自己的触达**（这一点交接文档的预期是错的）：
+ *   接头卡是「线走完之后才发的承接卡」，它**不改变这条线被不被打开**——
+ *   那个由「路径 / 岁数 / 境界 / 机会窗口」决定 ⇒ 低触达的主因是入口条件，不是缺桥。
+ *   实测（200 条命）：无桥的 `loose_portal` 触达 40 次（最高的一档），
+ *   有桥的 `beast_home` 只有 11 次 ⇒ 「有桥 ⇒ 触达高」是巧合，不是因果。
+ */
+const LINES_ALL = { ...LINES, ...EXTRA_LINES };
+
 /* ── 下一拍：旗标由谁读 ──────────────────────────────────────────────
  *
  * 每条线的接头卡写下的旗标，**必须**有一张后续卡读它，
@@ -365,46 +386,167 @@ const LINES = {
  *   · 必须是**选项可以诚实地因旗标而开或关**的卡。
  *
  * 「关」的方向：不是扣数值，是**这条路暂时不给你走**。
+ *
+ * ⚠⚠ **2026-11-08 · 阶段 3.4：三种收尾都要算数**
+ * ---------------------------------------------
+ * 原来这里是一张**静态表**，而且只读 `take` 一个旗标 ⇒
+ *   `open`（照规矩来 / 接得最远）与 `hold`（留退路 / 接一半）
+ *   两个旗标**写回去是死的** —— 没有任何卡读它们
+ *   ⇒ 玩家在接头卡上做的选择，只有一半有后果。
+ *
+ * 现在：**下一拍的可达集合由「上一条线怎么收的尾」决定**：
+ *   · `open`  ⇒ far（接得最远）与 mid（接一半）**都开**；
+ *   · `hold`  ⇒ 只开 mid；
+ *   · `take`  ⇒ 两个都关（只留最保守的那一档）。
+ *
+ * ⚠ **旗标写的是「玩家在接头卡上选了什么」**，不是「这条线怎么收的尾」
+ *   —— 收尾已经由 settled / pending / hidden 三张卡表达了。
+ *
+ * ⚠ **关门写在 `requires.flagsAbsent` 里**（不是 `choice.available`）——
+ *   `available` 会被 `progressionChoice` 整个覆盖掉 ⇒ 写了等于白写。
  */
 
+/** 下一拍的三档：接得最远 / 接一半 / 最保守。 */
+const TIER = {
+  far: 'open',     // 只有 open 才开
+  mid: 'hold',     // open 与 hold 都开
+};
 const NEXT_BEAT = {
   sect_repair: {
     card: 'r12_patron', choice: 'prepare', flag: jointFlag('sect_repair', 'take'),
     reason: '你瞒下的那笔账还没交代清楚，供料的领取签不能签。',
+    holdReason: '你留了退路，这一季的账没有再往前接上。',
+    mid: {choice: 'work', reason: '你压着没签，缺口记在自己名下，差事轮不到你接。'},
   },
   sect_feud: {
     card: 'r12_direction_0', choice: 'travel', flag: jointFlag('sect_feud', 'take'),
     reason: '执法堂还在查你说出的话，出远门会被跟上。',
+    holdReason: '你只答应留在山门，出远门的事没有谈成。',
+    mid: {choice: 'work', reason: '宗门的差事已经被别人接下，你出远门的路断了。'},
   },
   sect_trial: {
     card: 'r12_foundation_supply', choice: 'serve', flag: jointFlag('sect_trial', 'take'),
     reason: '你身上的事还没查清，药田的差事轮不到你。',
+    holdReason: '你只答应照看半季药田，差事没有落到你名下。',
   },
   loose_contract: {
     card: 'thin_root_offer', choice: 'mine', flag: jointFlag('loose_contract', 'take'),
     reason: '坊市里认得你的人不欠你人情，没人替你签那纸契。',
+    holdReason: '契没有签成，矿役的口信也就没有落到你手里。',
+    mid: {choice: 'hear', reason: '那个游方修士不肯再在人多处开卷，你没能听下去。'},
   },
   loose_escort: {
     card: 'family_gate', choice: 'stones', flag: jointFlag('loose_escort', 'take'),
     reason: '你刚拿过他们一次盘缠；这一笔没人敢托你带。',
+    holdReason: '你只答应送到半路，剩下的路没人替你走。',
+    mid: {choice: 'aid', reason: '你把话带到就走了，能作保的人没有再出现。'},
   },
   loose_relic: {
     card: 'family_support', choice: 'stones', flag: jointFlag('loose_relic', 'take'),
     reason: '你把来路不清的东西先脱了手；这一笔钱经手人不敢替你送。',
+    holdReason: '你只答应送一半，剩下的一半没有人接手。',
+    mid: {choice: 'send', reason: '经手人换成了别人，这笔钱没有按原来的路子送到。'},
   },
   dark_ledger: {
     card: 'r12_direction_0', choice: 'travel', flag: jointFlag('dark_ledger', 'take'),
     reason: '据点已经开始查问你，出远门会有人跟上。',
+    holdReason: '你只答应留下这一次，远行的事没有说定。',
+    mid: {choice: 'work', reason: '据点的人替你顶了差事，出远门的路就此断了。'},
   },
   dark_sacrifice: {
     card: 'r12_foundation_supply', choice: 'serve', flag: jointFlag('dark_sacrifice', 'take'),
     reason: '你把同门的藏身处卖了出去；药田的差事不收你这样的人。',
+    holdReason: '你只答应照看半季，药田的名册上没有你的名字。',
   },
   beast_home: {
     card: 'echo_teacher', choice: 'follow', flag: jointFlag('beast_home', 'take'),
     reason: '送信的人说，村镇那边有人替他们盯着你；这封信约的地方他们也知道。',
+    holdReason: '你只答应在山这边等，回信的事没有谈成。',
+    mid: {choice: 'wait', reason: '你等的那一趟已经过去，约见的人先走了。'},
+  },
+
+  /* ── 阶段 3.4 新接上的七条线 ─────────────────────────────────────── */
+
+  sect_return: {
+    card: 'sect_rebuild', choice: 'lead', flag: jointFlag('sect_return', 'take'),
+    reason: '你拿走了旧库，幸存者不会让搬空旧库的人领衔新山门。',
+    holdReason: '你只答应继续找人，重建的事没有说定。',
+    mid: {choice: 'delegate', reason: '你带走了旧库，幸存者不再把安顿的事托给你。'},
+  },
+  loose_portal: {
+    card: 'echo_friend_visit', choice: 'help', flag: jointFlag('loose_portal', 'take'),
+    reason: '你卖过假路线，有人失踪后没人敢请你验货。',
+    holdReason: '你只答应叙旧，没有接下他手里的活。',
+    mid: {choice: 'talk', reason: '你绕开药车走了，叙旧这一层也断了。'},
+  },
+  dark_method: {
+    card: 'manual_study', choice: 'blood', flag: jointFlag('dark_method', 'take'),
+    reason: '你已经把功法卖了出去，没有全卷可试。',
+    holdReason: '你只答应先练前篇，后篇没有打算碰。',
+    mid: {choice: 'gentle', reason: '功法已经卖了出去，前篇也练不成。'},
+  },
+  dark_pursuit: {
+    card: 'custody_terms', choice: 'accept', flag: jointFlag('dark_pursuit', 'take'),
+    reason: '你把处罚书撂在一边，据点不再认你这笔服役。',
+    holdReason: '你只答应结清一半，堂里不认半份交代。',
+    mid: {choice: 'pretend', reason: '年轻弟子不再替你作保，药房苦役也轮不到你。'},
+  },
+  beast_form: {
+    card: 'family_dispute', choice: 'stop', flag: jointFlag('beast_form', 'take'),
+    reason: '你伪造的身份被查了出来，邻里不听你出面。',
+    holdReason: '你只答应查账，态度还没有定下来。',
+    mid: {choice: 'check', reason: '假身份被查出来以后，药商不再替你回乡查账。'},
+  },
+  beast_war: {
+    card: 'world_raid', choice: 'defend', flag: jointFlag('beast_war', 'take'),
+    reason: '阵钥在你手里，两族不再听你调度撤离。',
+    holdReason: '你只答应护阵修一半，撤离的人不会跟你走。',
+    mid: {choice: 'escape', reason: '你夺了阵钥，两族都不再替你守住退路。'},
+  },
+  beast_eclipse: {
+    /*
+     * ⚠ 下一拍用 `r12_direction_0`，但**挑的是别的线没占的那两档**
+     *   （`sect_feud` / `dark_ledger` 占的是 `travel` 与 `work`）
+     *   ⇒ 同一张卡上的同一档，不会被好几条线各关一次。
+     */
+    card: 'r12_direction_0', choice: 'retreat', flag: jointFlag('beast_eclipse', 'take'),
+    reason: '你用魂珠收着幼兽，同族不替你守着闭关的洞口。',
+    holdReason: '你只答应维持眼前的做法，闭关这条路没有定下来。',
+    mid: {choice: 'continue', reason: '你把幼兽收成部众，同族不再指望你替他们守住眼前的做法。'},
   },
 };
+
+/**
+ * 下一拍 —— **按上一条线怎么收的尾，决定下一条路的可达集合**。
+ *
+ * ⚠ 这是 2026-11-08 阶段 3.4 换掉静态表之后的那条规则：
+ *   原来「下一拍」是一张写死的表，只有 `take` 有效果；
+ *   现在三种收尾各有各的可达集合。
+ *
+ * @param {string} chainId 刚走完的线
+ * @param {'open'|'hold'|'take'} ending 玩家在接头卡上选了什么
+ * @returns {{card: string, open: string[], closed: {choice: string, reason: string}[]}|null}
+ */
+export function nextBeat12(chainId, ending) {
+  const beat = NEXT_BEAT[chainId];
+  if (!beat) return null;
+  const far = {choice: beat.choice, reason: beat.reason};
+  const mid = beat.mid ? {choice: beat.mid.choice, reason: beat.mid.reason} : null;
+  if (ending === TIER.far) return {card: beat.card, open: [far.choice, mid && mid.choice].filter(Boolean), closed: []};
+  if (ending === TIER.mid) {
+    return {
+      card: beat.card,
+      open: mid ? [mid.choice] : [],
+      closed: [{choice: far.choice, reason: beat.holdReason || beat.reason}],
+    };
+  }
+  return {
+    card: beat.card,
+    open: [],
+    closed: [far, mid].filter(Boolean),
+  };
+}
+
 
 /* ── 导出：线 id → 三个结局各是哪张卡 ──────────────────────────────── */
 
@@ -413,7 +555,7 @@ const NEXT_BEAT = {
  * @type {Object<string, {care: string, cautious: string, selfish: string}>}
  */
 export const JOINT_BY_CHAIN = Object.fromEntries(
-  Object.keys(LINES).map(chainId => [chainId, {
+  Object.keys(LINES_ALL).map(chainId => [chainId, {
     care: chainId + '_joint_settled',
     cautious: chainId + '_joint_pending',
     selfish: chainId + '_joint_hidden',
@@ -455,45 +597,63 @@ function buildJointCard(id, chainId, chain, spec) {
  * @param {Array} chains 长线表（`ROAD_CHAINS`）
  */
 export function installJointCards(events, chains) {
-  for (const chainId of Object.keys(LINES)) {
+  for (const chainId of Object.keys(LINES_ALL)) {
     const chain = chains.find(a => a.id === chainId);
     if (!chain) continue;
-    const spec = LINES[chainId];
+    const spec = LINES_ALL[chainId];
     for (const outcome of ['settled', 'pending', 'hidden']) {
       const id = chainId + '_joint_' + outcome;
       if (!events[id]) events[id] = buildJointCard(id, chainId, chain, spec[outcome]);
     }
   }
-  /* 下一拍读旗标：那个选项对你关着，理由写清为什么。 */
-  for (const beat of Object.values(NEXT_BEAT)) {
-    const node = events[beat.card];
+  /*
+   * 下一拍读旗标：那个选项对你关着，理由写清为什么。
+   *
+   * ⚠⚠ **2026-11-08 · 阶段 3.4：三种收尾都算数**（原来只读 `take`）：
+   *   `open`（接得最远）全开；`hold`（接一半）关掉 far；
+   *   `take`（接不接）far 与 mid 都关。
+   * ⇒ 关门的条件由**规则函数** `nextBeat12(线, 收尾)` 算 ⇒ 规则只有一处。
+   */
+  for (const chainId of Object.keys(LINES_ALL)) {
+    if (!NEXT_BEAT[chainId]) continue;
+    const node = events[NEXT_BEAT[chainId].card];
     if (!node) continue;
-    const choice = node.choices.find(o => o.id === beat.choice);
-    if (!choice) continue;
-    /*
-     * ⚠⚠ **写在 `requires` 里，不改 `choice.available`**（2026-11-08 实测踩到）：
-     *   `choice.available` 会被后面的规则层**整个覆盖掉** ——
-     *   `progressionChoice`（`packages/adventure/progression.js`）对
-     *   `system.progression === 'remit'` 的选项直接重写 `available` 与 `reason`
-     *   （`family_gate` / `family_support` 的「托药商送钱」就是这一类）
-     *   ⇒ 改 `available` 等于白改 ⇒ **旗标写了，选项照样能点**。
-     *   ⇒ `requires` 只有极少数几处会改（`m11_*` 与突破卡），接头卡用的那几张都不在名单里。
-     *
-     * ⚠ `requires` 本来可以是个函数（按状态算需求）⇒ 那就包一层，
-     *   保留它原来的算法，只把「这条旗标出现就关路」加上去。
-     *
-     * ⚠⚠ **理由要一个旗标配一句**（`flagsAbsentReasons` 是张表，不是一个字符串）：
-     *   有两条线共用同一张下一拍卡（`sect_feud` 与 `dark_ledger` 都接 `r12_direction_0`）
-     *   ⇒ 只留一句理由 ⇒ 另一条线的理由被覆盖掉 ⇒ 说错原因。
-     */
-    const existing = choice.requires;
-    const merged = r => ({
-      ...r,
-      flagsAbsent: [...(r.flagsAbsent || []), beat.flag],
-      flagsAbsentReasons: {...(r.flagsAbsentReasons || {}), [beat.flag]: beat.reason},
-    });
-    choice.requires = typeof existing === 'function'
-      ? s => merged(existing(s) || {})
-      : merged(existing || {});
+    /* 把三种收尾各会关掉哪些选项收齐（同一个选项可能被多条线关 ⇒ 各自一个旗标）。 */
+    const closures = [];
+    for (const ending of [TIER.far, TIER.mid, 'take']) {
+      const plan = nextBeat12(chainId, ending);
+      if (!plan) continue;
+      const flag = jointFlag(chainId, ending);
+      for (const closed of plan.closed) closures.push({choice: closed.choice, flag, reason: closed.reason});
+    }
+    for (const cl of closures) {
+      const choice = node.choices.find(o => o.id === cl.choice);
+      if (!choice) continue;
+      /*
+       * ⚠⚠ **写在 `requires` 里，不改 `choice.available`**（2026-11-08 实测踩到）：
+       *   `choice.available` 会被后面的规则层**整个覆盖掉** ——
+       *   `progressionChoice`（`packages/adventure/progression.js`）对
+       *   `system.progression === 'remit'` 的选项直接重写 `available` 与 `reason`
+       *   （`family_gate` / `family_support` 的「托药商送钱」就是这一类）
+       *   ⇒ 改 `available` 等于白改 ⇒ **旗标写了，选项照样能点**。
+       *   ⇒ `requires` 只有极少数几处会改（`m11_*` 与突破卡），接头卡用的那几张都不在名单里。
+       *
+       * ⚠ `requires` 本来可以是个函数（按状态算需求）⇒ 那就包一层，
+       *   保留它原来的算法，只把「这条旗标出现就关路」加上去。
+       *
+       * ⚠⚠ **理由要一个旗标配一句**（`flagsAbsentReasons` 是张表，不是一个字符串）：
+       *   有两条线共用同一张下一拍卡（`sect_feud` 与 `dark_ledger` 都接 `r12_direction_0`）
+       *   ⇒ 只留一句理由 ⇒ 另一条线的理由被覆盖掉 ⇒ 说错原因。
+       */
+      const existing = choice.requires;
+      const merged = r => ({
+        ...r,
+        flagsAbsent: [...(r.flagsAbsent || []), cl.flag],
+        flagsAbsentReasons: {...(r.flagsAbsentReasons || {}), [cl.flag]: cl.reason},
+      });
+      choice.requires = typeof existing === 'function'
+        ? s => merged(existing(s) || {})
+        : merged(existing || {});
+    }
   }
 }

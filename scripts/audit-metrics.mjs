@@ -70,6 +70,7 @@ import * as GATES from '../packages/adventure/gates.js';
 import {projectRoot} from './serve.mjs';
 /* ⚠ 底线数字**只住这一份**（浏览器也要用 ⇒ 这个文件不许 import node:*）。 */
 import {REALM_KINDS_MIN, SPAN_TARGET} from './lib/completeness-limits.js';
+import {MUNDANE_DISABLED} from '../content/mundane-kept.js';
 
 /** 基线文件（跟着源码走 ⇒ 门禁只依赖跟着源码走的文件）。 */
 const BASELINE_FILE = join(projectRoot, 'tests/fixtures/metrics-baseline.json');
@@ -118,16 +119,20 @@ const DIRECTION = {
  *     先钉在今天的 P90 = 9，「目标是 8」登记成已知缺口。
  *
  * ⚠ **日常口径的两条硬底线**（`dailyDensity10 ≤ 7` / `dailyDensity5 ≤ 7`）
- *   同样钉在今天的 P90 —— 日常口径是**新加的尺子**，以前没人量过。
+ *   钉在 2026-11-08 阶段 2 那天测到的 P90。
+ *   ⚠ **阶段 3（背景故事线表）把十年那条挪到了 8** ——
+ *     背景卡给「与修仙无缘」那 4 条路各多发了一张（背景卡本身 + 灵根复核），
+ *     那个十年窗口里的日常决定从 4 张变成 5 张 ⇒ P90 7 → 8。
+ *     ⇒ **这是有意多出来的一张**（背景故事本身），不是内容变挤 ⇒ 上限跟着挪。
  *
  * ⚠⚠ **这些上限是「规格」，不是「记录」**：
  *   改动内容让密度变大时，**必须**显式改这里（并同时重生成基线、写台账理由），
  *   不能靠「反正门禁会红，忽略它」。⇒ 与 `spanMedian` 同一套流程。
  */
-const HARD_LIMIT = {
+export const HARD_LIMIT = {
   endingMissing: 0,
   density10: 5, density5: 3,
-  dailyDensity10: 7, dailyDensity5: 7,
+  dailyDensity10: 8, dailyDensity5: 7,
   totalDensity10: 13, totalDensity5: 9,
   cooldownRepeats: 0,
   realmContentMin: REALM_KINDS_MIN,
@@ -363,10 +368,18 @@ export {SPAN_TARGET};
  * —— 两边共用同一批命 ⇒ 数字必然对得上。
  */
 export function metricsOf(good, count = good.length) {
-  /* ① 可达性：事件表里一次都没出现过的条数。 */
+  /*
+   * ① 可达性：事件表里一次都没出现过的条数。
+   *
+   * ⚠ **有意停用的卡不计入「发霉」**（2026-11-08 · 阶段 3.3）：
+   *   凡人线 45 张卡按交接文档 §3.3 **停用但不删**（正文、选项、表达域说法全在，
+   *   只是不再发出去）⇒ 它们「一次都没出现」是**有意为之**，不是发霉
+   *   ⇒ 算进「发霉」会把 45 张**故意停用**的卡说成内容烂掉了。
+   * ⇒ 停用清单在 `content/mundane-kept.js`（内容层叶子文件）⇒ 规则层与本脚本读的是**同一份**。
+   */
   const seen = new Set(good.flatMap(r => r.events));
   const allIds = Object.keys(EVENTS);
-  const neverSeen = allIds.filter(id => !seen.has(id));
+  const neverSeen = allIds.filter(id => !seen.has(id) && !MUNDANE_DISABLED.includes(id));
 
   /* ④ 节奏对齐：各境界段内容种数（口径见 `realmCountsOf`）。 */
   const realmCounts = realmCountsOf(good);

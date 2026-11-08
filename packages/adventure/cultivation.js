@@ -1,5 +1,5 @@
 import * as rules11 from './cultivation-v11.js';
-import {initialize12,begin12,complete12,practiceFactor12,validate12,trainConstitution12} from './story-rules12.js';
+import {initialize12,begin12,complete12,practiceFactor12,validate12,trainConstitution12,department12,methodId12} from './story-rules12.js';
 import * as rules10 from './cultivation-v10.js';
 import {initializeMundane,mundaneComplete,mundaneBegin,validateMundane,mundaneSettlement} from './mundane-life.js';
 import * as rules9 from './cultivation-v9.js';
@@ -18,6 +18,7 @@ import {random,hashText} from '../core/random.js';
 import {PATHS,ROOTS,ACTIVITIES,GEOGRAPHY,OFFICERS} from '../../content/cultivation-world.js';
 import {CONSTITUTION_GAIN} from '../../content/rules12-world.js';
 import {ROAD_CHAINS,CULTIVATION_EVENTS,LEGACY_CULTIVATION_EVENTS} from '../../content/cultivation-stories.js';
+import {SECT_BACKGROUNDS,MORTAL_BACKGROUNDS} from '../../content/background-stories.js';
 import {JOINT_BY_CHAIN,JOINT_DELAY_MONTHS} from '../../content/cultivation-joints.js';
 import {allowDaily} from './gates.js';
 const copy=x=>JSON.parse(JSON.stringify(x));
@@ -26,8 +27,23 @@ const age=s=>Math.floor(s.month/12)+(s.birth.startAge||0);
 const seen=(s,id)=>s.decisions.some(d=>d.event===id)||s.pending?.event===id;
 const delay=(s,min,max)=>min+Math.floor(random(s,'events')*(max-min+1));
 export function initializeCultivation(s) {
- const roll=hashText(s.seed+':early')%100,kind=s.birth.era==='fracture'&&roll<9?'beast':roll<12?'demonic':roll<30?'loose':'ordinary';
- s.birth.upbringing=kind;
+ /*
+  * 背景故事线（2026-11-08 · 阶段 3）—— 按 `hashText(seed+':background')` 抽一条。
+  *
+  * ⚠ **模数按「这条命能走的路」取，不是一律 % 12**：
+  *   没有可修炼的根骨的命只从「与修仙无缘」那 4 条里选；
+  *   能修炼的命只从「入宗门」那 8 条里选
+  *   ⇒ 否则会出现「故事说与修仙无缘、却有灵根」这种自相矛盾。
+  * ⚠ **不因此改灵根** —— 改了会跟轮盘上看到的对不上，也会牵连历史版本
+  *   （出生事实是九个版本共用的）⇒ 路的归属由**灵根**决定，
+  *   背景只负责讲清「你是从什么处境来的」。
+  * ⚠ `s.birth.upbringing` **继续留着**（童年旁白池与旧档校验都读它），
+  *   现在由这条背景决定 ⇒ 童年那一段与背景对得上。
+  */
+ const bgPool=ROOTS[s.player.root].grade<0?MORTAL_BACKGROUNDS:SECT_BACKGROUNDS;
+ const bg=bgPool[hashText(s.seed+':background')%bgPool.length];
+ s.birth.background=bg.id;
+ s.birth.upbringing=bg.upbringing;
  const c={format:1,rulesVersion:12,opportunities:{},dailyMemory:{},economy:{received:0,spent:0,last:null},evidence:[],activityMonths:{},activityGains:{},inquiry:null,detained:false,path:'mortal',rank:'未入门',activity:'study',rootKnown:false,progress:0,entered:null,admissionDone:false,choiceAt:192,dailyAt:12,
   punishmentUntil:0,reputation:0,wanted:0,exam:null,attempts:[0,0,0,0,0],retryAt:0,context:null,activeChain:null,chains:{},queue:[],
   continent:s.birth.continent,closed:[],visited:[s.birth.continent],spot:s.birth.address,history:[],familyPolicy:'keep',mail:null,mailHistory:[],familyLoss:'',knownDeaths:[],
@@ -170,7 +186,25 @@ function setPath(s,path,cb,rank){
   * ⚠ 只对当前版本（规则十二）生效。
   */
  if(c.rulesVersion===12)cb.apply({flags:{[({orthodox:'pathSect',loose:'pathLoose',demonic:'pathDark',beast:'pathBeast',mortal:'pathMortal'})[path]||'pathMortal']:true}});
- if(path!=='mortal')schedule(s,'first_method',2);
+ /*
+  * ⚠ **入门那一串（交接文档 §3.2 的「必答串五环」）在这里排队**：
+  *   测灵根 → 宗门部门 → 心法选定 → 重心（首次授业）→ 弟子修炼 → 炼气突破
+  *
+  * 规矩是「**背景说的那条路，就是后来走的那条**」：
+  *   · 走宗门路的 ⇒ 先定**部门**（丹房 / 药田 / 器堂 / 执事房），再定**入门心法**；
+  *   · 散修 / 幽灯堂 / 妖身 ⇒ 没有宗门，没有部门，直接定**入门心法**；
+  *   · 凡俗路 ⇒ 整个入门串不启动（凡人线接手）。
+  *
+  * ⚠ 以前这里排的是 `first_method`（重心卡），心法要等授业之后 12 个月才发
+  *   ⇒ 两张卡的先后**没有保证** ⇒ 「心法还没定就发冲关卡」那种废卡就是这么来的
+  *   （实测 40 条命里 7 条踩到）。⇒ 现在入门串是**一条链**，顺序写死在规则层。
+  *
+  * ⚠ `openingChain` 只排一次：中途改路（离开幽灯堂、被逐出宗门）不该重排入门串。
+  */
+ if(path!=='mortal'&&!c.openingChain){
+  c.openingChain=true;
+  schedule(s,path==='orthodox'?'sect_department':'method_choice',2);
+ }
 }
 function revised_completeCultivationAction(s,event,choiceId,cb) {
  const c=s.life.cultivation,node=(c.rulesVersion<5&&LEGACY_CULTIVATION_EVENTS[event])||CULTIVATION_EVENTS[event],choice=node?.choices.find(o=>o.id===choiceId),op=choice?.system||{};
@@ -180,6 +214,29 @@ function revised_completeCultivationAction(s,event,choiceId,cb) {
  if(event==='root_result')c.rootKnown=true;
  if(op.admit)setPath(s,'orthodox',cb,ROOTS[s.player.root].grade===0?'杂役':'外门弟子');
  if(op.path&&success)setPath(s,op.path,cb,op.rank);
+ /*
+  * ⚠ **宗门部门（交接文档 §3.2）** —— 卡上只写「你被分到了某个堂口」的标记，
+  *   到底是哪一个由规则层按「入门身份 + 灵根」算（`department12`）⇒
+  *   必答卡上的两个选项走的是**同一个部门**（表达的是两种态度，不是两条岔路）。
+  * ⚠ 只对当前版本（规则十二）生效。
+  */
+ if(c.rulesVersion===12&&op.department12&&success){c.v12.department=department12(s);}
+ /*
+  * ⚠ **入门心法（交接文档 §3.2）** —— 同样由规则层算（`methodId12`），
+  *   算完**写进状态**（`c.v12.entryMethod`）⇒
+  *   因果域的「人脉网络」（`packages/adventure/story-network.js`，域序号 3）
+  *   **只读状态**，不反过来依赖节奏域（域序号 4）⇒ 不越界。
+  * ⚠ 入口层（`cultivation.js` 是枢纽）是**唯一**同时能看见节奏域与因果域的地方
+  *   ⇒ 跨域的接线放在这里，两边都不越界。
+  */
+ if(c.rulesVersion===12&&op.method12&&success){c.v12.entryMethod=methodId12(s);}
+ /*
+  * ⚠ **入门串的下一环**（§3.2）：
+  *   · 心法选定那张卡答完 ⇒ 排「重心」（第一次授业）—— 以前重心卡排在最前面，
+  *     心法要等 12 个月才发 ⇒ 顺序没有保证（废卡的根因）。
+  *   · 部门那张卡靠选项上的 `next` 接到心法（见 `revised_cultivationAction`）。
+  */
+ if(c.rulesVersion===12&&event==='method_choice'&&success)schedule(s,'first_method',2);
  if(op.teacher&&success)c.teacher=op.teacher;
  if(op.activity){c.activity=op.activity;s.player.focus=ACTIVITIES[op.activity].skill;
   /* ⚠ **留下「你练的是哪门」的印记**（2026-11-08）—— 择路是玩家自己的第一个印记。 */
@@ -413,7 +470,16 @@ function revised_cultivationMonth(s,cb){
   if(p){c.mail={sent:s.month,sentAge:age(s),due:s.month+(currentContinent(s)===s.birth.continent?3:18),body:familyMessage(s,p),delayed:false};}
  }
  if(c.mail&&s.month>=c.mail.due&&s.journey?.open&&!c.activeChain&&routeOptions(s).find(r=>r.id===s.birth.continent)?.route){c.mail.delayed=s.month-c.mail.sent>24;schedule(s,'family_gate');}
- if(age(s)>=16&&!c.admissionDone&&!seen(s,'reception')&&!seen(s,'root_result')&&!c.queue.length){schedule(s,({ordinary:'reception',demonic:'early_demonic',beast:'early_beast',loose:'early_loose'})[s.birth.upbringing]);}
+ if(age(s)>=16&&!c.admissionDone&&!seen(s,'reception')&&!seen(s,'root_result')&&!c.queue.length){
+  /*
+   * 第一张卡 = **背景卡**（必答，不是岔路）。
+   * ⚠ **旧档没有 `s.birth.background`**（这一版之前存的）⇒ 走原来的那张
+   *   （early_demonic / early_beast / early_loose / reception），
+   *   别让旧档读档后卡住 —— 那些卡**没删**，还在事件表里。
+   */
+  const first=s.birth.background||({ordinary:'reception',demonic:'early_demonic',beast:'early_beast',loose:'early_loose'})[s.birth.upbringing];
+  if(first&&!seen(s,first))schedule(s,first);
+ }
  if(c.punishmentKind&&s.month>=c.punishmentUntil){cb.apply({flags:{learningPermit:true}});record(s,cb,'重见山门晨光',c.punishmentKind==='confinement'?'石门终于打开，严衡解开禁灵符，把弟子牌扔回你手中。久不见光，你站在阶前眯了很久的眼；惩戒已满，听课与外出的禁令解除。':'许执事走过你补好的山道，把扣下的弟子牌还给你。服役结束，三堂恢复让你听课。','institution');delete c.punishmentKind;}
  automaticCultivation(s,cb);
  if(canCultivate(s)&&!c.mundane?.arc&&!c.worldDone&&s.month>=c.worldAt){

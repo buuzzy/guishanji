@@ -1,4 +1,10 @@
 import {mundane,person,personName,JOBS} from '../packages/adventure/mundane-life.js';
+/*
+ * ⚠ **凡人线在用哪五张**（交接文档 §3.3）——
+ *   清单住在 `content/mundane-kept.js`（叶子文件，规则层与审计脚本都读它，
+ *   且**不会形成环**）⇒ 这里再原样导出一份，文档要的那句话就写在门口。
+ */
+export {MUNDANE_KEPT,MUNDANE_DISABLED} from './mundane-kept.js';
 const m=mundane;
 const pick=(id,label,hint,reply,extra={})=>({id,label,hint,reply,...extra});
 const card=(id,title,text,choices)=>({id,act:0,cultivationOnly:true,title,text,choices});

@@ -113,13 +113,21 @@ const STRUCTURAL_PREFIXES = [
   ['r12_foundation_supply', '筑基丹：关键资源'],
   ['selection_', '宗门考核：拦住就拿不到内门身份'],
   ['mortal_life_', '凡人一生：另一条人生主线'],
+  /*
+   * 背景故事线（2026-11-08 · 阶段 3.1）—— 12 条背景各是一张**必答**卡，
+   * 一生只发其中一张 ⇒ 与 `reception` / `root_result` 同性质（入门第一步的人生节点）。
+   * ⚠ 按前缀登记：内容层再加背景卡时闸自动认得，不用改规则层。
+   */
+  ['background_', '背景故事线：入门第一步，一生一次'],
 ];
 
 /** **结构性**卡（单张）：人生节点。 */
 const STRUCTURAL_EXACT = [
-  ['reception', '入门第一步：山门外的队伍'],
-  ['root_result', '入门第二步：测灵石上的记录'],
-  ['first_method', '入门第三步：第一份心法'],
+  ['reception', '入门第二步：山门外的队伍'],
+  ['root_result', '入门第三步：测灵石上的记录'],
+  ['sect_department', '入门第四步：分到哪一处的差事'],
+  ['method_choice', '入门第五步：授业者定下第一门心法'],
+  ['first_method', '入门第六步：第一次授业（重心）'],
   ['system_final', '终章：一生一次'],
   ['urgent_message', '急讯：一生一次'],
   ['world_raid', '战事：一生一次'],

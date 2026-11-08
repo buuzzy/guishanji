@@ -43,6 +43,7 @@ import {installMundaneEvents} from './mundane-stories.js';
 import {installRules12} from './story-rules12.js';
 import {installJointCards} from './cultivation-joints.js';
 import {CHAIN_IDS} from './chain-ids.js';
+import {BACKGROUND_STORIES} from './background-stories.js';
 
 const c=(id,label,hint,reply,data={})=>({id,label,hint,reply,...data});
 const n=(id,title,text,choices,data={})=>({id,act:0,title,text,choices,...data});
@@ -360,6 +361,50 @@ installRules12(CULTIVATION_EVENTS);
  *   新卡就不必自己写一遍（漏一个 ⇒ 门禁 `expressions` 报红）。
  */
 installJointCards(CULTIVATION_EVENTS, ROAD_CHAINS);
+
+/*
+ * 背景故事线表（12 条）—— **必答卡，不是岔路**。
+ *
+ * ⚠⚠ **必须装在九个历史快照之后**（同接头卡的理由）：
+ *   装在快照之前 ⇒ 规则五到十一的事件表也会多出这 12 张卡
+ *   ⇒ 门禁 `scripts/verify-events-fidelity.mjs`（九个历史版本逐值全等）报红。
+ *
+ * 一条背景 = 一张卡 + 两个选项，**只指向一条路**：
+ *   · 与修仙无缘侧（4 条）⇒ 直接走进凡人的日子（`path:'mortal'`），
+ *     之后由凡人线接手。
+ *   · 入宗门侧（8 条）分三种去向 —— **背景说的那条路，就是后来走的那条**：
+ *     ① 出身普通（5 条：父亲的咳疾 / 救过的那个人 / 生在宗门人家 / 名门望族 /
+ *        修仙世家的旁支）⇒ `next:'reception'`（山门外的队伍）⇒ 接着**测灵根**。
+ *        「测灵根」是开局的**唯一决策点**（交接文档 §3.2），其余都是必答。
+ *     ② 幽灯堂收养的（`background_dark_sect`）⇒ `path:'demonic'`。
+ *     ③ 老猿教的妖身（`background_beast_born`）⇒ `path:'beast'`；
+ *        游方药师留下的笔记（`background_healer_note`）⇒ `path:'loose'`。
+ *
+ * ⚠ **②③ 为什么不走 `reception`**：
+ *   交接文档写「入宗门侧 8 条 → 走到 `reception`」，但那 3 条是**从旧背景卡迁入的**
+ *   （`early_demonic` / `early_beast` / `early_loose`），迁入前它们就是**直接进自己
+ *   那条路**的，而且卡文说得很清楚：幽灯堂收养的孩子**不在山门排队**，
+ *   被老猿藏在山里的妖身也**不会去山门报名** ⇒ 硬塞 `reception` 就是
+ *   「故事说 A、后来走 B」，正是这次重构要消灭的东西。
+ *   ⇒ 做法：**5 条普通出身 → `reception`；3 条特殊出身 → 各走各的路**。
+ *
+ * ⚠ 两个选项**通向同一条路**（它们表达的是两种态度，不是两条岔路）⇒
+ *   真正能改变命运的是后面的测灵根。
+ */
+for (const bg of BACKGROUND_STORIES) {
+  /* 每个选项都要一份**新的**数据对象（共用同一个 `system` 会被改写串味）。 */
+  const makeData = () => bg.road === 'mortal' ? {system: {path: 'mortal'}}
+    : bg.upbringing === 'demonic' ? {system: {path: 'demonic'}}
+    /* 妖身这条路上，`hiddenBeast` 仍然要点上：
+       它挂着一条日常旁白（`content/cultivation-daily.js` 的「斗篷下的那双手」——
+       妖身住在人堆里、平时收着爪牙）。旧卡 `early_beast` 的「去坊市」选项点过这个旗，
+       现在妖身成了**主路**，旗不点 ⇒ 这条旁白永远不发 ⇒ 白丢一段内容。 */
+    : bg.upbringing === 'beast' ? {system: {path: 'beast'}, effects: {flags: {hiddenBeast: true}}}
+    : bg.upbringing === 'loose' ? {system: {path: 'loose'}}
+    : {next: 'reception'};
+  CULTIVATION_EVENTS[bg.id] = n(bg.id, bg.title, bg.text,
+    bg.options.map(o => c(o.id, o.label, o.hint, o.reply, makeData())));
+}
 
 /**
  * 表达成熟度：每个事件条目都带上 `voice`。

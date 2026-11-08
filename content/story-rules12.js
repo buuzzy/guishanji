@@ -1,7 +1,8 @@
 import {ROOTS} from './cultivation-world.js';
 import {REGIONAL_METHODS} from './rules12-world.js';
 import {canCultivate,route} from '../packages/adventure/story-rules10.js';
-import {rules12,sectProfile,returnMonths12,stage12,homeReceiver12} from '../packages/adventure/story-rules12.js';
+import {rules12,sectProfile,returnMonths12,stage12,homeReceiver12,department12,DEPARTMENTS} from '../packages/adventure/story-rules12.js';
+import {NETWORK_EVENTS} from './story-network.js';
 const c=s=>s.life.cultivation;
 const v=(x,s)=>typeof x==='function'?x(s):x;
 const choice=(id,label,hint,reply,extra={})=>({id,label,hint,reply,...extra});
@@ -109,7 +110,100 @@ export function installRules12(events){
  // A family with secular means sends household news, not spirit cultivation aid.
  events.family_support.text=s=>s.birth.family==='clan'?'族中管事经商队问起你的修炼，愿按族中剩下的积蓄送来家传笔记或药材。东西还在族里，必须有人走完商路才能交到你手中。':'家人托熟悉的商队送来旧屋近况，信里说粮价又涨了。他们没有能助你修炼的丹药，只问你在外是否安顿，也想知道以后该把消息送到哪里。';
  for(const o of events.family_support.choices)if(['supplies','notes'].includes(o.id))o.visible=s=>s.birth.family==='clan';
-  installPlotFixes(events);
+
+ /*
+  * ══════════════════════════════════════════════════════════════════════
+  * 入门串的另外两环（交接文档 §3.2「必答串五环」）
+  * ══════════════════════════════════════════════════════════════════════
+  *
+  * 整条串是：**测灵根 → 宗门部门 → 心法选定 → 重心（首次授业）→ 炼气突破**。
+  * 测灵根本身是**唯一决策点**；其余几环都是**必答**（两个选项通向同一条路，
+  * 表达的是两种态度，不是两条岔路）。
+  *
+  * ⚠ **部门与心法都由规则层算**（`packages/adventure/story-rules12.js` 的
+  *   `department12` / `methodId12`）⇒ 卡上只写一个标记（`department12` / `method12`），
+  *   具体是哪一个由「入门身份 + 灵根」与「你走的那条路」定 ⇒
+  *   **两个选项走的是同一个部门、同一门心法** ⇒ 这两张卡是真的必答。
+  *
+  * ⚠ **为什么这两张卡放在这份文件里**（而不是 `content/cultivation-stories.js`）：
+  *   装配链的顺序是「九个历史快照 → 规则十二专属内容」。
+  *   这份文件是**最后一步**才装的 ⇒ 规则 5–11 的事件表一个字都不变
+  *   （`scripts/verify-events-fidelity.mjs` 逐值全等）。
+  */
+
+ /* ── 宗门部门（丹房 / 药田 / 器堂 / 执事房）────────────────────────── */
+ const dept=s=>DEPARTMENTS[department12(s)];
+ events.sect_department=node('sect_department','分到哪一处的差事',s=>{
+  const d=dept(s);
+  return '执事念完你的名字，领你去'+d.name+'。'+d.line+'——这里的活计与别处不同：'
+   +({dan:'炉子常年不熄，认错一味药就废掉一炉。',tian:'灵草按节气种，误了浇水要补一季。',qi:'法器与阵钉堆在架上，登记错一件就得赔。',zhi:'名册、差事与月例都从这里过，学的是怎么跟人打交道。'})[department12(s)]
+   +' 教习问你打算怎么上手。';
+ },[
+  choice('go','先接下手上的活','活先做起来，规矩边做边学。','你领了差事，从最笨的活学起。',{system:{department12:true},next:'method_choice'}),
+  choice('ask','先问清这里的规矩','规矩不明，往后处处被动。','你问过规矩，才接下差事。',{system:{department12:true},next:'method_choice'}),
+ ]);
+
+ /* ── 心法选定（必答：走哪一门由规矩定）────────────────────────────── */
+ events.method_choice=node('method_choice','授业者给你定下第一门心法',s=>{
+  /*
+   * ⚠ 正文**只按「走的是哪条路」分说法**（四种），**不写心法名** ——
+   *   ① 表达域门禁要求「能说出的说法种数」与规则层一致 ⇒ 正文每多一个变量就多一种说法；
+   *   ② 心法名**紧跟着这一卡就会报出来**（人脉网络域的「主修心法已定」）
+   *   ⇒ 名字放在那行日志里，比塞在正文里更合时机。
+   */
+  return (s.life.cultivation.path==='orthodox'
+   ?'宗门按你这一脉的路数，把入门心法定给了你。先练吐纳与护身，其余的等授业再说。'
+   :s.life.cultivation.path==='demonic'
+   ?'幽灯堂只授基础守魂诀，不准偷看摄魂章节。先稳住魂魄，再谈别的。'
+   :s.life.cultivation.path==='beast'
+   ?'老猿用自己的步法示范换气与淬身，要你先养稳筋骨，再试引气。'
+   :'药师把两册基础口诀摊开，只肯先带你走过最慢的一段周天。残页没有他解释，不能当全本修炼。')
+   +' 你的灵根是'+s.player.root+'。';
+ },[
+  choice('take','照着教，先把第一段练熟','练熟一段再往下走。','你把心法的第一段抄进册子，从吐纳开始练。',{system:{method12:true}}),
+  choice('ask','先问这门心法的短处','心里有个数，后面少走弯路。','授业者讲了这门心法在哪儿容易走偏，你记下来了。',{system:{method12:true}}),
+ ]);
+ /*
+  * ⚠ `method_choice` 也要挂进 `NETWORK_EVENTS` ——
+  *   「主修心法已定」这件事是**人脉网络域**写的
+  *   （`packages/adventure/story-network.js` 的 `networkAction` 只认自己表里的卡）
+  *   ⇒ 不挂进去，心法就定不下来 ⇒ 冲关卡那张废卡的根还留着。
+  * ⚠ 挂的**时机**很重要：本函数是装配链的**最后一步**，
+  *   而 `content/cultivation-stories.js` 里的 `sharedNodes`
+  *   （规则七 / 八 共用的活节点表）**早就建好了** ⇒
+  *   新挂的这张卡**不会**流进规则七 / 八 ⇒ 旧版本逐值不变。
+  */
+ NETWORK_EVENTS.method_choice=events.method_choice;
+
+ /*
+  * ⚠ **山门外的队伍保持原样**（它**不在**入门串五环里）。
+  *
+  * 交接文档 §3.2 的五环是：**测灵根 → 宗门部门 → 心法选定 → 弟子修炼 → 炼气突破** ——
+  * 「山门外的队伍」在**五环之前**（是铺垫），背景故事卡更在它前面。
+  * ⇒ 「入门串从岔路变成必答串、测灵根只出 1 张决策卡」管的是**五环之内**，
+  *   不是整个开场。
+  *
+  * ⚠⚠ 之前把排队那张卡也改成必答（两个选项都走向测灵根）**是错的**：
+  *   ① 排队那张卡上的「回家，再想别的出路」是**有灵根但选择不修仙**的唯一出口 ——
+  *      拿掉它 ⇒ 这类命落进「走凡俗路、却又不是无缘修仙」的空档（凡俗内容只在
+  *      「不能引气」时启动）⇒ 一辈子没有内容；
+  *   ② 它还是**决策策略**（`scripts/lib/decide-policy.js`）在旧版本（规则 5–11）
+  *      上的取值依据 ⇒ 改了它，旧版本的固定人生序列会跟着变。
+  * ⇒ 恢复原样。真正做成必答的是五环里新加的两张卡（部门 / 心法）。
+  */
+
+ /*
+  * ⚠ **部门只影响后续卡的可选项，不改数值**（交接文档 §9.2 第 3 条）。
+  * 落在**宗门考核报名**那张卡上：每个堂口只考自己管的本事，外加一门通识。
+  * ⇒ 执事房三个都能报；丹房 / 药田 / 器堂各关掉一门。
+  */
+ for(const o of events.selection_1.choices||[]){
+  if(o.id==='skip')continue;
+  o.available=s=>dept(s).exam.includes(o.id);
+  o.reason='这一堂的考核不归你所在的堂口管';
+ }
+
+ installPlotFixes(events);
 }
 function installBranches(events){
  events.road_turn.title='书商拿出一页残卷';

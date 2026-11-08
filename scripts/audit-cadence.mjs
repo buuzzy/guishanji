@@ -380,6 +380,21 @@ export function blockingReason(state, realm) {
   if (cultivation.queue.some(q => q.due <= state.month)) return '队列里有先办的事';
   if (state.month < cultivation.retryAt) return '上一次冲关后的冷却期';
   if (cultivation.attempts[realm] >= 4) return '四次机会用完了';
+  /*
+   * ⚠ 与 `packages/adventure/cadence.js::breakthroughDue` 的同一条判断一一对应
+   * （2026-11-08 · 阶段 3.1 新增）：**入门链没走完 ⇒ 不发炼气冲关卡**。
+   *
+   * 冲关卡上「先为材料持有者做工，再闭关」那条退路要**主修心法已定**才看得见
+   * （`content/story-rules12.js` 的 `o.visible`）⇒ 心法没定就发卡 = 发一张废卡。
+   * ⇒ 只在「心法那张卡还没出过」时拦；玩家若在心法卡上选了「继续已有的练习」，
+   *   那张卡已经过了 ⇒ 冲关卡照旧发。
+   */
+  if (realm === 1) {
+    const net = cultivation.network;
+    const methodSeen = state.decisions.some(d => d.event === 'network_method')
+      || (state.pending && state.pending.event === 'network_method');
+    if (net && !net.method && !methodSeen) return '入门链还没走完（主修心法还没定）';
+  }
   if (!materialsReady(state, realm)) return '主药或完整心法还没备齐';
   if (cultivation.progress < progressNeeded(realm)) return '修为还没攒够';
   return null;

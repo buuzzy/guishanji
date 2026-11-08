@@ -30,7 +30,7 @@ import {
   RULES7_CULTIVATION_EVENTS,RULES8_CULTIVATION_EVENTS,RULES9_CULTIVATION_EVENTS,
   RULES10_CULTIVATION_EVENTS,RULES11_CULTIVATION_EVENTS,ROAD_CHAINS,
 } from '../content/cultivation-stories.js';
-import {JOINT_CARD_IDS,JOINT_BY_CHAIN,JOINT_NEXT_BEAT,jointFlag} from '../content/cultivation-joints.js';
+import {JOINT_CARD_IDS,JOINT_BY_CHAIN,JOINT_NEXT_BEAT,jointFlag,nextBeat12} from '../content/cultivation-joints.js';
 
 const OLD_TABLES = {
   LEGACY: LEGACY_CULTIVATION_EVENTS, RULES5: RULES5_CULTIVATION_EVENTS, RULES6: RULES6_CULTIVATION_EVENTS,
@@ -55,7 +55,8 @@ function jointState(seed = 'joint-case') {
 }
 
 test('接头卡只加在当前版本：九个历史快照一张都没有', () => {
-  assert.equal(JOINT_CARD_IDS.length, 27);
+  /* ⚠ 2026-11-08 阶段 3.4：七条无桥的长线也补上了 ⇒ 27 → 48 张。 */
+  assert.equal(JOINT_CARD_IDS.length, 48);
   for (const id of JOINT_CARD_IDS) assert.ok(CULTIVATION_EVENTS[id], '当前版本缺卡：' + id);
   for (const [name, table] of Object.entries(OLD_TABLES)) {
     for (const id of JOINT_CARD_IDS) assert.equal(table[id], undefined, name + ' 的旧档里混进了接头卡：' + id);
@@ -156,4 +157,68 @@ test('九条线的接头卡都写好了旗标，读旗标的下一拍也都存�
     assert.ok(requires.flagsAbsent.includes(beat.flag), beat.card + '/' + beat.choice + ' 读的旗标不对：' + JSON.stringify(requires.flagsAbsent));
     assert.equal(requires.flagsAbsentReasons?.[beat.flag], beat.reason, beat.card + '/' + beat.choice + ' 的理由不对');
   }
+});
+
+/*
+ * ⚠⚠ **2026-11-08 · 阶段 3.4：三种收尾都要算数**
+ * ------------------------------------------------------------
+ * 原来「下一拍」是一张写死的表，**只有 `take` 有效果**
+ * ⇒ `open`（照规矩来 / 接得最远）与 `hold`（留退路 / 接一半）
+ *   两个旗标写回去是**死的** —— 没有任何卡读它们
+ * ⇒ 玩家在接头卡上做的选择，一半没有后果。
+ *
+ * 现在：**下一拍的可达集合由「上一条线怎么收的尾」决定**
+ *   （规则函数 `nextBeat12(线, 收尾)` —— 规则只住一处）。
+ */
+test('下一拍是规则函数：open 全开、hold 关掉最远那一档、take 两个都关', () => {
+  const chainId = 'loose_relic';
+  const beat = JOINT_NEXT_BEAT[chainId];
+  assert.ok(beat.mid, chainId + ' 没有「接一半」那一档 ⇒ 测不出三档');
+
+  /* 函数本身：三档给出的可达集合。 */
+  const open = nextBeat12(chainId, 'open');
+  const hold = nextBeat12(chainId, 'hold');
+  const take = nextBeat12(chainId, 'take');
+  assert.equal(open.card, beat.card);
+  assert.deepEqual(open.open, [beat.choice, beat.mid.choice], 'open 那一档不该关任何东西');
+  assert.deepEqual(open.closed, []);
+  assert.deepEqual(hold.open, [beat.mid.choice], 'hold 那一档只该开「接一半」');
+  assert.deepEqual(hold.closed.map(c => c.choice), [beat.choice]);
+  assert.deepEqual(take.open, [], 'take 那一档两档都该关');
+  assert.deepEqual(take.closed.map(c => c.choice), [beat.choice, beat.mid.choice]);
+
+  /* 真跑一遍：旗标写下去，选项真的关，而且说清为什么。 */
+  const s = jointState('joint-tier');
+  s.pending = {event: beat.card, month: s.month};
+  s.journey = null;
+  assert.equal(options(s).find(o => o.id === beat.choice).enabled, true, '还没写旗标就关掉了');
+  assert.equal(options(s).find(o => o.id === beat.mid.choice).enabled, true, '还没写旗标就关掉了');
+
+  s.flags[jointFlag(chainId, 'hold')] = true;
+  const farHold = options(s).find(o => o.id === beat.choice);
+  assert.equal(farHold.enabled, false, 'hold 没有关掉「接得最远」那一档');
+  assert.ok(farHold.reasons.includes(beat.holdReason), 'hold 的理由没写出来：' + JSON.stringify(farHold.reasons));
+  assert.equal(options(s).find(o => o.id === beat.mid.choice).enabled, true, 'hold 把「接一半」也关掉了');
+
+  s.flags[jointFlag(chainId, 'take')] = true;
+  const midTake = options(s).find(o => o.id === beat.mid.choice);
+  assert.equal(midTake.enabled, false, 'take 没有关掉「接一半」那一档');
+  assert.ok(midTake.reasons.includes(beat.mid.reason), 'take 的理由没写出来：' + JSON.stringify(midTake.reasons));
+
+  /*
+   * ⚠ **反向验证**：把 `hold` 也当作关路条件去掉（只留 take）——
+   *   上面「hold 关掉最远那一档」那条断言必须立刻报红
+   *   ⇒ 证明它不是「反正都会关」的空跑。
+   */
+  const withoutHold = jointState('joint-tier-no-hold');
+  withoutHold.pending = {event: beat.card, month: withoutHold.month};
+  withoutHold.journey = null;
+  withoutHold.flags[jointFlag(chainId, 'hold')] = true;
+  const spec = nextBeat12(chainId, 'hold');
+  assert.deepEqual(spec.closed.map(c => c.choice), [beat.choice], 'hold 关的选项变了');
+  /* 没有把 hold 写进 flagsAbsent 时，那一档是开着的（这就是反向验证的判据）。 */
+  const raw = CULTIVATION_EVENTS[beat.card].choices.find(o => o.id === beat.choice).requires;
+  const flags = typeof raw === 'function' ? raw({}) : raw;
+  assert.ok(flags.flagsAbsent.includes(jointFlag(chainId, 'hold')), 'hold 的旗标没写进 flagsAbsent');
+  assert.ok(flags.flagsAbsent.includes(jointFlag(chainId, 'take')), 'take 的旗标没写进 flagsAbsent');
 });

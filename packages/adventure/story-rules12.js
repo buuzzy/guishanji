@@ -12,6 +12,65 @@ const roll=(s,key)=>hashText(s.seed+':rules12:'+key)%10000;
 const log=(s,cb,title,body,kind='life')=>cb.log({title,body,kind,automatic:true,location:s.player.location,context:c(s).context||'home'});
 const done=(s,id)=>s.decisions.some(d=>d.event===id)||s.pending?.event===id;
 export const sectProfile=s=>SECT_PROFILES.find(p=>p.id===rules12(s).sect);
+
+/**
+ * 宗门部门（交接文档 §3.2 的「宗门部门」环）
+ * --------------------------------------------------------
+ * **入门时定下，一人一处，终身不改** —— 由「测灵根的结果 + 灵根」决定：
+ *   · 杂役（`root_result` 选「留下做杂役」）⇒ 药田（先在药田做工）；
+ *   · 松骨灵根 ⇒ 执事房（单灵根最容易被长老看在眼里）；
+ *   · 水木灵根 ⇒ 药田（这灵根本就适合药田与丹术）；
+ *   · 金火灵根 ⇒ 丹房（适合御剑与炉火）；
+ *   · 三相灵根 ⇒ 器堂（入门慢，先从外门器物做起）；
+ *   · 五行杂灵根 ⇒ 药田（宗门多半只收作杂役）。
+ *
+ * ⚠ **部门只影响后续卡的可选项，不改数值**（§9.2 第 3 条：
+ *   「先只做『影响后续卡的可选项』，不碰数值」）。
+ *
+ * @param {object} s 当前人生状态
+ * @returns {string} 部门 id
+ */
+export const DEPARTMENTS={
+  dan:{name:'丹房',line:'地火与药炉',exam:['alchemy','array']},
+  tian:{name:'药田',line:'灵草与浇灌',exam:['sword','array']},
+  qi:{name:'器堂',line:'法器与阵钉',exam:['sword','alchemy']},
+  zhi:{name:'执事房',line:'名册与差事',exam:['sword','alchemy','array']},
+};
+export function department12(s){
+  const cc=c(s);
+  if(cc.rank==='杂役')return 'tian';
+  const root=s.player.root;
+  if(root==='松骨灵根')return 'zhi';
+  if(root==='水木灵根')return 'tian';
+  if(root==='金火灵根')return 'dan';
+  if(root==='三相灵根')return 'qi';
+  return 'tian';
+}
+
+/**
+ * 入门心法（交接文档 §3.2 的「心法选定」环）
+ * --------------------------------------------------------
+ * **心法由规矩定，不由玩家挑** —— 必答卡上两个选项表达的是两种态度，
+ * 走的是同一门心法：
+ *   · 宗门路 ⇒ 宗门所在这一脉的入门心法（`sectProfile(s).base`）；
+ *   · 幽灯堂 ⇒ 守魂诀；妖身 ⇒ 淬身法；
+ *   · 散修 ⇒ 灵根好（grade ≥ 2）跟药师走完整周天（`clear`），
+ *     灵根差就先负重调息（`stone`）。
+ *
+ * ⚠ 原来那张 `network_method` 已经是「一脉只见一门」（`visible` 只留一门），
+ *   真正多出来的是**顺序**：入门心法现在在**测灵根之后、重心之前**定下，
+ *   冲关卡因此一定排在心法之后（见 `packages/adventure/cadence.js` 的废卡修复）。
+ *
+ * @param {object} s 当前人生状态
+ * @returns {string} 心法 id
+ */
+export function methodId12(s){
+  const p=c(s).path;
+  if(p==='orthodox'){const prof=sectProfile(s);return prof?prof.base:'clear';}
+  if(p==='demonic')return 'shade';
+  if(p==='beast')return 'beast';
+  return ROOTS[s.player.root].grade>=2?'clear':'stone';
+}
 export const homeReceiver12=s=>s.life.family.members.find(p=>p.status==='alive')||c(s).descendants.find(p=>p.status==='alive'&&p.location==='home')||null;
 export function initialize12(s){
  const b=roll(s,'body')%100,key=b<15?'frail':b<36?'sturdy':b<38?'mighty':'ordinary',type=BODY_TYPES[key];

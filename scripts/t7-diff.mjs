@@ -68,10 +68,27 @@ const afterIds = Object.keys(after);
 
 /* ── 1. 一条不许少 ─────────────────────────────────────────────────── */
 const dropped = beforeIds.filter(id => !afterIds.includes(id));
-const added = afterIds.filter(id => !beforeIds.includes(id));
+/*
+ * ⚠ **「变更后多出来的卡」默认就是硬伤** —— T7 是「说法重写」，卡集不该变。
+ *
+ * ⚠⚠ **但阶段 3（剧情结构）是「加卡」**：新增 12 张背景卡 + 2 张入门环卡
+ *   + 21 张接头卡 = 35 张 ⇒ 这道检查会报红，而那是**有意的**。
+ * ⇒ 加一个**必须显式声明**的口子：`--allow-added=<卡 id 或 前缀*，逗号分隔>`
+ *   —— 没声明的照样报红（不许悄悄放过）。
+ *
+ * 用法：`node scripts/t7-diff.mjs --before=<变更前基线.json> --allow-added=background_*,sect_department,method_choice,*_joint_settled,*_joint_pending,*_joint_hidden`
+ */
+const allowAdded = (argValue('--allow-added') || '').split(',').map(s => s.trim()).filter(Boolean);
+/** `abc*` 前缀、`*abc` 后缀、`a*c` 中段 —— 写成一个正则。 */
+const allowRules = allowAdded.map(rule => new RegExp('^' + rule.split('*').map(p => p.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('.*') + '$'));
+const allowed = id => allowRules.some(re => re.test(id));
+const addedAll = afterIds.filter(id => !beforeIds.includes(id));
+const added = addedAll.filter(id => !allowed(id));
 ok(dropped.length === 0, `变更前有的卡一张都没少（少了 ${dropped.length} 张）`);
 for (const id of dropped.slice(0, 10)) console.error(`      少了：${id}`);
-ok(added.length === 0, `变更后没有多出规则层没有的卡（多了 ${added.length} 张）`);
+ok(added.length === 0,
+  `变更后没有多出规则层没有的卡（多了 ${added.length} 张`
+  + (allowAdded.length ? `；另有 ${addedAll.length - added.length} 张是**声明过的新增卡**` : '') + '）');
 for (const id of added.slice(0, 10)) console.error(`      多了：${id}`);
 
 /* ── 2. 选项数不许变 ───────────────────────────────────────────────── */

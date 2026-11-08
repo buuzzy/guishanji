@@ -23,8 +23,8 @@
  *     ⑩ **正面对照**：基线正常 ⇒ CLI 退出码 0（证明它不是「永远报红」）
  *
  * **阶段 2 追加的三把尺**（2026-11-08）：
- *     ⑪ 日常口径密度超限（`dailyDensity10 > 7`）   → 报红
- *     ⑫ 全卡口径密度超限（`totalDensity10 > 13`）  → 报红
+ *     ⑪ 日常口径密度超限（`dailyDensity10` 超过规格）  → 报红
+ *     ⑫ 全卡口径密度超限（`totalDensity10` 超过规格）   → 报红
  *     ⑬ **分类写坏**（把结构性卡误判成日常 ⇒ 日常密度暴涨）→ CLI 退出码 1
  *         （⑬ 是**真改规则层源码**那道：它证明指标是**问规则层要分类**，
  *           而不是自己判前缀 —— 自己判前缀的话，改规则层不会让门禁变红。）
@@ -105,7 +105,7 @@ function makeCopy() {
 const workdir = INPLACE ? ROOT : makeCopy();
 console.log(`工作副本：${workdir}${INPLACE ? '（⚠ 工作区本体！）' : '（临时目录，工作区不受影响）'}\n`);
 
-const {check} = await import('./audit-metrics.mjs');
+const {check, HARD_LIMIT} = await import('./audit-metrics.mjs');
 
 /** 拿真实的报告当底稿，逐项改坏。 */
 const baseline = JSON.parse(fs.readFileSync(path.join(workdir, BASELINE_REL), 'utf8'));
@@ -131,14 +131,22 @@ function expectRed(name, patch, expect) {
 
 try {
   console.log('A · 判据本身抓得住坏值');
-  expectRed('反向验证 ①「密度超标」', {density10: 6}, /density10 超过硬底线/);
-  expectRed('反向验证 ②「冷却超标」', {cooldownRepeats: 1}, /cooldownRepeats 超过硬底线/);
-  expectRed('反向验证 ③「每境内容种数不足」', {realmContentMin: 4}, /realmContentMin 低于硬底线/);
-  expectRed('反向验证 ④「结局缺失」', {endingMissing: 1}, /endingMissing 超过硬底线/);
-  expectRed('反向验证 ⑤「突破间隔变宽」', {spanMedian: 60}, /spanMedian/);
+  /*
+   * ⚠⚠ **注入的坏值一律从 `HARD_LIMIT` 推出来**（`limit + 1` / `limit - 1`），
+   * **不在这里另写一份数字** ——
+   * 写死数字的话，规格一挪（例如阶段 3.1 日常口径上限 7→8），
+   * 这道反向验证就会「注入一个不超限的值 ⇒ 门禁不报红 ⇒ 反向验证自己红了」，
+   * 看起来像门禁坏了，其实是验证写死了旧数字。
+   * ⇒ 这里只认**规格那一份**，规格改了这里自动跟着改。
+   */
+  expectRed('反向验证 ①「密度超标」', {density10: HARD_LIMIT.density10 + 1}, /density10 超过硬底线/);
+  expectRed('反向验证 ②「冷却超标」', {cooldownRepeats: HARD_LIMIT.cooldownRepeats + 1}, /cooldownRepeats 超过硬底线/);
+  expectRed('反向验证 ③「每境内容种数不足」', {realmContentMin: HARD_LIMIT.realmContentMin - 1}, /realmContentMin 低于硬底线/);
+  expectRed('反向验证 ④「结局缺失」', {endingMissing: HARD_LIMIT.endingMissing + 1}, /endingMissing 超过硬底线/);
+  expectRed('反向验证 ⑤「突破间隔变宽」', {spanMedian: HARD_LIMIT.spanMedian + 1}, /spanMedian/);
   expectRed('反向验证 ⑥「可达性倒退」', {neverSeen: 200}, /neverSeen 变差了/);
-  expectRed('反向验证 ⑪「日常口径密度超限」', {dailyDensity10: 8}, /dailyDensity10 超过硬底线/);
-  expectRed('反向验证 ⑫「全卡口径密度超限」', {totalDensity10: 14}, /totalDensity10 超过硬底线/);
+  expectRed('反向验证 ⑪「日常口径密度超限」', {dailyDensity10: HARD_LIMIT.dailyDensity10 + 1}, /dailyDensity10 超过硬底线/);
+  expectRed('反向验证 ⑫「全卡口径密度超限」', {totalDensity10: HARD_LIMIT.totalDensity10 + 1}, /totalDensity10 超过硬底线/);
 
   console.log('\nB · 门禁真的会在 CLI 上退出码 1');
   const baselinePath = path.join(workdir, BASELINE_REL);

@@ -7,6 +7,8 @@ import {canCultivate,hasMana} from '../packages/adventure/story-rules10.js';
 import {longAction} from '../packages/adventure/progression.js';
 import {CULTIVATION_EVENTS} from '../content/cultivation-stories.js';
 import {playMortal,mortalChoice} from '../scripts/audit-mundane-life.mjs';
+import {playCultivation} from '../scripts/play-cultivation.mjs';
+import {MUNDANE_KEPT,MUNDANE_DISABLED} from '../content/mundane-kept.js';
 const c=s=>s.life.cultivation;
 function base(){const s=createRun({seed:'root-audit-15',rulesVersion:11});for(let i=0;i<40&&s.phase==='life';i++){advanceToChoice(s);if(s.pending?.event==='m11_start'){choose(s,'shop');return s;}if(s.pending)choose(s,mortalChoice(s).id);}throw Error('凡人出生路线未到达');}
 function stage(kind,index=0){const s=base(),m=mundane(s);s.pending={event:`m11_${kind}_${index}`,month:s.month};s.journey=null;c(s).queue=[];c(s).context=null;m.arc={kind,stage:index,due:s.month,location:c(s).continent};m.done=[kind];return s;}
@@ -21,6 +23,25 @@ test('旧10引擎基线继续六次决策逐值一致，原文件保持原样',a
 test('凡人自然一生持续有抉择，旧44/56/67补丁不参与新规则',()=>{
  for(const seed of ['凡人世事-24','凡人世事-28','凡人世事-74']){const {s,events}=playMortal(seed);assert.ok(mundane(s).started);assert.equal(s.player.realm,0);assert.ok(events.filter(id=>id.startsWith('m11_')).length>=10);assert.equal(c(s).story10.facts.mundaneOlder44,undefined);
   const rows=s.journal.filter(j=>j.month>=192);for(let i=1;i<rows.length;i++)assert.ok(rows[i].month-rows[i-1].month<=48,seed);validateRun(s);}
+});
+test('凡人线新人生只发五张卡：起承转合结；停用的四十五张一张都不许再发',()=>{
+ /*
+  * 交接文档 §3.3 的验收口径：**凡人线单命触发 ≤ 5 张**（改前实测 12–20 张）。
+  * ⚠ 这是**当前版本（规则十二）**的口径 —— 规则十一的旧人生仍走原来的弧
+  *   （上面那条「凡人自然一生持续有抉择」量的是规则十一，仍是 10 张以上）。
+  */
+ const expect=['m11_start','m11_work_2','m11_family_1','m11_corpse_0','m11_end'];
+ assert.deepEqual(MUNDANE_KEPT,expect,'在用的五张清单与设计不一致');
+ for(const seed of ['凡人五张-2','凡人五张-31','凡人五张-36']){
+  const r=playCultivation({seed,rulesVersion:12,path:'mortal',conduct:'care',school:'sword'});
+  const m11=r.events.filter(id=>id.startsWith('m11_'));
+  assert.equal(m11.length,5,seed+' 凡人线不止五张：'+m11.join(' > '));
+  assert.deepEqual(m11,expect,seed+' 凡人线的顺序不对：'+m11.join(' > '));
+  assert.equal(m11.filter(id=>MUNDANE_DISABLED.includes(id)).length,0,seed+' 停用的卡又发出来了');
+  validateRun(r.state);
+ }
+ /* 停用的卡**一张都不许删**（停用但不删 ⇒ 随时能放回来）。 */
+ for(const id of MUNDANE_DISABLED)assert.ok(CULTIVATION_EVENTS[id],'停用的卡被删了：'+id);
 });
 test('钱粮守恒，个人工钱与家中财产及仙门灵石分开',()=>{
  const s=base(),m=mundane(s),family=s.life.family.money,stones=s.player.stones;const before=m.money;advance(s,12);assert.ok(m.money>before);assert.equal(s.life.family.money,family);assert.equal(s.player.stones,stones);assert.equal(m.money,24+m.earned-m.spent);validateRun(s);

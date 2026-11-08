@@ -3,8 +3,8 @@
   "source": {
     "repo": "buuzzy/guishanji",
     "branch": "main",
-    "commit": "d10ab06cd1232e2cf69749478552ac70a7716ab5",
-    "tree": "b40716aadf0dc0c08f5d140c7a0a1806ab4bcc15",
+    "commit": "0b90675bf99db3aff87199ae2be874f320f18f55",
+    "tree": "405750b50b11df86a0d7fb7b3287dbdafb758ca6",
     "note": "构建那一刻本仓库的 HEAD 身份（快照信息，不参与逐字节复现校验）",
     "paths": [
       "packages/adventure/",
@@ -21,7 +21,7 @@
     "note": "同一批字节的两个来源之一：本仓库的 packages/ + content/ 与上游那个提交逐字节相同（门禁 scripts/test-xianxia-build.mjs 逐个核对）；vendor/xianxia-r12 是当时锁下的历史证据。"
   },
   "rulesVersion": 12,
-  "moduleCount": 88,
+  "moduleCount": 91,
   "inputs": [
     {
       "id": "content/adventure.js",
@@ -37,6 +37,11 @@
       "id": "content/automatic-life.js",
       "bytes": 19360,
       "sha256": "cf7bb63f20b469759e89760ce37c952af93556ec39494932c8613f1532a6d7dd"
+    },
+    {
+      "id": "content/background-stories.js",
+      "bytes": 10563,
+      "sha256": "6ecd258cd91ab77b140155d254d6f971d043820b8e5fabd3f4fd2148d33e7a2c"
     },
     {
       "id": "content/cadence-table.js",
@@ -75,8 +80,8 @@
     },
     {
       "id": "content/cultivation-joints.js",
-      "bytes": 39278,
-      "sha256": "fcd609c29412c584513495d9b00f3eb24b3d71a998d4c8a0fb972be76c110a41"
+      "bytes": 48267,
+      "sha256": "a31aeadcaef81bb96d761fdc006e5ad7d055647f0852e2e8d3dbbab55463783b"
     },
     {
       "id": "content/cultivation-revision.js",
@@ -85,8 +90,8 @@
     },
     {
       "id": "content/cultivation-stories.js",
-      "bytes": 49813,
-      "sha256": "a79e8fcb494f97d18413d1b970446f835a3612a0a215b404646f5756c8a1d972"
+      "bytes": 52896,
+      "sha256": "b41a9c1807be0bac4aec8f8a16d406af59252a606253e01eaf38feb4077b75fa"
     },
     {
       "id": "content/cultivation-world.js",
@@ -145,8 +150,8 @@
     },
     {
       "id": "content/expressions/events/entry.js",
-      "bytes": 16101,
-      "sha256": "25c628e09c35362747cd1c40874659ea9205410a6aeb26ca4ca4658d2d294d11"
+      "bytes": 22479,
+      "sha256": "8b288e9dbc773325ef2c900cb09bf4dd94f8d031359bcb9a046550a307070812"
     },
     {
       "id": "content/expressions/events/index.js",
@@ -155,8 +160,8 @@
     },
     {
       "id": "content/expressions/events/joint.js",
-      "bytes": 16882,
-      "sha256": "eb6fc2e52792e75cb1672b5d3a52f0e6c99519af7299d00e386fd7b9d73b7a15"
+      "bytes": 29326,
+      "sha256": "7f634d9807a4398dbdf6030d53314a219385a71b5fa5b937829a5afe5437708f"
     },
     {
       "id": "content/expressions/events/material.js",
@@ -244,6 +249,11 @@
       "sha256": "a31ab9bb0594a9d8d7cd4763fcf68d8449e2cbb6ee3cca9a88d4a9162c22d6c7"
     },
     {
+      "id": "content/joint-lines-extra.js",
+      "bytes": 23920,
+      "sha256": "2fdc13524af044e771b3564cd6d11e2d6810f106180b1831988f73b7d8fae9d0"
+    },
+    {
       "id": "content/living-episodes.js",
       "bytes": 39985,
       "sha256": "8ba5a48dca27f8e1783bcb65f38cd14df1e3ddf5843493393731588a61efa07f"
@@ -254,9 +264,14 @@
       "sha256": "41182ded897d32198e2bfbd1d9d91d147526b18085d7425fffa43626a7250250"
     },
     {
+      "id": "content/mundane-kept.js",
+      "bytes": 5218,
+      "sha256": "a353dedd8d7df1089b2bd5fe3075b2df443da9034cdbcbdb54caf2968dd2bb82"
+    },
+    {
       "id": "content/mundane-stories.js",
-      "bytes": 39447,
-      "sha256": "b587471bba3fb3ec2d38c7abf010bc9463ec8ef3a97d7db7939cb1b552a114b7"
+      "bytes": 39787,
+      "sha256": "51fd6b842d10786fa4947c4fab32a91691a8c192aa6044cb6c5e6cb35cd2ffc0"
     },
     {
       "id": "content/nodes.js",
@@ -325,8 +340,8 @@
     },
     {
       "id": "content/story-rules12.js",
-      "bytes": 35362,
-      "sha256": "a5a452caedf32cc2bb2c80d539430af7ba65c5bb969e1f15221428af17ed667a"
+      "bytes": 42046,
+      "sha256": "b95b7dcecc98f6952bf511fc426387d9511a02998c733644baaddc241cb06c97"
     },
     {
       "id": "packages/adventure/birth.js",
@@ -335,8 +350,8 @@
     },
     {
       "id": "packages/adventure/cadence.js",
-      "bytes": 11875,
-      "sha256": "e26d0ab7fb47ea306bf0f6afb581a02de74e0af53e1f438a3faa193b7d11869a"
+      "bytes": 14323,
+      "sha256": "2ad28c2474a1bf883864ef729be5f48e573b8b39ab9b5d5f87107dd0e74bfcab"
     },
     {
       "id": "packages/adventure/context.js",
@@ -385,8 +400,8 @@
     },
     {
       "id": "packages/adventure/cultivation.js",
-      "bytes": 65845,
-      "sha256": "7f404223a32aa2bf7778ee0fdb1c783039144f3d97e2226a755054279faaf5bb"
+      "bytes": 69884,
+      "sha256": "c311a63d589554a96fa57df7310c79af78b26427930433f88a64b12ed956716a"
     },
     {
       "id": "packages/adventure/engine.js",
@@ -400,8 +415,8 @@
     },
     {
       "id": "packages/adventure/gates.js",
-      "bytes": 18098,
-      "sha256": "804d62c177814301e62d2b8be71c00be72c5d3dd584fef6bfcfa9de713a204aa"
+      "bytes": 18641,
+      "sha256": "42cc5dfb71adc5477dcadd0d48f794e94965a13c53633e650a1dafd3edb88055"
     },
     {
       "id": "packages/adventure/life.js",
@@ -410,8 +425,8 @@
     },
     {
       "id": "packages/adventure/mundane-life.js",
-      "bytes": 31862,
-      "sha256": "b398272069403000484638df5411a66892c33974a55ad259ed78a11d780b937d"
+      "bytes": 36032,
+      "sha256": "8764df709896636b15120caa7512ff803d1e0fce85a9d19ba4ddf1114ec64678"
     },
     {
       "id": "packages/adventure/progression.js",
@@ -445,8 +460,8 @@
     },
     {
       "id": "packages/adventure/story-network.js",
-      "bytes": 23424,
-      "sha256": "e414ec81e5fe31ba1f7e9e80e579cc39ff6c80578860a5609d7408122286d6f6"
+      "bytes": 24877,
+      "sha256": "194c48ceade68764e4fbfb38066ccf32f0f1acaebed016425d3f552bb1b8bbad"
     },
     {
       "id": "packages/adventure/story-rules10.js",
@@ -455,8 +470,8 @@
     },
     {
       "id": "packages/adventure/story-rules12.js",
-      "bytes": 27431,
-      "sha256": "ab16810935f4e40781fdeba49ae868ea27539ea188f2963d876c4fefd4238c17"
+      "bytes": 30193,
+      "sha256": "e6ccaf298f1e9401ddb4e49dd3c940cadb1b2de3d6a7473e1452bd56c1ca430c"
     },
     {
       "id": "packages/core/random.js",
@@ -466,8 +481,8 @@
   ],
   "output": {
     "file": "engine.js",
-    "bytes": 1482058,
-    "sha256": "65f609bcdb1f0da9185aab493721e8c5520ba15f4268038b1395a002b82486be"
+    "bytes": 1533040,
+    "sha256": "35d2865f6de5fb4f2339c9177e16f24f2961fbffb3df584856904bb28eb17a13"
   },
   "styleOutput": {
     "file": "pixel-style.js",

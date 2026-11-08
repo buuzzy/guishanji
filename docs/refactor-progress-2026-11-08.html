@@ -260,12 +260,12 @@
       <li>
         <div class="tl-head"><span class="tl-stage">阶段 2</span><span class="tl-sha">0b90675</span><span class="tl-stat">11 文件 · +868 / −91</span></div>
         <div class="tl-title">密度指标不再假绿</div>
-        <div class="tl-player">玩家当下感觉不到，但决定了以后「会不会又把游戏做得太挤」。原来的豁免名单一刀切掉了 68% 的卡，密度闸永远是绿的；现在拆成「结构性 / 日常」两类，改成三把尺各量各的。</div>
+        <div class="tl-player">玩家当下感觉不到，但决定了以后「会不会又把游戏做得太挤」。原来的豁免名单覆盖了 387 张里的 263 张（68%）⇒ 密度闸永远是绿的；现在拆成「结构性 / 日常」两类，改成三把尺各量各的。</div>
       </li>
       <li>
         <div class="tl-head"><span class="tl-stage">阶段 3</span><span class="tl-sha">48f2963</span><span class="tl-stat">35 文件 · +4133 / −911</span></div>
         <div class="tl-title">剧情结构成型</div>
-        <div class="tl-player">每条命开头有一段只属于你的身世（12 条背景，必答）；一条长线走完，接缝卡把它接到下一段；凡人线从 50 张收窄到 5 张，其余 45 张停用但没删，放回来只改一处。</div>
+        <div class="tl-player">每条命开头有一段只属于你的身世（12 条背景，必答）；一条长线走完，接头卡把它接到下一段；凡人线从 50 张收窄到 5 张，其余 45 张停用但没删，放回来只改一处。</div>
       </li>
       <li>
         <div class="tl-head"><span class="tl-stage">阶段 4</span><span class="tl-sha">e4ba13f</span><span class="tl-stat">13 文件 · +775 / −29</span></div>
@@ -293,7 +293,7 @@
           <div class="cmp-head"><span class="cmp-name">一生总时长</span><span class="muted small">从「来不及读」变成「读得完」</span></div>
           <div class="cmp-row"><span class="cmp-tag">改前</span><div class="cmp-track"><div class="cmp-fill before" style="width:19%"></div></div><span class="cmp-val">11.8 分</span></div>
           <div class="cmp-row"><span class="cmp-tag">改后</span><div class="cmp-track"><div class="cmp-fill after" style="width:66%"></div></div><span class="cmp-val">40.4 分</span></div>
-          <div class="cmp-row"><span class="cmp-tag">官方</span><div class="cmp-track"><div class="cmp-fill official" style="width:100%"></div></div><span class="cmp-val">61 分</span></div>
+          <div class="cmp-row"><span class="cmp-tag">官方</span><div class="cmp-track"><div class="cmp-fill official" style="width:100%"></div></div><span class="cmp-val">≈61 分</span></div>
         </div>
 
         <div class="cmp">
@@ -322,6 +322,7 @@
         <span><b>决策卡数没变</b>　41 张（官方 56 张），阶段 5 加的全是旁白不是选项</span>
         <span><b>决策卡节奏对上了</b>　0.87 张/分，官方同为 0.87</span>
         <span><b>一生经历条数</b>　162 → 263 条（官方 362）</span>
+        <span><b>「官方 ≈61 分」是推算的</b>　按官方年速公式（3600÷预期寿命）算出来的；官方直接给出的是「相邻卡间隔 43–67 秒」</span>
       </div>
     </div>
   </section>
@@ -331,7 +332,7 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
       <h2>门禁现状：39 道全绿</h2>
     </div>
-    <p class="sec-sub">在干净代码树上跑完，退出码 0。其中 7 道是「反向验证」——故意注入坏值，必须报红才算数。</p>
+    <p class="sec-sub">在干净代码树上跑完，退出码 0。其中多道门禁带「反向验证」—— 故意注入坏值，必须报红才算数（<code>t9reverse</code> / <code>t10reverse</code> / <code>t11reverse</code> / <code>viz-browser</code> 等）。</p>
     <div class="card">
       <div class="gate-group">
         <h3>规则层与内容 <span>20</span></h3>
@@ -430,7 +431,7 @@
         <div class="gap">
           <div>
             <div class="gap-name">零触达卡<br>115 张</div>
-            <div class="gap-now">凡人线有意停用 45 + 矩阵空格 19 + 备用编号 25 + 兜底 7 + 变体 4 + 接头收尾 2 + 人脉 2 + 宗门 5</div>
+            <div class="gap-now">凡人线有意停用 45 + 矩阵空格 19 + 备用编号 25 + 兜底 13 + 变体 4 + 接头收尾 2 + 人脉 2 + 宗门 5</div>
           </div>
           <div class="gap-why">分族登记在台账里，每族写一句「为什么到不了」；用两种策略（固定偏好 ∪ 随机探索）各跑 200 条命交叉验证过。</div>
           <div class="gap-eff"><span class="tag done">已查清</span><br>结构上到不了，不是内容缺口 —— 不用修。</div>

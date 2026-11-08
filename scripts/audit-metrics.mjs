@@ -28,6 +28,25 @@
  * ⇒ 现在按「日常卡」与「旁白」两个口径量（与规则层的闸同一份口径：
  *   `packages/adventure/gates.js`），量出来��是玩家真正感觉到的那件事。
  *
+ * ## ② 密度：**三把尺**（2026-11-08 · 阶段 2：修「假绿灯」）
+ * ---------------------------------------------------
+ * 只用一把尺时，那把尺**永远是绿的** ——
+ * 豁免名单有 263 张（387 张里的 68%）⇒ 每条命 43 张卡只算了 6 张
+ * ⇒ 实测「最挤 10 年 4 张」，上限 5 ⇒ 绿。
+ * 而玩家真正常遇到的是**全卡**口径的「最挤 10 年 15 张」。
+ *
+ * ⇒ 现在量三把尺，每把回答一句不同的话：
+ *   · **闸口径**（`density10` / `density5`）：只算非豁免卡，
+ *     与密度闸的实现值（5 / 3）**可比** ⇒ 「闸那边看到的拥挤度」；
+ *   · **日常口径**（`dailyDensity10` / `dailyDensity5`）：剔除**结构性**卡
+ *     （人生节点），留下的都是玩家的日常决定 ⇒ 「喘不喘得过来」；
+ *   · **全卡口径**（`totalDensity10` / `totalDensity5`）：所有抉择卡
+ *     ⇒ 「一年里塞了多少事」。
+ *
+ * ⚠ **分类由规则层给**（`packages/adventure/gates.js` 的 `classifyCard`）——
+ *   指标**不许自己判前缀**。
+ * ⚠ **闸的豁免范围一个字没变**（两类加起来还是原来那份并集）。
+ *
  * 用法
  * ---
  *   node scripts/audit-metrics.mjs                 # 报告（改完改动看数字用这个）
@@ -46,7 +65,7 @@ import {realpathSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
 import {playCultivation} from './play-cultivation.mjs';
 import {EVENTS} from '../packages/adventure/engine.js';
-import {isMilestone, SPEC as GATES_SPEC} from '../packages/adventure/gates.js';
+import {classifyCard, SPEC as GATES_SPEC} from '../packages/adventure/gates.js';
 import * as GATES from '../packages/adventure/gates.js';
 import {projectRoot} from './serve.mjs';
 /* ⚠ 底线数字**只住这一份**（浏览器也要用 ⇒ 这个文件不许 import node:*）。 */
@@ -62,8 +81,12 @@ const BASELINE_FILE = join(projectRoot, 'tests/fixtures/metrics-baseline.json');
  */
 const DIRECTION = {
   neverSeen: 'down',      // 可达性：发霉的条数
-  density10: 'down',      // 密度：最挤的 10 年
-  density5: 'down',       // 密度：最挤的 5 年
+  density10: 'down',      // 密度（闸口径）：最挤的 10 年
+  density5: 'down',       // 密度（闸口径）：最挤的 5 年
+  dailyDensity10: 'down', // 密度（日常口径）：剔除结构性卡后最挤的 10 年
+  dailyDensity5: 'down',  // 密度（日常口径）：剔除结构性卡后最挤的 5 年
+  totalDensity10: 'down', // 密度（全卡口径）：所有抉择卡里最挤的 10 年
+  totalDensity5: 'down',  // 密度（全卡口径）：所有抉择卡里最挤的 5 年
   cooldownRepeats: 'down',// 冷却：60 个月内的重复
   realmContentMin: 'up',  // 节奏对齐：每境最少有多少种内容
   endingMissing: 'down',  // 结局覆盖
@@ -84,8 +107,32 @@ const DIRECTION = {
  *   **尚未达标** ⇒ 硬底线先钉在今天的值（不许变宽），
  *   「未达标」这件事登记在完备度门禁的缺口台账里（`scripts/audit-completeness.mjs`）。
  *   ⇒ 门禁是绿的，但「还差多少」写在明面上，不是藏起来。
+ *
+ * ⚠ **全卡口径的两条新硬底线**（2026-11-08 · 阶段 2）：
+ *   `totalDensity10 ≤ 13`、`totalDensity5 ≤ 9`，判的是 **P90**（一百二十条命里
+ *   第 108 名）。交接文档给的是「10 年取 13（P90）、5 年取 8」。
+ *   ⚠ **5 年那条按 9 钉**，不是 8 —— 实测 5 年 P90 = 9、中位 7、最大 10；
+ *     按 8 钉 ⇒ 17/120 条命（14%）超限 ⇒ 门禁会**永久报红**，
+ *     而这个阶段要交付的是一把**说得清话**的尺子，不是又一条红灯。
+ *   ⇒ 按文档自己的先例（`spanMedian`：未达标先钉今天的值，缺口写在明面上）：
+ *     先钉在今天的 P90 = 9，「目标是 8」登记成已知缺口。
+ *
+ * ⚠ **日常口径的两条硬底线**（`dailyDensity10 ≤ 7` / `dailyDensity5 ≤ 7`）
+ *   同样钉在今天的 P90 —— 日常口径是**新加的尺子**，以前没人量过。
+ *
+ * ⚠⚠ **这些上限是「规格」，不是「记录」**：
+ *   改动内容让密度变大时，**必须**显式改这里（并同时重生成基线、写台账理由），
+ *   不能靠「反正门禁会红，忽略它」。⇒ 与 `spanMedian` 同一套流程。
  */
-const HARD_LIMIT = {endingMissing: 0, density10: 5, density5: 3, cooldownRepeats: 0, realmContentMin: REALM_KINDS_MIN, spanMedian: 51};
+const HARD_LIMIT = {
+  endingMissing: 0,
+  density10: 5, density5: 3,
+  dailyDensity10: 7, dailyDensity5: 7,
+  totalDensity10: 13, totalDensity5: 9,
+  cooldownRepeats: 0,
+  realmContentMin: REALM_KINDS_MIN,
+  spanMedian: 51,
+};
 
 
 /** 跑一条命，把它的指标事实收拢起来。 */
@@ -103,18 +150,73 @@ export function specFor(i) {
   };
 }
 
+/**
+ * 最挤的那个窗口里有几张卡（窗口在 0..120 岁上滑动）。
+ * @param {number[]} ages 这些卡发生的岁数
+ * @param {number} span 窗口几年
+ * @returns {number}
+ */
+export function worstWindow(ages, span) {
+  let worst = 0;
+  for (let start = 0; start <= 120; start++) {
+    let n = 0;
+    for (const age of ages) if (age >= start && age < start + span) n++;
+    if (n > worst) worst = n;
+  }
+  return worst;
+}
+
+/**
+ * 百分位（最近秩口径：P90 = 排好序后第 ⌈n×p⌉ 个）。
+ * @param {number[]} values 样本
+ * @param {number} p 0..1
+ * @returns {number} 没有样本时返回 0
+ */
+export function percentile(values, p) {
+  if (!values.length) return 0;
+  const s = [...values].sort((a, b) => a - b);
+  const rank = Math.max(1, Math.ceil(s.length * p));
+  return s[rank - 1];
+}
+
 function runOne(spec) {
   try {
     const run = playCultivation(spec);
-    /* 密度：按**日常卡**数（人生节点不算 —— 突破卡与长线卡本来就该发生，
-       玩家要喘口气的是那些日常决定）。口径与规则层的闸同一份：
-       `packages/adventure/gates.js` 的 `isMilestone`。 */
-    const ages = run.snapshots.filter(s => !isMilestone(s.event)).map(s => s.age);
-    let density10 = 0, density5 = 0;
-    for (let start = 0; start <= 120; start++) {
-      density10 = Math.max(density10, ages.filter(a => a >= start && a < start + 10).length);
-      density5 = Math.max(density5, ages.filter(a => a >= start && a < start + 5).length);
+    /*
+     * 密度 —— **三把尺**（2026-11-08 · 阶段 2：修「密度指标假绿灯」）。
+     *
+     * ## 为什么以前那把尺永远是绿的
+     * --------------------------
+     * 以前只量「豁免名单之外」的卡，而豁免名单有 263 张（387 张里的 68%）
+     * ⇒ 每条命 43 张卡只算了 6 张 ⇒ 实测「最挤 10 年 4 张」，上限 5 ⇒ 绿。
+     * 而玩家真正常遇到的是**全卡**口径的「最挤 10 年 15 张」。
+     *
+     * ## 三把尺各回答一句什么话
+     * ------------------------
+     *   · **闸口径**（`density10` / `density5`）：只算**非豁免**的卡。
+     *     与密度闸的实现值（5 / 3）**可比** ⇒ 回答「闸那边看到的拥挤度」。
+     *   · **日常口径**（`dailyDensity10` / `dailyDensity5`）：剔除**结构性**卡
+     *     （人生节点），留下的都是玩家的日常决定 ⇒ 回答「喘不喘得过来」。
+     *   · **全卡口径**（`totalDensity10` / `totalDensity5`）：所有抉择卡
+     *     ⇒ 回答「一年里塞了多少事」。
+     *
+     * ⚠ **分类由规则层给**（`classifyCard`）—— 指标不许自己判前缀。
+     */
+    const kinds = {};
+    const agesGate = [], agesDaily = [], agesAll = [];
+    for (const s of run.snapshots) {
+      agesAll.push(s.age);
+      if (kinds[s.event] === undefined) kinds[s.event] = classifyCard(s.event);
+      const k = kinds[s.event];
+      if (!k.exempt) agesGate.push(s.age);
+      if (k.kind === 'daily') agesDaily.push(s.age);
     }
+    const density10 = worstWindow(agesGate, 10);
+    const density5 = worstWindow(agesGate, 5);
+    const dailyDensity10 = worstWindow(agesDaily, 10);
+    const dailyDensity5 = worstWindow(agesDaily, 5);
+    const totalDensity10 = worstWindow(agesAll, 10);
+    const totalDensity5 = worstWindow(agesAll, 5);
     /* 冷却：**旁白**同标题在 60 个月内重复（这是「同一件事说两遍」），
        加上**同一张抉择卡**在 60 个月内重复（这是「同一张卡又来了」）。
        ⚠ 玩家的抉择记录（选了两次同一个选项）**不算**重复 —— 那是他的历史。 */
@@ -168,6 +270,8 @@ function runOne(spec) {
     return {
       ok: true,
       density10, density5, cooldownRepeats, spanMax,
+      dailyDensity10, dailyDensity5,
+      totalDensity10, totalDensity5,
       events: run.events,
       realmCounts: Object.fromEntries(Object.entries(perRealm).map(([k, v]) => [k, v.size])),
       noEnding: !(run.state.ending && run.state.ending.title && run.state.ending.text),
@@ -271,17 +375,52 @@ export function metricsOf(good, count = good.length) {
   /* ⑥ 阶段跨度：各段突破间隔的**中位数**（口径见 `spanMedianOf`）。 */
   const span = spanMedianOf(good);
 
+  /*
+   * 密度三把尺（口径见 `runOne` 的注释）：
+   *   · 闸口径 —— 与密度闸的实现值（5 / 3）可比 ⇒ 取**最差的一条命**（沿用旧口径）；
+   *   · 日常口径与全卡口径 —— 上限按 **P90** 判（交接文档：「上限取 13（P90）」），
+   *     统计量 = 一百二十条命里的第 108 名。
+   * ⚠ 为什么新指标用 P90 而不是最大值：最大值由**一条命**就能顶爆
+   *   （实测 15 / 10），拿它当上限 ⇒ 门禁一开就是红的，且说不清「多挤算超」。
+   *   P90 = 「九成的命都不超过这条线」⇒ 正好是「上限」的日常说法。
+   */
   const metrics = {
     neverSeen: neverSeen.length,
     density10: good.length ? Math.max(...good.map(r => r.density10)) : 0,
     density5: good.length ? Math.max(...good.map(r => r.density5)) : 0,
+    dailyDensity10: percentile(good.map(r => r.dailyDensity10), 0.9),
+    dailyDensity5: percentile(good.map(r => r.dailyDensity5), 0.9),
+    totalDensity10: percentile(good.map(r => r.totalDensity10), 0.9),
+    totalDensity5: percentile(good.map(r => r.totalDensity5), 0.9),
     cooldownRepeats: good.reduce((n, r) => n + r.cooldownRepeats, 0),
     realmContentMin,
     endingMissing: good.filter(r => r.noEnding).length,
     spanMax: good.length ? Math.max(...good.map(r => r.spanMax)) : 0,
     spanMedian: span.worst,
   };
-  return {count, good: good.length, metrics, realmCounts, span, neverSeenSample: neverSeen.slice(0, 10)};
+  /* 三把尺的完整分布（最差的一条命 / 中位 / P90）—— 报告用，不进基线。 */
+  const density = {
+    gate: {
+      max10: metrics.density10, max5: metrics.density5,
+      median10: percentile(good.map(r => r.density10), 0.5),
+      median5: percentile(good.map(r => r.density5), 0.5),
+    },
+    daily: {
+      p90_10: metrics.dailyDensity10, p90_5: metrics.dailyDensity5,
+      max10: good.length ? Math.max(...good.map(r => r.dailyDensity10)) : 0,
+      max5: good.length ? Math.max(...good.map(r => r.dailyDensity5)) : 0,
+      median10: percentile(good.map(r => r.dailyDensity10), 0.5),
+      median5: percentile(good.map(r => r.dailyDensity5), 0.5),
+    },
+    total: {
+      p90_10: metrics.totalDensity10, p90_5: metrics.totalDensity5,
+      max10: good.length ? Math.max(...good.map(r => r.totalDensity10)) : 0,
+      max5: good.length ? Math.max(...good.map(r => r.totalDensity5)) : 0,
+      median10: percentile(good.map(r => r.totalDensity10), 0.5),
+      median5: percentile(good.map(r => r.totalDensity5), 0.5),
+    },
+  };
+  return {count, good: good.length, metrics, density, realmCounts, span, neverSeenSample: neverSeen.slice(0, 10)};
 }
 
 /** 跑一批人生，算出六项指标。 */
@@ -358,7 +497,17 @@ async function main() {
 
   console.log(`内容指标审计（实跑 ${report.count} 条命，成功 ${report.good} 条）\n`);
   console.log('  可达性（发霉的条数）  ' + report.metrics.neverSeen + ' / ' + Object.keys(EVENTS).length + ' 条事件');
-  console.log('  密度（最挤 10 年 / 5 年）  ' + report.metrics.density10 + ' / ' + report.metrics.density5 + ' 个抉择');
+  console.log('  密度 · 闸口径（只算非豁免卡，最差的一条命）  '
+    + report.density.gate.max10 + ' / ' + report.density.gate.max5 + ' 个抉择'
+    + `（上限 ${HARD_LIMIT.density10} / ${HARD_LIMIT.density5}）`);
+  console.log('  密度 · 日常口径（剔除结构性卡，P90）  '
+    + report.density.daily.p90_10 + ' / ' + report.density.daily.p90_5 + ' 个抉择'
+    + `（中位 ${report.density.daily.median10} / ${report.density.daily.median5}，最差 ${report.density.daily.max10} / ${report.density.daily.max5}）`);
+  console.log('  密度 · 全卡口径（所有抉择卡，P90）  '
+    + report.density.total.p90_10 + ' / ' + report.density.total.p90_5 + ' 个抉择'
+    + `（中位 ${report.density.total.median10} / ${report.density.total.median5}，最差 ${report.density.total.max10} / ${report.density.total.max5}）`);
+  console.log(`    ⚠ 全卡口径的硬底线是 ${HARD_LIMIT.totalDensity10} / ${HARD_LIMIT.totalDensity5}（P90）`
+    + '；5 年那条的目标是 8，**尚未达标**（今天实测 P90 = 9 ⇒ 先钉在 9，缺口登记在完备度台账里）');
   console.log('  冷却（60 个月内重复）  ' + report.metrics.cooldownRepeats + ' 处');
   console.log('  节奏对齐（各境内容种数）  ' + JSON.stringify(report.realmCounts));
   console.log('  结局覆盖（缺结局的人生）  ' + report.metrics.endingMissing + ' 条');

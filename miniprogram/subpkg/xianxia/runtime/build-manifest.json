@@ -3,8 +3,8 @@
   "source": {
     "repo": "buuzzy/guishanji",
     "branch": "main",
-    "commit": "be476865ac0907f86aba05eec3cd22746e761985",
-    "tree": "e931c4ce9826d144c7670f2288001422d2ff64e8",
+    "commit": "d10ab06cd1232e2cf69749478552ac70a7716ab5",
+    "tree": "b40716aadf0dc0c08f5d140c7a0a1806ab4bcc15",
     "note": "构建那一刻本仓库的 HEAD 身份（快照信息，不参与逐字节复现校验）",
     "paths": [
       "packages/adventure/",
@@ -400,8 +400,8 @@
     },
     {
       "id": "packages/adventure/gates.js",
-      "bytes": 14118,
-      "sha256": "d04191b5e9eae28c4196bed44d9751693b17a1d395f35405a68f1babde244477"
+      "bytes": 18098,
+      "sha256": "804d62c177814301e62d2b8be71c00be72c5d3dd584fef6bfcfa9de713a204aa"
     },
     {
       "id": "packages/adventure/life.js",
@@ -466,8 +466,8 @@
   ],
   "output": {
     "file": "engine.js",
-    "bytes": 1480045,
-    "sha256": "cff155413c53cc8d921edaf3b784acec94e196da3aa24c996983553bb73d3e03"
+    "bytes": 1482058,
+    "sha256": "65f609bcdb1f0da9185aab493721e8c5520ba15f4268038b1395a002b82486be"
   },
   "styleOutput": {
     "file": "pixel-style.js",

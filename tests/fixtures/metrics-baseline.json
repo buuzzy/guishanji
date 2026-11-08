@@ -1,10 +1,14 @@
 {
-  "createdAt": "2026-11-07T15:29:01.070Z",
+  "createdAt": "2026-11-08T02:49:49.762Z",
   "count": 120,
   "metrics": {
     "neverSeen": 175,
     "density10": 4,
     "density5": 3,
+    "dailyDensity10": 7,
+    "dailyDensity5": 7,
+    "totalDensity10": 13,
+    "totalDensity5": 9,
     "cooldownRepeats": 0,
     "realmContentMin": 5,
     "endingMissing": 0,
@@ -214,6 +218,34 @@
         "neverSeen": 175,
         "density10": 4,
         "density5": 3,
+        "cooldownRepeats": 0,
+        "realmContentMin": 5,
+        "endingMissing": 0,
+        "spanMax": 102,
+        "spanMedian": 51
+      }
+    },
+    {
+      "at": "2026-11-08T02:49:49.761Z",
+      "reason": "阶段 2：修「密度指标假绿灯」。豁免名单拆成「结构性 / 日常」两类（规则层 classifyCard），闸的豁免范围一个字没变。新增四个键：dailyDensity10/5（日常口径 P90 = 7/7）与 totalDensity10/5（全卡口径 P90 = 13/9）—— 以前只量「非豁免卡」（最挤 10 年 4 张）⇒ 永远绿；玩家真正常遇到的是全卡口径 15 张。旧口径的 8 个键数值全部不变（neverSeen 175、density10 4、density5 3、冷却 0、每境 5、结局 0、跨度 102/51）⇒ 零内容变化，只是多报了两把尺。全卡口径 5 年的硬底线钉在 9（实测 P90 = 9，交接文档写的目标 8 尚未达标 ⇒ 按 spanMedian 的先例先钉在今天的值，缺口登记在完备度台账里）。",
+      "from": {
+        "neverSeen": 175,
+        "density10": 4,
+        "density5": 3,
+        "cooldownRepeats": 0,
+        "realmContentMin": 5,
+        "endingMissing": 0,
+        "spanMax": 102,
+        "spanMedian": 51
+      },
+      "to": {
+        "neverSeen": 175,
+        "density10": 4,
+        "density5": 3,
+        "dailyDensity10": 7,
+        "dailyDensity5": 7,
+        "totalDensity10": 13,
+        "totalDensity5": 9,
         "cooldownRepeats": 0,
         "realmContentMin": 5,
         "endingMissing": 0,

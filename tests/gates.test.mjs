@@ -19,9 +19,10 @@
  */
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
 import {
   allowDaily, blockedReason, isMilestone, dailyCount, densityAllows,
-  cooldownAllows, titleAllows, stageAllows, currentStage,
+  cooldownAllows, titleAllows, stageAllows, currentStage, classifyCard,
   DENSITY_MAX_10Y, DENSITY_MAX_5Y, COOLDOWN_MONTHS,
 } from '../packages/adventure/gates.js';
 import {SPEC} from '../packages/adventure/gates.js';
@@ -75,6 +76,63 @@ test('人生节点不受三道闸限制', () => {
   assert.equal(isMilestone('child_teacher'), false);
   assert.equal(allowDaily(state, 'breakthrough_1_0'), true, '突破卡不该被拦');
   assert.equal(allowDaily(state, 'garden_accident'), false, '日常卡该被拦（密度已满）');
+});
+
+/* ── 豁免范围与分类：拆了不许变（2026-11-08 · 阶段 2） ───────────────── */
+
+test('豁免范围一个字没变：两类加起来还是原来那份并集', () => {
+  /*
+   * ⚠ 阶段 2 把豁免名单拆成「结构性 / 日常」两类（给密度指标用）。
+   *   **豁免范围一个字都不能变** —— 少豁免一张 ⇒ 那张卡被密度闸拦掉
+   *   ⇒ 上一张卡的后果落不了地 ⇒ 整条线断掉，而门禁当时还是绿的。
+   * ⇒ 用 `tests/fixtures/gate-exemptions.json` 把范围与分类**逐条锁死**。
+   */
+  const fixture = JSON.parse(
+    readFileSync(new URL('./fixtures/gate-exemptions.json', import.meta.url), 'utf8'));
+  const check = (ids, kind, exempt) => {
+    for (const id of ids) {
+      const k = classifyCard(id);
+      assert.equal(k.exempt, exempt, id + ' 的豁免状态变了（' + exempt + ' → ' + k.exempt + '）');
+      if (exempt) assert.equal(k.kind, kind, id + ' 的分类变了（' + kind + ' → ' + k.kind + '）');
+      assert.ok(k.reason && k.reason.length > 0, id + ' 缺理由');
+    }
+  };
+  check(fixture.structural, 'structural', true);
+  check(fixture.dailyExempt, 'daily', true);
+  check(fixture.notExempt, 'daily', false);
+  assert.equal(
+    fixture.structural.length + fixture.dailyExempt.length + fixture.notExempt.length,
+    fixture.counts.structural + fixture.counts.dailyExempt + fixture.counts.notExempt,
+    'fixture 自己的计数对不上');
+});
+
+test('分类函数：人生节点是结构性的，后果卡是日常的', () => {
+  /* 结构性：一生就那么几次。 */
+  for (const id of ['breakthrough_1_0', 'advance_material_3_0_0', 'years_practice_0',
+    'tribulation_prepare', 'r12_direction_0', 'r12_foundation_supply',
+    'selection_1', 'reception', 'root_result', 'first_method',
+    'sect_repair_0', 'dark_ledger_2', 'mortal_life_0', 'system_final', 'world_raid']) {
+    const k = classifyCard(id);
+    assert.equal(k.kind, 'structural', id + ' 该是结构性的');
+    assert.equal(k.exempt, true, id + ' 该豁免');
+  }
+  /* 日常承接：闸不能拦，但本质是日常节奏的一部分。 */
+  for (const id of ['r12_home_resolve', 'r12_bazaar_follow', 'r12_sealed_warning',
+    'network_method', 'echo_teacher_visit', 'custody_terms', 'dark_oath',
+    'family_gate', 'manual_study', 'thin_root_mine', 'm11_work_0']) {
+    const k = classifyCard(id);
+    assert.equal(k.kind, 'daily', id + ' 该是日常的');
+    assert.equal(k.exempt, true, id + ' 该豁免（闸不能拦后果卡）');
+  }
+  /* 日常决定：不豁免，密度闸会计进额度。 */
+  for (const id of ['child_teacher', 'garden_accident', 'r12_sect_clue', 'root_review']) {
+    const k = classifyCard(id);
+    assert.equal(k.kind, 'daily', id + ' 该是日常的');
+    assert.equal(k.exempt, false, id + ' 不该豁免');
+  }
+  /* 空 id 不许炸。 */
+  assert.equal(classifyCard('').exempt, false);
+  assert.equal(isMilestone(undefined), false);
 });
 
 /* ── 密度闸 ────────────────────────────────────────────────────────── */

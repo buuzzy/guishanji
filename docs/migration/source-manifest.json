@@ -1190,7 +1190,7 @@
         "sourceSha256": "66026f8b72b80fc179a98f3f31fe2c736ff0d8c96a74e4c8ad26cde58edd5875",
         "path": "miniprogram/subpkg/xianxia/runtime/build-manifest.json",
         "currentBytes": 15643,
-        "currentSha256": "2512ca74ae06ae4bcea919d181de6093272f3225deac5b8fe44ac15aec0d34fd",
+        "currentSha256": "8d59287dffae59f4a881938f1de2cad9209854672be9001d3a6940f06ef6c7ab",
         "reason": "生成物：来源改为本仓库源码，并新增 upstreamOrigin 段"
       },
       {
@@ -1200,8 +1200,8 @@
         "sourceBytes": 1738614,
         "sourceSha256": "ba0720f2c21c1babe39c605739e90243d7de00db5f920bd5078704d6952fed3f",
         "path": "miniprogram/subpkg/xianxia/runtime/engine.js",
-        "currentBytes": 1480045,
-        "currentSha256": "cff155413c53cc8d921edaf3b784acec94e196da3aa24c996983553bb73d3e03",
+        "currentBytes": 1482058,
+        "currentSha256": "65f609bcdb1f0da9185aab493721e8c5520ba15f4268038b1395a002b82486be",
         "reason": "生成物：由本仓库源码重新构建（除文件头注释外与迁移进来的那份逐字节一致，见 reference/migrated-runtime/）"
       },
       {
@@ -1509,8 +1509,8 @@
       },
       {
         "path": "scripts/gen-source-manifest.mjs",
-        "bytes": 28452,
-        "sha256": "9ba2b207ebab03fbc9a5247e55ac5d704ddb12c307767d49826c1c7005748a4c"
+        "bytes": 28712,
+        "sha256": "ae2670ea411ad7d5e28bbdf9cbda9c9d3a81071002e41b0ad346163193f864ea"
       },
       {
         "path": "scripts/test-xianxia-standalone.mjs",
@@ -1529,8 +1529,8 @@
       },
       {
         "path": "AGENTS.md",
-        "bytes": 28598,
-        "sha256": "e6665ea618c3e36907ed39c1a922a4e99abd5eeeba4a33aa6d08b7daa7ada5f7"
+        "bytes": 30582,
+        "sha256": "7242ab8ecb8a7edb973b8d21cedb978a6c806dbac2635563e2a88b8577d449f9"
       },
       {
         "path": "README.md",
@@ -1699,13 +1699,13 @@
       },
       {
         "path": "scripts/audit-metrics.mjs",
-        "bytes": 21335,
-        "sha256": "f4218909274ed9bd96b1b782d403be7af44d8f6e7a4b1d214d06b30635e2bfa9"
+        "bytes": 29416,
+        "sha256": "dd54a69e12f5a7f400c426868a828f51c32cd016f45503c4327090b5f8f20e7c"
       },
       {
         "path": "tests/fixtures/metrics-baseline.json",
-        "bytes": 8177,
-        "sha256": "d8e9d4789c398138d94edd9803b69c898e474ff0bc1c9b9cb95256894490f18a"
+        "bytes": 9700,
+        "sha256": "df9fb26fa83011f654be9da33b49913b76e188e675464d8841506bd4a57bf540"
       },
       {
         "path": "tests/radar.test.mjs",
@@ -1934,8 +1934,8 @@
       },
       {
         "path": "scripts/t10-reverse.mjs",
-        "bytes": 12172,
-        "sha256": "028f0f860cb14619648b9e1ae89e33ac5a66cdb60bdbd0f3ac9308b6fd04ca4e"
+        "bytes": 14213,
+        "sha256": "5a394c55b38c52109db639c9c7228896823dd099a8d59f1f81dfd0f1285783aa"
       },
       {
         "path": "tests/fixtures/expressions-pre-t10.json",
@@ -1996,6 +1996,11 @@
         "path": "tests/helpers/mp-view.mjs",
         "bytes": 2689,
         "sha256": "eb8fe7da5327a0fe4049c16121c2d90b5367dea52b7a45d0d94ca1bcd6a9256d"
+      },
+      {
+        "path": "tests/fixtures/gate-exemptions.json",
+        "bytes": 9120,
+        "sha256": "c5091c1e117f1e26deaf754028e681776e30595bc5b30cfff29b2f7f0b6ef316"
       }
     ]
   }

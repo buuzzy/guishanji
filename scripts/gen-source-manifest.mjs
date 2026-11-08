@@ -203,6 +203,9 @@ const ADDED = [
   'scripts/build-pixel-style.mjs',
   'scripts/t11-reverse.mjs',
   'tests/helpers/mp-view.mjs',
+  /* 2026-11-08：阶段 2「密度指标假绿灯」—— 豁免名单拆成「结构性 / 日常」两类后，
+     用这份死锁把豁免范围与分类逐条钉住（少豁免一张 ⇒ 整条线断掉）。 */
+  'tests/fixtures/gate-exemptions.json',
   /* 2026-11-08：开发者面板（`apps/viz/`）—— 观测台，不进小程序包也不进 dist。
    * `decide-policy.js` 是从 `play-cultivation.mjs` 里搬出来的同一份策略，
    * 搬出来是为了让浏览器也能 import 它（面板的「固定偏好」与各审计脚本同源）。 */

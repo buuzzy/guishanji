@@ -22,6 +22,13 @@
  *     ⑨ 端到端：把基线改坏 ⇒ CLI 退出码 1
  *     ⑩ **正面对照**：基线正常 ⇒ CLI 退出码 0（证明它不是「永远报红」）
  *
+ * **阶段 2 追加的三把尺**（2026-11-08）：
+ *     ⑪ 日常口径密度超限（`dailyDensity10 > 7`）   → 报红
+ *     ⑫ 全卡口径密度超限（`totalDensity10 > 13`）  → 报红
+ *     ⑬ **分类写坏**（把结构性卡误判成日常 ⇒ 日常密度暴涨）→ CLI 退出码 1
+ *         （⑬ 是**真改规则层源码**那道：它证明指标是**问规则层要分类**，
+ *           而不是自己判前缀 —— 自己判前缀的话，改规则层不会让门禁变红。）
+ *
  * ⚠ **⑩ 那道不能省**：只会证明「会报红」的脚本，也可能是「永远报红」。
  * ⚠ **⑦ 是真改源码**（在临时副本里改 `packages/adventure/gates.js`）——
  *   它证明「规格与实现值对不上时门禁真的会拦」，而不是只证明几个数字比较。
@@ -130,6 +137,8 @@ try {
   expectRed('反向验证 ④「结局缺失」', {endingMissing: 1}, /endingMissing 超过硬底线/);
   expectRed('反向验证 ⑤「突破间隔变宽」', {spanMedian: 60}, /spanMedian/);
   expectRed('反向验证 ⑥「可达性倒退」', {neverSeen: 200}, /neverSeen 变差了/);
+  expectRed('反向验证 ⑪「日常口径密度超限」', {dailyDensity10: 8}, /dailyDensity10 超过硬底线/);
+  expectRed('反向验证 ⑫「全卡口径密度超限」', {totalDensity10: 14}, /totalDensity10 超过硬底线/);
 
   console.log('\nB · 门禁真的会在 CLI 上退出码 1');
   const baselinePath = path.join(workdir, BASELINE_REL);
@@ -177,6 +186,29 @@ try {
     if (r.code === 0) console.error('      门禁没报红 ⇒ 这是假门禁');
   }
 
+  /* ── ⑬ 分类写坏（结构性卡误判成日常）⇒ 日常密度暴涨 ⇒ CLI 退出码 1 ──── */
+  {
+    /*
+     * ⚠ 这道证明的是**指标是「问规则层要分类」**，不是自己判前缀：
+     *   把规则层的 `classifyCard` 写坏（结构性卡全判成日常），
+     *   指标若是自己判前缀就**不会**变 ⇒ 门禁不会红 ⇒ 那就是自己算规则了。
+     * ⚠ 豁免范围（`exempt`）不动 ⇒ 闸的行为不变 ⇒ 只有指标变红。
+     */
+    const gatesPath = path.join(workdir, GATES_REL);
+    const gatesBefore = fs.readFileSync(gatesPath, 'utf8');
+    const patched = gatesBefore.split("kind: 'structural'").join("kind: 'daily'");
+    if (patched === gatesBefore) {
+      skip('反向验证 ⑬「分类写坏」（注入点找不到）');
+    } else {
+      fs.writeFileSync(gatesPath, patched);
+      const r = runScript(workdir, 'scripts/audit-metrics.mjs', ['--count=120', '--check']);
+      fs.writeFileSync(gatesPath, gatesBefore);
+      ok(r.code !== 0 && /dailyDensity10/.test(r.out),
+        `反向验证 ⑬「分类写坏」报红（退出码 ${r.code}）`);
+      if (r.code === 0) console.error('      门禁没报红 ⇒ 指标在自己判前缀 ⇒ 这是假门禁');
+    }
+  }
+
   /* ── ⑩ 正面对照：基线正常 ⇒ 退出码 0 ───────────────────────────────── */
   {
     const r = runScript(workdir, 'scripts/audit-metrics.mjs', ['--count=120', '--check']);
@@ -191,7 +223,7 @@ try {
   console.log('\nC · 表达域「360 条全覆盖」这条新判据');
   const EXPR_BASELINE_REL = 'tests/fixtures/expressions.json';
 
-  /* ── ⑪ 抽掉一条说法 ⇒ 「没说法」必须报红 ────────────────────────────── */
+  /* ── ⑭ 抽掉一条说法 ⇒ 「没说法」必须报红 ────────────────────────────── */
   {
     /* ⚠ 抽的是**修仙线**那条（`content/expressions/events/entry.js`）——
      *   抽经典线的会让 `makeReadable` 直接抛错（崩），那是崩不是报红 ⇒ 证明不了判据。 */
@@ -199,41 +231,41 @@ try {
     const before = fs.readFileSync(shard, 'utf8');
     const patched = before.replace(/^ {2}early_demonic: \[\n[\s\S]*?\n {2}\],/m, '');
     if (patched === before) {
-      skip('反向验证 ⑪「抽掉一条说法」（注入点找不到）');
+      skip('反向验证 ⑭「抽掉一条说法」（注入点找不到）');
     } else {
       fs.writeFileSync(shard, patched);
       const r = runScript(workdir, 'scripts/verify-expressions.mjs');
       fs.writeFileSync(shard, before);
       ok(r.code !== 0 && /没说法/.test(r.out),
-        `反向验证 ⑪「抽掉一条说法」报红（退出码 ${r.code}）`);
+        `反向验证 ⑭「抽掉一条说法」报红（退出码 ${r.code}）`);
       if (r.code === 0) console.error('      门禁没报红 ⇒ 这是假门禁');
     }
   }
 
-  /* ── ⑫ 把基线里一条说法改坏 ⇒ 逐值全等必须报红 ─────────────────────── */
+  /* ── ⑮ 把基线里一条说法改坏 ⇒ 逐值全等必须报红 ─────────────────────── */
   {
     const p = path.join(workdir, EXPR_BASELINE_REL);
     const before = fs.readFileSync(p, 'utf8');
     const doc = JSON.parse(before);
     const id = Object.keys(doc).find(k => doc[k].v1 && doc[k].v1.title);
     if (!id) {
-      skip('反向验证 ⑫「把基线里一条说法改坏」（基线里没有可改的条目）');
+      skip('反向验证 ⑮「把基线里一条说法改坏」（基线里没有可改的条目）');
     } else {
       doc[id].v1.title = '故意改坏的一句';
       fs.writeFileSync(p, JSON.stringify(doc, null, 2) + '\n');
       const r = runScript(workdir, 'scripts/verify-expressions.mjs');
       fs.writeFileSync(p, before);
       ok(r.code !== 0 && /标题/.test(r.out),
-        `反向验证 ⑫「把基线里一条说法改坏」报红（退出码 ${r.code}）`);
+        `反向验证 ⑮「把基线里一条说法改坏」报红（退出码 ${r.code}）`);
       if (r.code === 0) console.error('      门禁没报红 ⇒ 这是假门禁');
     }
   }
 
-  /* ── ⑬ 正面对照：基线正常 ⇒ 经典门禁是绿的 ─────────────────────────── */
+  /* ── ⑯ 正面对照：基线正常 ⇒ 经典门禁是绿的 ─────────────────────────── */
   {
     const r = runScript(workdir, 'scripts/verify-expressions.mjs');
     ok(r.code === 0 && /结果：0 个问题/.test(r.out),
-      `反向验证 ⑬「基线正常时经典门禁是绿的」（退出码 ${r.code}）`);
+      `反向验证 ⑯「基线正常时经典门禁是绿的」（退出码 ${r.code}）`);
     if (r.code !== 0) {
       console.error('      门禁一直报红 ⇒ 那也是假门禁');
       console.error('      输出尾部：' + String(r.out).split('\n').slice(-6).join('\n      '));

@@ -59,7 +59,7 @@ export const DENSITY_MAX_5Y = 3;
 export const COOLDOWN_MONTHS = 60;
 
 /**
- * 豁免名单 —— 这些卡**不受密度与冷却限制**。
+ * 豁免名单 —— 这些卡**不受密度与冷却限制**，分成**两类**。
  *
  * ## 豁免的不是「不重要」，而是「**不能拦**」
  * ---------------------------------------
@@ -76,48 +76,85 @@ export const COOLDOWN_MONTHS = 60;
  *   · **终章与急讯**（`system_final` / `urgent_message` / `world_raid`）
  *     —— 一生一次的事，拦它等于让这一局结束不了。
  *
+ * ## 为什么拆成两类（2026-11-08 · 阶段 2）
+ * ---------------------------------------
+ * 以前这是一份**多类理由的并集**，而密度指标只问一句「豁免还是豁免」
+ * ⇒ 387 张里豁免了 263 张（68%）⇒ 指标只量了剩下那 124 张
+ * ⇒ **密度指标永远是绿的**（假绿灯：实测「最挤 10 年 4 张」，上限 5；
+ *   而玩家真正常遇到的是「最挤 10 年 15 张」）。
+ *
+ * ⇒ 现在按**这张卡是什么性质**分开，**每一条都写清理由**
+ *   （不许靠前缀形状猜 —— 猜出来的分类没人能审）：
+ *   · **结构性**（`structural`）—— 人生节点：一生就那么几次。
+ *     突破与前置、入门那三步、宗门考核、长线、终章与急讯、凡人一生。
+ *   · **日常**（`daily`）—— 玩家的日常决定，以及**承接上一张卡的后果**
+ *     （回家链、集市后续、经历回响、人脉网络、俗世生活线、看管与入路…）。
+ *     后果卡闸**不能拦**（拦了线就断了），但它们本质是日常节奏的一部分。
+ *
+ * ⚠ **闸的豁免范围一个字没变**：两类加起来还是原来那份并集
+ *   （`isMilestone` 的行为逐条不变，由 `tests/gates.test.mjs` 拿
+ *   `tests/fixtures/gate-exemptions.json` 逐条比对着）。
+ *   拆分类是为了让**指标**能说清「挤在一起的是人生节点还是日常决定」，
+ *   **不是**为了让闸拦得更少。
+ *
  * ⚠ 豁免名单只增不减「无关紧要」的卡 —— 每加一个，
  *   密度闸就松一分（实测密度就是这么被放开的）。要加，先问两句：
  *   「这张卡被拦下来，玩家会不会永远等不到它？」
  *   「这张卡是某一段的**后果**吗？」
  */
-const EXEMPT_PREFIXES = [
-  'breakthrough_',           /* 突破卡 */
-  'advance_material_',       /* 备主药（突破的前置） */
-  'years_practice_',         /* 闭关（突破的前置） */
-  'tribulation_',            /* 渡劫（突破的前置） */
-  'selection_',              /* 宗门考核与它的结果（入门路径） */
-  'r12_direction_',          /* 修行指导卡（闭关准备） */
-  'r12_foundation_supply',   /* 筑基丹（关键资源） */
-  'r12_home_',               /* 回家链（后续） */
-  'r12_bazaar_',             /* 集市后续 */
-  'r12_sealed_',             /* 借灵息的后果提醒 */
-  'network_',                /* 人脉网络整条线（功法与授业机会） */
-  'echo_',                   /* 经历回响 */
-  'm11_',                    /* 俗世生活线 */
-  'mortal_life_',            /* 凡人一生 */
+
+/** **结构性**卡（按前缀）：人生节点 —— 一生就那么几次。 */
+const STRUCTURAL_PREFIXES = [
+  ['breakthrough_', '突破卡：冲关本身是人生节点'],
+  ['advance_material_', '备主药：突破的前置，拦住这一境就废了'],
+  ['years_practice_', '闭关：突破的前置，拦住这一境就废了'],
+  ['tribulation_', '渡劫：突破的前置，拦住就渡不了劫'],
+  ['r12_direction_', '修行指导卡：闭关准备'],
+  ['r12_foundation_supply', '筑基丹：关键资源'],
+  ['selection_', '宗门考核：拦住就拿不到内门身份'],
+  ['mortal_life_', '凡人一生：另一条人生主线'],
 ];
 
-/** 豁免名单里的单张卡（没法用前缀表达的）。 */
-const EXEMPT_EXACT = new Set([
-  /* ── 终章与急讯 ── */
-  'system_final',     /* 终章 */
-  'urgent_message',   /* 急讯 */
-  'world_raid',       /* 战事 */
-  /* ── 入门那一串（三步连着走，拆开拦就断了） ── */
-  'reception',        /* 山门外的队伍 */
-  'root_result',      /* 测灵石上的记录 */
-  'first_method',     /* 第一份心法 */
-  /* ── 入路与看管那几张 ── */
-  'custody_terms', 'custody_escape', 'dark_invitation', 'dark_oath',
-  'beast_invitation', 'beast_acceptance', 'departure_terms',
-  /* ── 已经说好的家事（排队里的） ── */
-  'family_gate', 'family_rules', 'family_home_ambush',
-  /* ── 修订九的后续 ── */
-  'manual_study', 'dark_oath_return',
-  'thin_root_mine', 'thin_root_price', 'thin_root_return', 'thin_root_hunt',
-  'echo_resume_after_war',
-]);
+/** **结构性**卡（单张）：人生节点。 */
+const STRUCTURAL_EXACT = [
+  ['reception', '入门第一步：山门外的队伍'],
+  ['root_result', '入门第二步：测灵石上的记录'],
+  ['first_method', '入门第三步：第一份心法'],
+  ['system_final', '终章：一生一次'],
+  ['urgent_message', '急讯：一生一次'],
+  ['world_raid', '战事：一生一次'],
+];
+
+/** **日常**卡（按前缀）：承接上一张卡的后果 —— 闸不能拦，但本质是日常节奏。 */
+const DAILY_PREFIXES = [
+  ['r12_home_', '回家链：上一张卡的后果'],
+  ['r12_bazaar_', '集市后续：上一张卡的后果'],
+  ['r12_sealed_', '借灵息的后果提醒：上一张卡的后果'],
+  ['network_', '人脉网络整条线：功法与授业机会'],
+  ['echo_', '经历回响：旧事重提'],
+  ['m11_', '俗世生活线：一条完整的人生主线'],
+];
+
+/** **日常**卡（单张）：承接上一张卡的后果。 */
+const DAILY_EXACT = [
+  ['custody_terms', '看管条款：上一张卡的后果'],
+  ['custody_escape', '脱身：上一张卡的后果'],
+  ['dark_invitation', '幽灯堂的邀约：入路那一步'],
+  ['dark_oath', '幽灯堂的誓约：入路那一步'],
+  ['beast_invitation', '妖身的邀约：入路那一步'],
+  ['beast_acceptance', '妖身的接纳：入路那一步'],
+  ['departure_terms', '出走的条件：入路那一步'],
+  ['family_gate', '家门关着：排好队的事'],
+  ['family_rules', '家规：排好队的事'],
+  ['family_home_ambush', '回家路上的伏击：上一张卡的后果'],
+  ['manual_study', '研读心得：修订九的后续'],
+  ['dark_oath_return', '誓约之后：修订九的后续'],
+  ['thin_root_mine', '灵根薄·下矿：支线的后果'],
+  ['thin_root_price', '灵根薄·价：支线的后果'],
+  ['thin_root_return', '灵根薄·回：支线的后果'],
+  ['thin_root_hunt', '灵根薄·追：支线的后果'],
+  ['echo_resume_after_war', '战后再遇：修订九的后续'],
+];
 
 /*
  * ⚠⚠ **长线 id 的清单**在 `content/chain-ids.js`（内容层的一个叶子文件）。
@@ -137,27 +174,60 @@ const EXEMPT_EXACT = new Set([
 const EXEMPT_CHAIN_IDS = new Set(CHAIN_IDS);
 
 /**
+ * 这张卡是什么性质 —— **分类由规则层给**（别人不许自己判前缀）。
+ *
+ * ## 为什么要有这个函数
+ * ----------------------
+ * 豁免名单是**多类理由的并集**（不能拦的 / 后果卡 / 长线 / 终章），
+ * 而指标只问一句「豁免还是豁免」⇒ 豁免了 387 张里的 263 张（68%）
+ * ⇒ 密度指标只量了剩下 124 张 ⇒ **永远是绿的**（假绿灯）。
+ *
+ * ⇒ 现在把「这张卡是什么性质」也说出来：
+ *   · `structural` —— 人生节点：一生就那么几次；
+ *   · `daily` —— 日常决定（含**承接上一张卡的后果**那类）。
+ *
+ * ⚠ **分类只是给指标看的**：闸的豁免范围（`exempt`）一个字没变。
+ *
+ * @param {string} eventId 事件 id
+ * @returns {{kind: 'structural'|'daily', exempt: boolean, reason: string}}
+ */
+export function classifyCard(eventId) {
+  if (!eventId) return {kind: 'daily', exempt: false, reason: '日常决定'};
+  for (const [id, reason] of STRUCTURAL_EXACT) {
+    if (eventId === id) return {kind: 'structural', exempt: true, reason: reason};
+  }
+  for (const [prefix, reason] of STRUCTURAL_PREFIXES) {
+    if (eventId.indexOf(prefix) === 0) return {kind: 'structural', exempt: true, reason: reason};
+  }
+  for (const [id, reason] of DAILY_EXACT) {
+    if (eventId === id) return {kind: 'daily', exempt: true, reason: reason};
+  }
+  for (const [prefix, reason] of DAILY_PREFIXES) {
+    if (eventId.indexOf(prefix) === 0) return {kind: 'daily', exempt: true, reason: reason};
+  }
+  /*
+   * 长线卡（`ROAD_CHAINS` 的三段）—— 豁免，且是**结构性**的：
+   * 一条线就是人生的一段，不是日常决定。
+   *
+   * ⚠ 长线 id **不许在这里另抄一份**：抄一份就会与内容层发霉
+   *   （内容加了一条新线，闸不知道 ⇒ 那条线被密度闸拦掉 ⇒ 整条线断了）。
+   * ⇒ 直接读内容层那一份（`content/chain-ids.js`）。
+   */
+  for (const id of EXEMPT_CHAIN_IDS) {
+    if (eventId === id || eventId.indexOf(id + '_') === 0) {
+      return {kind: 'structural', exempt: true, reason: '长线：这一条线是人生的一段'};
+    }
+  }
+  return {kind: 'daily', exempt: false, reason: '日常决定'};
+}
+
+/**
  * 这张卡是不是「人生节点」（豁免密度与冷却）。
  * @param {string} eventId 事件 id
  * @returns {boolean}
  */
 export function isMilestone(eventId) {
-  if (!eventId) return false;
-  if (EXEMPT_EXACT.has(eventId)) return true;
-  for (const prefix of EXEMPT_PREFIXES) {
-    if (eventId.indexOf(prefix) === 0) return true;
-  }
-  /*
-   * 长线卡（`ROAD_CHAINS` 的三段）—— 豁免。
-   *
-   * ⚠ 长线 id **不许在这里另抄一份**：抄一份就会与内容层发霉
-   *   （内容加了一条新线，闸不知道 ⇒ 那条线被密度闸拦掉 ⇒ 整条线断了）。
-   * ⇒ 直接读内容层那一份（`content/cultivation-stories.js` 的 ROAD_CHAINS）。
-   */
-  for (const id of EXEMPT_CHAIN_IDS) {
-    if (eventId === id || eventId.indexOf(id + '_') === 0) return true;
-  }
-  return false;
+  return classifyCard(eventId).exempt;
 }
 
 /* ── 阶段 ─────────────────────────────────────────────────────────── */

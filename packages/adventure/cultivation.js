@@ -19,11 +19,26 @@ import {PATHS,ROOTS,ACTIVITIES,GEOGRAPHY,OFFICERS} from '../../content/cultivati
 import {CONSTITUTION_GAIN} from '../../content/rules12-world.js';
 import {ROAD_CHAINS,CULTIVATION_EVENTS,LEGACY_CULTIVATION_EVENTS} from '../../content/cultivation-stories.js';
 import {SECT_BACKGROUNDS,MORTAL_BACKGROUNDS} from '../../content/background-stories.js';
-import {JOINT_BY_CHAIN,JOINT_DELAY_MONTHS} from '../../content/cultivation-joints.js';
+import {JOINT_BY_CHAIN,JOINT_DELAY_MONTHS,JOINT_CARD_IDS} from '../../content/cultivation-joints.js';
 import {allowDaily} from './gates.js';
 const copy=x=>JSON.parse(JSON.stringify(x));
 const clamp=(v,min=0,max=100)=>Math.max(min,Math.min(max,v));
 const age=s=>Math.floor(s.month/12)+(s.birth.startAge||0);
+/*
+ * 「这条队列项是不是**长线的后续阶段**」—— **队列过滤只有这一处说了算**。
+ *
+ * ⚠⚠ **为什么不能直接用 `startsWith(线名+'_')`**（2026-11-08 阶段 4 实测踩到）：
+ *   接头卡的 id 是 `<线名>_joint_settled` / `_joint_pending` / `_joint_hidden`
+ *   ⇒ **它以线名开头** ⇒ 凡是用 `startsWith(线名+'_')` 清队列的地方，
+ *   都会把**接头卡一起清掉**。
+ *   ⇒ 实测：`dark_sacrifice` 走完 24 次，接头卡只发出 **1 次**
+ *   （幽灯堂的命走完这条线多半紧接着换路 ⇒ `setPath` 把队列里的接头卡一起清了）。
+ *
+ * ⇒ 这里把两类卡**分开**：阶段卡（`线名_0/_1/_2`）与接头卡（`线名_joint_*`）。
+ *   阶段卡随线作废，接头卡是「这条线的回响」—— **线走了它也该发**（它是桥）。
+ */
+const JOINT_IDS=new Set(JOINT_CARD_IDS);
+const isChainStage=event=>!JOINT_IDS.has(event)&&ROAD_CHAINS.some(a=>event.startsWith(a.id+'_'));
 const seen=(s,id)=>s.decisions.some(d=>d.event===id)||s.pending?.event===id;
 const delay=(s,min,max)=>min+Math.floor(random(s,'events')*(max-min+1));
 export function initializeCultivation(s) {
@@ -169,7 +184,7 @@ function registerDwelling(s){s.life.properties.dwelling={id:'dwelling',name:s.pl
 function setPath(s,path,cb,rank){
  const c=s.life.cultivation,old=c.path;c.path=path;c.rank=rank||({orthodox:'外门弟子',loose:'独立修士',demonic:'幽灯弟子',beast:'山林族人',mortal:'家中后辈'}[path]);
  if(!canCultivate(s))c.rank=path==='orthodox'?'凡俗杂役':path==='demonic'?'药房苦役':path==='mortal'?'家中后辈':'坊市学徒';
- c.admissionDone=true;c.entered=s.month;c.context=null;c.inquiry=null;c.activeChain=null;c.queue=c.queue.filter(q=>!ROAD_CHAINS.some(a=>q.event.startsWith(a.id+'_')));
+ c.admissionDone=true;c.entered=s.month;c.context=null;c.inquiry=null;c.activeChain=null;c.queue=c.queue.filter(q=>!isChainStage(q.event));
  c.spot=!canCultivate(s)&&path==='orthodox'?'外院粮房旁的通铺':PATHS[path].home;s.player.home=c.spot;registerDwelling(s);c.history.push({path,month:s.month});
  if(path==='orthodox') {cb.apply({items:['signal_talisman'],people:{master:{known:true,location:s.player.location},sister:{known:true,location:s.player.location},friend:{known:true,location:s.player.location}}});}
  else for(const id of ['master','sister','friend','trialmate'])s.people[id].known=false;
@@ -337,7 +352,7 @@ function revised_completeCultivationAction(s,event,choiceId,cb) {
  if(op.familyDispute)c.reputation=clamp(c.reputation+(op.familyDispute==='take'?-8:4),-100,100);
  if(op.familyRemember!==undefined){c.familyVisited=op.familyRemember;if(op.familyRemember)for(const p of c.descendants)p.known=true;}
  if(event==='family_gate'){if(c.mail){c.mailHistory.push({...c.mail,received:s.month});c.mail=null;}}
- if(op.relocate){c.spot='安全城镇的租屋';s.player.home=c.spot;c.context=null;c.activeChain=null;c.queue=c.queue.filter(q=>!ROAD_CHAINS.some(a=>q.event.startsWith(a.id+'_')));}
+ if(op.relocate){c.spot='安全城镇的租屋';s.player.home=c.spot;c.context=null;c.activeChain=null;c.queue=c.queue.filter(q=>!isChainStage(q.event));}
  if(op.inquiry)c.inquiry=op.inquiry;
  if(op.trial)c.context=op.trial==='beast'?'home':'work';
  if(op.cancelInquiry){c.inquiry=null;c.context=null;if(!c.admissionDone)setPath(s,'loose',cb);}
@@ -397,7 +412,7 @@ function revised_routeOptions(s) {
 }
 function revised_beginTravel(s,id,cb){const r=routeOptions(s).find(p=>p.id===id);if(!r?.enabled)throw Error(r?.reason||'没有这个目的地');s.player.stones-=r.fee;s.life.cultivation.economy.spent+=r.fee;s.journey={from:s.month,to:s.month+r.months,target:null,practice:s.player.focus,cultivationTravel:{location:id,route:r.route}};s.revision++;record(s,cb,'出发前往'+r.name,'路费'+r.fee+'灵石，按已确认的路线赶路，预计'+r.months+'个月。抵达后再寻找住处。','plan');return s;}
 function revised_finishTravel(s,cb){const trip=s.journey.cultivationTravel,c=s.life.cultivation;c.continent=trip.location;cb.apply({location:trip.location,home:GEOGRAPHY.find(p=>p.id===trip.location).places[1]+'租屋'});c.spot=s.player.home;registerDwelling(s);for(const id of trip.route)if(!c.visited.includes(id))c.visited.push(id);if(trip.route.length>1)c.routes.push(copy(trip.route));record(s,cb,'抵达新的住处','你到达'+s.player.home+'，沿路经过的地点已记入地图。');cb.open();}
-function revised_withdrawCultivation(s,cb){const c=s.life.cultivation;if(!c.activeChain||s.pending||s.phase!=='life')throw Error('目前没有可离开的探险');const chain=c.activeChain;c.queue=c.queue.filter(q=>!q.event.startsWith(chain+'_'));c.context=null;c.activeChain=null;s.journey={from:s.month,to:s.month+6,target:null,practice:s.player.focus,cultivationTravel:{location:currentContinent(s),route:[currentContinent(s)]}};s.revision++;record(s,cb,'离开当前探险','你带走已取得的物品，沿已知出口返回。尚未取得的奖励与后续阶段取消。','plan');return s;}
+function revised_withdrawCultivation(s,cb){const c=s.life.cultivation;if(!c.activeChain||s.pending||s.phase!=='life')throw Error('目前没有可离开的探险');const chain=c.activeChain;c.queue=c.queue.filter(q=>!(isChainStage(q.event)&&q.event.startsWith(chain+'_')));c.context=null;c.activeChain=null;s.journey={from:s.month,to:s.month+6,target:null,practice:s.player.focus,cultivationTravel:{location:currentContinent(s),route:[currentContinent(s)]}};s.revision++;record(s,cb,'离开当前探险','你带走已取得的物品，沿已知出口返回。尚未取得的奖励与后续阶段取消。','plan');return s;}
 function automaticCultivation(s,cb){const c=s.life.cultivation;if(!canCultivate(s)||c.v12?.action||c.v12?.visit)return;if(c.revision9?.arc||s.month<c.dailyAt)return;const mundane=mundaneDaily(s),row=mundane===undefined?automaticStory(s,cultivationContext(s)):mundane;if(row){/* T5 · 人生经历能产出：这条旁白捡到的东西要真的进行囊；东西用旧了就真的少了（每条最多一件）。 */if(row.items)cb.apply({items:row.items});if(row.discard)cb.apply({remove:row.discard});record(s,cb,row.title,row.body);}/* 印记后果旁白：独立通道 ——「做完决定之后，后果在旁白里陆续显现」。 ⚠ 不许顶掉上面那条日常/拾遗旁白（顶掉会让「人生经历带道具的比例」掉下去，还会把下一次拾遗顺延 24–48 个月）。 */const mark=(s.journey?.resolution||s.pending)?null:aftermathStory(s);if(mark)record(s,cb,mark.title,mark.body);c.dailyAt=s.month+delay(s,c.activeChain?18:24,c.activeChain?36:48);}
 /**
  * 发卡闸的回调外套 —— 把「发卡」这件事过一遍闸。
@@ -490,8 +505,8 @@ function revised_cultivationMonth(s,cb){
  }
  const alert=c.queue.find(q=>q.event==='world_raid'&&q.due<=s.month);
  if(alert&&!c.detained&&(context!=='outer'||['moon_key','gate_anchor','sky_scroll'].some(id=>s.inventory.includes(id)))){
-  c.suspended={context:c.context,chain:c.activeChain,month:s.month,journey:copy(s.journey),queue:c.queue.filter(q=>ROAD_CHAINS.some(a=>q.event.startsWith(a.id+'_'))).map(q=>({event:q.event,remaining:Math.max(1,q.due-s.month)}))};
-  c.queue=c.queue.filter(q=>q!==alert&&!ROAD_CHAINS.some(a=>q.event.startsWith(a.id+'_')));c.context=null;c.activeChain=null;
+  c.suspended={context:c.context,chain:c.activeChain,month:s.month,journey:copy(s.journey),queue:c.queue.filter(q=>isChainStage(q.event)).map(q=>({event:q.event,remaining:Math.max(1,q.due-s.month)}))};
+  c.queue=c.queue.filter(q=>q!==alert&&!isChainStage(q.event));c.context=null;c.activeChain=null;
   record(s,cb,'中转者送来战事急讯','争夺灵泉的战事波及住处，可靠的中转者带来了具体位置。','world');cb.arriveRaw('world_raid');return;
  }
  if(scheduleMonth(s,cb))return;

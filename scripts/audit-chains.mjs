@@ -114,7 +114,19 @@ export function judge(report) {
       problems.push(row.id + '：发卡年龄超出窗口 ' + row.window.age + '–' + row.window.ageEnd
         + ' 岁（越界 ' + out.length + ' 次，例如 ' + out.slice(0, 3).join('、') + ' 岁）');
     }
-    if (row.eligible > 0 && row.fired < row.eligible * 0.8) {
+    /*
+     * ⚠⚠ **「有机会就一定发出」= 100%，不是 80%**（2026-11-08 阶段 4 改）。
+     *
+     * 以前留了 20% 容差，理由写的是「玩家在窗口内离开了宗门、境界没到、寿元到了」。
+     * ⇒ 实测 16 条线**一条都不需要这份容差**（发出数 == 机会数，缺口 0）。
+     *
+     * **为什么结构上就应该是 100%**：
+     *   机会是在 `packages/adventure/scheduler.js` 的长线档里抽的 ——
+     *   抽中的那一刻，循环**立刻**返回这条线并开起来（`return {chain}`）。
+     *   ⇒ 「抽中了却没发出来」在结构上不可能发生，除非调度被改坏。
+     *   ⇒ 所以这 20% 容差不是「留点余量」，是**给真缺陷开后门**。
+     */
+    if (row.eligible > 0 && row.fired < row.eligible) {
       problems.push(row.id + '：有机会却没发出来（有机会 ' + row.eligible + ' 条，发出 ' + row.fired + ' 条）');
     }
   }

@@ -1,8 +1,8 @@
 {
-  "createdAt": "2026-11-08T04:17:14.986Z",
+  "createdAt": "2026-11-08T04:45:55.366Z",
   "count": 120,
   "metrics": {
-    "neverSeen": 170,
+    "neverSeen": 168,
     "density10": 4,
     "density5": 3,
     "dailyDensity10": 7,
@@ -336,6 +336,38 @@
       },
       "to": {
         "neverSeen": 170,
+        "density10": 4,
+        "density5": 3,
+        "dailyDensity10": 7,
+        "dailyDensity5": 6,
+        "totalDensity10": 12,
+        "totalDensity5": 9,
+        "cooldownRepeats": 0,
+        "realmContentMin": 6,
+        "endingMissing": 0,
+        "spanMax": 102,
+        "spanMedian": 51
+      }
+    },
+    {
+      "at": "2026-11-08T04:45:55.366Z",
+      "reason": "阶段 4：接头卡不再被队列过滤误删（dark_sacrifice 24 次走完只发 1 次接头卡 ⇒ 修后发 20 次）⇒ 可达性 170→168；急讯打断行动的白名单改成结构校验（修掉一处崩游戏）",
+      "from": {
+        "neverSeen": 170,
+        "density10": 4,
+        "density5": 3,
+        "dailyDensity10": 7,
+        "dailyDensity5": 6,
+        "totalDensity10": 12,
+        "totalDensity5": 9,
+        "cooldownRepeats": 0,
+        "realmContentMin": 6,
+        "endingMissing": 0,
+        "spanMax": 102,
+        "spanMedian": 51
+      },
+      "to": {
+        "neverSeen": 168,
         "density10": 4,
         "density5": 3,
         "dailyDensity10": 7,

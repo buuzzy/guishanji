@@ -1190,7 +1190,7 @@
         "sourceSha256": "66026f8b72b80fc179a98f3f31fe2c736ff0d8c96a74e4c8ad26cde58edd5875",
         "path": "miniprogram/subpkg/xianxia/runtime/build-manifest.json",
         "currentBytes": 16124,
-        "currentSha256": "2a2be1056e2ada41f956c12fc411ad2a4d6a7312346ef487bbfc7a5260b53ef4",
+        "currentSha256": "d07b714a7f5d2c15113fa76d4a21385813445a5a000736e4cde0337a77bbcb0b",
         "reason": "生成物：来源改为本仓库源码，并新增 upstreamOrigin 段"
       },
       {
@@ -1200,8 +1200,8 @@
         "sourceBytes": 1738614,
         "sourceSha256": "ba0720f2c21c1babe39c605739e90243d7de00db5f920bd5078704d6952fed3f",
         "path": "miniprogram/subpkg/xianxia/runtime/engine.js",
-        "currentBytes": 1533040,
-        "currentSha256": "35d2865f6de5fb4f2339c9177e16f24f2961fbffb3df584856904bb28eb17a13",
+        "currentBytes": 1532983,
+        "currentSha256": "e1ea5e8090c734e9bae5a48cbb5d11ea7e1d6e874fa8474737b0ff19b6920cba",
         "reason": "生成物：由本仓库源码重新构建（除文件头注释外与迁移进来的那份逐字节一致，见 reference/migrated-runtime/）"
       },
       {
@@ -1529,8 +1529,8 @@
       },
       {
         "path": "AGENTS.md",
-        "bytes": 32158,
-        "sha256": "0cdc9ef897e98f7cd6ab56888e23577c9e0eb6cd540beba47da9140661f77503"
+        "bytes": 34972,
+        "sha256": "63dbbc2787c7edda2d53aec8a2e0fec05176695a5f11bf6073f9b912ffce4854"
       },
       {
         "path": "README.md",
@@ -1704,8 +1704,8 @@
       },
       {
         "path": "tests/fixtures/metrics-baseline.json",
-        "bytes": 13423,
-        "sha256": "61474ebc448e0c02d6a5f4ed820e3c4a792c701135837dfadcdde6a84f4bd5e3"
+        "bytes": 14416,
+        "sha256": "3bf55eb554437f253ff0d8130dc726ba550b2a1d9b130059a974f7a676e9bf5f"
       },
       {
         "path": "tests/radar.test.mjs",

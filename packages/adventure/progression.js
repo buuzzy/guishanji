@@ -211,6 +211,22 @@ export function validateProgression(s,fail){
  if(!Array.isArray(pp.materialDeclined)||pp.materialDeclined.some(t=>![3,4].includes(t))||!Number.isInteger(pp.yearsCount)||pp.yearsCount<0||pp.yearsCount>4||typeof pp.tribulationReady!=='boolean'||typeof pp.tribulationDeclined!=='boolean')fail('多年修行与渡劫');
  if(!Array.isArray(pp.parcels)||pp.parcels.length>8)fail('家中物资');for(const parcel of [pp.parcel,...pp.parcels].filter(Boolean))if(!['coin','stone'].includes(parcel.mode)||!Number.isSafeInteger(parcel.sent)||!Number.isSafeInteger(parcel.due)||parcel.sent>s.month||parcel.due<parcel.sent||parcel.due>13000||!['sent','awaiting','delivered','lost','recovered','returning','returned'].includes(parcel.status)||parcel.amount!==3||!Array.isArray(parcel.route)||!parcel.route.length||parcel.route.some(id=>!GEOGRAPHY.some(g=>g.id===id)))fail('家中运送记录');
  if(!Array.isArray(pp.notices)||pp.notices.length>16||pp.notices.some(n=>!Number.isSafeInteger(n.month)||n.month>s.month||typeof n.body!=='string'||n.body.length>600)||!Array.isArray(pp.materialAbandoned)||pp.materialAbandoned.length>12||pp.materialAbandoned.some(id=>!/^advance_material_[34]_[012]_[012](?:_resume)?$/u.test(id)))fail('代收消息与中断记录');
- if(pp.interrupted&&(!Number.isSafeInteger(pp.interrupted.month)||pp.interrupted.month>s.month||!pp.interrupted.journey?.resolution||pp.interrupted.journey.to<pp.interrupted.month||!/^advance_material_|^years_practice_|^breakthrough_|^sect_|^tribulation_prepare$/u.test(pp.interrupted.journey.event)))fail('急讯暂停的行动');
+ /*
+  * 「急讯暂停的行动」—— 2026-11-08 阶段 4 改（原来是**会崩游戏**的）。
+  *
+  * ⚠⚠ **原写法是一份事件前缀白名单**：
+  *   `advance_material_ | years_practice_ | breakthrough_ | sect_ | tribulation_prepare`
+  * ⇒ 急讯打断的**只要不是这五类行动**，存档校验就直接报「急讯暂停的行动」
+  *   ⇒ **整局崩掉**（玩家看到的是白屏）。
+  *   实测（2026-11-08）：行动进行中收到「家中有人打听包裹」的急讯时，
+  *   被打断的是 `echo_relic`（旧线索核查）⇒ 白名单不认 ⇒ 崩。
+  *
+  * ⚠ **为什么不能用白名单**：白名单是「人写的清单」，
+  *   而打断这件事本身**对任何行动都成立**（`progression.js:94` 那段不管什么行动都快照）⇒
+  *   **两处口径不一致 ⇒ 校验先炸**。
+  *   ⇒ 改成**结构校验**：快照得像个合法的行动（有起止月、有结算、事件名非空）就放过。
+  *   ⇒ 行动本身合不合法，另有 `validateCultivation` 的旅程校验管着。
+  */
+ if(pp.interrupted){const j=pp.interrupted.journey;if(!Number.isSafeInteger(pp.interrupted.month)||pp.interrupted.month>s.month||!j||!j.resolution||!Number.isSafeInteger(j.from)||!Number.isSafeInteger(j.to)||j.to<j.from||j.to<pp.interrupted.month||typeof j.event!=='string'||!j.event)fail('急讯暂停的行动');}
  if(!Number.isFinite(s.life.family.money)||s.life.family.money<0)fail('家中粮钱');
 }

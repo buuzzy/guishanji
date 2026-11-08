@@ -15,6 +15,13 @@ const commands = [
      ⇒ 这道门禁用**造出来的状态**逐条证明三道闸真的拦得住，
        并且守「闸的口径 == 指标审计的规格」（谁把闸改松了，这里立刻报红）。 */
   ['gates-unit', ['--test','tests/gates.test.mjs']],
+  /* ── 接头卡门禁（2026-11-08 · 剧情线试点）────────────────────────────
+     接头卡是「一条线走完」与「下一件事发生」之间那张桥。
+     它最容易塌在三个地方：① 混进历史快照（⇒ 旧档变了）；
+     ② 卡 id 不被密度闸认（⇒ 根本发不出来）；
+     ③ 旗标写了但下一拍读不到（⇒ 联动静默失效，玩家感觉不到做过的事有影响）。
+     ⇒ 这道门禁三条都守，并且每条都配了反向验证。 */
+  ['joint-unit', ['--test','tests/joint-cards.test.mjs']],
   ['rules12-audit', ['scripts/audit-story-rules12.mjs','--count=600']],
   ['mundane-audit', ['scripts/audit-mundane-life.mjs','--count=600']],
   ['story-audit', ['scripts/audit-story-rules10.mjs']],
@@ -50,6 +57,7 @@ const commands = [
      孤儿门禁 = 假门禁 ⇒ 这七道必须挂在这里，不能只靠手动跑。 */
   ['import', ['scripts/verify-migration-import.mjs']],
   ['xianxiabuild', ['scripts/test-xianxia-build.mjs']],
+  ['xianxiacycle', ['scripts/test-xianxia-cycle.mjs']],
   ['xianxiaeq', ['scripts/test-xianxia-equivalence.mjs']],
   ['xianxiastore', ['scripts/test-xianxia-storage.mjs']],
   ['xianxiaart', ['scripts/test-xianxia-art.mjs']],

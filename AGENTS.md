@@ -60,6 +60,7 @@ node scripts/run-regression.mjs        # 全量回归
 | --- | --- | --- |
 | `import` | `scripts/verify-migration-import.mjs` | 迁移进来的每个文件与来源**逐字节一致** |
 | `xianxiabuild` | `scripts/test-xianxia-build.mjs` | 生成物可复现、ES2019、无 `?.`/`??`、无浏览器全局 |
+| `xianxiacycle` | `scripts/test-xianxia-cycle.mjs` | 小程序包里那 87 个模块**不许互相绕成环**（小程序产物不是原生 ESM，环会让「加载时读顶层常量」拿到 undefined ⇒ 白屏）+ 产物必须真能加载 |
 | `xianxiaeq` | `scripts/test-xianxia-equivalence.mjs` | 本仓库源码规则 vs 小程序产物**逐值全等** |
 | `xianxiastore` | `scripts/test-xianxia-storage.mjs` | 分片 / 双槽 / 配额错误，且不碰官方键 |
 | `xianxiaart` | `scripts/test-xianxia-art.mjs` | 画面与参考实现**逐笔一致** + 反向验证 |
@@ -81,7 +82,7 @@ node scripts/run-regression.mjs        # 全量回归
 
 2026-11-07 起**删除了 GitHub Actions 配置**（`.github/workflows/ci.yml` 已不在库里）：
 
-- 原因：网页端暂不上线 ⇒ 浏览器组 19 道用不上；账户额度/付费也一直失败。
+- 原因：网页端暂不上线 ⇒ 浏览器组 20 道用不上；账户额度/付费也一直失败。
 - ⇒ **没有 PR 自动检查了**。所以合并前要手动跑，但**不是每次都跑**。
 
 #### 3.0.1 先问一句「这棵树验过没有」
@@ -115,8 +116,8 @@ node scripts/run-regression.mjs --status
 | 合并进 main | 按上表选，**把结果贴出来** | — |
 
 ```sh
-node scripts/run-regression.mjs --group=fast   # 小程序端 + 内容层相关的 34 道
-node scripts/run-regression.mjs                # 全量 54 道（网页端上线前必须跑）
+node scripts/run-regression.mjs --group=fast   # 小程序端 + 内容层相关的 37 道
+node scripts/run-regression.mjs                # 全量 57 道（网页端上线前必须跑）
 ```
 
 - 跑完**确认退出码是 0**（`node … > log 2>&1; echo $?` —— 别用管道，管道后面取到的是最后一条命令的码）。

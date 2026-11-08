@@ -1,18 +1,18 @@
 {
   "label": "guishanji",
-  "measuredAt": "2026-11-07T08:02:38.682Z",
-  "sourceFingerprint": "cfeec2db2f146231216a67e86ad5727d9891aa88652e366af984c0e6d9a238a1",
-  "sourceFiles": 63,
+  "measuredAt": "2026-11-07T16:02:23.847Z",
+  "sourceFingerprint": "1a67a40c9e1699a7cc6f3983e78b7184f75cf3979132c3685f12362b1646d303",
+  "sourceFiles": 64,
   "machine": {
     "os": "darwin 25.4.0",
     "node": "v22.22.2",
     "arch": "arm64"
   },
   "code": {
-    "commit": "d78b5ff",
-    "tree": "04e0192d634b50632b2a322df6fe3d84eb49eb8b",
+    "commit": "5107ecb95d33b64010c9c9075fdb10c442a405b2",
+    "tree": "d360b71f0a4e15027613b14dde67bb5872aecdea",
     "branch": "main",
-    "dirty": false
+    "dirty": true
   },
   "tool": {
     "cli": "/Applications/wechatwebdevtools.app/Contents/MacOS/cli",
@@ -42,34 +42,34 @@
     }
   },
   "compiled": {
-    "total": 1664542,
+    "total": 1737737,
     "packages": {
-      "main": 33817,
-      "/subpkg/xianxia/": 1630725
+      "main": 32005,
+      "/subpkg/xianxia/": 1705732
     },
     "error": null
   },
   "rawBytes": {
     "/": 69056,
-    "/subpkg/xianxia/": 1713896,
-    "total": 1782952
+    "/subpkg/xianxia/": 1760674,
+    "total": 1829730
   },
   "packages": [
     {
       "name": "main",
-      "compiledBytes": 33817,
+      "compiledBytes": 32005,
       "rawBytes": null,
       "limitBytes": 2097152,
-      "headroomToLimit": 2063335,
+      "headroomToLimit": 2065147,
       "withinHardLimit": true,
       "status": "ok"
     },
     {
       "name": "/subpkg/xianxia/",
-      "compiledBytes": 1630725,
-      "rawBytes": 1713896,
+      "compiledBytes": 1705732,
+      "rawBytes": 1760674,
       "limitBytes": 2097152,
-      "headroomToLimit": 466427,
+      "headroomToLimit": 391420,
       "withinHardLimit": true,
       "status": "ok"
     }
@@ -78,6 +78,5 @@
     "packageLimit": 2097152,
     "totalLimit": 20971520
   },
-  "passed": true,
-  "note": "本轮（T0–T10）内容改造后重测：清完 IDE 编译缓存的真编译。相对 2026-11-07 那版，编译后总量 +176,534 B（+11.9%），主要是表达域接管把 285 张卡的新文案带进了分包；主包与分包仍远低于硬上限（主包余 2,063,335 B、分包余 466,427 B）。"
+  "passed": true
 }

@@ -12,12 +12,13 @@ import * as previousRules from './cultivation-v5.js';
 import * as rules6 from './cultivation-v6.js';
 import {initializeNetwork,networkAction,validateNetwork,networkRate} from './story-network.js';
 import {scheduleMonth} from './scheduler.js';
-import {automaticStory,storyOpportunity,familyMessage} from '../../content/cultivation-daily.js';
+import {automaticStory,aftermathStory,storyOpportunity,familyMessage} from '../../content/cultivation-daily.js';
 import {economyQuote,settleEconomy} from './cultivation-economy.js';
 import {random,hashText} from '../core/random.js';
 import {PATHS,ROOTS,ACTIVITIES,GEOGRAPHY,OFFICERS} from '../../content/cultivation-world.js';
 import {CONSTITUTION_GAIN} from '../../content/rules12-world.js';
 import {ROAD_CHAINS,CULTIVATION_EVENTS,LEGACY_CULTIVATION_EVENTS} from '../../content/cultivation-stories.js';
+import {JOINT_BY_CHAIN,JOINT_DELAY_MONTHS} from '../../content/cultivation-joints.js';
 import {allowDaily} from './gates.js';
 const copy=x=>JSON.parse(JSON.stringify(x));
 const clamp=(v,min=0,max=100)=>Math.max(min,Math.min(max,v));
@@ -157,6 +158,18 @@ function setPath(s,path,cb,rank){
  if(path==='orthodox') {cb.apply({items:['signal_talisman'],people:{master:{known:true,location:s.player.location},sister:{known:true,location:s.player.location},friend:{known:true,location:s.player.location}}});}
  else for(const id of ['master','sister','friend','trialmate'])s.people[id].known=false;
  if(old!==path)record(s,cb,canCultivate(s)?'进入'+PATHS[path].name+'的生活':'安顿新的住处与活计','你现在住在'+s.player.home+'。');
+ /*
+  * ⚠ **留下「你走了哪条路」的印记**（2026-11-08 · 炼气期重构）。
+  *
+  * 为什么要留：用户要的是「**做完一次决策，然后在非决策卡里展示若干后果**」。
+  * 「入宗 / 散修 / 幽灯 / 山林」是整段人生里**最高频的一个决定**（实测 88 次/120 条命）
+  * ⇒ 它留下的印记最该被后来的旁白读到。
+  *
+  * ⚠ 旗标名用驼峰（不许带下划线）且**是新名字** ⇒
+  *   不会被任何 `requires.flags` 命中 ⇒ **旧档逐值不变**。
+  * ⚠ 只对当前版本（规则十二）生效。
+  */
+ if(c.rulesVersion===12)cb.apply({flags:{[({orthodox:'pathSect',loose:'pathLoose',demonic:'pathDark',beast:'pathBeast',mortal:'pathMortal'})[path]||'pathMortal']:true}});
  if(path!=='mortal')schedule(s,'first_method',2);
 }
 function revised_completeCultivationAction(s,event,choiceId,cb) {
@@ -168,7 +181,9 @@ function revised_completeCultivationAction(s,event,choiceId,cb) {
  if(op.admit)setPath(s,'orthodox',cb,ROOTS[s.player.root].grade===0?'杂役':'外门弟子');
  if(op.path&&success)setPath(s,op.path,cb,op.rank);
  if(op.teacher&&success)c.teacher=op.teacher;
- if(op.activity){c.activity=op.activity;s.player.focus=ACTIVITIES[op.activity].skill;}
+ if(op.activity){c.activity=op.activity;s.player.focus=ACTIVITIES[op.activity].skill;
+  /* ⚠ **留下「你练的是哪门」的印记**（2026-11-08）—— 择路是玩家自己的第一个印记。 */
+  if(c.rulesVersion===12)cb.apply({flags:{[({sword:'focusSword',study:'focusArray',alchemy:'focusAlchemy'})[op.activity]||'focusArray']:true}});}
  if(op.punishment){const remaining=Math.max(0,op.punishment-(choice.months||0));c.punishmentUntil=s.month+remaining;c.activity='work';record(s,cb,'师门惩戒',remaining?(c.punishmentKind==='confinement'?'严衡收走弟子牌，用禁灵符封住你的法力。思过洞的石门落下，送饭弟子只从门缝递水与冷饭。还须禁闭'+remaining+'个月，期间不得修行、领月例或外出。':'你被派去修复山道与照料受损田地，剩余'+remaining+'个月不得进入三堂听课。'):(event==='garden_accident'?'补种的药苗终于成活，许执事沿药畦逐株验过，又让药师核对缺掉的药种。六个月服役结束，你领回弟子牌，重新获得听课资格。':'最后一段山道补好，许执事验过伤员能否通行，才把弟子牌还给你。服役结束，重新获得听课资格。'),'institution');if(!remaining)delete c.punishmentKind;}
  if(op.reputation)c.reputation=clamp(c.reputation+op.reputation,-100,100);
  if(op.wanted){c.wanted=clamp(c.wanted+op.wanted,0,10);if(c.rulesVersion>=5)addEvidence(s,event,choiceId,choice.reply,previousPath);}
@@ -178,7 +193,21 @@ function revised_completeCultivationAction(s,event,choiceId,cb) {
  if(op.familyPolicy){c.familyPolicy=op.familyPolicy;if(op.familyPolicy==='sever'){s.life.family.money+=2000;s.life.family.bond=clamp(s.life.family.bond-10);}}
  if(op.familySupport){s.life.family.reserve=clamp(s.life.family.reserve-op.familySupport,0,1000);s.life.family.bond=clamp(s.life.family.bond+5);}
  if(op.familySend){s.life.family.reserve=clamp(s.life.family.reserve+3,0,1000);s.life.family.bond=clamp(s.life.family.bond+8);}
- if(op.exam){c.exam={...op.exam,deadline:s.month+24,started:s.month,preparation:0};schedule(s,event+'_result',24);}
+ if(op.exam){
+  /*
+   * ⚠⚠ **考核期限要比「结果卡到达」晚 12 个月**（2026-11-08 实测踩到）。
+   *
+   * 症状：玩家报名后整整 50 年什么都没发生，最后老死在炼气（`scripts/audit-story-rules12.mjs`
+   * 实测：600 条命里 17.5% 出现超过 15 年的沉默，最长 50.6 年；改动前最长 11.8 年）。
+   *
+   * 根因：期限原本与结果卡的到达月**完全相同**（`deadline = s.month+24`、结果卡也排 24 个月后）
+   *   ⇒ 结果卡只要被挡一下（「正在赶路」「长线占着」「不在山门所在的大陆」）晚几个月，
+   *     这届考核就作废 ⇒ 玩家拿不到内门身份 ⇒ 后面整条宗门与突破的路都断了。
+   *
+   * 修法：期限留 12 个月余量 ⇒ 结果卡晚到，考核仍然算数。
+   *   （「本届」的窗口从 24 个月变成 36 个月 —— 那是「来回路上的时间」，不是新的规则。）
+   */
+  c.exam={...op.exam,deadline:s.month+24+12,started:s.month,preparation:0};schedule(s,event+'_result',24);}
  if(op.examResult){
   const result=s.journal.findLast(e=>e.event===event&&e.kind==='choice');if(result){result.body=success?'教习让你先退到台边，逐一指出方才的得失。你等着他决定是否收你入堂。':'教习圈出失败的那一步，你把卷册抱回怀里。山阶上还有许多人在等自己的结果。';}
   if(success&&c.exam&&s.month>=c.punishmentUntil){const skill=c.exam.skill;cb.apply({skills:{[skill]:8},stats:{stones:1},flags:{learningPermit:true}});if(c.path==='orthodox'&&c.rank==='杂役')c.rank='外门弟子';const advanced=c.exam.tier>=2;const body=advanced?({sword:'你按实战中练过的收势指出剑诀的缺页，堂院修士补上注解，请你共同核对下一卷。',alchemy:'你辨出药方中两味药的寒热冲突，丹师在旧注旁写下实际试炼的火候，请你带回研究。',array:'你指出阵图中无法维持的回路，守阵者与你修正阵眼位置，把核过的拓图留给你。'})[skill]:({sword:s.player.realm>=1?'你在最后一剑收势时稳住了手腕。剑堂教习递来一柄木剑，让你次日到后山学御剑。':'你在最后一剑收势时稳住了手腕。剑堂教习递来一柄木剑，让你次日到后山练步法与收剑；御剑要等炼出法力后再学。',alchemy:'你从烧焦的药渣里辨出混入的寒砂。丹堂教习把辨药册放到你手里，准许你从旁观炉开始学。',array:'你找到了让阵旗倒转的那枚符纹。经堂教习撤去障眼法，让你留下一起修补古阵。'})[skill];if(result){result.title=advanced?'堂院核过了你的评议':c.path==='orthodox'?'获准进入专业堂院':'切磋之后的指点';result.body=progressionText(body+' 堂院交给你一枚灵石作此次差事的报酬。',s,event,'reply');result.kind='institution';}else record(s,cb,'考核结束',body,'institution');}
@@ -202,12 +231,42 @@ function revised_completeCultivationAction(s,event,choiceId,cb) {
   if(op.breakthrough||op.retry){const tier=op.breakthrough||op.retry;if(op.breakthrough)c.attempts[tier]++;c.retryAt=s.month+(op.breakthrough?12:72);if(success&&op.breakthrough){c.progress=0;if(!seen(s,'family_rules')&&storyOpportunity(s,'family_rules',age(s),age(s)+5,.65))schedule(s,'family_rules',12);}}
  if(op.chain){
   const chain=ROAD_CHAINS.find(a=>a.id===op.chain),previous=c.chains[chain.id];c.chains[chain.id]={origin:previous?.origin||currentContinent(s),originHome:previous?.originHome||s.player.home,departed:previous?.departed||false,step:op.step,conduct:op.conduct,month:s.month};
+  /*
+   * ⚠ **留下「你做事的方式」的印记**（2026-11-08）——
+   *   长线那三步是玩家反复做的同一类决定（认真 / 留退路 / 自己拿），
+   *   ⇒ 它的印记最该被后来的旁白读到。
+   */
+  if(c.rulesVersion===12)cb.apply({flags:{[({care:'conductCare',cautious:'conductCautious',selfish:'conductSelfish'})[op.conduct]||'conductCare']:true}});
   if(op.conduct==='selfish'&&!op.concealed){c.reputation=clamp(c.reputation-8,-100,100);c.wanted=clamp(c.wanted+1,0,10);if(c.rulesVersion>=5)addEvidence(s,event,choiceId,choice.reply);}
   if(chain.id==='sect_trial'&&op.step===1&&op.conduct==='selfish'){cb.apply({people:{trialmate:{status:'missing'}}});}
   if(chain.id==='sect_return'&&op.step===0&&op.conduct==='selfish'){c.activeChain=null;c.context=null;c.chains[chain.id].skipped=true;}
   else if(op.stopChain){c.activeChain=null;c.context=null;c.chains[chain.id].skipped=true;}
   else if(op.step<2){c.activeChain=chain.id;c.context=chain.id==='dark_method'&&op.step===0&&op.conduct==='care'?'valley':chain.context;schedule(s,chain.id+'_'+(op.step+1),op.conduct==='cautious'?6:delay(s,12,30));}
-  else {c.activeChain=null;c.context=null;if(op.conduct==='selfish'&&c.path==='orthodox'){c.punishmentUntil=s.month+12;c.activity='work';c.punishmentKind='confinement';record(s,cb,'执法堂落下石门','严衡把失窃库物摆在案上，命人收走弟子牌。你被封住法力，押入思过洞一年，听课、月例和外出都被暂停。','institution');}}
+  else {
+   c.activeChain=null;c.context=null;
+   if(op.conduct==='selfish'&&c.path==='orthodox'){c.punishmentUntil=s.month+12;c.activity='work';c.punishmentKind='confinement';record(s,cb,'执法堂落下石门','严衡把失窃库物摆在案上，命人收走弟子牌。你被封住法力，押入思过洞一年，听课、月例和外出都被暂停。','institution');}
+   /*
+    * **接头卡** —— 线走完的那一刻，发一张承接它的卡。
+    *
+    * 为什么在这里（而不是靠 `choice.next`）：
+    *   `next` 走的是 `schedule(s, choice.next, delay(s,2,6))`，
+    *   `delay` 要从 `events` 随机流里抽一次 ——
+    *   而**同一条流决定随机池抽哪张卡** ⇒ 每条命后面所有不相干的随机卡全变
+    *   ⇒ 差异审查淹在噪音里，看不出「多了什么」。
+    * ⇒ 这里用**固定 3 个月**（不抽随机数）：差异里只看得到多插了一张接头卡。
+    *
+    * 为什么只在这一支（线真的走完了）：
+    *   `op.stopChain`（中途退出）与 `sect_return` 的特例走的是上面两支
+    *   ⇒ 那两条线**没有走完** ⇒ 不该有桥。
+    *
+    * ⚠ 只对当前版本（规则十二）生效：这个函数只服务规则十二，
+    *   规则 5–11 各跑自己的执行器 ⇒ 旧档一个字节都不动。
+    */
+   if(op.step===chain.stages.length-1){
+    const joint=JOINT_BY_CHAIN[chain.id]&&JOINT_BY_CHAIN[chain.id][op.conduct];
+    if(joint)schedule(s,joint,JOINT_DELAY_MONTHS);
+   }
+  }
   if(op.step===0&&chain.id==='loose_portal'&&op.conduct==='care'&&success){const from=currentContinent(s),dest=GEOGRAPHY.find(p=>p.id===from).connections.find(id=>id!==s.birth.continent)||GEOGRAPHY.find(p=>p.id===from).connections[0];c.continent=dest;c.chains[chain.id].departed=true;cb.apply({location:dest,home:GEOGRAPHY.find(p=>p.id===dest).places[1]+'落脚点'});c.spot=s.player.home;if(!c.visited.includes(dest))c.visited.push(dest);c.routes.push([from,dest]);record(s,cb,'跨界后确认落脚点','你在新的大陆核对了回程地点与定位物。');}
   if(op.step===0&&chain.id==='sect_return'&&op.conduct==='care'){c.continent=s.birth.continent;cb.apply({location:'home',home:'故乡接待处'});}
  }
@@ -255,7 +314,18 @@ function revised_completeCultivationAction(s,event,choiceId,cb) {
   c.context=null;c.activeChain=null;delete c.suspended;
  }
  if(op.finish){if(!canCultivate(s)){cb.end('mundane_settled');return;}cb.end(({orthodox:'guardian',loose:'loose_home',demonic:'demon_oath',beast:'wild_king',mortal:'mortal_home'})[c.path]);return;}
- if(choice?.next)schedule(s,choice.next,delay(s,2,6));
+ /*
+  * ⚠⚠ **入门那一串要拉开**（2026-11-08 · 炼气期收束）。
+  *
+  * 以前 `reception → root_result` 只隔 2–6 个月，`root_result → first_method` 也只隔 2 个月
+  * ⇒ 玩家 16–17 岁一口气被问三遍（实测「山门 → 测灵根 → 第一份心法」全在 16 岁）。
+  * ⇒ 现在：**测灵根隔 12 个月**、**第一份心法隔 12 个月**、
+  *   入门那一串变成 16 / 17 / 18 岁，一年一张。
+  *
+  * ⚠⚠ **`delay(s,2,6)` 照样要调** —— `random(state, stream)` 是**流式**的，
+  *   少调一次 ⇒ 后面几十年的每一次抽签结果全变 ⇒ 差异审查会被噪音淹掉。
+  */
+ if(choice?.next){const gap=delay(s,2,6);schedule(s,choice.next,choice.next==='root_result'?12:gap);}
  c.choiceAt=s.month+delay(s,24,42);s.life.choiceAt=c.choiceAt;s.life.queue=null;if(resumed)s.journey=resumed;else cb.open();s.life.activity=cultivationActivity(s);
 }
 function revised_routeOptions(s) {
@@ -271,7 +341,7 @@ function revised_routeOptions(s) {
 function revised_beginTravel(s,id,cb){const r=routeOptions(s).find(p=>p.id===id);if(!r?.enabled)throw Error(r?.reason||'没有这个目的地');s.player.stones-=r.fee;s.life.cultivation.economy.spent+=r.fee;s.journey={from:s.month,to:s.month+r.months,target:null,practice:s.player.focus,cultivationTravel:{location:id,route:r.route}};s.revision++;record(s,cb,'出发前往'+r.name,'路费'+r.fee+'灵石，按已确认的路线赶路，预计'+r.months+'个月。抵达后再寻找住处。','plan');return s;}
 function revised_finishTravel(s,cb){const trip=s.journey.cultivationTravel,c=s.life.cultivation;c.continent=trip.location;cb.apply({location:trip.location,home:GEOGRAPHY.find(p=>p.id===trip.location).places[1]+'租屋'});c.spot=s.player.home;registerDwelling(s);for(const id of trip.route)if(!c.visited.includes(id))c.visited.push(id);if(trip.route.length>1)c.routes.push(copy(trip.route));record(s,cb,'抵达新的住处','你到达'+s.player.home+'，沿路经过的地点已记入地图。');cb.open();}
 function revised_withdrawCultivation(s,cb){const c=s.life.cultivation;if(!c.activeChain||s.pending||s.phase!=='life')throw Error('目前没有可离开的探险');const chain=c.activeChain;c.queue=c.queue.filter(q=>!q.event.startsWith(chain+'_'));c.context=null;c.activeChain=null;s.journey={from:s.month,to:s.month+6,target:null,practice:s.player.focus,cultivationTravel:{location:currentContinent(s),route:[currentContinent(s)]}};s.revision++;record(s,cb,'离开当前探险','你带走已取得的物品，沿已知出口返回。尚未取得的奖励与后续阶段取消。','plan');return s;}
-function automaticCultivation(s,cb){const c=s.life.cultivation;if(!canCultivate(s)||c.v12?.action||c.v12?.visit)return;if(c.revision9?.arc||s.month<c.dailyAt)return;const mundane=mundaneDaily(s),row=mundane===undefined?automaticStory(s,cultivationContext(s)):mundane;if(row){/* T5 · 人生经历能产出：这条旁白捡到的东西要真的进行囊；东西用旧了就真的少了（每条最多一件）。 */if(row.items)cb.apply({items:row.items});if(row.discard)cb.apply({remove:row.discard});record(s,cb,row.title,row.body);}c.dailyAt=s.month+delay(s,c.activeChain?18:24,c.activeChain?36:48);}
+function automaticCultivation(s,cb){const c=s.life.cultivation;if(!canCultivate(s)||c.v12?.action||c.v12?.visit)return;if(c.revision9?.arc||s.month<c.dailyAt)return;const mundane=mundaneDaily(s),row=mundane===undefined?automaticStory(s,cultivationContext(s)):mundane;if(row){/* T5 · 人生经历能产出：这条旁白捡到的东西要真的进行囊；东西用旧了就真的少了（每条最多一件）。 */if(row.items)cb.apply({items:row.items});if(row.discard)cb.apply({remove:row.discard});record(s,cb,row.title,row.body);}/* 印记后果旁白：独立通道 ——「做完决定之后，后果在旁白里陆续显现」。 ⚠ 不许顶掉上面那条日常/拾遗旁白（顶掉会让「人生经历带道具的比例」掉下去，还会把下一次拾遗顺延 24–48 个月）。 */const mark=(s.journey?.resolution||s.pending)?null:aftermathStory(s);if(mark)record(s,cb,mark.title,mark.body);c.dailyAt=s.month+delay(s,c.activeChain?18:24,c.activeChain?36:48);}
 /**
  * 发卡闸的回调外套 —— 把「发卡」这件事过一遍闸。
  *
@@ -361,7 +431,10 @@ function revised_cultivationMonth(s,cb){
  if(scheduleMonth(s,cb))return;
  if(!s.journey?.open)return;
  const due=c.queue.filter(q=>q.due<=s.month&&(!c.detained||q.event.startsWith('custody_'))&&(!c.inquiry||['dark_invitation','dark_oath','beast_invitation','beast_acceptance','departure_terms'].includes(q.event))&&(!c.activeChain||q.event.startsWith(c.activeChain+'_'))&&(!q.event.startsWith('selection_')||!q.event.endsWith('_result')||c.path!=='orthodox'||currentContinent(s)===s.birth.continent)).sort((a,b)=>a.due-b.due);
- if(due.length){const next=due[0];c.queue=c.queue.filter(q=>q!==next);if(!seen(s,next.event))cb.arriveRaw(next.event);return;}
+ if(due.length){
+  const picked=due[0];
+  c.queue=c.queue.filter(q=>q!==picked);if(!seen(s,picked.event))cb.arriveRaw(picked.event);return;
+ }
  if(c.activeChain||c.detained||c.inquiry||!c.admissionDone||s.month<c.choiceAt)return;
  const possible=[];
  /* 突破卡不在这里抽 —— 它归「里程碑档」管（packages/adventure/scheduler.js）：

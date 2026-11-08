@@ -32,7 +32,7 @@
  */
 import {STAGES} from '../../content/cadence-table.js';
 import {CARD_STAGES} from '../../content/card-stages.js';
-import {ROAD_CHAINS} from '../../content/cultivation-stories.js';
+import {CHAIN_IDS} from '../../content/chain-ids.js';
 
 /* ── 口径（数字只有这一份） ──────────────────────────────────────────── */
 
@@ -119,6 +119,23 @@ const EXEMPT_EXACT = new Set([
   'echo_resume_after_war',
 ]);
 
+/*
+ * ⚠⚠ **长线 id 的清单**在 `content/chain-ids.js`（内容层的一个叶子文件）。
+ *
+ * ## 为什么清单不放在规则层
+ * ------------------------
+ *   以前这里是「规则层的静态清单 + 内容层注册进来」两份，
+ *   两份必须逐条对得上，对不上就抛错。
+ *   ⇒ 现在清单挪到**内容层的叶子文件**，两边都读它：
+ *     · 内容层不需要反向依赖规则层（`content/` 不许依赖 `packages/adventure/`）；
+ *     · 叶子文件不 import 任何东西 ⇒ **永远不在环里**
+ *       （`scripts/test-xianxia-cycle.mjs` 守着这条）；
+ *     · 只 import 闸的单测也能拿到完整名单（不依赖内容层是否被加载）。
+ *   内容层加载时会**自己核对**自己的 `ROAD_CHAINS` 与那份清单
+ *   （`content/cultivation-stories.js` 末尾）⇒ 对不上当场抛错，不会悄悄发霉。
+ */
+const EXEMPT_CHAIN_IDS = new Set(CHAIN_IDS);
+
 /**
  * 这张卡是不是「人生节点」（豁免密度与冷却）。
  * @param {string} eventId 事件 id
@@ -137,8 +154,8 @@ export function isMilestone(eventId) {
    *   （内容加了一条新线，闸不知道 ⇒ 那条线被密度闸拦掉 ⇒ 整条线断了）。
    * ⇒ 直接读内容层那一份（`content/cultivation-stories.js` 的 ROAD_CHAINS）。
    */
-  for (const chain of ROAD_CHAINS) {
-    if (eventId === chain.id || eventId.indexOf(chain.id + '_') === 0) return true;
+  for (const id of EXEMPT_CHAIN_IDS) {
+    if (eventId === id || eventId.indexOf(id + '_') === 0) return true;
   }
   return false;
 }

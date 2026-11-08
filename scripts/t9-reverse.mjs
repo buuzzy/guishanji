@@ -19,7 +19,8 @@
  *       ④ 结局太少                → endings-thin
  *       ⑤ 有灵根没说明            → root-no-description
  *       ⑥ 晚年内容太少            → late-too-thin
- *       ⑦ 晚年收尾判据被放松      → 台账比对必须报红（缺口「不见了」）
+ *       ⑦ 判据被放松              → 台账比对必须报红（缺口「不见了」）
+ *         ⚠ 用哪条缺口做，必须看台账里现在还有哪条（见下面 ⑦ 的注释）
  *       ⑧ 新缺口没登记            → 台账比对必须报红
  *       ⑨ 台账过期（写了脚本不认识的缺口）→ 台账比对必须报红
  *       ⑩ 台账漏登记（把已知缺口从台账里删掉）→ 台账比对必须报红
@@ -161,19 +162,28 @@ try {
     ok(gaps.some(g => g.kind === 'late-too-thin'), '反向验证 ⑥「晚年内容太少」判据报红');
   }
 
-  /* ── ⑦ 晚年收尾判据被放松（缺口「不见了」）─────────────────────────────
+  /* ── ⑦ 判据被放松（缺口「不见了」）────────────────────────────────────
    * ⚠ 这一道最要紧：只盯「新缺口」的话，把判据放松就能让缺口消失 ⇒ 假门禁。
-   *   这里假装判据被放宽到「收尾卡发过 3 次就算有」⇒ 缺口不再成立
-   *   ⇒ 台账比对必须报红（否则文档会一直说「还缺」，而判据已经不管了）。 */
+   *   这里假装判据被放宽（把「高境界段突破间隔」的实测当成达标）
+   *   ⇒ 缺口不再成立 ⇒ 台账比对必须报红（否则文档会一直说「还缺」，而判据已经不管了）。
+   *
+   * ⚠⚠ **用哪条缺口做这件事，必须看台账里现在还有哪条**（2026-11-08 改）：
+   *   原来用的是「晚年没有收尾类卡」。2026-11-08 剧情线试点把那条缺口顶过去了
+   *   （实测从 2 次变成 3 次，跨过底线 3 次）⇒ 那条缺口不再登记在台账里
+   *   ⇒ 拿它做反向验证就变成了「把一条不存在的缺口从台账里删掉」⇒ 永远报不了红
+   *   ⇒ 这三道（⑦⑩⑫）全部改成盯台账里**还在**的那条：
+   *     「高境界段的突破间隔太长」（`span-too-wide`）。
+   *   ⚠ 台账里的缺口集合变了，这三道必须跟着换 —— 否则门禁是假的。
+   */
   {
     const f = cloneFacts(facts);
-    f.lateDedicatedMax = 99;
+    f.span.worst = 1; // 假装「每一段的突破间隔都达标」
     const gaps = evaluate(f);
     const problems = compare(gaps, ledger);
-    ok(gaps.length === 0 || !gaps.some(g => g.kind === 'late-aftermath-line'),
-      '反向验证 ⑦「晚年收尾判据被放松」缺口不再成立');
+    ok(gaps.length === 0 || !gaps.some(g => g.kind === 'span-too-wide'),
+      '反向验证 ⑦「突破间隔判据被放松」缺口不再成立');
     ok(problems.some(p => /现在不成立/.test(p)),
-      '反向验证 ⑦「晚年收尾判据被放松」台账比对报红');
+      '反向验证 ⑦「突破间隔判据被放松」台账比对报红');
   }
 
   /* ── ⑧ 新缺口没登记 ─────────────────────────────────────────────────── */
@@ -197,7 +207,7 @@ try {
   /* ── ⑩ 台账漏登记（把已知缺口从台账里删掉）────────────────────────── */
   {
     const missing = cloneLedger(ledger);
-    missing.knownGaps = missing.knownGaps.filter(g => g.kind !== 'late-aftermath-line');
+    missing.knownGaps = missing.knownGaps.filter(g => g.kind !== 'span-too-wide');
     const problems = compare(evaluate(facts), missing);
     ok(problems.some(p => /新增缺口/.test(p)), '反向验证 ⑩「台账漏登记」台账比对报红');
   }
@@ -219,7 +229,7 @@ try {
   /* ── ⑫ 台账里少了那条缺口 ───────────────────────────────────────────── */
   {
     const broken = cloneLedger(JSON.parse(ledgerBefore));
-    broken.knownGaps = broken.knownGaps.filter(g => g.kind !== 'late-aftermath-line');
+    broken.knownGaps = broken.knownGaps.filter(g => g.kind !== 'span-too-wide');
     fs.writeFileSync(ledgerPath, JSON.stringify(broken, null, 2) + '\n');
     const r = runScript(workdir, 'scripts/audit-completeness.mjs', ['--check']);
     fs.writeFileSync(ledgerPath, ledgerBefore);

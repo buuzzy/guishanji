@@ -251,7 +251,10 @@ export function month12(s,cb){
   if(r.childhood.kind==='fever'){r.body.illness=true;cb.apply({stats:{health:-18}});cb.arrive('r12_child_fever');}
   else cb.arrive('r12_child_body');return true;
  }
- if(r.visit){if(open&&r.visit.arrived&&s.month>=r.visit.due)cb.arrive((r.visit.resolved?'r12_home_leave':'r12_home_resolve')+(r.visit.index?'_'+r.visit.index:''));return true;}
+ if(r.visit){if(open&&r.visit.arrived&&s.month>=r.visit.due){
+   const visitId=(r.visit.resolved?'r12_home_leave':'r12_home_resolve')+(r.visit.index?'_'+r.visit.index:'');
+   cb.arrive(visitId);
+  }return true;}
  const follow=cc.queue.find(q=>q.event==='r12_bazaar_follow');if(follow){if(open&&s.month>=follow.due){cc.queue=cc.queue.filter(q=>q!==follow);cb.arrive(follow.event);}return true;}
  if(r.action){const a=r.action;
   if(a.kind!=='work'&&cc.network.method&&canCultivate(s))cc.network.method.months++;
@@ -271,10 +274,12 @@ export function month12(s,cb){
  const free=open&&!cc.activeChain&&!cc.context&&!cc.detained&&!cc.inquiry&&!cc.exam&&!cc.network.arc&&!cc.revision9.arc&&!cc.mundane?.arc&&s.month>=cc.punishmentUntil;
  if(!free||age(s)<16||!cc.admissionDone||!canCultivate(s))return false;
  if(r.clue.accepted&&cc.network.method?.id==='sealed'&&s.month>=r.clue.lossAt){r.body.loss+=2;r.body.damage=Math.min(30,r.body.damage+2);r.clue.lossAt=s.month+60;log(s,cb,'借来的灵息回到了井下','又一次运气后，你比从前更疲惫。井底的阵纹亮起，抽走一缕养在经脉里的气息。药师说这不是普通寒症，让你仔细考虑是否继续借井修炼。');if(!done(s,'r12_sealed_warning')){cb.arrive('r12_sealed_warning');return true;}}
- if(cc.path==='orthodox'&&s.player.realm<2&&!r.patron.noticed&&age(s)>=r.patron.until-5){cb.arrive('r12_patron');return true;}
+ if(cc.path==='orthodox'&&s.player.realm<2&&!r.patron.noticed&&age(s)>=r.patron.until-5){
+  cb.arrive('r12_patron');return true;}
  if(cc.path==='orthodox'&&s.player.realm<2&&age(s)>=r.patron.until&&!r.patron.stopped){r.patron.stopped=true;log(s,cb,'执事收回了耗材领取签','先前说过的供料年限已到。执事收回领取基础耗材的木签，住处与已借到的卷册仍准你保留；往后的修行材料要另筹。','institution');}
  if(cc.queue.some(q=>q.due<=s.month))return false;
- if(s.player.realm===0&&age(s)>=r.body.natural-12&&!done(s,'r12_late_doubt')){cb.arrive('r12_late_doubt');return true;}
+ if(s.player.realm===0&&age(s)>=r.body.natural-12&&!done(s,'r12_late_doubt')){
+  cb.arrive('r12_late_doubt');return true;}
  if(cc.path==='orthodox'&&!r.clue.checked&&age(s)>=38&&(cc.rank==='内门弟子'||s.flags.learningPermit)&&roll(s,'secret')<1200){
   /* ⚠ 闸检查**在置标记之前** —— 被拦就当这个月没这回事，下个月还会再抽一次。 */
   if(!cb.gate('r12_sect_clue'))return false;

@@ -110,7 +110,8 @@ export function mundaneMonth(s,cb){
  if(!m.started&&canCultivate(s))return false;
  if(years(s)<16||!c(s).admissionDone)return false;
  const free=s.journey?.open&&!s.pending&&!c(s).activeChain&&!c(s).context&&!c(s).detained&&!c(s).inquiry&&s.month>=c(s).punishmentUntil;
- if(!m.started){if(!free)return true;m.started=true;m.money=24;m.grain=3;m.next=s.month;m.quietAt=s.month+24;alert(s,cb,'m11_start');return true;}
+ if(!m.started){if(!free)return true;
+  m.started=true;m.money=24;m.grain=3;m.next=s.month;m.quietAt=s.month+24;alert(s,cb,'m11_start');return true;}
  if(s.month%12===0)mundaneSettlement(s);
  if(!canCultivate(s)&&m.job&&!c(s).context&&!c(s).detained&&!c(s).inquiry&&!s.journey?.cultivationTravel)m.workMonths++;
  if(m.local.kind&&s.month>=m.local.until){const old=m.local.kind;m.local.kind=null;m.local.tax=0;if(free&&m.local.place===c(s).continent&&old!=='siege')log(s,cb,old==='water'?'水渠重新放了水':'征粮的队伍离开了',old==='water'?'水闸按新约轮流开放，田里恢复灌水。你拿着旧借据，再同雇主商量下一季的活。':'地方结束这次征粮，粮价渐渐回落。债主仍认原来的借据，你把当时交过粮的凭据另外收好。','world');}

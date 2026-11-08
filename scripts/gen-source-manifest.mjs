@@ -115,7 +115,7 @@ const CHANGED_REASON = {
   'miniprogram/subpkg/xianxia/pages/life/life.wxml': 'S5 角色域：修行本事面板加「体魄」一行；S8 呈现域：顶栏常驻显示「还能活多久」（用官方已有的 .age-yr .t 类，不新造视觉类）',
   'content/cultivation-stories.js': 'S7 表达域：事件条目统一带上 voice 字段（表达成熟度：inline=已定稿 / pending=未定稿），在装配链末尾补一次，保证每个条目都有',
   'content/readable-stories.js': 'S7 表达域：内容按故事线拆到 content/expressions/ 下，本文件改成门面转发（旧路径还有人在用）',
-  'packages/adventure/engine.js': 'S7 表达域：makeReadable 改读新的表达域入口 content/expressions/index.js',
+  'packages/adventure/engine.js': 'S7 表达域：makeReadable 改读新的表达域入口 content/expressions/index.js；2026-11-08 剧情线试点：unmet() 增加反向条件 requires.flagsAbsent（旗标写下了 ⇒ 这个选项对你关着，并说清为什么）—— 规则层本来只有正向的 flags（旗标必须在），而「上一条线留了烂摊子 ⇒ 下一条路暂时不给你走」是反向的；改 choice.available 会被 progressionChoice（remit 那几项）整个覆盖掉 ⇒ 联动静默失效，所以写在 requires 里（那一处只有 m11_* 与突破卡会改）',
   'miniprogram/subpkg/xianxia/art/atlas.js': 'S8 呈现域：点阵地图从「一次画四块大陆」改成「只画当前所在 + 走过的大洲」并居中；「该显示哪几块」改由规则层给（engine.mapView）',
 };
 

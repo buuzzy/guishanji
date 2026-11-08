@@ -43,7 +43,31 @@
  *
  * ⚠ 本文件进小程序包 ⇒ **不写 `?.` / `??`**（微信转译会改变作用域边界）。
  */
-import {REALMS} from './adventure.js';
+/*
+ * ⚠⚠ **REALMS 从 `./realms.js` 直接取，不从门面 `./adventure.js` 取**（2026-11-08 实测踩到）。
+ *
+ * ## 踩到了什么
+ * ------------
+ *   本文件在**加载时**就读 `REALMS`（`REALM_NAMES = REALMS.map(...)`）。
+ *   若从门面 `./adventure.js` 取，就多出一条回路：
+ *
+ *     content/adventure.js → content/items.js → content/mundane-stories.js
+ *       → packages/adventure/mundane-life.js → packages/adventure/story-rules10.js
+ *       → packages/adventure/gates.js → **content/cadence-table.js** → content/adventure.js 💥
+ *
+ *   网页端（原生 ESM）靠「活绑定 + 求值顺序」扛过去了；
+ *   **小程序端不是原生 ESM** —— 产物是一个手写的 CommonJS 小包，
+ *   它的 `require` 在模块**正在加载时**会返回「半成品」⇒
+ *   `REALMS` 读到 undefined ⇒ `REALMS.map` 直接崩 ⇒ **小程序一打开就白屏**。
+ *   （2026-11-08：这条回路是给 `story-rules10.js` 加「节拍闸」引用时接上的。）
+ *
+ * ## 为什么不改别的
+ * ----------------
+ *   `content/realms.js` **不 import 任何东西** ⇒ 它永远不可能在环里 ⇒
+ *   无论谁先谁后加载，`REALMS` 都拿得到 ⇒ 这条回路**结构上**就不成立。
+ *   ⚠ 别改回 `./adventure.js`（门面是给外面用的旧路径，域内要用就直接用域文件）。
+ */
+import {REALMS} from './realms.js';
 import {REQUIRED_PROGRESS, METHOD_MONTHS, MATERIAL_TIERS, progressNeeded} from './realm-thresholds.js';
 
 /*

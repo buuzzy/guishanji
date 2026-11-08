@@ -208,10 +208,35 @@ export function month10(s,cb){
     *   没有这一层就会报「缺少故事：echo_friend_resume」，整局卡死。
     */
    if(id==='echo_'+e.kind+'_resume')id='echo_resume_after_war';
-   if(!seen(s,id)){cb.arrive(id);return true;}
+   /*
+    * ⚠ 这一串（「收到消息」→「亲自去核」→「去探望」）前后两张只隔几个月
+    *   （`rr.echo.due` 在回答后立刻被设成当月）⇒ 扎堆。
+    *   S13 曾用「炼气期节拍」把它往后推，**已整体拆掉**（实测只换来 1 次提问的减少，
+    *   却让 17.5% 的命出现超 15 年的沉默，还会破坏带期限的卡）⇒ 现在只靠内容挪动来解。
+    *
+    * ⚠⚠ **返回值必须还是 true** —— 「本月不抽随机卡」这件事不能变，
+    *   否则后面每一道随机结果都会跟着变（`random(state, stream)` 是流式的）。
+    */
+   if(!seen(s,id)){
+    cb.arrive(id);return true;
+   }
   }
  }
- if(!cc.network.echoChecked&&age(s)>=23){
+ /*
+  * ⚠⚠ **规则十二：童年回响挪到 27 岁以后**（2026-11-08 · 炼气期收束）。
+  *
+  * 为什么挪：
+  *   「收到旧消息 → 亲自去核 → 去拜访」这一串是**童年那条故事线的尾巴**，
+  *   不是炼气期的主线。实测它在 0–26 岁贡献 **1.54 次提问**（占前期提问 14.8%），
+  *   而且三张卡是**连着发**的（`rr.echo.due` 在回答后立刻被设成当月）
+  *   ⇒ 23–25 岁被连问三遍，正是「前期太密」的来源之一。
+  *   ⇒ 炼气期只留主线（入门 → 择路 → 考核 → 差事 → 突破），
+  *     童年的事留到筑基以后再回头看 —— 那时也才有心情回头看。
+  *
+  * ⚠ **只对当前版本（规则十二）生效** —— 规则 10 / 11 走各自的执行器，旧档逐值不变。
+  */
+ const echoMinAge=cc.rulesVersion===12?27:23;
+ if(!cc.network.echoChecked&&age(s)>=echoMinAge){
   cc.network.echoChecked=true;const kind=echoKind(s);
   if(kind&&random(s,'events')<.65){rr.echo={kind,origin:s.birth.continent,status:'message',sent:s.month,due:s.month,stage:0};return month10(s,cb);}
  }

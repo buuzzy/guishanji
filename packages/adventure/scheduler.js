@@ -36,12 +36,16 @@ import {progressionMonth} from './progression.js';
 import {networkMonth} from './story-network.js';
 import {breakthroughDue} from './cadence.js';
 import {ROAD_CHAINS} from '../../content/cultivation-stories.js';
+import {JOINT_CARD_IDS} from '../../content/cultivation-joints.js';
 import {storyOpportunity} from '../../content/cultivation-daily.js';
 import {canCultivate} from './story-rules10.js';
 import {CADENCE,progressNeeded} from '../../content/cadence-table.js';
 
 const age=s=>Math.floor(s.month/12)+(s.birth.startAge||0);
 const seen=(s,id)=>s.decisions.some(d=>d.event===id)||s.pending?.event===id;
+
+/** 接头卡的 id（一张表，只住一份）。 */
+const JOINT_IDS=new Set(JOINT_CARD_IDS);
 
 /**
  * 里程碑档 —— 「人生节点」优先于日常档。
@@ -150,6 +154,16 @@ export function longChainDue(state) {
   if (state.pending || state.waiting) return null;
   if (cultivation.detained || cultivation.inquiry) return null;
   if (cultivation.queue.some(q => q.due <= state.month)) return null;
+  /*
+   * ⚠⚠ **队列里压着接头卡 ⇒ 不开新线**。
+   *
+   * 原因：接头卡是「上一条线走完」的桥，它在队列里等着发出来。
+   * 而队列里的卡要等 `activeChain` 为空才发得出去 ——
+   * 线一开，`activeChain` 占住 ⇒ 接头卡要等**这一条新线走完**才轮得到
+   * （实测：中位延迟 9 个月，最长 6 年 ⇒ 桥早就没有意义了）。
+   * ⇒ 宁可晚一点开新线，也要把桥先修好。
+   */
+  if (cultivation.queue.some(q => JOINT_IDS.has(q.event))) return null;
   /* ⚠ `cultivation.continent` 一定是合法的大陆编号（`validateCultivation` 守着），
      ⇒ 这里直接读它即可，不必绕 `currentContinent`（那会引入循环依赖）。 */
   const here = cultivation.continent;
@@ -186,6 +200,43 @@ export function longChainDue(state) {
 }
 
 /**
+ * 接头档 —— 「一条线走完那一刻」的回响。
+ *
+ * ## 为什么它要单独一档
+ * ------------------
+ * 接头卡（`content/cultivation-joints.js`）是线走完之后发的那张承接卡。
+ * 它是**已经排好了的事**，不是「这个月挑一张日常卡」⇒ 跟队列里的家信、
+ * 长线步骤一样，走 `arriveRaw`（不过发卡闸）。
+ *
+ * ⚠⚠ **它必须排在长线档之前** —— 这不是偏好，是会被卡死的：
+ *   接头卡排在 `c.queue` 里，而队列里的卡要等 `c.activeChain` 为空才发得出去。
+ *   线一开，`activeChain` 就占住 ⇒ 接头卡会一直卡在队列里，
+ *   **等这一条新线走完才轮得到它**（实测：中位延迟 9 个月，最长 6 年）。
+ * ⇒ 所以：接头卡到了 ⇒ 先发它 ⇒ 再谈开新线。
+ *
+ * ## 为什么排在里程碑档之后
+ * ----------------------
+ * 突破卡是人生节点，比什么都硬（它有窗口，迟一个月都可能吃亏）⇒ 排它前面。
+ *
+ * ## 为什么排在日常档之后
+ * --------------------
+ * 家族 / 俗世 / 人脉那些是最不急的 ⇒ 排它后面。
+ */
+export function jointCardMonth(state, callbacks) {
+  const cultivation = state.life.cultivation;
+  if (!state.journey || !state.journey.open) return false;
+  if (state.pending || state.waiting) return false;
+  if (cultivation.detained || cultivation.inquiry) return false;
+  /* 还在别的线上 ⇒ 那条线先走完（真出现这一情况时，接头卡继续等）。 */
+  if (cultivation.activeChain) return false;
+  const next = cultivation.queue.find(q => q.due <= state.month && JOINT_IDS.has(q.event));
+  if (!next) return false;
+  cultivation.queue = cultivation.queue.filter(q => q !== next);
+  callbacks.arriveRaw(next.event);
+  return true;
+}
+
+/**
  * 跑一遍这个月的调度。
  *
  * @param {object} state 当前人生状态
@@ -198,6 +249,8 @@ export function scheduleMonth(state, callbacks) {
   if (month12(state, callbacks)) return true;
   /* 里程碑档：突破这种人生节点，不跟日常卡抢。 */
   if (milestoneMonth(state, callbacks)) return true;
+  /* 接头档：线走完的回响 —— 必须在下一条线开起来之前发出去。 */
+  if (jointCardMonth(state, callbacks)) return true;
   /* 长线档：人生某一段该开始的那件事，也不跟日常卡抢。 */
   if (longChainMonth(state, callbacks)) return true;
   /* 修订九：只在没有俗世支线时插话。 */

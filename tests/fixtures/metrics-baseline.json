@@ -1,12 +1,12 @@
 {
-  "createdAt": "2026-11-07T07:35:15.091Z",
+  "createdAt": "2026-11-07T15:29:01.070Z",
   "count": 120,
   "metrics": {
-    "neverSeen": 166,
+    "neverSeen": 175,
     "density10": 4,
     "density5": 3,
     "cooldownRepeats": 0,
-    "realmContentMin": 6,
+    "realmContentMin": 5,
     "endingMissing": 0,
     "spanMax": 102,
     "spanMedian": 51
@@ -96,6 +96,126 @@
         "density5": 3,
         "cooldownRepeats": 0,
         "realmContentMin": 6,
+        "endingMissing": 0,
+        "spanMax": 102,
+        "spanMedian": 51
+      }
+    },
+    {
+      "at": "2026-11-07T11:18:57.736Z",
+      "reason": "剧情线试点：加 27 张接头卡（炼气→筑基 9 条线 × 3 种收尾）。可达性的绝对条数 166 → 173，是因为分母从 360 张涨到 387 张 —— 新增的 27 张里 20 张在这批 120 条命里发得出来（74%，比全场平均的 54% 高），发不出来的 7 张是「线走到第三步却选了另一种收尾」的少见分支（实测可达，不是死内容）。换算成比例：发霉率 46.1% → 44.7%，实际是变好的。其余五项完全不变（密度 4/3、冷却 0、每境内容种数 6、结局覆盖 0、阶段跨度 102）。棘轮从这一次重新起算。",
+      "from": {
+        "neverSeen": 166,
+        "density10": 4,
+        "density5": 3,
+        "cooldownRepeats": 0,
+        "realmContentMin": 6,
+        "endingMissing": 0,
+        "spanMax": 102,
+        "spanMedian": 51
+      },
+      "to": {
+        "neverSeen": 173,
+        "density10": 4,
+        "density5": 3,
+        "cooldownRepeats": 0,
+        "realmContentMin": 6,
+        "endingMissing": 0,
+        "spanMax": 102,
+        "spanMedian": 51
+      }
+    },
+    {
+      "at": "2026-11-07T14:31:13.495Z",
+      "reason": "炼气期收束（2026-11-08）：童年回响整串挪到 27 岁后、灵根薄支线挪到 27 岁后、入门那一串拉开成 16/17/18/19 岁、主修心法隔 12 个月；另加「印记后果旁白」（决策后不再追问，后果在自动旁白里显现）。差异已逐条审查（artifacts/storyline-audit/18-序列差异审查.mjs）：8 张卡因时序连带不再出现、4 张恢复，净 +4 发霉，登记为已知缺口。",
+      "from": {
+        "neverSeen": 173,
+        "density10": 4,
+        "density5": 3,
+        "cooldownRepeats": 0,
+        "realmContentMin": 6,
+        "endingMissing": 0,
+        "spanMax": 102,
+        "spanMedian": 51
+      },
+      "to": {
+        "neverSeen": 183,
+        "density10": 4,
+        "density5": 3,
+        "cooldownRepeats": 0,
+        "realmContentMin": 5,
+        "endingMissing": 0,
+        "spanMax": 102,
+        "spanMedian": 51
+      }
+    },
+    {
+      "at": "2026-11-07T15:09:50.786Z",
+      "reason": "炼气期重构：接头卡 + 前期密度收束 + 后果旁白（有意行为变更，见 docs/refactor-divergence.json T8）",
+      "from": {
+        "neverSeen": 183,
+        "density10": 4,
+        "density5": 3,
+        "cooldownRepeats": 0,
+        "realmContentMin": 5,
+        "endingMissing": 0,
+        "spanMax": 102,
+        "spanMedian": 51
+      },
+      "to": {
+        "neverSeen": 181,
+        "density10": 4,
+        "density5": 3,
+        "cooldownRepeats": 0,
+        "realmContentMin": 5,
+        "endingMissing": 0,
+        "spanMax": 102,
+        "spanMedian": 51
+      }
+    },
+    {
+      "at": "2026-11-07T15:22:32.909Z",
+      "reason": "炼气期重构（接头卡 + 内容挪动 + 后果旁白；节拍闸已撤，见 docs/refactor-divergence.json T8）",
+      "from": {
+        "neverSeen": 181,
+        "density10": 4,
+        "density5": 3,
+        "cooldownRepeats": 0,
+        "realmContentMin": 5,
+        "endingMissing": 0,
+        "spanMax": 102,
+        "spanMedian": 51
+      },
+      "to": {
+        "neverSeen": 175,
+        "density10": 4,
+        "density5": 3,
+        "cooldownRepeats": 0,
+        "realmContentMin": 5,
+        "endingMissing": 0,
+        "spanMax": 102,
+        "spanMedian": 51
+      }
+    },
+    {
+      "at": "2026-11-07T15:29:01.070Z",
+      "reason": "炼气期重构收尾：后果旁白改为独立通道（不再顶掉当月拾遗旁白），随机流回到与 HEAD 一致",
+      "from": {
+        "neverSeen": 175,
+        "density10": 4,
+        "density5": 3,
+        "cooldownRepeats": 0,
+        "realmContentMin": 5,
+        "endingMissing": 0,
+        "spanMax": 102,
+        "spanMedian": 51
+      },
+      "to": {
+        "neverSeen": 175,
+        "density10": 4,
+        "density5": 3,
+        "cooldownRepeats": 0,
+        "realmContentMin": 5,
         "endingMissing": 0,
         "spanMax": 102,
         "spanMedian": 51

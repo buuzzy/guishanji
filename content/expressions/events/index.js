@@ -39,11 +39,12 @@ import { rows as MATERIAL_ROWS } from './material.js';
 import { rows as TWELVE_ROWS } from './twelve.js';
 import { rows as ECHO_ROWS } from './echo.js';
 import { rows as MUNDANE_ROWS } from './mundane.js';
+import { rows as JOINT_ROWS } from './joint.js';
 
 /** 修仙线全部卡的说法（按故事线分片，见上面九行）。 */
 export const EVENT_ROWS = {
   ...ENTRY_ROWS, ...TRIAL_ROWS, ...SECT_ROWS, ...WILD_ROWS, ...CHILD_ROWS,
-  ...MATERIAL_ROWS, ...TWELVE_ROWS, ...ECHO_ROWS, ...MUNDANE_ROWS,
+  ...MATERIAL_ROWS, ...TWELVE_ROWS, ...ECHO_ROWS, ...MUNDANE_ROWS, ...JOINT_ROWS,
 };
 
 /**

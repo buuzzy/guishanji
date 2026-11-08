@@ -41,6 +41,8 @@ import {installRevision9} from './revision9-stories.js';
 import {installRules10} from './story-rules10.js';
 import {installMundaneEvents} from './mundane-stories.js';
 import {installRules12} from './story-rules12.js';
+import {installJointCards} from './cultivation-joints.js';
+import {CHAIN_IDS} from './chain-ids.js';
 
 const c=(id,label,hint,reply,data={})=>({id,label,hint,reply,...data});
 const n=(id,title,text,choices,data={})=>({id,act:0,title,text,choices,...data});
@@ -309,6 +311,22 @@ installAllegianceStories(CULTIVATION_EVENTS);
  */
 export const LEGACY_ROAD_CHAINS=ROAD_CHAINS.slice();
 
+/*
+ * ⚠ **长线的二、三步登记为「豁免节拍」**（`content/cultivation-beat.js`）。
+ *
+ * 为什么：
+ *   · 一条线是**一件事的三个阶段**，它一开起来 `activeChain` 就占着，
+ *     直到第三步走完 ⇒ 挪第三步会把线拉断 ⇒ **后面所有线都开不了头**。
+ *   · 而首张（`_0`）**不登记** —— 它是「这条线开始了」，一次新的提问；
+ *     它要受节拍管，否则密集期照样能开新线，密度降不下来。
+ *
+ * ⚠⚠ **登记必须放在本文件的最末尾**（不是这里）——
+ *   `ROAD_CHAINS` 在这里只有 12 条，后面 `installLifeRevision` / `installRules10` /
+ *   `installRules12` 还会往里加线（实测最后是 16 条）。
+ *   ⇒ 早登记会**漏掉后面加的那四条**（2026-11-08 实测踩到：
+ *   `sect_feud` / `loose_escort` / `dark_sacrifice` / `beast_eclipse` 都没进豁免表）。
+ */
+
 export const RULES5_CULTIVATION_EVENTS=copy2(CULTIVATION_EVENTS);
 installLifeRevision(CULTIVATION_EVENTS,ROAD_CHAINS);
 
@@ -329,6 +347,19 @@ installMundaneEvents(CULTIVATION_EVENTS);
 const stage11=stageCopy(CULTIVATION_EVENTS);
 
 installRules12(CULTIVATION_EVENTS);
+
+/*
+ * 接头卡 —— 「一条线走完」与「下一件事发生」之间的那张桥。
+ *
+ * ⚠⚠ **必须装在九个历史快照之后**（快照点见文件头的装配顺序表）：
+ *   装在快照之前 ⇒ 规则五到十一的事件表也会多出这些卡
+ *   ⇒ 门禁 `scripts/verify-events-fidelity.mjs`（九个历史版本逐值全等）报红。
+ *   装在这里（`stage11` 之后）⇒ 只有当前版本（规则十二）拿到接头卡。
+ *
+ * ⚠ 为什么在 voice 补齐之前：让下面那段统一给每张卡补上 `voice`，
+ *   新卡就不必自己写一遍（漏一个 ⇒ 门禁 `expressions` 报红）。
+ */
+installJointCards(CULTIVATION_EVENTS, ROAD_CHAINS);
 
 /**
  * 表达成熟度：每个事件条目都带上 `voice`。
@@ -359,3 +390,22 @@ export const RULES8_CULTIVATION_EVENTS=withShared(stage8);
 export const RULES9_CULTIVATION_EVENTS=stage9;
 export const RULES10_CULTIVATION_EVENTS=stage10;
 export const RULES11_CULTIVATION_EVENTS=stage11;
+
+
+/*
+ * ⚠ **核对：这份长线清单与 `content/chain-ids.js` 那份必须逐条对上**。
+ *   规则层（发卡闸）读的是 `content/chain-ids.js` 那份；
+ *   内容层加了一条线却忘了改那里 ⇒ 那条线会被密度闸拦掉 ⇒ 线断了，而门禁显示绿。
+ *   ⇒ 对不上就在这里当场抛错（2026-11-08 实测踩过：加载顺序依赖导致名单悄悄变空）。
+ *   ⚠ 用**同一个叶子文件**（`content/chain-ids.js`）⇒ 内容层不必反向依赖规则层
+ *     （`content/` 不许依赖 `packages/adventure/` —— 那是仓库的结构规矩）。
+ */
+{
+  const given = ROAD_CHAINS.map(c => c.id);
+  const missing = CHAIN_IDS.filter(id => given.indexOf(id) < 0);
+  const extra = given.filter(id => CHAIN_IDS.indexOf(id) < 0);
+  if (missing.length || extra.length) {
+    throw Error('长线名单与 content/chain-ids.js 对不上：缺 ' + (missing.join('、') || '无')
+      + '；多 ' + (extra.join('、') || '无'));
+  }
+}

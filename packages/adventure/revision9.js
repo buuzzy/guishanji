@@ -120,9 +120,30 @@ export function revisionMonth(s,cb){
   if(r.arc==='mine'&&r.arcNotes<2&&s.month-r.arcStarted>=(r.arcNotes+1)*10){const notes=[['守夜队里少了一盏灯','夜里巡井，你发现最深的灯熄了。老矿工让你先拉回绳上的人，再换阵石。你们直到天亮才把一名昏过去的弟子抬上来，矿头却只在工簿上画了一道横线。'],['矿友把干净的水留给你','同队弟子发现你咳嗽，将剩下的净水推过来。他自己也受着火毒，仍说换岗时替你多守一刻。你们约好，离开矿口那天一起走，不把谁留在井下。']];const n=notes[r.arcNotes++];record(s,cb,n[0],n[1]);}
   return true;
  }
- if(canCultivate(s)&&!r.hardshipChecked&&age(s)>=24&&age(s)<=55&&c.admissionDone&&ROOTS[s.player.root].grade<=0&&s.player.realm<=1&&!c.activeChain&&!c.inquiry&&s.month-c.entered>=60){
+ /*
+  * ⚠⚠ **规则十二：灵根薄那条支线挪到 27 岁以后**（2026-11-08 · 炼气期收束）。
+  *
+  * 「灵根薄 ⇒ 被矿上拉去挖矿」是一整条 5 张卡的支线
+  * （thin_root_offer / mine / price / return / hunt）。
+  * 实测它占前期提问的 5% ⇒ 炼气期只留主线，这条挪到后面再开。
+  *
+  * ⚠⚠ **为什么按「岁数」推迟，而不是按「境界」**：
+  *   先前写成「筑基以后才开」（`realm >= 2`）⇒ 一辈子没筑基的命**永远遇不到**
+  *   ⇒ 那 5 张卡变成**永不触发的死卡** ⇒ 发霉率从 173 涨到 183（门禁报红）。
+  *   ⇒ 改成「**27 岁以后**」（与童年回响同一个界）⇒ 炼气期一样不打扰，
+  *     而绝大多数命仍能遇到这条线 ⇒ 卡不会白死。
+  *
+  * ⚠ **只对当前版本（规则十二）生效** —— 规则 9 / 10 / 11 的执行器一个字节都不动。
+  */
+ const hardshipAge=c.rulesVersion===12?27:24;
+ if(canCultivate(s)&&age(s)>=hardshipAge&&age(s)<=55&&!r.hardshipChecked&&c.admissionDone&&ROOTS[s.player.root].grade<=0&&s.player.realm<=1&&!c.activeChain&&!c.inquiry&&s.month-c.entered>=60){
   /* ⚠ 闸检查**在置标记之前** —— 被拦就当这个月没这回事，下个月还会再抽一次。 */
   if(!cb.gate('thin_root_offer'))return false;
+  /*
+   * ⚠ 炼气期节拍：没到间隔就下个月再试。
+   *   ⚠ `hardshipChecked` **不置** —— 置了就等于「已经查过了」，这条机会就永远没了。
+   *   ⚠⚠ 返回值必须还是 true —— 「本月不抽随机卡」这件事不能变（`random` 是流式的）。
+   */
   r.hardshipChecked=true;
   if(random(s,'events')<.8){cb.arrive('thin_root_offer');return true;}
  }

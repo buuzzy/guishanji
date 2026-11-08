@@ -215,6 +215,18 @@ export function unmet(state, requires = {}) {
   for (const [skill, required] of Object.entries(requires.skills || {})) if (state.player.skills[skill] < required) reasons.push(SKILLS[skill] + '达到' + required);
   for (const item of requires.items || []) if (!state.inventory.includes(item)) reasons.push('携带' + ITEMS[item].name);
   for (const flag of requires.flags || []) if (!state.flags[flag]) reasons.push(({ mercy: '曾宽宥宋却', regionalAlly: '建立大陆援军' })[flag] || '已有' + flag);
+  /*
+   * ⚠ `flagsAbsent`：**反向**条件 —— 这个旗标**已经写下了** ⇒ 这个选项对你关着。
+   *
+   * 为什么要有它（2026-11-08 · 接头卡试点时踩到）：
+   *   规则层本来只有正向的 `flags`（旗标必须在）。
+   *   但「上一条线留了烂摊子 ⇒ 下一条路暂时不给你走」是**反向**的。
+   *   ⇒ 一开始去改 `choice.available`，结果被 `progressionChoice`（`remit` 那几项）
+   *     整个覆盖掉 ⇒ 旗标写了，选项照样能点 ⇒ **联动静默失效**。
+   *   ⇒ 改成写在 `requires` 里：`requires` 只有极少数几处会改（`m11_*` 与突破卡），
+   *     接头卡用的那几张卡都不在名单里 ⇒ 改不动。
+   */
+  if (requires.flagsAbsent) for (const flag of requires.flagsAbsent) if (state.flags[flag]) reasons.push((requires.flagsAbsentReasons || {})[flag] || requires.flagsAbsentReason || '当前条件不允许');
   if (requires.flagsAny && !requires.flagsAny.some(flag => state.flags[flag])) reasons.push('已有大陆援军');
   if (requires.aid && aid(state).length < requires.aid) reasons.push('至少' + requires.aid + '份援军承诺（当前' + aid(state).length + '份）');
   return reasons;

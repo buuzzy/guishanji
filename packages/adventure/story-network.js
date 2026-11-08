@@ -159,7 +159,13 @@ export function networkAction(s,event,id,success,cb){
   a.methods.push(method);a.method={...method};
   log(s,cb,'主修心法已定',METHODS[op.method].name+'：'+METHODS[op.method].detail+' 灵根适配影响积累效率，熟悉周天仍需日常练习。');
  }
- if(event==='first_method'&&!a.methodDue)a.methodDue=s.month+6;
+ /*
+  * ⚠ **规则十二：主修心法隔 12 个月再问**（2026-11-08 · 炼气期收束）。
+  *   以前隔 6 个月 ⇒ 「第一份心法」与「主修心法」挤在同一年 ⇒ 入门那一串被问四遍。
+  *   现在入门那一串变成 16 / 17 / 18 / 19 岁，一年一张。
+  * ⚠ 旧版本（7–11）仍旧隔 6 个月 —— 旧档逐值不变。
+  */
+ if(event==='first_method'&&!a.methodDue)a.methodDue=s.month+(c.rulesVersion===12?12:6);
  if(op.childMark==='friend_witness'||op.childMark==='friend_hide')a.contacts=[{name:'阿宁',role:'童年一起捡柴的人',description:'母亲患病时替她领赊粮，后来是否走上修行尚不清楚。',status:'旧相识，去向尚未确认'}];
  if(event==='network_echo'&&id==='follow'&&a.contacts)a.contacts[0].status='已核过身份，替药师送货';
  if(event==='selection_1_result'&&success){
@@ -216,7 +222,8 @@ export function networkMonth(s,cb){
  if(a.arc&&c.path!=='orthodox'){log(s,cb,'原师门的差事停止','你已改换住处与师承，原来的跟炉或巡阵试任不能在新地方继续结算。');stopArc(s);}
  if(a.arc){
   if(s.month%6===0){const key=a.arc.kind==='mentor'?'alchemy':'array';cb.apply({skills:{[key]:.3}});}
-  if(free&&a.next&&s.month>=a.next.due){const id=a.next.event;a.next=null;cb.arrive(id);return true;}
+  if(free&&a.next&&s.month>=a.next.due){const id=a.next.event;
+   a.next=null;cb.arrive(id);return true;}
   return !!free;
  }
  if(!quiet||!c.admissionDone||c.path==='mortal')return false;
@@ -251,14 +258,16 @@ export function networkMonth(s,cb){
    a.summary={month:s.month,activity:c.activity,months:practice,skill:s.player.skills[skill]};
   }
  }
- if(a.methodDue&&s.month>=a.methodDue&&!seen(s,'network_method')){cb.arrive('network_method');return true;}
+ if(a.methodDue&&s.month>=a.methodDue&&!seen(s,'network_method')){
+  cb.arrive('network_method');return true;}
  if(!active10(s)&&!a.echoChecked&&age(s)>=23&&s.month>=a.quietUntil){
   a.echoChecked=true;const related=['friend_witness','friend_hide','herbs','old_page','relic_route','teacher_notes','teacher_route','route_contact'].some(k=>a.marks[k]);
   if(related&&random(s,'events')<.65){cb.arrive('network_echo');return true;}
  }
  if(a.method?.id==='ember'&&a.method.months>=60&&!a.bottleneck&&!seen(s,'network_bottleneck')){a.bottleneck=true;cb.arrive('network_bottleneck');return true;}
  if(a.seekVolume&&!a.volumeChecked&&s.month>=a.quietUntil){a.volumeChecked=true;if(random(s,'events')<.8){cb.arrive('network_volume');return true;}log(s,cb,'书商只找到不同的残页','书商带回的火候图接不上旧页，没有收你的购卷钱。缺页仍未补全，你只能继续基础或另找完整心法。');}
- if(a.offer&&s.month>=a.offer.due&&c.continent===a.offer.origin&&!seen(s,'network_'+a.offer.kind)){cb.arrive('network_'+a.offer.kind);return true;}
+ if(a.offer&&s.month>=a.offer.due&&c.continent===a.offer.origin&&!seen(s,'network_'+a.offer.kind)){
+  cb.arrive('network_'+a.offer.kind);return true;}
  return false;
 }
 export function validateNetwork(s,fail){

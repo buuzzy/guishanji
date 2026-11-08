@@ -242,9 +242,226 @@ function lifeRow(s,key){
  if(found)return {title:found[0],body:found[1],items:[found[2]]};
  return null;
 }
+/**
+ * 印记后果旁白 ——「做完一次决策，然后在非决策卡里展示若干后果」。
+ * ============================================================================
+ *
+ * ## 要解决什么
+ * --------------
+ * 用户 2026-11-08 的原话：**「做完一次决策，然后在非决策卡里面展示若干后果，
+ * 而非频繁触发决策」**。
+ *
+ * 以前的后果有两种下场：
+ *   ① 变成**又一张决策卡**（例如「童年回响」那一串：收到消息 → 亲自去核 → 去拜访，
+ *      同一件事连问三遍）；
+ *   ② 或者干脆什么都不写（选完就过去了）。
+ *
+ * 现在多第三种：**后果写成自动旁白**（journal 里的一段叙述）——
+ *   玩家做完决定之后，**不再被问**，而是在往后几年里陆续看到「你那次选择的后果」。
+ *
+ * ## 为什么这样能减密度、又不丢内容
+ * ------------------------------------
+ *   · 决策少一次 ⇒ 密度降；
+ *   · 旁白多一条 ⇒ 内容一条不少，而且**读的是玩家自己的印记**（旗标），
+ *     所以同一段人生，印记不同 ⇒ 旁白不同 ⇒ **「选择塑造人」落到了实处**。
+ *
+ * ## 节奏为什么天然是「陆续」的
+ * ----------------------------
+ *   自动旁白由 `c.dailyAt` 控制，**每 2–3 年才出一条**（`automaticCultivation` 里排期）
+ *   ⇒ 一个玩家身上若有三条印记旁白，它们会**摊在六到九年里**，不会挤在一起。
+ *
+ * ## 三条硬约束
+ * ------------
+ *   1. **不新增存档字段** —— 「这条旁白写过没有」靠 `s.journal` 里查标题判定
+ *      （与 `gates.js` 的旁白冷却同一套读法）⇒ 旧档逐值不变。
+ *   2. **只对当前版本（规则十二）生效** —— 旧档的生命线一个字都不动。
+ *   3. **ES2019**：不写 `?.` / `??`（微信转译会改变作用域边界）。
+ *
+ * ## `when(s)` 的作用
+ * ------------------
+ *   旁白要**合乎当下的处境** —— 「补种的那片药苗」不该在结丹以后还出现。
+ *   ⇒ 用状态判断（境界、追索还在不在）代替时间戳 ⇒ 不用给旗标记时间。
+ */
+const AFTERMATH = [
+  {
+    flag: 'familyAddress',
+    when: s => s.player.realm <= 2,
+    title: '登记册上多了一行',
+    body: '接待处的册子把你家乡的地址记在「可通消息」那一栏。你每月经过都能看见自己那一行，墨迹已经发灰，纸角被人翻软了。',
+  },
+  {
+    flag: 'gardenHonest',
+    when: s => s.player.realm <= 2,
+    title: '补种的那片药田',
+    body: '你补种的那几畦药苗活了下来。许执事沿药畦逐株验过，记下株数与补下的种。严衡那本处分册上，这一条写的是「据实作证」。',
+  },
+  {
+    flag: 'gardenPaid',
+    when: s => s.player.realm <= 2,
+    title: '药苗的赔偿账',
+    body: '药田的赔偿账已经结清。清账的人把购置价一张张核过，多的退回，少的补上，末尾盖了执事的印。你名下再没有这笔旧账。',
+  },
+  {
+    flag: 'falseTestimony',
+    when: s => s.player.realm <= 3,
+    title: '那两份对不上的记录',
+    body: '炉火记录和巡夜记录还留在档里。每次有人翻到那一页，都会看到两份对不上的说法。沈砚受罚之后没有再回过丹房。',
+  },
+  {
+    flag: 'unpaidGarden',
+    when: s => (s.life.cultivation.wanted || 0) > 0,
+    title: '追索名册上的那一行',
+    body: '离宗时没处理完的药田赔偿还挂在名册上。每次有人提起旧账，那一行就会被翻出来看——名字后面写着「待结」。',
+  },
+  {
+    flag: 'examCheat',
+    when: s => s.player.realm <= 3,
+    title: '藏符纸的那次考核',
+    body: '监考修士查出来源不明的法力时，记下了藏符纸的样式。处分记录跟着你的木牌走，换了山门也还在。',
+  },
+  {
+    flag: 'darkDebt',
+    when: s => s.life.cultivation.path === 'demonic',
+    title: '堂里记着你的去向',
+    body: '你离开据点时留下的行踪，幽灯堂那边记了一份。旧笔记里的字迹有你的笔锋，看的人没说什么，只是把那一页夹得更靠里。',
+  },
+  {
+    flag: 'hiddenBeast',
+    when: s => s.life.cultivation.path === 'beast',
+    title: '斗篷下的那双手',
+    body: '你收起妖气过日子，爪牙收得干净。可总有搬重物的时候——手套磨破的那天，你换了件旧衣才去拿。',
+  },
+  {
+    flag: 'defendedHome',
+    when: s => s.player.realm <= 3,
+    title: '守住的那段撤离路',
+    body: '你守过的那段路后来铺了石板。住过的人从这儿进山，偶尔有人说起那年是谁守在缺口边，名字传得不准，但那段路确实保住了人。',
+  },
+  {
+    flag: 'fledWar',
+    when: s => s.player.realm <= 3,
+    title: '留下的那处住处',
+    body: '战时你带走行囊，留在原处的房子后来塌了一半。回去看的人说，屋里的东西还在原位，没有人动过——那几件东西至今算在你名下。',
+  },
+  {
+    flag: 'mercy',
+    when: s => true,
+    title: '你放过的那个人',
+    body: '宋却后来托人捎过两回东西：一回是药，一回是一句话，只说「记得就好」。你把那句话记在心里，没有回过信，也没有再问起。',
+  },
+  {
+    flag: 'regionalAlly',
+    when: s => true,
+    title: '另一片大陆的回信',
+    body: '当初援手的那片大陆回过一封信，问你那边收成如何。信走了很久才到，字迹已经旧了。你照着回了几行，没有再多说。',
+  },
+
+  /* ── 「你走了哪条路」的印记（最高频的一个决定） ─────────────────── */
+  {
+    flag: 'pathSect',
+    when: s => s.player.realm <= 3,
+    title: '外院通铺的那张床',
+    body: '外院通铺的铺位换过几拨人，你的那个位置一直空着，有人替你留着。夜里能听见后山练剑的声音，一声接一声，有时会练到很晚。',
+  },
+  {
+    flag: 'pathLoose',
+    when: s => s.player.realm <= 3,
+    title: '自己租下的那间屋',
+    body: '你自己租的那间屋，门槛被鞋底磨出一道浅槽。房钱按月算，交不上的时候得先退掉一件行囊里的东西再顶一阵。',
+  },
+  {
+    flag: 'pathDark',
+    when: s => s.life.cultivation.path === 'demonic',
+    title: '堂里发的那块木牌',
+    body: '幽灯堂的木牌背面刻着堂号，牌绳换过两次。你的那块一直挂在内衫里，外人看不见，堂里的人一眼就认得。',
+  },
+  {
+    flag: 'pathBeast',
+    when: s => s.life.cultivation.path === 'beast',
+    title: '洞口那块睡惯的地方',
+    body: '洞口那块地方你睡了许多年，石面被磨出一层浅窝。族里的幼兽认得这个位置，冬天会挤过来，贴着你的背睡。',
+  },
+  {
+    flag: 'pathMortal',
+    when: s => s.player.realm <= 1,
+    title: '家里那间屋子',
+    body: '家里那间屋的窗纸换过好几回。你不在的时候，邻居顺手帮着糊过两次；每次糊完，都有人在门框上敲两下，算作招呼。',
+  },
+
+  /* ── 「你练的是哪门」的印记 ──────────────────────────────────── */
+  {
+    flag: 'focusSword',
+    when: s => s.player.realm <= 3,
+    title: '练剑的那处空院',
+    body: '练剑的空院后来堆起了杂物，墙根留着一排剑痕。你偶尔路过会停一下，看哪一道是你自己劈出来的。',
+  },
+  {
+    flag: 'focusArray',
+    when: s => s.player.realm <= 3,
+    title: '抄到一半的经书',
+    body: '那册经书你抄了大半，字迹到后面越来越挤。中间有几页被水浸过，纸皱着，字还认得，只是要凑近看。',
+  },
+  {
+    flag: 'focusAlchemy',
+    when: s => s.player.realm <= 3,
+    title: '药田边的那口小炉',
+    body: '药田边的小炉换过炉芯，位置没动。控火的人换了几个，你的手还认得原来那个火候——什么时候该收，什么时候还能再压半寸。',
+  },
+
+  /* ── 「你做事的方式」的印记（长线三步反复做的那类决定） ────────── */
+  {
+    flag: 'conductCare',
+    when: s => s.player.realm <= 3,
+    title: '你做事的那股认真劲',
+    body: '同门说起你，都说你是肯把事做完的那种人。交到你手里的差事，验收的人从不催第二遍——只是记得你自己会把没做完的部分再对一遍。',
+  },
+  {
+    flag: 'conductCautious',
+    when: s => s.player.realm <= 3,
+    title: '你留着的那些退路',
+    body: '你做事总留着退路：备用的干粮、没交出去的名册、认得的第二条路。同伴起先觉得你不干脆，后来发现你从那条退路回来过好几次。',
+  },
+  {
+    flag: 'conductSelfish',
+    when: s => s.player.realm <= 3,
+    title: '你拿过的那几样东西',
+    body: '你从旁人手里拿过几样东西。那几件东西如今在你行囊最底下，别人不问，你也不提；只是偶尔翻到，会想起当时另一个人的眼神。',
+  },
+];
+
+/**
+ * 印记后果旁白 —— 该不该现在说这一条。
+ * @param {object} s 当前人生状态
+ * @returns {{title:string,body:string}|null}
+ */
+export function aftermathStory(s) {
+  const c = s.life && s.life.cultivation;
+  if (!c || c.rulesVersion !== 12) return null;   /* 只改当前版本 */
+  for (const row of AFTERMATH) {
+    if (!s.flags[row.flag]) continue;
+    if (row.when && !row.when(s)) continue;
+    /* 这条写过没有 —— 靠 journal 里有没有同名标题判定（不新增存档字段）。 */
+    let written = false;
+    for (const entry of s.journal || []) {
+      if (entry.title === row.title) { written = true; break; }
+    }
+    if (written) continue;
+    return {title: row.title, body: row.body};
+  }
+  return null;
+}
+
 export function automaticStory(s,context){
  const c=s.life.cultivation;
  if(s.journey?.resolution||s.pending)return null;
+ /*
+  * ⚠ 「印记后果旁白」**不在这里** ——
+  *   它走独立通道（`packages/adventure/cultivation.js::automaticCultivation`），
+  *   否则它会把当月的日常/拾遗旁白整条顶掉
+  *   （实测顶掉之后，「人生经历带道具的比例」从 8.9% 掉到 7.0%，
+  *     而且下一次拾遗还会被顺延 24–48 个月 ⇒ 日子越写越干）。
+  *   旧版本（规则 5–11）本来也拿不到它（`aftermathStory` 里守着版本号）⇒ 旧档逐值不变。
+  */
  if(c.network?.arc){
   const kind=c.network.arc.kind,key='appointment-'+kind;
   const pool=kind==='mentor'?[

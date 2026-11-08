@@ -13,6 +13,7 @@ import * as rules6 from './cultivation-v6.js';
 import {initializeNetwork,networkAction,validateNetwork,networkRate} from './story-network.js';
 import {scheduleMonth} from './scheduler.js';
 import {automaticStory,aftermathStory,storyOpportunity,familyMessage} from '../../content/cultivation-daily.js';
+import {sceneDue,sceneStory,sceneGroup} from '../../content/cultivation-scenes.js';
 import {economyQuote,settleEconomy} from './cultivation-economy.js';
 import {random,hashText} from '../core/random.js';
 import {PATHS,ROOTS,ACTIVITIES,GEOGRAPHY,OFFICERS} from '../../content/cultivation-world.js';
@@ -415,6 +416,57 @@ function revised_finishTravel(s,cb){const trip=s.journey.cultivationTravel,c=s.l
 function revised_withdrawCultivation(s,cb){const c=s.life.cultivation;if(!c.activeChain||s.pending||s.phase!=='life')throw Error('目前没有可离开的探险');const chain=c.activeChain;c.queue=c.queue.filter(q=>!(isChainStage(q.event)&&q.event.startsWith(chain+'_')));c.context=null;c.activeChain=null;s.journey={from:s.month,to:s.month+6,target:null,practice:s.player.focus,cultivationTravel:{location:currentContinent(s),route:[currentContinent(s)]}};s.revision++;record(s,cb,'离开当前探险','你带走已取得的物品，沿已知出口返回。尚未取得的奖励与后续阶段取消。','plan');return s;}
 function automaticCultivation(s,cb){const c=s.life.cultivation;if(!canCultivate(s)||c.v12?.action||c.v12?.visit)return;if(c.revision9?.arc||s.month<c.dailyAt)return;const mundane=mundaneDaily(s),row=mundane===undefined?automaticStory(s,cultivationContext(s)):mundane;if(row){/* T5 · 人生经历能产出：这条旁白捡到的东西要真的进行囊；东西用旧了就真的少了（每条最多一件）。 */if(row.items)cb.apply({items:row.items});if(row.discard)cb.apply({remove:row.discard});record(s,cb,row.title,row.body);}/* 印记后果旁白：独立通道 ——「做完决定之后，后果在旁白里陆续显现」。 ⚠ 不许顶掉上面那条日常/拾遗旁白（顶掉会让「人生经历带道具的比例」掉下去，还会把下一次拾遗顺延 24–48 个月）。 */const mark=(s.journey?.resolution||s.pending)?null:aftermathStory(s);if(mark)record(s,cb,mark.title,mark.body);c.dailyAt=s.month+delay(s,c.activeChain?18:24,c.activeChain?36:48);}
 /**
+ * 「人生场景」旁白 —— **当时正在发生**的那一类（2026-11-08 · 阶段 5）。
+ *
+ * ## 它补的是什么
+ * --------------
+ * 官方的节奏是「一件大事 + 六件小事」：一生流水 ÷ 一生决策卡 = 6.46:1
+ * （官方对照报告 §6.2：一生流水中位 362 ÷ 一生决策卡中位 56）。
+ * 我们这边同口径只有 4.00:1 ⇒ 缺的是「肉」——不是决策卡，是**正在过的日子**。
+ *
+ * ## ⚠⚠ 为什么这一条通道**不许**碰随机流
+ * ------------------------------------
+ * `delay()` 从 **`events` 流**抽签，而 `events` 流决定「这一批候选卡里发哪一张」
+ * ⇒ 旁白节奏一改，抽签次数就变 ⇒ **整条决策序列跟着变**。
+ *
+ * 所以这一条通道：
+ *   · 排期用**种子哈希**（`content/cultivation-scenes.js` 的 `sceneDue`）；
+ *   · 挑行也用**种子哈希**（`sceneStory`）；
+ *   · **不碰 `c.dailyAt`**（不动原有通道的节奏）、**不调 `delay`**。
+ * ⇒ **决策序列一个字节都不变**（`eventseq` 门禁保持绿），
+ *   而旁白密度可以单独调 —— 以后再加密也不必重审卡牌序列。
+ *
+ * ## 什么时候不讲
+ * --------------
+ * · 正在做决定（`s.pending`）；
+ * · 路上一段（`travel` / `valley` / `cavern` / `outer`）：那几段由**原有池子**讲
+ *   （`rows.travel` / `rows.explore`），两套不叠着说；
+ * · 思过期间（`confinement`）。
+ *
+ * ⚠ **闭关期间照讲，而且那里才是大头** ——
+ *   一次闭关就是十年（`c.v12.action`），加上突破准备与多年修行的旅程，
+ *   合起来占了一条命的一半 ⇒ 那一组场景本来就是给它写的。
+ *   （顺带说明：原有池子在这段时间**一个字都写不出来** ——
+ *   `automaticStory` 碰到 `s.journey.resolution` 就返回 null，
+ *   于是每一条命有将近一千个月是「哑」的。）
+ *
+ * @param {object} s 当前人生状态
+ * @param {object} cb 引擎给的回调
+ * @returns {void}
+ */
+function sceneNarration(s,cb){
+ const c=s.life.cultivation;
+ if(c.rulesVersion!==12)return;
+ if(s.pending)return;
+ const context=cultivationContext(s);
+ const group=sceneGroup(s,context);
+ if(!group)return;                                  /* 路上一段与思过期间：让原有池子讲 */
+ if(!sceneDue(s,context))return;
+ const row=sceneStory(s,context);
+ if(!row)return;
+ record(s,cb,row.title,row.body,'life');
+}
+/**
  * 发卡闸的回调外套 —— 把「发卡」这件事过一遍闸。
  *
  * ⚠ 只有当前版本（规则十二）用得上；旧版本各有自己的执行器，不走这里。
@@ -497,6 +549,7 @@ function revised_cultivationMonth(s,cb){
  }
  if(c.punishmentKind&&s.month>=c.punishmentUntil){cb.apply({flags:{learningPermit:true}});record(s,cb,'重见山门晨光',c.punishmentKind==='confinement'?'石门终于打开，严衡解开禁灵符，把弟子牌扔回你手中。久不见光，你站在阶前眯了很久的眼；惩戒已满，听课与外出的禁令解除。':'许执事走过你补好的山道，把扣下的弟子牌还给你。服役结束，三堂恢复让你听课。','institution');delete c.punishmentKind;}
  automaticCultivation(s,cb);
+ sceneNarration(s,cb);
  if(canCultivate(s)&&!c.mundane?.arc&&!c.worldDone&&s.month>=c.worldAt){
   c.worldDone=true;
   if(c.worldKind===0){

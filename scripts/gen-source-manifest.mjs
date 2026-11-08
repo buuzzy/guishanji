@@ -215,6 +215,17 @@ const ADDED = [
   /* 2026-11-08：阶段 3.4 七条无桥长线的接头卡内容（叶子文件） + 阶段 3 的差异审查报告。 */
   'content/joint-lines-extra.js',
   'docs/stage3-diff-review.md',
+  /* 2026-11-08：阶段 4「触达复量」—— 触达门禁 + 零触达台账 + 触达表。
+   * （这两个文件上一轮漏登记了，这里一并补上：清单的作用是「本仓库现在长什么样」
+   *   的可核对记录，漏登记的文件就等于没有影子。） */
+  'scripts/audit-reach.mjs',
+  'tests/fixtures/reach-gaps.json',
+  'docs/chain-reach.md',
+  /* 2026-11-08：阶段 5「旁白加密」—— 「人生场景」池（内容层叶子文件）
+   * + 叙述密度门禁 + 这一轮的对照报告。 */
+  'content/cultivation-scenes.js',
+  'scripts/audit-narration.mjs',
+  'docs/narration-density.md',
   /* 2026-11-08：开发者面板（`apps/viz/`）—— 观测台，不进小程序包也不进 dist。
    * `decide-policy.js` 是从 `play-cultivation.mjs` 里搬出来的同一份策略，
    * 搬出来是为了让浏览器也能 import 它（面板的「固定偏好」与各审计脚本同源）。 */

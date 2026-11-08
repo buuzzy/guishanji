@@ -3,8 +3,8 @@
   "source": {
     "repo": "buuzzy/guishanji",
     "branch": "main",
-    "commit": "48f2963815d9a4f90f612acca3850b24b5518d5c",
-    "tree": "759265004f6f72cc3882ac861b04c8a4e3c440d5",
+    "commit": "e4ba13fdceb2c245d0a7a760c52a0283d6751f68",
+    "tree": "b0134639a4685c1071d115caca891421b7935bf7",
     "note": "构建那一刻本仓库的 HEAD 身份（快照信息，不参与逐字节复现校验）",
     "paths": [
       "packages/adventure/",
@@ -21,7 +21,7 @@
     "note": "同一批字节的两个来源之一：本仓库的 packages/ + content/ 与上游那个提交逐字节相同（门禁 scripts/test-xianxia-build.mjs 逐个核对）；vendor/xianxia-r12 是当时锁下的历史证据。"
   },
   "rulesVersion": 12,
-  "moduleCount": 91,
+  "moduleCount": 92,
   "inputs": [
     {
       "id": "content/adventure.js",
@@ -87,6 +87,11 @@
       "id": "content/cultivation-revision.js",
       "bytes": 20091,
       "sha256": "e8f8520203f697e3f0f77a6252f55ac598a84536254d5724a95bfc6ea4027a98"
+    },
+    {
+      "id": "content/cultivation-scenes.js",
+      "bytes": 36010,
+      "sha256": "1bfd50a45514f461c54fa40a1e8d425cefd30668c1e2803a000623979c67b157"
     },
     {
       "id": "content/cultivation-stories.js",
@@ -400,8 +405,8 @@
     },
     {
       "id": "packages/adventure/cultivation.js",
-      "bytes": 70821,
-      "sha256": "9e427f53f527dbcd4048cacebfa9da1d59e16b225a56ac15c313f1485104eaef"
+      "bytes": 73404,
+      "sha256": "8c0feb380c1d9aedd2190c3f92c91ff9e9baf26c716e6e2a92fd6e87cae7f76b"
     },
     {
       "id": "packages/adventure/engine.js",
@@ -481,8 +486,8 @@
   ],
   "output": {
     "file": "engine.js",
-    "bytes": 1532983,
-    "sha256": "e1ea5e8090c734e9bae5a48cbb5d11ea7e1d6e874fa8474737b0ff19b6920cba"
+    "bytes": 1562222,
+    "sha256": "97f62b1a84d1b6a7d11fbd99f5adbbb98a5152aa7fd5b9f04545f58a43ad38d8"
   },
   "styleOutput": {
     "file": "pixel-style.js",

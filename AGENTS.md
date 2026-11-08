@@ -115,6 +115,42 @@
   ⇒ 以前留的 20% 容差不是余量，是**给真缺陷开后门**。
 - ⇒ 触达表与归因见 `docs/chain-reach.md`（修桥前 / 修桥后对照 + 漏斗分解）。
 
+## 1.9 旁白密度：叙述:决策 = 6.45（官方 6.46）（2026-11-08 · 阶段 5）
+
+**口径**（官方对照报告 §6.2 的式子）：**一生流水条数 ÷ 一生决策卡数**。
+官方：中位 362 ÷ 56 = **6.46**；我们阶段 5 之前只有 **4.00** ⇒ 骨架有了、肉不够。
+
+| 通道 | 写什么 | 排期 | 挑行 | 占随机流？ |
+| --- | --- | --- | --- | --- |
+| 原有池（`content/cultivation-daily.js`，128 行） | 事后交代、拾遗、印记后果 | `c.dailyAt`（24–48 个月） | `random(s,'daily')` | 占 `daily` 流 |
+| **人生场景池**（`content/cultivation-scenes.js`，154 行） | **当时正在发生** | **种子哈希**（12–60 个月） | **种子哈希**（顺序走池） | **一个都不占** |
+
+- ⚠⚠ **改旁白节奏 = 改整条决策序列** ——
+  `delay()` 从 **`events` 流**抽签，而 `events` 流决定「这一批候选卡里发哪一张」
+  ⇒ 旁白一旦也抽这个流，抽签次数就变 ⇒ **整条决策序列跟着变**
+  ⇒ 新通道**一律用 `hashText`**（排期与挑行都不碰随机流）
+  ⇒ 实测 24 条固定人生 **654 步逐条全等**（`eventseq` 门禁保持绿）。
+  **改这条通道之前先想清楚：你要不要动决策序列。**
+- **走池不许记账**：存档校验要求 `c.dailyMemory` 每个键 ≤ 64 条
+  ⇒ 「用过的行不再用第二次」那种做法**每组最多 64 行**，
+  而后期那组一条命要走上百条 ⇒ 必然写空。
+  ⇒ 改成**顺序走池**（`index = (起点 + 拍数 × 步长) 对行数取余`），
+  **步长必须与池长互素**（否则只能走到池子的 1/gcd 部分 ⇒ 那些行一辈子轮不到）。
+- **口径**：决策卡数用**引擎自己的计数**（`state.decisions.length`）——
+  ⚠ 不许拿 journal 里的 `story` / `choice` 两条记录去数（一张卡留两条记录 ⇒ 数出来翻倍）。
+- ⇒ 门禁 `scripts/audit-narration.mjs`（回归里的 `narration`）守四件事：
+  比值落在 **[6.3, 8.0]**、每条路径 ≥ 5.5、场景池没有发霉（且步长互素）、
+  **场景通道不许消耗任何随机流**。
+- ⚠ **旁白加密会稀释别的「占比型」判据**：自动旁白翻了一倍 ⇒
+  「自动旁白里带道具的比例」从 8.9% 掉到 3.9%（道具门禁 `items` 第 ④ 条）。
+  ⇒ 那条判据已改成「**绝对量 ≥ 3 条/命**（玩家多久捡到一次东西）+ 占比 ≥ 3%」。
+  **凡是拿「全部旁白」当分母的判据，都要重新想一遍分母。**
+- ⚠ **已知缺口**：原有通道每条命到期 63 次却只发出 14 次（漏 77.6%），
+  漏在「行动结算中」（`automaticStory` 碰到 `s.journey.resolution` 就返回 null，
+  而 `c.dailyAt` 照样推后 ⇒ 白吃名额）。
+  **这一轮没有改** —— 改它会动到 `events` 流 ⇒ 整条决策序列跟着变
+  ⇒ 要单独走一轮「行为变更」流程。详见 `docs/narration-density.md`。
+
 ## 2. 小程序端硬约束
 
 - ES2019 可解析；**禁** `?.` / `??`；禁 ES2018 正则特性（`\p{...}`、`s` 标志）；**禁** `wx.request`（完全单机）。
@@ -143,7 +179,7 @@ node scripts/run-regression.mjs        # 全量回归
 | --- | --- | --- |
 | `import` | `scripts/verify-migration-import.mjs` | 迁移进来的每个文件与来源**逐字节一致** |
 | `xianxiabuild` | `scripts/test-xianxia-build.mjs` | 生成物可复现、ES2019、无 `?.`/`??`、无浏览器全局 |
-| `xianxiacycle` | `scripts/test-xianxia-cycle.mjs` | 小程序包里那 87 个模块**不许互相绕成环**（小程序产物不是原生 ESM，环会让「加载时读顶层常量」拿到 undefined ⇒ 白屏）+ 产物必须真能加载 |
+| `xianxiacycle` | `scripts/test-xianxia-cycle.mjs` | 小程序包里那 92 个模块**不许互相绕成环**（小程序产物不是原生 ESM，环会让「加载时读顶层常量」拿到 undefined ⇒ 白屏）+ 产物必须真能加载 |
 | `xianxiaeq` | `scripts/test-xianxia-equivalence.mjs` | 本仓库源码规则 vs 小程序产物**逐值全等** |
 | `xianxiastore` | `scripts/test-xianxia-storage.mjs` | 分片 / 双槽 / 配额错误，且不碰官方键 |
 | `xianxiaart` | `scripts/test-xianxia-art.mjs` | 画面与参考实现**逐笔一致** + 反向验证 |
@@ -153,6 +189,7 @@ node scripts/run-regression.mjs        # 全量回归
 | `repohygiene` | `scripts/test-repo-hygiene.mjs` | 仓库不许长胖到把微信开发者工具压垮（文件数 / 体积 / 浏览器临时档案） |
 | `eventexpressions` | `scripts/verify-event-expressions.mjs` | 修仙线 285 张卡的表达域：一条不漏、提示语数对齐、正文 ≤ 90 字、分支一致、专名双向、**选项不泄露内部成功率**、逐值全等 |
 | `reach` | `scripts/audit-reach.mjs` | 触达：**两种策略**（固定偏好 ∪ 随机探索）各 200 条命 ⇒ 零崩溃、真零触达不超台账、每条长线「有机会必发出」 |
+| `narration` | `scripts/audit-narration.mjs` | 叙述密度：一生流水 ÷ 一生决策卡落在 **[6.3, 8.0]**（官方 6.46）、每条路径 ≥ 5.5、场景池没有发霉（且走池步长与池长互素）、**场景通道不许消耗任何随机流** |
 | `completeness` | `scripts/audit-completeness.mjs` | 内容完备度：硬底线（故事线/各境内容/长线/结局/灵根/晚年）+ 已知缺口台账 |
 | `t9reverse` | `scripts/t9-reverse.mjs` | 完备度门禁的体检：注入坏值必须报红，且该绿的时候要绿 |
 | `t10reverse` | `scripts/t10-reverse.mjs` | 指标门禁与表达域覆盖的体检（含真改规则层源码那道） |
@@ -214,8 +251,8 @@ node scripts/run-regression.mjs --status
 | 合并进 main | 按上表选，**把结果贴出来** | — |
 
 ```sh
-node scripts/run-regression.mjs --group=fast   # 快组 37 道（规则层 + 小程序端 + 内容层）
-node scripts/run-regression.mjs                # 全量 38 道（= 快组 + 开发者面板那 1 道浏览器门禁）
+node scripts/run-regression.mjs --group=fast   # 快组 38 道（规则层 + 小程序端 + 内容层）
+node scripts/run-regression.mjs                # 全量 39 道（= 快组 + 开发者面板那 1 道浏览器门禁）
 ```
 
 - 跑完**确认退出码是 0**（`node … > log 2>&1; echo $?` —— 别用管道，管道后面取到的是最后一条命令的码）。

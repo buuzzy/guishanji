@@ -7,6 +7,7 @@
  *   · 拿不到却被消耗
  *   · 拿到却无出口
  *   · 人生经历带道具的比例低于下限
+ *   · 一条命里带道具的人生经历条数低于下限（阶段 5 新加：玩家真正感觉到的那件事）
  *
  * ⚠ **为什么要单测**：
  *   护栏类门禁平时很少真的拦下什么 ⇒ 光看「跑一遍没报错」证明不了它有用。
@@ -15,7 +16,7 @@
  */
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {judge, classifyText, RATIO_FLOOR} from '../scripts/audit-items.mjs';
+import {judge, classifyText, RATIO_FLOOR, PER_LIFE_FLOOR} from '../scripts/audit-items.mjs';
 
 /** 造一条「道具行」给判据用。 */
 const row = (id, source, sink, use) => ({
@@ -47,8 +48,13 @@ test('判据：人生经历带道具的比例低于下限必须报红', () => {
   assert.ok(problems.some(p => p.includes('比例')), '比例不达标必须被报出来');
 });
 
+test('判据：一条命里带道具的人生经历低于下限必须报红', () => {
+  const problems = judge([row('fine_item', 1, 1, 1)], RATIO_FLOOR, PER_LIFE_FLOOR - 1);
+  assert.ok(problems.some(p => p.includes('带道具的人生经历')), '绝对量不达标必须被报出来');
+});
+
 test('判据：全都达标时不得报红（门禁不能只会红）', () => {
-  const problems = judge([row('fine_item', 1, 1, 1)], RATIO_FLOOR);
+  const problems = judge([row('fine_item', 1, 1, 1)], RATIO_FLOOR, PER_LIFE_FLOOR);
   assert.deepEqual(problems, [], '全都达标时不该报红');
 });
 

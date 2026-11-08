@@ -15,8 +15,12 @@
  *      没有任何「获得」语境 ⇒ 报红（这条最严重：玩家被扣了一个拿不到的东西）。
  *   ③ **拿到却无出口**：某道具有「获得」语境，但既不被消耗、也不作为用途
  *      （requires / check 加成 / 代码里直接读）⇒ 报红。
- *   ④ **人生经历能产出**：实跑统计「自动旁白里带道具的比例」，
- *      低于 8% ⇒ 报红（人生经历不该只写事，偶尔得捡到点东西）。
+ *   ④ **人生经历能产出**：实跑统计两件事，任一不达标 ⇒ 报红：
+ *      · **一条命里带道具的人生经历 ≥ 3 条** —— 玩家多久捡到一次东西（这条是主角）；
+ *      · **自动旁白里带道具的比例 ≥ 3%** —— 这条通道自己的健康度。
+ *      ⚠ 比例这条的下限在阶段 5 从 8% 降到 3%：**分母合法地翻了一倍**
+ *        （旁白加密：自动旁白 ~63 → ~110 条/命），分子（~4.3 条/命）一个字节没变
+ *        ⇒ 真正要守的「绝对量」由上面那条直接守。
  *
  * ## 为什么用**静态**扫描而不是只靠实跑
  * --------------------------------------
@@ -291,16 +295,41 @@ export function measureAutoItems(count, decide) {
 
 /* ══════════════════════════════════════════════ 三、判据（纯函数，可单测） */
 
-/** 判据阈值：人生经历带道具的比例下限。 */
-export const RATIO_FLOOR = 0.08;
+/**
+ * 判据阈值 ①：人生经历带道具的**占比**下限。
+ *
+ * ⚠⚠ **为什么从 8% 降到 3%（2026-11-08 · 阶段 5）**
+ * ----------------------------------------------
+ * 这条判据量的是「**自动旁白里带道具的比例**」——
+ * 而**分母在阶段 5 合法地翻了一倍**（旁白加密：一生的自动旁白从 ~63 条涨到 ~110 条）。
+ * 分子（带道具的旁白条数）**一个字节都没变**（~4.3 条/命）⇒
+ * 同一个绝对量，占比自然从 8.9% 掉到 3.9%。
+ *
+ * ⇒ 所以现在这条判据**降的是「比例」这道代理指标**，
+ *   真正要守的那件事（玩家多久捡到一次东西）**由判据 ② 直接守**。
+ *
+ * @see PER_LIFE_FLOOR —— 那才是玩家真正感觉到的那件事
+ */
+export const RATIO_FLOOR = 0.03;
+
+/**
+ * 判据阈值 ②：**一条命里带道具的人生经历条数**下限。
+ *
+ * ⚠ 这条是阶段 5 新加的 —— 它直接守玩家真正感觉到的那件事：
+ *   「日子过久了，会不会一个东西都捡不到？」
+ * 阶段 5 之前是 ~4.3 条/命（比例口径 8.9%），阶段 5 之后是 ~4.3 条/命（比例口径 3.9%）
+ * ⇒ **绝对量没变**（变的是分母）⇒ 下限钉 3，留两成余量。
+ */
+export const PER_LIFE_FLOOR = 3;
 
 /**
  * 按四条判据给出问题清单。
  * @param {Array<{id:string,name:string,source:number,sink:number,use:number}>} rows
  * @param {number} ratio 实跑量到的「自动旁白带道具比例」
+ * @param {number} perLife 实跑量到的「每条命里带道具的人生经历条数」
  * @returns {string[]} 问题清单（空 ⇒ 通过）
  */
-export function judge(rows, ratio) {
+export function judge(rows, ratio, perLife = PER_LIFE_FLOOR) {
   const problems = [];
   for (const r of rows) {
     const total = r.source + r.sink + r.use;
@@ -310,6 +339,9 @@ export function judge(rows, ratio) {
   }
   if (!(ratio >= RATIO_FLOOR)) {
     problems.push(`人生经历带道具的比例 ${(ratio * 100).toFixed(1)}% < ${(RATIO_FLOOR * 100).toFixed(0)}%`);
+  }
+  if (!(perLife >= PER_LIFE_FLOOR)) {
+    problems.push(`一条命里带道具的人生经历只有 ${perLife.toFixed(2)} 条 < ${PER_LIFE_FLOOR} 条（玩家多久捡到一次东西，这件事不许倒退）`);
   }
   return problems;
 }
@@ -335,18 +367,21 @@ export function runAudit(count) {
   });
   const measured = measureAutoItems(count);
   const ratio = measured.autoTotal ? measured.autoWithItem / measured.autoTotal : 0;
-  return {rows, ratio, problems: judge(rows, ratio), measured, files};
+  /* 判据 ②：一条命里带道具的人生经历条数（玩家真正感觉到的那件事）。 */
+  const perLife = measured.lives ? measured.autoWithItem / measured.lives : 0;
+  return {rows, ratio, perLife, problems: judge(rows, ratio, perLife), measured, files};
 }
 
 /* CLI：只有在**被直接运行时**才跑（被 import 时不跑 ⇒ 单测可以拿里面的纯函数）。 */
 if (process.argv[1] && import.meta.url.endsWith(process.argv[1].replace(/^.*?(?=\/)/, ''))) {
   const args = process.argv.slice(2);
   const COUNT = Number(args.find(a => a.startsWith('--count='))?.split('=')[1] || 200);
-  const {rows, ratio, problems, measured, files} = runAudit(COUNT);
+  const {rows, ratio, perLife, problems, measured, files} = runAudit(COUNT);
 
   console.log('道具闭环审计');
   console.log(`  道具 ${rows.length} 个 · 源码 ${SCAN_DIRS.join('、')}（${files.length} 个文件）`);
-  console.log(`  人生经历带道具比例：${(ratio * 100).toFixed(1)}%（${measured.autoWithItem}/${measured.autoTotal} 条自动旁白，${measured.lives} 条命）`);
+  console.log(`  人生经历带道具比例：${(ratio * 100).toFixed(1)}%（${measured.autoWithItem}/${measured.autoTotal} 条自动旁白，${measured.lives} 条命；下限 ${(RATIO_FLOOR * 100).toFixed(0)}%）`);
+  console.log(`  一条命里带道具的人生经历：${perLife.toFixed(2)} 条（下限 ${PER_LIFE_FLOOR} 条）—— 玩家多久捡到一次东西，就看这个数`);
   if (measured.granted.size) {
     console.log('  人生经历捡到过的东西：' + [...measured.granted].map(([k, v]) => k + '×' + v).join('、'));
   }

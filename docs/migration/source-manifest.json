@@ -1189,8 +1189,8 @@
         "sourceBytes": 11494,
         "sourceSha256": "66026f8b72b80fc179a98f3f31fe2c736ff0d8c96a74e4c8ad26cde58edd5875",
         "path": "miniprogram/subpkg/xianxia/runtime/build-manifest.json",
-        "currentBytes": 16124,
-        "currentSha256": "d07b714a7f5d2c15113fa76d4a21385813445a5a000736e4cde0337a77bbcb0b",
+        "currentBytes": 16287,
+        "currentSha256": "02f0f13b8f807a9d7913af35700829672643e3acf52b580849242f3a7f380798",
         "reason": "生成物：来源改为本仓库源码，并新增 upstreamOrigin 段"
       },
       {
@@ -1200,8 +1200,8 @@
         "sourceBytes": 1738614,
         "sourceSha256": "ba0720f2c21c1babe39c605739e90243d7de00db5f920bd5078704d6952fed3f",
         "path": "miniprogram/subpkg/xianxia/runtime/engine.js",
-        "currentBytes": 1532983,
-        "currentSha256": "e1ea5e8090c734e9bae5a48cbb5d11ea7e1d6e874fa8474737b0ff19b6920cba",
+        "currentBytes": 1562222,
+        "currentSha256": "97f62b1a84d1b6a7d11fbd99f5adbbb98a5152aa7fd5b9f04545f58a43ad38d8",
         "reason": "生成物：由本仓库源码重新构建（除文件头注释外与迁移进来的那份逐字节一致，见 reference/migrated-runtime/）"
       },
       {
@@ -1509,8 +1509,8 @@
       },
       {
         "path": "scripts/gen-source-manifest.mjs",
-        "bytes": 29386,
-        "sha256": "014a99f719a4273cf1942b24dd8c2d5039e7bb4be208f267607de2c324a5db13"
+        "bytes": 30028,
+        "sha256": "f979e256a84b08abe22cc170851677d4de0cff03a2c7804245c004e66f0eaf47"
       },
       {
         "path": "scripts/test-xianxia-standalone.mjs",
@@ -1529,8 +1529,8 @@
       },
       {
         "path": "AGENTS.md",
-        "bytes": 34972,
-        "sha256": "63dbbc2787c7edda2d53aec8a2e0fec05176695a5f11bf6073f9b912ffce4854"
+        "bytes": 38199,
+        "sha256": "58ea316a15c2f48f2f5a3646f5a6504af26c12e194afde2bd7a7c1ee5a28d0b3"
       },
       {
         "path": "README.md",
@@ -1719,13 +1719,13 @@
       },
       {
         "path": "scripts/audit-items.mjs",
-        "bytes": 17128,
-        "sha256": "d21de94aae4b86b7cbfd84be758b5e150c3ce9d0c4c0a3bcc19f56e040870789"
+        "bytes": 19504,
+        "sha256": "11dd1045308b3e297ceb8d149df9bd97cb907e31dfae14568c8a662ef5b3454e"
       },
       {
         "path": "tests/items.test.mjs",
-        "bytes": 4941,
-        "sha256": "00a466dcee889c4209bd25472ad9bc43e2f19b2b6cfd09adb87ed6febfc87bc0"
+        "bytes": 5385,
+        "sha256": "94e2faa032c9338a89031c810761ffbede4a5014337c57c842ea0c1fd5803961"
       },
       {
         "path": "scripts/audit-plot.mjs",
@@ -2021,6 +2021,36 @@
         "path": "docs/stage3-diff-review.md",
         "bytes": 5416,
         "sha256": "5635a6aa4c8088941d79a1ddb87f675a0157281114a85b56c64f81ad72d8f50c"
+      },
+      {
+        "path": "scripts/audit-reach.mjs",
+        "bytes": 14875,
+        "sha256": "4a88a7a0d5fceec7e3d550c59d9ebac6e3b87f8c42d631971b995d71ca100aab"
+      },
+      {
+        "path": "tests/fixtures/reach-gaps.json",
+        "bytes": 5543,
+        "sha256": "ee6618851e27c9ac19756ff667703debfd3b47321c62e91209a30bac60abb26a"
+      },
+      {
+        "path": "docs/chain-reach.md",
+        "bytes": 11305,
+        "sha256": "af8ba14e1c9fe09adbe8cb089b4f16ce6b26bdd71c568e0ca97a82b35bc12108"
+      },
+      {
+        "path": "content/cultivation-scenes.js",
+        "bytes": 36010,
+        "sha256": "1bfd50a45514f461c54fa40a1e8d425cefd30668c1e2803a000623979c67b157"
+      },
+      {
+        "path": "scripts/audit-narration.mjs",
+        "bytes": 9984,
+        "sha256": "3e287fb289c9dbb3bd010e817d24c941128ab9d136cc7e8e8316b3db167bc314"
+      },
+      {
+        "path": "docs/narration-density.md",
+        "bytes": 9650,
+        "sha256": "3c081c9741494739eb2a0adc17517b39bb49162608f13b60dc04b79278382ac5"
       }
     ]
   }

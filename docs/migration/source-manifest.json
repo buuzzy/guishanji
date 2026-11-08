@@ -1509,8 +1509,8 @@
       },
       {
         "path": "scripts/gen-source-manifest.mjs",
-        "bytes": 30256,
-        "sha256": "260c95a88bcdf3f4b7e162dc2340bfb03af5f0534dbed36b03fabb2b7f5c3f31"
+        "bytes": 30492,
+        "sha256": "d2850cf88e652ef7a4f54f72564f64edc3bea133a42b847140ee10994b8dd134"
       },
       {
         "path": "scripts/test-xianxia-standalone.mjs",
@@ -2056,6 +2056,11 @@
         "path": "docs/refactor-progress-2026-11-08.html",
         "bytes": 39188,
         "sha256": "8d2b0570e3942b5f6803b64e1c9557591f96c3912e80c0d6d8f93997b482f841"
+      },
+      {
+        "path": "docs/refactor-decision-2026-11-08.html",
+        "bytes": 40376,
+        "sha256": "21999a9173c6904335d33c1ef4756503e5e6eccffaf458ca04363e1a7656bbcc"
       }
     ]
   }

@@ -5,11 +5,7 @@
  * ## 为什么单独抽出来
  * ------------------
  * 这段策略原本长在 `scripts/play-cultivation.mjs` 里，而那个脚本顶部有
- * `import {writeFile,mkdir} from 'node:fs/promises'` ⇒ **浏览器不能 import 它**
- * （Node 内置模块在浏览器里直接报「Failed to resolve module specifier」）。
- *
- * 而 `apps/viz/` 那个开发者面板要在浏览器里**用同一份策略**跑人生
- * —— 否则面板跑出来的命和门禁审计的命不是一回事，看的就不是同一批数据。
+ * `import {writeFile,mkdir} from 'node:fs/promises'` ⇒ **谁 import 它就拖进文件系统**。
  *
  * ⇒ 把纯逻辑搬到这里，`play-cultivation.mjs` 继续转发导出（既有调用方一个字不用改）。
  *

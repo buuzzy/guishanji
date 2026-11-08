@@ -833,7 +833,7 @@ section('2026-11-04 第四轮：外壳复刻 + 内容补全');
 }
 
 /* ══════════════════════════════════════════════ ④′′ 第七轮：规则12 */
-section('2026-11-05 第七轮：规则12（体质寿元 / 炼气阶段 / 宗门法门 / 多年安排 / 新旧档并存）');
+section('2026-11-05 第七轮：规则12（体质寿元 / 炼气阶段 / 宗门法门 / 多年安排 / 旧档拒收）');
 {
   const session = loadCjs(path.join(XIANXIA, 'bridge', 'session.js'));
   const pageModel = loadCjs(path.join(XIANXIA, 'bridge', 'page-model.js'));
@@ -851,7 +851,7 @@ section('2026-11-05 第七轮：规则12（体质寿元 / 炼气阶段 / 宗门�
     } catch (error) {
       refused = true;
     }
-    ok(refused, '第 8 版不许开新人生（上游口径：旧版只用于旧存档）');
+    ok(refused, '第 8 版不许开新人生（旧版执行器已删，仓库只剩规则十二）');
   }
 
   /* ② 寿元按**体质**算，不能再用境界基础值。 */
@@ -975,7 +975,14 @@ section('2026-11-05 第七轮：规则12（体质寿元 / 炼气阶段 / 宗门�
     ok(half.actionLabel === '闭关', `安排类型有中文名（${half.actionLabel}）`);
   }
 
-  /* ⑧ 新旧档并存：第 8 版的旧档照样读得出来（引擎里每一版的执行器都留着）。 */
+  /* ⑧ 旧档（规则 8）一律拒收，**并且清干净** —— 玩家接着玩，新人生存得进去。
+   *
+   * ⚠ 2026-11-08（清旧档）：以前这里断言的是「第 8 版的旧档照样读得出来」
+   *   （引擎里每一版的执行器都留着）。现在仓库只剩规则十二 ⇒ 旧档读不出来。
+   * ⚠ **更关键的是「清干净」**：光读不出来不够 —— 清单的字节还在盘上，
+   *   `save()` 会因「清单读不出来但确实存在字节」而停止写入
+   *   ⇒ 玩家新人生存不进档（白玩一场）。
+   */
   {
     const storageModule = loadCjs(path.join(MP, 'bridge', 'storage.js'));
     const data = new Map();
@@ -985,9 +992,9 @@ section('2026-11-05 第七轮：规则12（体质寿元 / 炼气阶段 / 宗门�
       remove: (k) => data.delete(k),
       keys: () => [...data.keys()],
     };
-    const store = storageModule.createStorage({storage: fake, now: () => 1700000000000});
+    /* 造一份「第 8 版」的旧档（清单 + 一个分片）——
+     * ⚠ 先落盘、再建档：这才是真机上的顺序（旧档是上一次运行时留下的）。 */
 
-    /* 造一份「第 8 版」的人生状态（把版本号改回去即可模拟旧档）。 */
     const old = engine.createRun({seed: '旧档-测试', id: 'life-old-1'});
     old.life.cultivation.rulesVersion = 8;
     const text = JSON.stringify(old);
@@ -1005,18 +1012,27 @@ section('2026-11-05 第七轮：规则12（体质寿元 / 炼气阶段 / 宗门�
       }],
     }));
 
-    const back = store.readLife('life-old-1');
-    ok(!!back, '第 8 版的旧档照样读得出来');
-    ok(back && back.life.cultivation.rulesVersion === 8, '旧档还是第 8 版（没被偷偷升版）');
+    /* 建档那一刻就把旧档清掉了 ⇒ 读不出来、清单里也没有。 */
+    const store = storageModule.createStorage({storage: fake, now: () => 1700000000000});
+    ok(store.readLife('life-old-1') === null, '第 8 版的旧档读不出来（拒收）');
+    ok(store.listLives().length === 0, '往期人生清单里没有旧档');
+    ok(!data.has('xianxia.v1.manifest.a'), '旧清单被清掉了');
+    ok(!data.has(key), '旧分片被清掉了');
 
-    /* 再存一段新人生（第 12 版）：清单升到 12，旧的那段还在。 */
+    /* 关键：清干净之后，新人生存得进去、读得回来（玩家能接着玩）。 */
     const fresh = engine.createRun({seed: '新档-测试', id: 'life-new-1'});
-    await store.save(fresh, engine.validateRun);
-    const manifest = JSON.parse(fake.get('xianxia.v1.manifest.b') || fake.get('xianxia.v1.manifest.a'));
-    ok(manifest.rulesVersion === 12, `清单版本升到 12（实际 ${manifest.rulesVersion}）`);
-    ok(manifest.lives.length === 2, `两段人生都在清单里（${manifest.lives.length} 段）`);
-    ok(!!store.readLife('life-old-1') && !!store.readLife('life-new-1'),
-      '新档旧档都能读回来');
+    let saveError = null;
+    try {
+      await store.save(fresh, engine.validateRun);
+    } catch (error) {
+      saveError = error.code || error.message;
+    }
+    ok(!saveError, `新人生存得进去（实际错误 ${saveError}）`);
+    ok(!!store.readLife('life-new-1'), '新人生读得回来');
+    const manifest = JSON.parse(data.get('xianxia.v1.manifest.b') || data.get('xianxia.v1.manifest.a'));
+    ok(manifest.rulesVersion === 12, `清单版本是 12（实际 ${manifest.rulesVersion}）`);
+    ok(manifest.lives.length === 1 && manifest.lives[0].id === 'life-new-1',
+      `清单里只剩新人生（实际 ${manifest.lives.length} 段）`);
   }
 }
 

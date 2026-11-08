@@ -11,7 +11,7 @@ const commands = [
        它按官方原文重新生成一遍，并与锁定快照逐字节比对。 */
   ['pixelstyle', ['scripts/build-pixel-style.mjs']],
   ['check', ['scripts/check.mjs']],
-  ['unit', ['--test', 'tests/adventure.test.mjs', 'tests/adventure-feedback.test.mjs','tests/cultivation.test.mjs','tests/decision-clarity.test.mjs','tests/life-richness.test.mjs','tests/story-network.test.mjs','tests/progression.test.mjs','tests/revision9.test.mjs','tests/story-rules10.test.mjs','tests/radar.test.mjs','tests/items.test.mjs','tests/plot.test.mjs']],
+  ['unit', ['--test', 'tests/adventure.test.mjs', 'tests/adventure-feedback.test.mjs','tests/cultivation.test.mjs','tests/decision-clarity.test.mjs','tests/life-richness.test.mjs','tests/story-network.test.mjs','tests/progression.test.mjs','tests/revision9.test.mjs','tests/story-shared.test.mjs','tests/radar.test.mjs','tests/items.test.mjs','tests/plot.test.mjs']],
   ['mundane-unit', ['--test','tests/mundane-life.test.mjs']],
   ['rules12-unit', ['--test','tests/story-rules12.test.mjs']],
   /* ── 发卡闸门禁（2026-11-07 · T2）────────────────────────────────────
@@ -29,20 +29,13 @@ const commands = [
   ['joint-unit', ['--test','tests/joint-cards.test.mjs']],
   ['rules12-audit', ['scripts/audit-story-rules12.mjs','--count=600']],
   ['mundane-audit', ['scripts/audit-mundane-life.mjs','--count=600']],
-  ['story-audit', ['scripts/audit-story-rules10.mjs']],
+  ['story-audit', ['scripts/audit-story-shared.mjs']],
   ['life-simulation', ['scripts/verify-life-richness.mjs']],
   /* ⚠ 2026-11-08：**网页端的 19 道浏览器/static 门禁与两道构建门禁已删**
      （`verify-*-browser.mjs` ×9、`verify-build.mjs`、`build.mjs`）。
      删之前先做了「浏览器门禁 → Node 门禁」断言对照表
      （`docs/browser-gate-coverage.md`）：状态类断言全部有 Node 侧接手，
      其中 6 条原来没人守的**已在本轮补进 Node 侧**（并做了反向验证）。 */
-  /* ── 开发者面板门禁 ───────────────────────────────────────────────────
-     `apps/viz/` 是**给我们自己看**的面板（人生进程轴 / 决策框 / 世界结构）。
-     它最大的风险不是画得丑，而是「显示的跟游戏里发生的不是一回事」——
-     一旦面板自己编数据，它就会安静地骗人，比没有还糟。
-     ⇒ 这道门禁守的是：面板上显示的，必须**逐条等于引擎当场说的**；
-       并且拿故意改坏的数据做反向验证（断言写错了也得报红）。 */
-  ['viz-browser', ['scripts/verify-viz-panel.mjs']],
   /* ── 小程序端（微信）门禁 ────────────────────────────────────────────
      孤儿门禁 = 假门禁 ⇒ 这七道必须挂在这里，不能只靠手动跑。 */
   ['import', ['scripts/verify-migration-import.mjs']],
@@ -56,10 +49,12 @@ const commands = [
   ['xianxiastandalone', ['scripts/test-xianxia-standalone.mjs']],
   ['repohygiene', ['scripts/test-repo-hygiene.mjs']],
   /* ── 内容保真门禁 ───────────────────────────────────────────────────
-     纯重构阶段这两个必须全绿：事件表的九个历史版本逐值全等、
-     固定种子的完整人生决策序列逐条全等。
-     有意行为变更阶段（突破必发 / 体力拆分 / 长线区间）才允许
-     eventseq 变，且必须先存旧基线、逐条审差异、再更新基线。 */
+     这两个必须全绿：
+     · eventsfid —— 当前事件表（347 张卡）逐值全等 + **旧执行器不许回来**；
+     · eventseq  —— 固定种子的完整人生决策序列逐条全等（12 条人生 / 366 步）。
+     ⚠ 2026-11-08 清旧档后，这里守的是**唯一在跑的那一版**（规则十二）。
+       有意行为变更阶段（突破必发 / 体力拆分 / 长线区间）才允许
+       eventseq 变，且必须先存旧基线、逐条审差异、再更新基线。 */
   ['eventsfid', ['scripts/verify-events-fidelity.mjs', '--check']],
   ['eventseq', ['scripts/verify-event-sequence.mjs', '--check']],
   /* ── 结构边界门禁 ───────────────────────────────────────────────────
@@ -88,6 +83,17 @@ const commands = [
      · **每条长线至少发得出来，「有机会」必发出**。
      ⚠ 样本量绑在 200 上（台账也是按 200 生成的）⇒ 换样本量要重写台账。 */
   ['reach', ['scripts/audit-reach.mjs', '--count=200', '--check']],
+  /* ── 出身门禁（2026-11-08 · 阶段一）────────────────────────────────────
+     守的是**轮盘上那个出身与剧情对不对得上**。
+     以前出身只进了数值和几张卡，**故事层完全不知道玩家是谁** ——
+     名门大户抽到「战乱里被游方药师救过」⇒ 16 岁去坊市当学徒成了散修。
+     ⇒ 这道门禁**逐条命对账**（不看平均）：
+     · 出身 ↔ 身世卡匹配率 100%；
+     · 名门/世家不许抽到「游方药师 / 幽灯堂 / 老猿」那三张；
+     · 每种出身：身世卡 ≥ 4，且**专属童年卡 ≥ 2**；
+     · 「去坊市谋生」那两句，规则层与表达域**按三种出身分三套且一字不差**。
+     ⚠ 以前那六道指标全是横向平均 ⇒ 「名门抽到散修孤儿」不改变任何数字 ⇒ 没人看见。 */
+  ['originbg', ['scripts/audit-origin-match.mjs', '--count=200', '--check']],
   /* ── 叙述密度门禁 ───────────────────────────────────────────────────────
      守的是**节奏的另一半**：官方的节奏是「一件大事 + 六件小事」
      （一生流水 ÷ 一生决策卡 = 6.46），我们一度只有 3.99 ⇒ 骨架有了、肉不够。
@@ -112,8 +118,8 @@ const commands = [
      「一句里塞三件事」的老写法（用户 2026-11-06 提的第 10 条）。
      这道门禁守修仙线表达域的六件事：一条不漏、提示语数对齐、正文 ≤ 90 字、
      分支数一致、专名双向（不许发明也不许丢）、输出与基线逐值全等。
-     ⚠ 它只管**当前版本（规则十二）**：旧版本走各自的事件表快照，
-       那些快照一个字都不动（eventsfid 门禁盯着）。 */
+     ⚠ 2026-11-08 清旧档后，仓库只剩**当前版本（规则十二）**，
+       这道门禁也就只管这一版（eventsfid 门禁盯着表不许变）。 */
   ['eventexpressions', ['scripts/verify-event-expressions.mjs']],
   /* ── 内容模块门禁 ───────────────────────────────────────────────────────
      content/adventure.js 拆成「境界与技艺 / 道具 / 地区与人物 / 结局与版本 / 节点」
@@ -210,7 +216,8 @@ report.code = currentTree();
      --list           打印门禁清单（JSON）
      --only=<名字>    只跑这一道门禁
      --group=<组>     跑某一组（fast / browser）
-   组是按「要不要开浏览器」分的：fast 那组几分钟就完，browser 那组才是慢的。
+   ⚠ 2026-11-08 删掉开发者面板后，**没有要开浏览器的门禁了** ⇒ browser 组是空的，
+     「全量」与「快组」现在是同一批门禁。
    --status          查「这棵树验过没有」—— 验过就不跑，树变了就报要跑哪组
 
    ⚠ **门禁结果绑「树」，不绑「动作」**：

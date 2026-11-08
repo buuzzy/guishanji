@@ -52,14 +52,14 @@
  *   若从门面 `./adventure.js` 取，就多出一条回路：
  *
  *     content/adventure.js → content/items.js → content/mundane-stories.js
- *       → packages/adventure/mundane-life.js → packages/adventure/story-rules10.js
+ *       → packages/adventure/mundane-life.js → packages/adventure/story-shared.js
  *       → packages/adventure/gates.js → **content/cadence-table.js** → content/adventure.js 💥
  *
  *   网页端（原生 ESM）靠「活绑定 + 求值顺序」扛过去了；
  *   **小程序端不是原生 ESM** —— 产物是一个手写的 CommonJS 小包，
  *   它的 `require` 在模块**正在加载时**会返回「半成品」⇒
  *   `REALMS` 读到 undefined ⇒ `REALMS.map` 直接崩 ⇒ **小程序一打开就白屏**。
- *   （2026-11-08：这条回路是给 `story-rules10.js` 加「节拍闸」引用时接上的。）
+ *   （2026-11-08：这条回路是给 `story-shared.js` 加「节拍闸」引用时接上的。）
  *
  * ## 为什么不改别的
  * ----------------

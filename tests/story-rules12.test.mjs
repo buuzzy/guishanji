@@ -1,10 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {readFile} from 'node:fs/promises';
 import {createRun,cloneRun,validateRun,upgradeRun,advance,advanceToChoice,choose,options,currentNode,nodeText,setActivity} from '../packages/adventure/engine.js';
 import {rules12,active12,lifespan12,sectProfile,practiceFactor12,stage12,month12} from '../packages/adventure/story-rules12.js';
-import {canCultivate,hasMana} from '../packages/adventure/story-rules10.js';
-import {CULTIVATION_EVENTS,RULES11_CULTIVATION_EVENTS} from '../content/cultivation-stories.js';
+import {canCultivate,hasMana} from '../packages/adventure/story-shared.js';
+import {CULTIVATION_EVENTS} from '../content/cultivation-stories.js';
 import {economyQuote} from '../packages/adventure/cultivation-economy.js';
 import {mpView} from './helpers/mp-view.mjs';
 import {mapView} from '../packages/adventure/cultivation.js';
@@ -17,16 +16,39 @@ function pending(event,{root='五行杂灵根',realm=1,path='orthodox',years=32}
 }
 function finish(s){for(let i=0;i<800&&s.phase==='life'&&!s.pending&&s.journey&&!s.journey.open;i++)advance(s,1);validateRun(s);}
 function text(s){return nodeText(currentNode(s),s);}
-test('旧11基线继续八次选择逐值一致，不修改原件',async()=>{
- const raw=await readFile(new URL('./fixtures/adventure-rules11-baseline.json',import.meta.url),'utf8');
- for(const row of JSON.parse(raw)){const s=upgradeRun(row.before);assert.deepEqual(s,row.before);for(const id of row.steps){choose(s,id);advanceToChoice(s);}assert.deepEqual(s,row.after);}
- assert.equal(await readFile(new URL('./fixtures/adventure-rules11-baseline.json',import.meta.url),'utf8'),raw);
+test('规则十二是当前唯一版本：旧版本的人生建不起来',()=>{
+ /*
+  * ⚠ 原来那条「旧11基线继续八次选择逐值一致，不修改原件」**整条删掉**：
+  *   旧版本（9/10/11）的执行器与事件表快照已全部删除 ⇒ `upgradeRun` 读旧档
+  *   一律报「修行规则版本」⇒「旧档在旧版本下继续跑」这件事已经不存在了。
+  *   这里留一条**当前口径**的断言：引擎只认 12。
+  */
+ assert.throws(()=>createRun({seed:'旧档',rulesVersion:11}),/不支持创建此规则的人生/);
 });
-test('新生采用12，旧11保留事件表与88岁凡身上限',()=>{
- const s=createRun({seed:'new-rules'});assert.ok(active12(s));const old=createRun({seed:'new-rules',rulesVersion:11});assert.equal(lifespan12(old),88);old.pending={event:'road_turn',month:0};old.journey=null;assert.equal(currentNode(old),RULES11_CULTIVATION_EVENTS.road_turn);
+test('新生采用12：引擎只认当前版本，寿限按体质算而不是旧版固定88岁',()=>{
+ const s=createRun({seed:'new-rules'});assert.ok(active12(s));assert.equal(c(s).rulesVersion,12);
+ /*
+  * ⚠ 旧版本（9/10/11）已删 ⇒「旧11保留事件表与88岁凡身上限」那一半已经无处可验
+  *   （引擎只认 12，旧人生根本建不起来）⇒ 那一半整条删掉，
+  *   留在这里的是**当前版本**的真实口径。
+  */
+ assert.throws(()=>createRun({seed:'new-rules',rulesVersion:11}),/不支持创建此规则的人生/);
+ assert.notEqual(lifespan12(s),88,'当前版本的寿限按体质算，不是旧版那个固定的88岁');
 });
-test('旧10与11仍按原事件习得离火残篇，新地域选择不污染执行器',()=>{
- for(const rulesVersion of [10,11]){const s=createRun({seed:'frozen-ember',rulesVersion});s.month=264;s.player.practice=s.month;s.player.root='金火灵根';s.player.realm=1;Object.assign(c(s),{path:'loose',admissionDone:true,rootKnown:true});s.pending={event:'network_method',month:s.month};s.journey=null;choose(s,'ember');assert.equal(c(s).network.method.id,'ember');validateRun(s);}
+test('当前版本按各自门路习得功法：新地域选择不污染执行器',()=>{
+ /*
+  * ⚠ 旧版本（9/10/11）已删 ⇒「旧10与11仍按原事件习得离火残篇」那一半无处可验（删掉）。
+  *   留下的是**当前版本真实门路**：`network_method` 的选项按地域/师承给，
+  *   选哪一门就真的只记哪一门，别的路径不受影响。
+  */
+ const build=path=>{const s=createRun({seed:'frozen-ember',rulesVersion:12});s.month=264;s.player.practice=s.month;s.player.root='金火灵根';s.player.realm=1;
+  Object.assign(c(s),{path,admissionDone:true,rootKnown:true,queue:[],activeChain:null,context:null});s.pending={event:'network_method',month:s.month};s.journey=null;return s;};
+ const loose=build('loose');assert.ok(options(loose).some(o=>o.id==='clear'),'散修这一门要在选项里');
+ assert.ok(!options(loose).some(o=>o.id==='shade'),'魔道那一门不该出现在散修身上');
+ choose(loose,'clear');assert.equal(c(loose).network.method.id,'clear');validateRun(loose);
+ const demonic=build('demonic');assert.ok(options(demonic).some(o=>o.id==='shade'),'魔道这一门要在选项里');
+ assert.ok(!options(demonic).some(o=>o.id==='clear'),'散修那一门不该出现在魔道身上');
+ choose(demonic,'shade');assert.equal(c(demonic).network.method.id,'shade');validateRun(demonic);
 });
 test('独立出生体质有四类，普通家庭寿限与亲人寿限不再固定',()=>{
  const types=new Set(),spans=new Set();for(let i=0;i<350;i++){const s=createRun({seed:'constitution-'+i});types.add(rules12(s).body.type);spans.add(lifespan12(s));assert.ok(lifespan12(s)>=45&&lifespan12(s)<=84);assert.ok(!hasMana(s));validateRun(s);}assert.equal(types.size,4);assert.ok(spans.size>20);
@@ -145,25 +167,6 @@ test('童年卡按家境挑：魔道妖兽人家不读村塾也不进药铺',()=
   if(b.family!=='clan'||b.upbringing!=='ordinary')assert.ok(!ids.includes('child_clan'),`不是世家嫡庶相配的孩子不该上族学（实际 ${ids}）`);
  }
  assert.ok(seen>=300,`这一批种子要能跑起来（实际 ${seen}）`);
-});
-test('旧版本的童年一字未改：窗口表与筛选条件都走冻结那一份',()=>{
- /*
-  * ⚠ 这条守的是 T3 差点踩进去的坑：
-  *   `packages/adventure/story-network.js` 的童年初始化**被规则 7/8/10/11 共用**，
-  *   改造童年时若不分流，旧版本的人生会跟着变（实测规则 11 的 12 条固定序列变了 8 条）。
-  */
- for(let i=0;i<60;i++){
-  const s=createRun({seed:'child-旧档-'+i,rulesVersion:11});
-  const t=c(s).network.childhood;
-  assert.equal(t.length,3,'旧版本也是三段');
-  for(const x of t){
-   assert.ok(x.event!==null,'旧版本不该有空槽');
-   assert.equal(x.done,false);
-  }
-  assert.ok(['child_school','child_apothecary','child_clan','child_keeper'].includes(t[0].event),`旧版本 6–9 岁段仍是冻结那四张（实际 ${t[0].event}）`);
-  assert.ok(['child_friend','child_relic','child_caravan','child_secret'].includes(t[1].event),`旧版本 10–12 岁段仍是冻结那四张（实际 ${t[1].event}）`);
-  assert.ok(['child_recruit','child_teacher','child_family_vow'].includes(t[2].event),`旧版本 13–15 岁段不变（实际 ${t[2].event}）`);
- }
 });
 test('童年热病存在真实死亡分支',()=>{
  let died=false;for(let i=0;i<120&&!died;i++){const s=createRun({seed:'illness-death-'+i});advanceToChoice(s);if(s.pending.event!=='r12_child_fever')continue;choose(s,'rest');finish(s);if(s.phase==='ended'){assert.equal(s.ending.id,'childhood_illness');died=true;}}assert.ok(died);

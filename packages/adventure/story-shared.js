@@ -2,21 +2,21 @@ import {ROOTS,GEOGRAPHY,OFFICERS} from '../../content/cultivation-world.js';
 import {NOVEL_NAMES} from '../../content/novel-names.js';
 import {hashText,random} from '../core/random.js';
 
-export const active10=s=>s.life?.cultivation?.rulesVersion>=10;
+export const activeCultivation=s=>!!s.life?.cultivation;
 const c=s=>s.life.cultivation;
 const r=s=>c(s).story10;
 const age=s=>(s.birth.startAge||0)+Math.floor(s.month/12);
 const seen=(s,id)=>s.pending?.event===id||s.decisions.some(d=>d.event===id);
 const add=(s,cb,title,body)=>cb.log({kind:'life',title,body,automatic:true,location:s.player.location,context:c(s).context||'home'});
 export function canCultivate(s){
- if(!active10(s))return true;
+ if(!activeCultivation(s))return true;
  return ROOTS[s.player.root].grade>=0||r(s)?.body==='nativeBeast';
 }
-export const hasMana=s=>!active10(s)||canCultivate(s)&&s.player.realm>=1;
-export const rootLabel=s=>active10(s)&&r(s)?.rootStatus==='absent'?'无灵根':s.player.root;
+export const hasMana=s=>!activeCultivation(s)||canCultivate(s)&&s.player.realm>=1;
+export const rootLabel=s=>activeCultivation(s)&&r(s)?.rootStatus==='absent'?'无灵根':s.player.root;
 export function rootDescription(s){
  if(!c(s).rootKnown)return '灵根尚未正式测定。';
- if(active10(s)&&r(s).rootStatus==='absent')return '药师两次测灵，并带你尝试引气，都未得到回应。普通吐纳与御剑功法无法修炼，识药、防身剑术与谋生手艺仍可学习。';
+ if(activeCultivation(s)&&r(s).rootStatus==='absent')return '药师两次测灵，并带你尝试引气，都未得到回应。普通吐纳与御剑功法无法修炼，识药、防身剑术与谋生手艺仍可学习。';
  return ROOTS[s.player.root].description;
 }
 export function initialize10(s){
@@ -39,7 +39,7 @@ function actors(s){
  return [...cc.officers.map(p=>({id:'officer:'+p.id,name:p.name,aliases:[p.name,names[OFFICERS.find(o=>o.id===p.id).name]].filter(Boolean),role:p.role,description:p.description,officer:p})),...Object.entries(EXTRA_ROLES).map(([alias,role])=>({id:'actor:'+alias,name:names[alias]||alias,aliases:[names[alias]||alias],role,description:role,alias}))];
 }
 export function introduceText(text,s){
- if(!active10(s))return text;
+ if(!activeCultivation(s))return text;
  let out=String(text||'');
  for(const p of actors(s).sort((a,b)=>b.name.length-a.name.length)){
   const alias=p.aliases.find(name=>out.includes(name));if(!alias)continue;const at=out.indexOf(alias);
@@ -50,7 +50,7 @@ export function introduceText(text,s){
  return out;
 }
 export function encounterPeople(s,text,event){
- if(!active10(s))return;
+ if(!activeCultivation(s))return;
  const cc=c(s);
  for(const p of actors(s))if(p.aliases.some(alias=>String(text).includes(alias))&&!r(s).contacts.some(x=>x.id===p.id)){
   r(s).contacts.push({id:p.id,name:p.name,role:p.role,description:p.description,met:s.month,event,status:'已接触'});
@@ -58,7 +58,7 @@ export function encounterPeople(s,text,event){
  for(const p of Object.values(s.people))if(String(text).includes(p.name)&&p.status==='alive')p.known=true;
 }
 export function storyPeople(s){
- if(!active10(s))return [];
+ if(!activeCultivation(s))return [];
  const known=new Set([...Object.values(s.people).filter(p=>p.known).map(p=>p.name),...(c(s).network.contacts||[]).map(p=>p.name)]);
  return r(s).contacts.filter(p=>!known.has(p.name)).map(p=>({...p,status:p.id.startsWith('officer:')?(c(s).officers.find(o=>'officer:'+o.id===p.id)?.status==='dead'?'已确认离世':c(s).path==='orthodox'?'本宗管理者':'原宗门管理者'):p.status}));
 }
@@ -71,26 +71,23 @@ export function echoKind(s){
  const m=c(s).network.marks;
  if(m.friend_witness||m.friend_hide)return 'friend';
  const teacher=!!(m.herbs||m.teacher_notes||m.teacher_route||m.route_contact);
- const relic=!!(m.old_page||m.relic_route);
  /*
   * 「铜匣换粮」也是铜匣线的一条（sold_page）——
   *   铜匣换成了两袋粮，玩家手里既没有旧页也没有拓印，
   *   原来这里**不认它** ⇒ 那次童年选择选完就断了，后面什么也没有。
-  *   现在规则十二里它也算 relic 这条线（旧版本保持原样，逐值不变）。
+  *   ⇒ 现在它也算 relic 这条线。
   */
- const relic12=!!(m.old_page||m.relic_route||m.sold_page);
+ const relic=!!(m.old_page||m.relic_route||m.sold_page);
  /*
   * 「旧联系人」这条线，**先认出谁**决定了整条线走哪一版（friend / relic / teacher）。
   *
-  * ⚠ 旧版本（5–11）保持原顺序（旧物在前）：逐值不变。
-  * ⚠ 当前版本（规则十二）改成「授业者在前」——
+  * ⚠ 「授业者在前」——
   *   因为铜匣（child_relic）现在**人人都有**（10–12 岁那段），
-  *   若仍按旧顺序，「旧联系人」对每个孩子都是铜匣那条 ⇒
+  *   若按旧物在前，「旧联系人」对每个孩子都是铜匣那条 ⇒
   *   「授业者回响」整条线（echo_teacher / echo_teacher_check / echo_teacher_visit）
   *   **永远发不出来** ⇒ 实测 0/120 可达。
   */
- if(c(s).rulesVersion===12)return teacher?'teacher':relic12?'relic':null;
- return relic?'relic':teacher?'teacher':null;
+ return teacher?'teacher':relic?'relic':null;
 }
 /**
  * 「旧联系人」这条线的状态往前推一步。
@@ -124,7 +121,7 @@ export function advanceEcho(s,kind,origin,id){
  rr.echo={kind,origin,status:id==='wait'?'deferred':'checking',due:s.month+(id==='wait'?24:hops*36),sent:s.month,stage:0};
 }
 export function choose10(s,event,id,success,cb){
- if(!active10(s))return;
+ if(!activeCultivation(s))return;
  const cc=c(s),rr=r(s);
  if(event==='root_review'&&id==='test'){
   const m=cc.network.marks,clue=s.birth.family==='clan'||!!(m.old_page||m.relic_route);
@@ -185,8 +182,8 @@ export function choose10(s,event,id,success,cb){
  }
 }
 export function month10(s,cb){
- if(!active10(s))return false;
- if(c(s).rulesVersion>=11&&c(s).mundane?.arc)return false;
+ if(!activeCultivation(s))return false;
+ if(c(s).mundane?.arc)return false;
  const cc=c(s),rr=r(s),free=s.journey?.open&&!s.pending&&!cc.detained&&!cc.inquiry&&!cc.activeChain&&!cc.context&&s.month>=cc.punishmentUntil;
  if(!canCultivate(s))cc.progress=0;
  if(!free||age(s)<16||!cc.admissionDone)return false;
@@ -235,12 +232,12 @@ export function month10(s,cb){
   *
   * ⚠ **只对当前版本（规则十二）生效** —— 规则 10 / 11 走各自的执行器，旧档逐值不变。
   */
- const echoMinAge=cc.rulesVersion===12?27:23;
+ const echoMinAge=27;
  if(!cc.network.echoChecked&&age(s)>=echoMinAge){
   cc.network.echoChecked=true;const kind=echoKind(s);
   if(kind&&random(s,'events')<.65){rr.echo={kind,origin:s.birth.continent,status:'message',sent:s.month,due:s.month,stage:0};return month10(s,cb);}
  }
- if(cc.rulesVersion===11&&!canCultivate(s))return false;
+
  if(!canCultivate(s)&&!rr.workChecked&&age(s)>=22){
   /* ⚠ 闸检查**在置标记之前** —— 被拦就当这个月没这回事，下个月还会再抽一次。 */
   if(!cb.gate('mortal_assessment'))return false;
@@ -280,7 +277,7 @@ function mundaneLater(s,cb){
  }
 }
 export function mundaneDaily(s){
- if(!active10(s)||canCultivate(s)||age(s)<16)return undefined;
+ if(!activeCultivation(s)||canCultivate(s)||age(s)<16)return undefined;
  const cc=c(s),rr=r(s);if(cc.activeChain||cc.context||cc.detained||cc.inquiry)return null;
  const rows=[
   ['先把粮袋缝好再交货','雨水从屋檐落进粮房，你把靠墙的粮袋搬到木架上，缝好裂口。来领粮的人数过袋子，才将收粮木签交给你。'],
@@ -296,7 +293,7 @@ export function mundaneDaily(s){
  return {title:picked.row[0],body:picked.row[1]};
 }
 export function validate10(s,fail){
- if(!active10(s))return;
+ if(!activeCultivation(s))return;
  const rr=r(s),month=n=>Number.isSafeInteger(n)&&n>=0&&n<=13000;
  if(!rr||rr.format!==1||!['unverified','absent','present'].includes(rr.rootStatus)||!['human','nativeBeast'].includes(rr.body))fail('灵根资格');
  if(rr.body==='nativeBeast'&&s.birth.upbringing!=='beast'||rr.rootStatus==='present'&&ROOTS[s.player.root].grade<0||rr.rootStatus==='absent'&&ROOTS[s.player.root].grade>=0)fail('灵根来源');

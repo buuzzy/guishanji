@@ -1,16 +1,16 @@
 #!/usr/bin/env node
 /**
- * 事件表版本保真门禁 —— 九个历史版本的事件表必须逐值全等。
+ * 事件表保真门禁 —— 当前版本的事件表必须逐值全等，且**旧执行器不许回来**。
  *
- * 守什么：
- *   `content/` 里曾经有 9 份事件表副本（cultivation-stories{,-v5..-v11}.js），
- *   每份自带一张完整的表字面量 + 一段递增的装配尾巴。
- *   归一（S1）把它们收敛成一份主表之后，**每个历史版本拿到的内容必须一模一样**。
- *   这道门禁就是「归一没有偷偷改变任何历史版本」的证据。
- *
- * 为什么不能只靠旧基线：
- *   旧基线（tests/fixtures/adventure-rules*-baseline.json）守的是「跑出来的人生」，
- *   覆盖不到「表里到底有没有多一个事件、少一条选项」。本门禁守的是**表的结构本身**。
+ * 守什么（两件事）：
+ *   ① **表不许变**：当前唯一在跑的事件表（`CULTIVATION_EVENTS`，347 张卡）必须与基线逐值全等。
+ *      为什么不能只靠人生基线：人生基线守的是「跑出来的一生」，覆盖不到
+ *      「表里到底有没有多一个事件、少一条选项」。本门禁守的是**表的结构本身**。
+ *   ② **旧档不许回来**：清旧档（2026-11-08）删掉的 24 个历史执行器 / 内容副本，
+ *      谁把它们放回来，门禁必须报红。
+ *      为什么这道断言重要：旧执行器回来不会让**任何现门禁**变红 ——
+ *      它们只是各自多跑一条分支 ⇒ 仓库会悄悄长胖（实测：多 519 KB 进小程序包），
+ *      而「旧档还在支持」这件事会重新变成真的。
  *
  * 用法：
  *   node scripts/verify-events-fidelity.mjs            # 生成基线
@@ -25,18 +25,13 @@ import { canonical, digest, tableDigest, idDiff } from './serialize-content.mjs'
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const FIXTURE = join(ROOT, 'tests', 'fixtures', 'events-versions.json');
 
-/** 九个历史版本，顺序即装配顺序。 */
-export const VERSION_EXPORTS = [
-  'CULTIVATION_EVENTS',
-  'RULES11_CULTIVATION_EVENTS',
-  'RULES10_CULTIVATION_EVENTS',
-  'RULES9_CULTIVATION_EVENTS',
-  'RULES8_CULTIVATION_EVENTS',
-  'RULES7_CULTIVATION_EVENTS',
-  'RULES6_CULTIVATION_EVENTS',
-  'RULES5_CULTIVATION_EVENTS',
-  'LEGACY_CULTIVATION_EVENTS',
-];
+/**
+ * 当前唯一在跑的事件表。
+ *
+ * ⚠ 2026-11-08 清旧档后只剩一张 —— 旧的九份快照（`RULES5..RULES11_CULTIVATION_EVENTS`、
+ *   `LEGACY_CULTIVATION_EVENTS`）连同它们的历史执行器一起删掉了。
+ */
+export const VERSION_EXPORTS = ['CULTIVATION_EVENTS'];
 
 /** 采当前实际内容。 */
 export function collect(tables) {
@@ -86,9 +81,19 @@ export function compare(actual, expected) {
   return problems;
 }
 
-/* ══════════════════════════════════════════════ 旧副本不许回来 */
+/* ══════════════════════════════════════════════ 旧副本与旧执行器不许回来 */
 
-const OLD_COPIES = [
+/**
+ * 2026-11-08「清旧档」删掉的全部文件（24 个）。
+ *
+ *   · 旧事件表副本 —— 归一（S1）时留下的九条快照。
+ *   · 旧规则执行器 —— 规则 5–11 各自那一份引擎。
+ *   · 旧内容副本 —— 规则 6–11 各自的日常旁白 / 长线 / 修订九 / 事件表。
+ *
+ * ⚠ 它们**一个都不许回来**：回来不会让任何现门禁变红（旧分支只是多跑一条路），
+ *   但小程序包会白白多长几百 KB，而且「旧档还在支持」会重新变成真的。
+ */
+export const OLD_COPIES = [
   'content/cultivation-stories-v5.js',
   'content/cultivation-stories-v6.js',
   'content/cultivation-stories-v7.js',
@@ -96,6 +101,30 @@ const OLD_COPIES = [
   'content/cultivation-stories-v9.js',
   'content/cultivation-stories-v10.js',
   'content/cultivation-stories-v11.js',
+  'packages/adventure/cultivation-v5.js',
+  'packages/adventure/cultivation-v6.js',
+  'packages/adventure/cultivation-v7.js',
+  'packages/adventure/cultivation-v8.js',
+  'packages/adventure/cultivation-v9.js',
+  'packages/adventure/cultivation-v10.js',
+  'packages/adventure/cultivation-v11.js',
+  'packages/adventure/revision9-v9.js',
+  'packages/adventure/story-network-v9.js',
+  'content/cultivation-revision-v6.js',
+  'content/cultivation-revision-v7.js',
+  'content/cultivation-revision-v8.js',
+  'content/cultivation-revision-v9.js',
+  'content/cultivation-revision-v10.js',
+  'content/cultivation-revision-v11.js',
+  'content/cultivation-daily-v6.js',
+  'content/cultivation-daily-v7.js',
+  'content/mundane-stories-v11.js',
+  'content/progression-stories-v11.js',
+  'content/revision9-stories-v11.js',
+  'content/story-network-v9.js',
+  'content/story-network-v10.js',
+  'content/story-network-v11.js',
+  'content/story-rules10-v11.js',
 ];
 
 /**
@@ -119,28 +148,47 @@ export function checkNoCopies() {
    *   文件头的说明文字里写着「归一前有 cultivation-stories-v5.js …」是有用的事实，
    *   把说明文字判红，后人就得把这段历史删掉才能过门禁 ⇒ 那是倒退。
    */
-  const scanDirs = ['content', 'packages', 'scripts', 'tests', 'apps'];
+  /*
+   * ⚠ 扫描要**递归** —— 旧执行器在 `packages/adventure/` 里面，
+   *   只扫一层目录的话 `packages/adventure/cultivation-v5.js` 这类 import 根本看不见。
+   */
+  const scanDirs = ['content', 'packages', 'scripts', 'tests', 'apps', 'miniprogram'];
   const specifier = /(?:from|import|require)\s*\(?\s*['"]([^'"]+)['"]/g;
   for (const dir of scanDirs) {
     const full = join(ROOT, dir);
     if (!existsSync(full)) continue;
-    for (const name of readdirSync(full, {withFileTypes: true})) {
-      if (!name.isFile() || !name.name.endsWith('.js')) continue;
-      const file = join(full, name.name);
+    for (const file of walk(full)) {
+      if (!file.endsWith('.js') && !file.endsWith('.mjs')) continue;
+      if (file.includes('/runtime/engine.js')) continue;   /* 生成物，不手改 */
       const text = readFileSync(file, 'utf8');
       for (const copy of OLD_COPIES) {
-        const base = copy.slice('content/'.length);
+        const base = copy.split('/').pop();
         specifier.lastIndex = 0;
         let hit = null;
         let m;
         while ((m = specifier.exec(text)) !== null) {
           if (m[1].endsWith(base)) { hit = m[1]; break; }
         }
-        if (hit) problems.push(`${dir}/${name.name} 还在 import 旧副本 ${hit}`);
+        if (hit) problems.push(`${file.slice(ROOT.length + 1)} 还在 import 旧副本 ${hit}`);
       }
     }
   }
   return problems;
+}
+
+/** 递归列出一个目录下的所有文件。 */
+function walk(dir) {
+  const out = [];
+  for (const name of readdirSync(dir, {withFileTypes: true})) {
+    const full = join(dir, name.name);
+    if (name.isDirectory()) {
+      if (name.name === 'node_modules' || name.name.startsWith('.')) continue;
+      out.push(...walk(full));
+    } else if (name.isFile()) {
+      out.push(full);
+    }
+  }
+  return out;
 }
 
 /* ── CLI ───────────────────────────────────────────────────────────── */
@@ -183,8 +231,8 @@ if (argv.includes('--check')) {
     process.exit(1);
   }
   const counts = VERSION_EXPORTS.map(n => n.replace('_CULTIVATION_EVENTS', '') + '=' + actual.versions[n].count).join(' · ');
-  console.log('✓ 九个历史版本的事件表逐值全等（' + counts + '）');
-  console.log('✓ 旧副本没有回来（表字面量只有一份）');
+  console.log('✓ 当前版本的事件表逐值全等（' + counts + '）');
+  console.log('✓ 旧副本与旧执行器没有回来（' + OLD_COPIES.length + ' 个文件盯着）');
   process.exit(0);
 }
 
@@ -193,5 +241,6 @@ mkdirSync(dirname(FIXTURE), { recursive: true });
 writeFileSync(FIXTURE, JSON.stringify(payload, null, 2) + '\n');
 console.log('✓ 已写入基线 ' + FIXTURE);
 console.log('  ' + VERSION_EXPORTS.map(n => n.replace('_CULTIVATION_EVENTS', '') + '=' + actual.versions[n].count).join(' · '));
+console.log('  旧执行器守卫：' + OLD_COPIES.length + ' 个文件');
 console.log('  ROAD_CHAINS=' + actual.roadChains.count);
 process.exit(0);

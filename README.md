@@ -12,7 +12,7 @@
 
 ```sh
 npm install          # 装依赖（acorn / terser / babel，仅构建与测试用）
-npm run dev          # 本地起开发者面板 → http://127.0.0.1:8866/apps/viz/
+npm run dev          # 本地起只读静态服务（看源码用；产品端是微信小程序）→ http://127.0.0.1:8866/
 npm run regression   # 全量回归（规则层 + 小程序端门禁）
 ```
 

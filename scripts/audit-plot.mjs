@@ -48,13 +48,13 @@
  *   node scripts/audit-plot.mjs --count=120    # 多跑几条人生（默认 120）
  */
 import { CULTIVATION_EVENTS, ROAD_CHAINS } from '../content/cultivation-stories.js';
-import { echoKind } from '../packages/adventure/story-rules10.js';
+import { echoKind } from '../packages/adventure/story-shared.js';
 import { playCultivation } from './play-cultivation.mjs';
 
 /**
  * 会反复出现的人名。
  *
- * ⚠ 与 `packages/adventure/story-rules10.js` 的 `EXTRA_ROLES`、
+ * ⚠ 与 `packages/adventure/story-shared.js` 的 `EXTRA_ROLES`、
  *   `content/cultivation-world.js` 的 `OFFICERS` 对应。
  *   改人物表就同步这里 —— 门禁会检查「表里有没有已经不存在的人」，
  *   免得这张表慢慢腐烂成一份没人看的名单。
@@ -169,15 +169,12 @@ export function checkMarks(kindOf = echoKind) {
         '」这条线（现在接到 ' + String(got) + '）');
     }
   }
-  /* 旧版本不许变：它们按自己那一版继续跑。 */
-  for (const version of [10, 11]) {
-    if (kindOf(marksState(version, { sold_page: true })) !== null) {
-      problems.push('规则' + version + ' 不该认 sold_page（旧版本必须逐值不变）');
-    }
-    if (kindOf(marksState(version, { old_page: true, teacher_notes: true })) !== 'relic') {
-      problems.push('规则' + version + ' 的旧联系人顺序被改了（旧版本应当旧物在前）');
-    }
-  }
+  /*
+   * ⚠ 2026-11-08（清旧档）：这里原来还断言「规则 10/11 不认 sold_page、旧物在前」。
+   *   那两个版本**已经不存在了**（执行器与事件表全删），断言留着就只是报错。
+   *   ⇒ 规则十二的行为一个字没变：清旧档前 `echoKind` 里
+   *   `rulesVersion===12` 走的本来就是同一支（认 sold_page、授业者在前）。
+   */
   if (kindOf(marksState(12, { old_page: true, teacher_notes: true })) !== 'teacher') {
     problems.push('规则十二的旧联系人顺序不是「授业者在前」');
   }

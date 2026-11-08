@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {createRun,advanceToChoice,choose,options,validateRun,nodeText,currentNode} from '../packages/adventure/engine.js';
 import {decide} from './play-cultivation.mjs';
 import {mundane} from '../packages/adventure/mundane-life.js';
-import {canCultivate} from '../packages/adventure/story-rules10.js';
+import {canCultivate} from '../packages/adventure/story-shared.js';
 export function mortalChoice(s,mode='steady'){
  const event=s.pending.event,available=options(s).filter(o=>o.enabled);let preferred=[];
  if(event==='m11_start')preferred=[mode==='yard'?'yard':mode==='farm'?'farm':'shop'];
@@ -21,7 +21,7 @@ export function mortalChoice(s,mode='steady'){
  return available.find(o=>o.id===preferred.find(p=>available.some(a=>a.id===p)))||decide(s).id&&available.find(o=>o.id===decide(s).id);
 }
 export function playMortal(seed,mode='steady'){
- const s=createRun({seed,rulesVersion:11}),events=[],cards=[];
+ const s=createRun({seed,rulesVersion:12}),events=[],cards=[];
  for(let i=0;i<220&&s.phase==='life';i++){
   advanceToChoice(s);validateRun(s);if(!s.pending)break;
   const event=s.pending.event,o=mortalChoice(s,mode);assert.ok(o,event);
@@ -31,7 +31,7 @@ export function playMortal(seed,mode='steady'){
  return {s,events,cards};
 }
 if(process.argv[1]?.replaceAll('\\','/').endsWith('/audit-mundane-life.mjs')){
- const count=Number(process.argv.find(a=>a.startsWith('--count='))?.split('=')[1]||400),report={rulesVersion:11,scope:'Natural seeded full lives with varied automated choices; not human enjoyment or retention',count,lives:0,mortalLives:0,reached:{},samples:[],maxUnexplainedGap:0,errors:[]};
+ const count=Number(process.argv.find(a=>a.startsWith('--count='))?.split('=')[1]||400),report={rulesVersion:12,scope:'Natural seeded full lives with varied automated choices; not human enjoyment or retention',count,lives:0,mortalLives:0,reached:{},samples:[],maxUnexplainedGap:0,errors:[]};
  for(let i=0;i<count;i++){
   try{const seed='凡人世事-'+i,mode=['steady','yard','farm','single','burial','report','sell','disaster','wander'][i%9],{s,events,cards}=playMortal(seed,mode);report.lives++;
    if(mundane(s).started){report.mortalLives++;for(const id of events.filter(id=>id.startsWith('m11_')))report.reached[id]=(report.reached[id]||0)+1;

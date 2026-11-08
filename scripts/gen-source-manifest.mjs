@@ -92,6 +92,7 @@ const headOf = (dir) => execFileSync('git', ['-C', dir, 'rev-parse', 'HEAD'], {e
  *   而人不知道该改哪儿），也看不出「这处改动是谁登记的」。
  */
 const CHANGED_REASON = {
+  'docs/xianxia-device-checklist.md': '2026-11-08 清旧档：第 42 条「旧存档还在」改成「旧存档被清掉」——旧版一律拒收且清干净（清不掉就存不进新档），清单同步改了验法',
   'miniprogram/subpkg/xianxia/bridge/session.js': '首页「继续人生」改为接最近动过的那一段人生（原来接最老那段），并支持 ?resume=<编号> 点名',
   'miniprogram/subpkg/xianxia/pages/life/life.js': '失败兜底不再跳 1in8b 的 /subpkg/engine/pages/index/index，改跳新产品首页；续档参数与上面一致；2026-11-08 T4 雷达换轴：雷达的轴列表与小程序端画布同步',
   'miniprogram/subpkg/xianxia/pages/past/past.js': '失败兜底不再跳 1in8b 的 /subpkg/engine/pages/index/index，改跳新产品首页',
@@ -100,13 +101,13 @@ const CHANGED_REASON = {
   'miniprogram/subpkg/xianxia/runtime/engine.js': '生成物：由本仓库源码重新构建（除文件头注释外与迁移进来的那份逐字节一致，见 reference/migrated-runtime/）',
   'miniprogram/subpkg/xianxia/runtime/pixel-style.js': '生成物：由本仓库源码重新构建（与迁移进来的那份逐字节一致）',
   'scripts/build-xianxia-mp.mjs': '构建来源改为本仓库自己的源码（vendor 快照降级为历史证据），新增 app.wxss 生成；2026-11-07 补充说明「上游 xianxia-life 已删除」；S8 表达域与呈现域：新增 mapView / lifespanPlan12 / 寿元句式的导出；S9 内容模块拆分：小程序端要的那几张表改从各自域文件取（content/realms.js、content/regions.js、content/items.js、content/ends.js），不再从什么都有的门面取；2026-11-08 T4 雷达换轴：导出表加 constitution12（雷达要读体魄）',
-  'docs/miniprogram-xianxia-integration.md': '2026-11-07：给 --refresh=../xianxia-life 这条已失效的旧命令加提示（该仓库已删除，build 脚本现在只读本仓库源码）；正文其余部分保持原样',
+  'docs/miniprogram-xianxia-integration.md': '2026-11-07：给 --refresh=../xianxia-life 这条已失效的旧命令加提示（该仓库已删除，build 脚本现在只读本仓库源码）；2026-11-08 清旧档：§15.5「存档：新旧两版并存」改成「旧版一律拒收且清干净」，§15.7 的门禁清单同步改写',
   'docs/xianxia-mini-program-integration.md': '2026-11-07：给 --source=../xianxia-life 这条已失效的旧命令加提示（该仓库已删除，build 脚本现在只读本仓库源码）；正文其余部分保持原样',
   'scripts/test-xianxia-art.mjs': '对照基准改为本仓库 reference/ 与 apps/preview/，不再依赖 1in8b 的 frozen-baseline',
   'scripts/test-xianxia-build.mjs': '新增「与迁移进来的产物逐字节一致」断言；不再依赖 1in8b 的 frozen-baseline',
   'scripts/test-xianxia-equivalence.mjs': '对照源改为本仓库 packages/ + content/（源码 vs 产物逐值全等）',
-  'scripts/test-xianxia-mp.mjs': '新增首页仿真断言；路径层级按独立启动层调整；2026-11-08 T4 雷达换轴：五轴断言改新轴（并断言体力不在雷达里）',
-  'scripts/test-xianxia-storage.mjs': '不再依赖 1in8b 的 frozen-baseline，改用本仓库自己的哈希校验',
+  'scripts/test-xianxia-mp.mjs': '新增首页仿真断言；路径层级按独立启动层调整；2026-11-08 T4 雷达换轴：五轴断言改新轴（并断言体力不在雷达里）；2026-11-08 清旧档：旧档断言从「第 8 版照旧读得出来」改成「旧档拒收且被清掉、新人生存得进去」',
+  'scripts/test-xianxia-storage.mjs': '不再依赖 1in8b 的 frozen-baseline，改用本仓库自己的哈希校验；2026-11-08 清旧档：新增第 ⑪ 节（旧版本存档一律拒收且清干净，含三条反向验证）',
   'scripts/test-xianxia-style.mjs': '官方对照源改读 reference/official/（本仓库内的锁定副本）+ 新的 app.wxss',
   'miniprogram/subpkg/xianxia/bridge/page-model.js': 'S5 角色域：登记卡的「预期寿元」改读规则层算好的实际寿元；S8 呈现域：顶栏加「还能活多久」，登记卡加「下一境死线」（整句在 JS 侧拼好，WXML 不支持字符串拼接）',
   'miniprogram/subpkg/xianxia/bridge/view-model.js': 'S5 角色域：修行本事面板加「体魄」（只增不减的能力），体质行补「力竭」提示；2026-11-08 T4 雷达换轴：五轴改成「悟性/胆识/仁心/心境/体魄」（体力是资源，退回状态条）',
@@ -116,6 +117,7 @@ const CHANGED_REASON = {
   'content/cultivation-stories.js': 'S7 表达域：事件条目统一带上 voice 字段（表达成熟度：inline=已定稿 / pending=未定稿），在装配链末尾补一次，保证每个条目都有',
   'content/readable-stories.js': 'S7 表达域：内容按故事线拆到 content/expressions/ 下，本文件改成门面转发（旧路径还有人在用）',
   'packages/adventure/engine.js': 'S7 表达域：makeReadable 改读新的表达域入口 content/expressions/index.js；2026-11-08 剧情线试点：unmet() 增加反向条件 requires.flagsAbsent（旗标写下了 ⇒ 这个选项对你关着，并说清为什么）—— 规则层本来只有正向的 flags（旗标必须在），而「上一条线留了烂摊子 ⇒ 下一条路暂时不给你走」是反向的；改 choice.available 会被 progressionChoice（remit 那几项）整个覆盖掉 ⇒ 联动静默失效，所以写在 requires 里（那一处只有 m11_* 与突破卡会改）',
+  'scripts/lib/xianxia-bundle.mjs': '2026-11-08 清旧档：修正文件注释里一处乱码（源���码 → 源代码），不影响构建行为',
   'miniprogram/subpkg/xianxia/art/atlas.js': 'S8 呈现域：点阵地图从「一次画四块大陆」改成「只画当前所在 + 走过的大洲」并居中；「该显示哪几块」改由规则层给（engine.mapView）',
 };
 
@@ -209,6 +211,12 @@ const ADDED = [
   /* 2026-11-08：阶段 3「背景故事线表」—— 12 条背景（8 入宗门 + 4 与修仙无缘），
      内容层的叶子文件（不 import 任何东西 ⇒ 永远不在环里）。 */
   'content/background-stories.js',
+  /* 2026-11-08：阶段 1「出身改造」—— 出身门禁 + 它的交付说明。
+   * ⚠ 这两个文件上一轮**忘了提交**（在工作区里但不在 git 里）——
+   *   而门禁 `originbg` 与 `scripts/t10-reverse.mjs` 的反向验证都依赖
+   *   `scripts/audit-origin-match.mjs` ⇒ 新克隆的仓库会直接跑不起来。 */
+  'scripts/audit-origin-match.mjs',
+  'docs/refactor-origin-2026-11-08.md',
   /* 2026-11-08：阶段 3.3「凡人线精简到五张」—— 清单住一份（叶子文件）：
      规则层据此只发那五张，审计脚本据此把「有意停用」的 45 张从「发霉」里剔出去。 */
   'content/mundane-kept.js',
@@ -232,31 +240,13 @@ const ADDED = [
   /* 2026-11-08：待决策页（给人看的：已定的三件事 + 旧档是什么 + 21 项待决策）。
    * 同名副本放在桌面，纯文档，不进小程序包、不进 dist。 */
   'docs/refactor-decision-2026-11-08.html',
-  /* 2026-11-08：开发者面板（`apps/viz/`）—— 观测台，不进小程序包也不进 dist。
-   * `decide-policy.js` 是从 `play-cultivation.mjs` 里搬出来的同一份策略，
-   * 搬出来是为了让浏览器也能 import 它（面板的「固定偏好」与各审计脚本同源）。 */
+  /* 2026-11-08：`decide-policy.js` 是从 `play-cultivation.mjs` 里搬出来的同一份策略，
+   * 各审计脚本（metrics / completeness / narration / reach）共用它。
+   * ⚠ 开发者面板删了之后，这个文件**不许跟着删**（四道审计门禁都靠它）。 */
   'scripts/lib/decide-policy.js',
-  'scripts/verify-viz-panel.mjs',
-  'apps/viz/index.html',
-  'apps/viz/viz.js',
-  'apps/viz/viz.css',
-  'apps/viz/model.js',
-  'apps/viz/axis.js',
-  'apps/viz/curve.js',
-  'apps/viz/decision.js',
-  'apps/viz/snapshot.js',
-  'apps/viz/tabs.js',
-  'apps/viz/items.js',
-  'apps/viz/map.js',
-  'apps/viz/world.js',
-  'apps/viz/people.js',
-  'apps/viz/journal.js',
-  'apps/viz/batch.js',
-  'apps/viz/coverage.js',
-  'apps/viz/progress.js',
-  'apps/viz/findings.js',
-  'apps/viz/md.js',
-  'apps/viz/history.js',
+  /* 2026-11-08：`rng.js` —— 确定性随机数（原先在面板的 batch.js 里）。
+   * `audit-reach.mjs` 的「随机探索」策略用它。 */
+  'scripts/lib/rng.js',
 ];
 
 

@@ -41,6 +41,15 @@
  * 读回来时选**revision 大且全部分片都在、哈希都对**的那个槽；
  * 另一个槽坏了也不影响 —— 这就是「双槽」的意义。
  *
+ * 旧档清理（2026-11-08 · 清旧档）
+ * ---------------------------
+ * 仓库现在只有规则十二 ⇒ 旧版本的存档**读不出来**（清单与人生都拒收）。
+ * ⚠ 但「读不出来」**不等于「清干净」**：清单的字节还躺在盘上 ⇒
+ *   `save()` 会因为「清单读不出来但确实存在字节」而停止写入
+ *   ⇒ **玩家新人生存不进档**（白玩一场）。
+ * ⇒ 所以建档时（`createStorage`）把**认得出的旧版本**清单连同它的分片清掉；
+ *   解析不出版本号的（真损坏）**一个字不动** —— 那是「存档坏了」，该报错。
+ *
  * 命名空间
  * --------
  *   xianxia.v1.manifest.a / xianxia.v1.manifest.b   两个交替的 manifest 槽
@@ -116,14 +125,16 @@ function createStorage(opts) {
   /* 新人生用当前规则版本（12）。 */
   var rulesVersion = opts.rulesVersion || 12;
   /**
-   * **能读的旧版本**。
-   * ⚠ 规则升版不等于旧人生作废：引擎里每一版的执行器都保留着，
-   *   旧存档读回来后**继续按它自己那一版跑**（实测：第 8 版的存档
-   *   在第 12 版引擎里校验通过、还能继续推进）。
-   *   ⇒ 清单里的 rulesVersion 只是「这份清单是用哪一版写的」，
-   *   读的时候两个都认；每段人生真正的版本在它自己的状态里。
+   * **能读的版本**。
+   * ⚠ 旧档**一律拒收**（2026-11-08 · 清旧档）：
+   *   引擎里只剩当前版本的执行器，旧人生读回来也跑不动
+   *   （用错执行器跑出一段说不清的人生，比不读更糟）。
+   *   ⇒ 清单与人生都只认当前版本；读不到就当「没有旧档」，
+   *     玩家看到的是新人生，不是白屏。
+   * ⚠ 拒收之后还要**清掉**（`purgeOldArchives`）：清单的字节留在盘上，
+   *   `save()` 会因「清单读不出来但字节还在」而停止写入 ⇒ 新人生存不进去。
    */
-  var supportedVersions = opts.supportedVersions || [8, 12];
+  var supportedVersions = opts.supportedVersions || [12];
 
   var manifestKey = function (slot) { return namespace + 'manifest.' + slot; };
   var shardKey = function (id, generation, part) {
@@ -161,8 +172,7 @@ function createStorage(opts) {
     if (!raw) return null;
     try {
       var doc = JSON.parse(raw);
-      /* ⚠ 旧清单（rulesVersion 8）**照样要能读** ⇒ 只检查「是不是我们认得的版本」，
-       *   不检查「是不是当前版本」。 */
+      /* ⚠ 只认当前版本；旧清单当作没有（玩家看到的是新人生，不是报错）。 */
       if (!doc || supportedVersions.indexOf(doc.rulesVersion) < 0 || !Array.isArray(doc.lives)) return null;
       return doc;
     } catch (error) {
@@ -193,6 +203,79 @@ function createStorage(opts) {
       }
     }
     return true;
+  }
+
+  /**
+   * 清掉**旧版本**的存档（2026-11-08 · 清旧档）。
+   * ---------------------------------------------------------------
+   * 仓库现在只有规则十二 ⇒ 旧版本的存档**读不出来**（`readManifest` 返回 null）。
+   *
+   * ⚠ 光「读不出来」**不够**：
+   *   清单的字节还在盘上 ⇒ `save()` 会因为「清单读不出来但确实存在字节」
+   *   而抛 corrupt（停止写入）⇒ **玩家新人生存不进档**（白玩一场）。
+   * ⇒ 所以这里把**认得出来的旧版本存档**整个清掉（用户要求：旧档完全清理）。
+   *
+   * 三条硬规矩
+   * -----------
+   * ① **只删认得出的旧版本**：清单解析不出 `rulesVersion`（坏掉的）⇒
+   *    **一个字都不动** —— 那是「存档坏了」，该报错而不是该删
+   *    （见 `save()` 的 corrupt 分支；门禁 ⑦ 守着这条）。
+   * ② **只碰自己的键**（`xianxia.v1.*`）：官方键一个都不动。
+   * ③ **当前版本引用的分片受保护**：旧清单与新清单可能写着**同一个人生编号**
+   *    （分片键是 `life.<id>.<代>.<片>`）⇒ 旧清单要删的分片如果新清单还在用，
+   *    就不许删。
+   *
+   * @returns {{manifests:number, shards:number}} 清掉了几个清单 / 几个分片
+   */
+  function purgeOldArchives() {
+    var protectedShards = {};
+    var oldSlots = [];
+    var oldDocs = [];
+    var i, j, k, m, n;
+
+    for (i = 0; i < MANIFEST_SLOTS.length; i++) {
+      var slot = MANIFEST_SLOTS[i];
+      var raw = storage.get(manifestKey(slot));
+      if (raw === null) continue;
+      var doc = null;
+      try { doc = JSON.parse(raw); } catch (error) { doc = null; }
+      /* 规矩 ①：解析不出版本号 ⇒ 不是旧版本，是坏了 ⇒ 不动。 */
+      if (!doc || typeof doc.rulesVersion !== 'number') continue;
+      if (supportedVersions.indexOf(doc.rulesVersion) >= 0) {
+        /* 当前版本：它引用的分片受保护。 */
+        var lives = Array.isArray(doc.lives) ? doc.lives : [];
+        for (j = 0; j < lives.length; j++) {
+          var shards = lives[j].shards || [];
+          for (k = 0; k < shards.length; k++) {
+            if (shards[k] && shards[k].key) protectedShards[shards[k].key] = true;
+          }
+        }
+        continue;
+      }
+      oldSlots.push(manifestKey(slot));
+      oldDocs.push(doc);
+    }
+    if (!oldSlots.length) return {manifests: 0, shards: 0};
+
+    var removedShards = 0;
+    for (m = 0; m < oldDocs.length; m++) {
+      var oldLives = Array.isArray(oldDocs[m].lives) ? oldDocs[m].lives : [];
+      for (n = 0; n < oldLives.length; n++) {
+        var oldShards = oldLives[n].shards || [];
+        for (k = 0; k < oldShards.length; k++) {
+          var key = oldShards[k] && oldShards[k].key;
+          if (!key || protectedShards[key]) continue;   /* 规矩 ③ */
+          if (key.indexOf(namespace) !== 0) continue;    /* 规矩 ② */
+          storage.remove(key);
+          removedShards++;
+        }
+      }
+    }
+    /* 分片删完再删清单 ⇒ 中途失败也还能靠清单把旧档找回来。 */
+    for (m = 0; m < oldSlots.length; m++) {
+      storage.remove(oldSlots[m]);
+    }
+    return {manifests: oldSlots.length, shards: removedShards};
   }
 
   /* ───────────────────────────────── 分片 ── */
@@ -240,7 +323,7 @@ function createStorage(opts) {
     }
     try {
       var state = JSON.parse(text);
-      /* 每段人生**自己那一版**才算数：认不出来的版本直接不读，
+      /* 认不出来的版本直接不读（旧档一律拒收），
        *   免得用错执行器跑出一段说不清的人生。 */
       var own = state && state.life && state.life.cultivation
         ? state.life.cultivation.rulesVersion : null;
@@ -284,6 +367,19 @@ function createStorage(opts) {
   function save(run, validate) {
     return enqueue(function () {
       if (typeof validate === 'function') validate(run);
+      /*
+       * 写之前再清一次**旧版本**的存档（2026-11-08 · 清旧档）。
+       * ⚠ 建档时清过一次（`createStorage`），为什么还要清第二次？
+       *   因为「清单的字节还在」会让下面那句「停止写入」成立
+       *   ⇒ 玩家新人生存不进去。
+       *   清一次不够的场合：建档之后旧档才落到盘上（换设备恢复、导入旧档），
+       *   那时只有写之前这一道能兜住。
+       */
+      try {
+        purgeOldArchives();
+      } catch (error) {
+        /* 清不动就当旧档还在：下面的 corrupt 分支会如实报错。 */
+      }
       var text = JSON.stringify(run);
       /* 清单读不出来（但确实存在字节）⇒ **停止写入**：
          否则会把「清单坏了」变成「人生索引丢了」，而旧分片还躺在盘上没人认领。 */
@@ -415,6 +511,19 @@ function createStorage(opts) {
     });
   }
 
+  /*
+   * 一建档就把**旧版本**的存档清掉（2026-11-08 · 清旧档）。
+   * ⚠ 放在建档时而不是「保存时」：首页列清单、人生页读档，走的都是这一层
+   *   ⇒ 清一次，全链路都干净（玩家看到的是「没有旧档」，不是报错）。
+   * ⚠ 清失败不许挡住启动：存储读不出来是「本机存储的问题」，
+   *   那是玩家自己能重试的事，不该让整个页面起不来。
+   */
+  try {
+    purgeOldArchives();
+  } catch (error) {
+    /* 读不出来就当作「旧档还在」：后面的读档会自己判定拒收。 */
+  }
+
   return {
     namespace: namespace,
     save: save,
@@ -423,6 +532,7 @@ function createStorage(opts) {
     activeId: activeId,
     removeLife: removeLife,
     pickManifest: pickManifest,
+    purgeOldArchives: purgeOldArchives,
     manifestKey: manifestKey,
     shardKey: shardKey,
   };

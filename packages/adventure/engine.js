@@ -1,5 +1,4 @@
 import {lifespan12,choice12,constitution12} from './story-rules12.js';
-import {initializeCultivation as initializeRules11} from './cultivation-v11.js';
 import {MUNDANE_ENDINGS} from '../../content/mundane-stories.js';
 import { createStreams, random, hashText } from '../core/random.js';
 import { NODES as ORIGINAL_NODES, ACTS, REALMS, REGIONS, CAST as ORIGINAL_CAST, ITEMS, ADVENTURE_VERSION, CONTENT_REVISION, ENDINGS as ORIGINAL_ENDINGS, SKILLS, LEGACY_VERSION, LEGACY_CONTENT_REVISION, PREVIOUS_VERSION, PREVIOUS_CONTENT_REVISION } from '../../content/adventure.js';
@@ -15,11 +14,9 @@ import { makeReadableEvents } from '../../content/expressions/events/index.js';
 import { EXPEDITION_CHANGES, CLUE_EVENTS } from '../../content/expedition-changes.js';
 import { FAMILY_EVENTS, familyState, familyAvailable } from './family.js';
 import { breakthroughRecord } from './realm.js';
-import {active10,canCultivate,hasMana,encounterPeople,introduceText} from './story-rules10.js';
-import {initializeCultivation as initializeRules10} from './cultivation-v10.js';
+import {activeCultivation,canCultivate,hasMana,encounterPeople,introduceText} from './story-shared.js';
 import {mundaneRequirements} from './mundane-life.js';
-import {initializeCultivation as initializeRules9} from './cultivation-v9.js';
-import { CULTIVATION_EVENTS,RULES11_CULTIVATION_EVENTS,RULES10_CULTIVATION_EVENTS,RULES9_CULTIVATION_EVENTS,RULES8_CULTIVATION_EVENTS,LEGACY_CULTIVATION_EVENTS,RULES5_CULTIVATION_EVENTS,RULES6_CULTIVATION_EVENTS,RULES7_CULTIVATION_EVENTS } from '../../content/cultivation-stories.js';
+import { CULTIVATION_EVENTS } from '../../content/cultivation-stories.js';
 import { ROOTS,SYSTEM_ENDINGS } from '../../content/cultivation-world.js';
 import { annualCultivationSettlement,initializeCultivation,validateCultivation,finishTravel,beginTravel,changeActivity,withdrawCultivation,cultivationText,cultivationActionTrip,cultivationDeliveryMonths } from './cultivation.js';
 import { PREVIEW3_VERSION,PREVIEW3_CONTENT_REVISION } from '../../content/adventure.js';
@@ -74,15 +71,14 @@ export function duration(months) {
   return (years ? years + '年' : '') + (rest ? rest + '个月' : '');
 }
 function eventNode(state,id){
- if(state.life?.cultivation&&String(id).startsWith('m11_')&&state.life.cultivation.rulesVersion<11)return undefined;
- const c=state.life?.cultivation,table=c&&(c.rulesVersion===12?READABLE_EVENTS:c.rulesVersion===11?RULES11_CULTIVATION_EVENTS:c.rulesVersion===10?RULES10_CULTIVATION_EVENTS:c.rulesVersion===9?RULES9_CULTIVATION_EVENTS:c.rulesVersion===8?RULES8_CULTIVATION_EVENTS:c.rulesVersion===7?RULES7_CULTIVATION_EVENTS:c.rulesVersion===6?RULES6_CULTIVATION_EVENTS:c.rulesVersion===5?RULES5_CULTIVATION_EVENTS:LEGACY_CULTIVATION_EVENTS);
+ const table=state.life?.cultivation?READABLE_EVENTS:undefined;
  return table&&Object.hasOwn(table,id)?table[id]:Object.hasOwn(NODES,id)?NODES[id]:undefined;
 }
 export function currentNode(state) { return state.pending ? eventNode(state,state.pending.event) : null; }
 export function nodeText(node, state) { const text=value(node.text,state);return contextualText(state.life?.cultivation?cultivationText(text,state,node.id):text,state); }
 
 function log(state, entry) {
-  if(state.life?.cultivation?.rulesVersion>=8){entry={...entry,title:prose(entry.title,state),body:prose(entry.body,state)};}
+  if(state.life?.cultivation){entry={...entry,title:prose(entry.title,state),body:prose(entry.body,state)};}
   /*
    * ⚠⚠ **冷却闸（旁白）**（2026-11-07 · T2）：同一句旁白，60 个月内不说第二遍。
    *
@@ -96,8 +92,8 @@ function log(state, entry) {
    * ⚠ **只压自动旁白**：玩家的抉择记录（`kind:'choice'`）是**他自己的历史**，
    *   选过两次同一个选项就该记两次 —— 那不是「重复」，那是「他就是这么选的」。
    */
-  if(state.life?.cultivation?.rulesVersion===12&&entry.automatic&&!titleAllows(state,entry.title))return;
-  if(active10(state)){entry={...entry,body:introduceText(entry.body,state)};encounterPeople(state,entry.body,entry.event||'experience');}
+  if(state.life?.cultivation&&entry.automatic&&!titleAllows(state,entry.title))return;
+  if(state.life?.cultivation){entry={...entry,body:introduceText(entry.body,state)};encounterPeople(state,entry.body,entry.event||'experience');}
   state.journal.push({ id: state.journal.length + 1, month: state.month, act: state.act, ...entry });
 }
 
@@ -123,10 +119,10 @@ export function createRun({ seed = '松风有信', id = 'life-' + hashText(seed)
   const bonus = ['insight', 'courage', 'empathy'][Math.floor(random(state, 'birth') * 3)];
   state.player[bonus] += 6;
   initializeLife(state);
-  if(!classic){if(![9,10,11,12].includes(rulesVersion))throw Error('不支持创建此规则的人生');(rulesVersion===9?initializeRules9:rulesVersion===10?initializeRules10:rulesVersion===11?initializeRules11:initializeCultivation)(state);}
+  if(!classic){if(rulesVersion!==12)throw Error('不支持创建此规则的人生');initializeCultivation(state);}
   log(state, { kind: 'birth', title: name + '出生了', body: '山历' + state.birth.year + '年，你出生在' + BIRTHPLACES[state.birth.continent].name + '的' + state.birth.address + '，来自' + FAMILIES[state.birth.family].name + '。'+(classic?'这一世处在'+WORLD_ERAS[state.birth.era].name+'。':({ordinary:'家人安排生计，邻里偶尔传来宗门的消息。',demonic:'战乱中，一名幽灯堂修士把你带离故乡，留下了今后需要面对的师承。',beast:'出生时的异象改变了你的身体，家人把你藏在山林，请老猿照看。',loose:'战乱中一名游方药师救下你，教你认字与辨药。'})[state.birth.upbringing]), automatic: true, context: 'childhood', location: 'home' });
   state.life.automaticCount = 1;
-  if(state.life?.cultivation?.rulesVersion>=9&&state.birth.family==='clan')log(state,{kind:'birth',title:'长辈为你留下的灵石',body:'族中长辈为你封存四枚灵石，归在你的名下；族库和其他家产仍由家人保管。',automatic:true,context:'childhood',location:'home'});
+  if(state.life?.cultivation&&state.birth.family==='clan')log(state,{kind:'birth',title:'长辈为你留下的灵石',body:'族中长辈为你封存四枚灵石，归在你的名下；族库和其他家产仍由家人保管。',automatic:true,context:'childhood',location:'home'});
   openJourney(state);
   refreshLifespan(state);
   return validateRun(state);
@@ -151,13 +147,6 @@ export function createRun({ seed = '松风有信', id = 'life-' + hashText(seed)
  */
 export function refreshLifespan(state, onlyIfMissing = false) {
   if (!state.life || !state.life.cultivation) return;
-  /*
-   * ⚠ **只给当前版本（规则十二）写这个字段**。
-   *   旧版本（5–11）的存档结构必须一个字节都不变 ——
-   *   多写一个键就会让旧档的序列化对不上（实测：旧11基线直接报红）。
-   *   旧版本呈现层读不到它时，回落到境界表的基础寿元（那边本来就是那个数）。
-   */
-  if (state.life.cultivation.rulesVersion !== 12) return;
   /*
    * ⚠ 加载旧存档时**只补不覆盖**：存档读出来再存回去必须一模一样
    *   （`upgradeRun` 的契约：加载不改写、不重放旧年月）。
@@ -267,8 +256,7 @@ export function chance(state, check) {
    *
    * 「体魄」是**永久能力**（只增不减）：给的是稳定加成，不随体力起伏。
    */
-  const currentRules = state.life && state.life.cultivation && state.life.cultivation.rulesVersion === 12;
-  if (state.player.health < 40) score -= currentRules ? Math.round((40 - state.player.health) / 4) : 10;
+  if (state.player.health < 40) score -= Math.round((40 - state.player.health) / 4);
   score += constitution12(state) * 0.12;
   if (state.birth && !state.birth.legacy) score += WORLD_ERAS[state.birth.era].check;
   return bound(Math.round(score), 5, 95);
@@ -277,7 +265,7 @@ export function chance(state, check) {
 export function options(state) {
   const node = currentNode(state);
   if (!node) return [];
-  return node.choices.filter(o=>state.life?.cultivation?.rulesVersion!==12||!o.visible||o.visible(state)).map(rawChoice => {
+  return node.choices.filter(o=>!o.visible||o.visible(state)).map(rawChoice => {
     const choice=choice12(state,progressionChoice(state,rawChoice,node.id),node.id);
     const cost = cloneRun(value(choice.cost, state) || {});
     if (node.id === 'gate' && state.birth && !state.birth.legacy) {
@@ -305,11 +293,11 @@ export function options(state) {
 
 function applyEffects(state, input) {
   const effect = value(input, state) || {}, changes = [];
-  if(active10(state)&&effect.realm>0&&!canCultivate(state))throw Error('没有引气资格，不能结算常规境界突破');
+  if(state.life?.cultivation&&effect.realm>0&&!canCultivate(state))throw Error('没有引气资格，不能结算常规境界突破');
   for (const [stat, delta] of Object.entries(effect.stats || {})) {
     const before = state.player[stat];
     state.player[stat] = stat === 'stones' ? bound(before + delta, 0, 100000) : bound(before + delta, 0, 100);
-    if(stat==='stones'&&state.life?.cultivation?.rulesVersion>=6){const actual=state.player[stat]-before;state.life.cultivation.economy[actual>=0?'received':'spent']+=Math.abs(actual);}
+    if(stat==='stones'&&state.life?.cultivation){const actual=state.player[stat]-before;state.life.cultivation.economy[actual>=0?'received':'spent']+=Math.abs(actual);}
     const actual = Math.round((state.player[stat] - before) * 10) / 10;
     if (actual) changes.push(statLabels[stat] + (actual > 0 ? '+' : '') + actual);
   }
@@ -328,7 +316,7 @@ function applyEffects(state, input) {
     state.inventory = state.inventory.filter(existing => existing !== item);
   }
   if (effect.realm !== undefined && effect.realm > state.player.realm) {
-    const from=state.player.realm,actual=state.life?.cultivation?.rulesVersion===12,oldLimit=actual?lifespan12(state):null; state.player.realm=effect.realm; changes.push('踏入'+REALMS[effect.realm].name);
+    const from=state.player.realm,actual=!!state.life?.cultivation,oldLimit=actual?lifespan12(state):null; state.player.realm=effect.realm; changes.push('踏入'+REALMS[effect.realm].name);
     /* 换境界 ⇒ 寿元变了 ⇒ 登记卡上写的岁数也得跟着变。 */
     if(actual){state.life.cultivation.lifespanLimit=lifespan12(state);}
     if(state.life) { state.life.lastBreakthrough=state.month; log(state,breakthroughRecord(from,effect.realm,state.month,state.life.cultivation?.rulesVersion,actual?{from:oldLimit,to:lifespan12(state)}:null)); }
@@ -368,7 +356,7 @@ function applyEffects(state, input) {
 
 function arrive(state, event) {
   const node = eventNode(state,event);
-  if(node&&active10(state))encounterPeople(state,nodeText(node,state),event);
+  if(node&&state.life?.cultivation)encounterPeople(state,nodeText(node,state),event);
   if (!node) throw new Error('缺少故事：' + event);
   if (state.life?.queue?.event === event) state.life.queue = null;
   if (state.life && event.startsWith('visit_')) {
@@ -388,7 +376,7 @@ function end(state, id, body = '') {
   if (!ENDINGS[id]) throw new Error('未知终章：' + id);
   state.ending = { id, ...ENDINGS[id], month: state.month, final: body };
   state.phase = 'ended'; state.pending = null; state.journey = null; state.waiting = false;
-  if(state.life?.cultivation?.rulesVersion>=11&&state.life.cultivation.mundane){const m=state.life.cultivation.mundane;if(m.action)m.notes.push('unfinished:'+m.action.kind);m.action=null;m.arc=null;state.life.cultivation.context=null;}
+  if(state.life?.cultivation?.mundane){const m=state.life.cultivation.mundane;if(m.action)m.notes.push('unfinished:'+m.action.kind);m.action=null;m.arc=null;state.life.cultivation.context=null;}
   if (state.life?.arc) {
     state.life.expeditions.push({ ...cloneRun(state.life.arc), ended: state.month, status: 'died' });
     state.life.arc = null; state.life.suspended = null; state.life.queue = null;
@@ -414,7 +402,7 @@ export function choose(state, choiceId) {
   if(before.life?.cultivation)reply=cultivationText(reply,before,node.id,'reply');
   const chosenEffects = value(success ? selected.effects : selected.check.failure, before);
   state.pending = null;
-  if (cost.stones){state.player.stones -= cost.stones;if(state.life?.cultivation?.rulesVersion>=6)state.life.cultivation.economy.spent+=cost.stones;}
+  if (cost.stones){state.player.stones -= cost.stones;if(state.life?.cultivation)state.life.cultivation.economy.spent+=cost.stones;}
   if (cost.debt) state.flags.debt = (state.flags.debt || 0) + cost.debt;
   for (const item of cost.items || []) state.inventory = state.inventory.filter(existing => existing !== item);
   const changes = [];
@@ -571,7 +559,7 @@ export function validateRun(state) {
   if (!state.people || Object.keys(state.people).length !== Object.keys(castContract).length) fail('人物列表');
   for (const id of Object.keys(castContract)) {
     const person = state.people[id];
-    const revised=state.life?.cultivation?.rulesVersion>=8,expectedName=revised?state.life.cultivation.progression?.names?.[CAST[id].name]:CAST[id].name,expectedRealm=revised&&['master','sister','friend','trialmate'].includes(id)?Math.min(CAST[id].realm,state.life.cultivation.progression?.sect.npcHighest):CAST[id].realm;
+    const revised=!!state.life?.cultivation,expectedName=revised?state.life.cultivation.progression?.names?.[CAST[id].name]:CAST[id].name,expectedRealm=revised&&['master','sister','friend','trialmate'].includes(id)?Math.min(CAST[id].realm,state.life.cultivation.progression?.sect.npcHighest):CAST[id].realm;
     if (!person || person.id !== id || person.name !== expectedName || person.born !== CAST[id].born || person.realm !== expectedRealm || person.sex !== CAST[id].sex || person.role !== CAST[id].role || !['alive', 'captured', 'missing', 'dead'].includes(person.status) || person.alive !== (person.status !== 'dead') || !Object.hasOwn(REGIONS, person.location) || typeof person.known !== 'boolean' || !Number.isFinite(person.bond) || person.bond < 0 || person.bond > 100) fail('人物状态 ' + id);
     if (person.status === 'dead' && (!Number.isInteger(person.deathMonth) || person.deathMonth < 0 || person.deathMonth > state.month)) fail('死亡时间');
     if (person.status !== 'dead' && person.deathMonth !== null) fail('在世人物的死亡记录');

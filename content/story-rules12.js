@@ -1,6 +1,6 @@
 import {ROOTS} from './cultivation-world.js';
 import {REGIONAL_METHODS} from './rules12-world.js';
-import {canCultivate,route} from '../packages/adventure/story-rules10.js';
+import {canCultivate,route} from '../packages/adventure/story-shared.js';
 import {rules12,sectProfile,returnMonths12,stage12,homeReceiver12,department12,DEPARTMENTS} from '../packages/adventure/story-rules12.js';
 import {NETWORK_EVENTS} from './story-network.js';
 const c=s=>s.life.cultivation;
@@ -269,7 +269,7 @@ function installBranches(events){
  *    留下口诀（old_page）／换粮（sold_page）／请匠人拓印（relic_route）。
  *    原来只有「留下口诀」与「请匠人拓印」接得上「旧联系人」那条线（echo_relic），
  *    「交给家人换粮」那个换了两袋粮食就没了 ⇒ 选完等于没选。
- *    现在 sold_page 也算铜匣线（`packages/adventure/story-rules10.js` 的 echoKind），
+ *    现在 sold_page 也算铜匣线（`packages/adventure/story-shared.js` 的 echoKind），
  *    并且三张回响卡按「匣子已经转手」另写一版 ——
  *    这条线要找的不再是「残卷的真伪」，而是「那只匣子去了哪里」。
  *

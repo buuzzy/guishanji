@@ -1,5 +1,6 @@
 import {PATHS,ROOTS} from './cultivation-world.js';
 import {REGIONAL_METHODS} from './rules12-world.js';
+import {originBranch} from './background-stories.js';
 export const METHODS={
  ...REGIONAL_METHODS,
  clear:{name:'清息诀',root:['水','木'],detail:'宗门的完整入门心法，先疏通经脉，再稳住周天；进境不快，少有急火。',rate:1.06},
@@ -37,9 +38,9 @@ const child=(mark,effects={})=>({system:{childMark:mark},effects});
  *   一个字节都没动 ⇒ 历史基线逐值全等。
  */
 export const CHILD_WINDOWS=[
- {from:6,to:9,events:['child_school','child_apothecary','child_clan','child_keeper','child_friend','child_caravan','child_secret']},
+ {from:6,to:9,events:['child_school','child_apothecary','child_clan','child_noble_school','child_keeper','child_friend','child_caravan','child_secret']},
  {from:10,to:12,events:['child_relic']},
- {from:13,to:15,events:['child_recruit','child_teacher','child_family_vow']},
+ {from:13,to:15,events:['child_recruit','child_teacher','child_family_vow','child_noble_recommend']},
 ];
 export const NETWORK_EVENTS={
  network_clan_call:node('network_clan_call','族中拿着旧举荐信来找你','族中管事将你小时候接过的举荐信交给药商。信上的承诺是照看外出的族人，如今堂兄被困在同一大陆的旧矿口。矿主指称他偷了阵石，族中却只说他领货未归，没有拿出清白证据。你可以帮忙核查，不必替未知的行为认罪。',[
@@ -77,10 +78,36 @@ export const NETWORK_EVENTS={
   c('hide','带阿宁藏进熟悉的柴棚','先躲开追赶，粮铺的事暂时无人解释。','你们藏到天黑，阿宁带粮回家。追赶者没有听到解释，渡口仍有人传他偷粮。',child('friend_hide',{stats:{courage:3}})),
   c('leave','不作证，先回家','你没有参与偷粮，也不愿卷入争执。','你从另一条路回家。第二天柴堆旁不见阿宁，邻人说他带母亲离开了渡口，你不知道后来去了哪里。',child('friend_lost')),
  ]),
- child_relic:node('child_relic','旧屋梁上落下一只铜匣','修屋时，家人从梁上取出铜匣，里面是一页看不懂的口诀和半张渡口图。修器匠说图上有早年宗门的记号，来收旧货的人却愿意用粮食换走整个匣子。',[
+ child_relic:node('child_relic','旧屋梁上落下一只铜匣',
+  /*
+   * ⚠ **按出身分三套说法**（2026-11-08 · 阶段一）。
+   * 名门/世家的旧物是**家传的**，不是「梁上落下来的破铜匣」；
+   * 而且「来收旧货的人愿意用粮食换走整个匣子」对有家产的人说不通
+   * ⇒ 换成「开价很低，像是早就知道里面有什么」（来路可疑，但不荒唐）。
+   */
+  s=>{
+   const o=originBranch(s);
+   if(o==='village')return '修屋时，家人从梁上取出铜匣，里面是一页看不懂的口诀和半张渡口图。修器匠说图上有早年宗门的记号，来收旧货的人却愿意用粮食换走整个匣子。';
+   return '修屋时，家里人从梁上取下一只旧匣子。里面是一页看不懂的口诀和半张渡口图。修器匠说图上有早年宗门的记号；来收旧货的人开价很低，像是早就知道里面有什么。';
+  },[
   c('keep','留下口诀，请识字的人解释','先辨来历，不照着陌生口诀运气。','先生只认出几个吐纳用字，劝你收好等真正的修士辨认。铜匣留在家中，你记住图上的渡口。',child('old_page')),
   c('sell','交给家人换粮','眼前能改善家中生计，旧页会随货商离开。','家人换回两袋粮，货商拿走铜匣。后来你只记得纸上的一处火候图，没有完整口诀可练。',child('sold_page',{stats:{empathy:2}})),
   c('trace','请修器匠记下宗门印记','让匠人拓印，不把铜匣交给陌生货商。','匠人留下拓印，告诉你若要追查，先找旧渡口的船户。你收好了查来源的办法。',child('relic_route',{stats:{insight:2}})),
+ ]),
+ /*
+  * ⚠ **名门大户的专属童年卡**（2026-11-08 · 阶段一）。
+  * 以前名门大户的童年卡池 = 普通人家那套（村塾、旧屋铜匣）**减掉**药铺学徒，
+  * 专属卡一张都没有 ⇒ 轮盘上写着「名门大户」，童年却跟村里人没两样。
+  */
+ child_noble_school:node('child_noble_school','家塾里的先生','家里请了先生在家中授课。先生教契书、账册，也讲两句山门里的规矩。塾里还有两个同窗，家里等着看你先学哪一样。',[
+  c('read','先跟先生学契书与账册','每天要抄一页旧契，铺子里的活要挪给旁人。','你每天先抄完那页旧契，再去铺里帮忙。先生改字时手很重，你在旁边把写错的地方记进小册。',child('ledger',{stats:{insight:3}})),
+  c('letters','先学认字，不急着碰账','认字慢些，家里不急着派你管事。','你先把字认全了，再慢慢学着看账。先生说你起步慢，但记得住。',child('letters',{stats:{mind:2}})),
+  c('ask','问先生山门里的规矩','家里未必乐意你提，但你想先知道。','先生讲了两句山门的规矩，也讲了一桩旧事。你听懂的是规矩，没听懂的是旧事。',child('foundation',{stats:{insight:2}})),
+ ]),
+ child_noble_recommend:node('child_noble_recommend','郡中来的人','郡里来了一位客人，说能替你家递一张名帖到山门。他要先见见你，问你识不识字、家里还供不供得起上山的日子。',[
+  c('meet','见一见，把话说清楚','名帖未必到手，往后这条路也未必一直在。','客人问过你的名字和家里近况，记下就走。他说会递话，没有说一定递得成。',child('noble_recommend',{stats:{insight:2}})),
+  c('refuse','请家里回话，先不见','不把一条没影的路当成年月里等的事。','家里替你回了话。客人没有再来，你在塾里照旧抄契书、认字。',child('letters',{stats:{mind:2}})),
+  c('ask','先问清递话要担什么','递话的人情要算在账上，得先知道怎么算。','客人说了要担什么、什么时候还。你把这几样记在小册上，才答应见他第二回。',child('ledger',{stats:{insight:3}})),
  ]),
  child_caravan:node('child_caravan','商队经过被冲断的桥','家人带你随商队送货。暴雨冲断木桥，领队想走小路，熟悉河水的船婆却说那里上个月才发生山滑。你只是随行孩子，可以提醒大人，也可以留下照看货物。',[
   c('warn','把船婆的话告诉领队','由领队决定路线，不独自去探山路。','领队问过船婆，改在驿站住了一夜。你认出了商队的旗，船婆也记下了你的名字。',child('route_contact',{stats:{insight:2}})),

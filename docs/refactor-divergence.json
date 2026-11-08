@@ -225,6 +225,39 @@
       "files": {
         "packages/adventure/cultivation.js": "changed"
       }
+    },
+    {
+      "id": "S12",
+      "title": "清旧档：仓库只保留规则十二",
+      "why": "2026-11-08 用户决策「旧档可以完全清理掉」。规则 5–11 的执行器、事件表快照与内容副本共 24 个文件全部删除（上面列的就是快照清单里那些）；`packages/adventure/story-rules10.js` 与 `content/story-rules10.js` 改名成 `story-shared.js`（它们服务的是**当前唯一在跑的那一版**，名字按旧版本号会骗人）。⇒ 小程序包构建输入 1,901,563 → 1,387,789 字节（−27.0%），模块 92 → 79。⚠ **行为零变化**：事件表 347 张卡与摘要逐字节不变，固定种子的 12 条人生 / 366 步决策序列逐条全等（见 eventsfid 与 eventseq 门禁）。",
+      "files": {
+        "content/cultivation-daily-v6.js": "removed",
+        "content/cultivation-daily-v7.js": "removed",
+        "content/cultivation-revision-v6.js": "removed",
+        "content/cultivation-revision-v7.js": "removed",
+        "content/cultivation-revision-v8.js": "removed",
+        "content/cultivation-revision-v9.js": "removed",
+        "content/cultivation-revision-v10.js": "removed",
+        "content/cultivation-revision-v11.js": "removed",
+        "content/mundane-stories-v11.js": "removed",
+        "content/progression-stories-v11.js": "removed",
+        "content/revision9-stories-v11.js": "removed",
+        "content/story-network-v9.js": "removed",
+        "content/story-network-v10.js": "removed",
+        "content/story-network-v11.js": "removed",
+        "content/story-rules10-v11.js": "removed",
+        "content/story-rules10.js": "removed",
+        "packages/adventure/cultivation-v5.js": "removed",
+        "packages/adventure/cultivation-v6.js": "removed",
+        "packages/adventure/cultivation-v7.js": "removed",
+        "packages/adventure/cultivation-v8.js": "removed",
+        "packages/adventure/cultivation-v9.js": "removed",
+        "packages/adventure/cultivation-v10.js": "removed",
+        "packages/adventure/cultivation-v11.js": "removed",
+        "packages/adventure/revision9-v9.js": "removed",
+        "packages/adventure/story-network-v9.js": "removed",
+        "packages/adventure/story-rules10.js": "removed"
+      }
     }
   ],
   "currentVersion": {

@@ -30,7 +30,7 @@
  */
 import {month12} from './story-rules12.js';
 import {revisionMonth} from './revision9.js';
-import {month10} from './story-rules10.js';
+import {month10} from './story-shared.js';
 import {mundaneMonth} from './mundane-life.js';
 import {progressionMonth} from './progression.js';
 import {networkMonth} from './story-network.js';
@@ -38,7 +38,7 @@ import {breakthroughDue} from './cadence.js';
 import {ROAD_CHAINS} from '../../content/cultivation-stories.js';
 import {JOINT_CARD_IDS} from '../../content/cultivation-joints.js';
 import {storyOpportunity} from '../../content/cultivation-daily.js';
-import {canCultivate} from './story-rules10.js';
+import {canCultivate} from './story-shared.js';
 import {CADENCE,progressNeeded} from '../../content/cadence-table.js';
 
 const age=s=>Math.floor(s.month/12)+(s.birth.startAge||0);

@@ -1,27 +1,35 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {readFile} from 'node:fs/promises';
 import {createRun,advance,advanceToChoice,choose,options,cloneRun,validateRun,upgradeRun,currentNode,nodeText} from '../packages/adventure/engine.js';
 import {mundane,person,mundaneMonth,mundaneQuote,mundanePeople} from '../packages/adventure/mundane-life.js';
-import {canCultivate,hasMana} from '../packages/adventure/story-rules10.js';
-import {longAction} from '../packages/adventure/progression.js';
+import {canCultivate,hasMana} from '../packages/adventure/story-shared.js';
 import {CULTIVATION_EVENTS} from '../content/cultivation-stories.js';
 import {playMortal,mortalChoice} from '../scripts/audit-mundane-life.mjs';
 import {playCultivation} from '../scripts/play-cultivation.mjs';
 import {MUNDANE_KEPT,MUNDANE_DISABLED} from '../content/mundane-kept.js';
 const c=s=>s.life.cultivation;
-function base(){const s=createRun({seed:'root-audit-15',rulesVersion:11});for(let i=0;i<40&&s.phase==='life';i++){advanceToChoice(s);if(s.pending?.event==='m11_start'){choose(s,'shop');return s;}if(s.pending)choose(s,mortalChoice(s).id);}throw Error('凡人出生路线未到达');}
+/*
+ * ⚠ **本文件只测规则十二**（2026-11-08 · 清旧档）。
+ *   旧版本（9/10/11）的执行器与事件表快照已全部删除 ⇒ 引擎只认 12，
+ *   旧档一律拒收（`validateRun` 报「修行规则版本」）。
+ *   ⇒ 原来那条「旧10引擎基线继续六次决策逐值一致」**整条删掉**：
+ *     它测的是「旧档在旧版本下继续跑」，那个功能已经不存在了。
+ *   ⇒ 凡人线在规则十二是**五张直线**（`content/mundane-kept.js`），
+ *     旧版那条 44/56/67 三段弧制不再参与 ⇒ 相关断言按新规则改写。
+ */
+function base(){const s=createRun({seed:'root-audit-15',rulesVersion:12});for(let i=0;i<40&&s.phase==='life';i++){advanceToChoice(s);if(s.pending?.event==='m11_start'){choose(s,'shop');return s;}if(s.pending)choose(s,mortalChoice(s).id);}throw Error('凡人出生路线未到达');}
 function stage(kind,index=0){const s=base(),m=mundane(s);s.pending={event:`m11_${kind}_${index}`,month:s.month};s.journey=null;c(s).queue=[];c(s).context=null;m.arc={kind,stage:index,due:s.month,location:c(s).continent};m.done=[kind];return s;}
 function finish(s){while(s.phase==='life'&&s.journey&&!s.journey.open&&!s.pending)advance(s,1);}
-function nextStage(s){while(!s.pending&&s.phase==='life')advance(s,1);}
 
-test('旧10引擎基线继续六次决策逐值一致，原文件保持原样',async()=>{
- const raw=await readFile(new URL('./fixtures/adventure-rules10-baseline.json',import.meta.url),'utf8');
- for(const row of JSON.parse(raw).samples){const s=upgradeRun(row.state);assert.deepEqual(s,row.state);for(let i=0;i<6&&s.phase==='life';i++){advanceToChoice(s);if(s.pending)choose(s,options(s).find(o=>o.enabled).id);}assert.deepEqual(s,row.continued);}
- assert.equal(await readFile(new URL('./fixtures/adventure-rules10-baseline.json',import.meta.url),'utf8'),raw);
-});
-test('凡人自然一生持续有抉择，旧44/56/67补丁不参与新规则',()=>{
- for(const seed of ['凡人世事-24','凡人世事-28','凡人世事-74']){const {s,events}=playMortal(seed);assert.ok(mundane(s).started);assert.equal(s.player.realm,0);assert.ok(events.filter(id=>id.startsWith('m11_')).length>=10);assert.equal(c(s).story10.facts.mundaneOlder44,undefined);
+test('凡人自然一生持续有流水，旧44/56/67补丁不参与新规则',()=>{
+ /*
+  * ⚠ 规则十二的凡人线是**五张直线**（`content/mundane-kept.js`）⇒ 一生最多 5 张抉择卡；
+  *   旧版本那条「44/56/67 三段补丁」已随旧版本一起退出 ⇒ 这里量的是**新规则**：
+  *   抉择卡不超过五张、旧补丁不写进来、流水不许空过（相邻两行不超过 48 个月）。
+  */
+ for(const seed of ['凡人世事-24','凡人世事-28','凡人世事-74']){const {s,events}=playMortal(seed);assert.ok(mundane(s).started);assert.equal(s.player.realm,0);
+  const m11=events.filter(id=>id.startsWith('m11_'));assert.ok(m11.length>=1&&m11.length<=5,seed+' 凡人线的抉择卡不是 1–5 张：'+m11.join(' > '));
+  assert.equal(c(s).story10.facts.mundaneOlder44,undefined);
   const rows=s.journal.filter(j=>j.month>=192);for(let i=1;i<rows.length;i++)assert.ok(rows[i].month-rows[i-1].month<=48,seed);validateRun(s);}
 });
 test('凡人线新人生只发五张卡：起承转合结；停用的四十五张一张都不许再发',()=>{
@@ -48,7 +56,14 @@ test('钱粮守恒，个人工钱与家中财产及仙门灵石分开',()=>{
  const bad=cloneRun(s);mundane(bad).money++;assert.throws(()=>validateRun(bad),/钱粮不守恒/);
 });
 test('长期做工进度使用整程，普通推进与快进逐月一致',()=>{
- const a=base();a.pending={event:'m11_life_0',month:a.month};a.journey=null;choose(a,'steady');const b=cloneRun(a);assert.equal(longAction(a).months,24);advance(a,24);for(let i=0;i<24;i++)advance(b,1);assert.deepEqual(a,b);assert.equal(mundane(a).stage,1);validateRun(a);
+ const a=base();a.pending={event:'m11_life_0',month:a.month};a.journey=null;choose(a,'steady');
+ /*
+  * ⚠ 规则十一那条「m11_ 的 24 个月也算长行动」的特例，已随旧版本一起删除
+  *   （`packages/adventure/progression.js` 的 `longAction` 阈值统一成 60 个月）
+  *   ⇒ 这里直接量**行程本身**：整段 24 个月一次性定下，不按月分摊。
+  */
+ assert.equal(a.journey.to-a.journey.from,24,'长期做工的进度要用整程');
+ const b=cloneRun(a);advance(a,24);for(let i=0;i<24;i++)advance(b,1);assert.deepEqual(a,b);assert.equal(mundane(a).stage,1);validateRun(a);
 });
 test('未完成做工不领额外报酬，存档恢复保留实际进度',()=>{
  const s=stage('shop',1),m=mundane(s);m.money=24;const extra=m.earned;choose(s,'deliver');advance(s,5);assert.equal(m.earned-extra,m.money-24);assert.equal(m.trust,0);const restored=upgradeRun(cloneRun(s));assert.deepEqual(restored,s);advance(restored,13);assert.ok(mundane(restored).earned>m.earned);assert.equal(mundane(restored).trust,2);
@@ -57,10 +72,31 @@ test('没有钱不能支付合伙本金，查询选项不改变随机数或状�
  const s=base();s.pending={event:'m11_life_0',month:s.month};s.journey=null;mundane(s).money=0;mundane(s).spent=24;const before=cloneRun(s);assert.equal(options(s).find(o=>o.id==='speculate').enabled,false);assert.deepEqual(s,before);assert.throws(()=>choose(s,'speculate'));assert.deepEqual(s,before);
 });
 test('收殓未取物者在核实后结束，不被强制拉入追查',()=>{
- const s=stage('corpse'),m=mundane(s);m.corpse={truth:1,origin:c(s).continent,found:s.month,taken:false};choose(s,'bury');assert.equal(s.inventory.includes('mortal_wood'),false);nextStage(s);choose(s,'inspect');assert.equal(m.arc,null);assert.equal(m.corpse.closed,true);assert.equal(m.corpse.trace,false);validateRun(s);
+ /*
+  * ⚠ 规则十二的「合」只有一张卡（`m11_corpse_0`）⇒ 收殓 / 报信 / 取物 是同一次抉择，
+  *   不再走旧版「核实 → 追查」那一串 ⇒ 这里守的是**收殓之后不再有后续**。
+  */
+ const s=stage('corpse'),m=mundane(s);choose(s,'bury');
+ assert.equal(s.inventory.includes('mortal_wood'),false,'收殓不该拿到旧物');
+ assert.equal(m.corpse.buried,true,'收殓要记下来');
+ assert.equal(m.arc,null,'收殓之后这段差事就结束了');
+ assert.equal(m.corpse.trace,false,'没有被拉进追查');
+ validateRun(s);
 });
-test('取物出售留下账目，只取实物不会自动打开储物囊或获得法力',()=>{
- const s=stage('corpse'),m=mundane(s);m.corpse={truth:1,origin:c(s).continent,found:s.month,taken:false};choose(s,'take');assert.ok(s.inventory.includes('mortal_wood'));assert.equal(canCultivate(s),false);nextStage(s);choose(s,'sell');assert.equal(s.inventory.includes('mortal_sword'),false);assert.ok(s.inventory.includes('mortal_wood'));assert.equal(m.corpse.sale,true);assert.equal(m.corpse.trace,true);validateRun(s);
+test('只取实物不会自动打开储物囊或获得法力',()=>{
+ /*
+  * ⚠ 规则十二的「合」是一张卡：取走旧物就是取走，**没有单独的「取物出售」那一段**
+  *   ⇒ 这里守的是：只拿实物不会给你法力，储物囊也不会自己打开。
+  */
+ const s=stage('corpse'),m=mundane(s);choose(s,'take');
+ assert.ok(s.inventory.includes('mortal_wood'),'取走的旧物要真的进行囊');
+ assert.ok(s.inventory.includes('mortal_sword'),'断铁剑也跟着一起拿到');
+ assert.equal(canCultivate(s),false,'拿到旧物不等于能修炼');
+ assert.equal(hasMana(s),false,'拿到旧物不等于有法力');
+ assert.equal(m.corpse.taken,true,'账目上要记着东西被取走了');
+ assert.equal(m.corpse.sale,false,'没有「取物出售」那一段');
+ assert.equal(m.arc,null,'这段差事到取物为止，不再拉出下一段');
+ validateRun(s);
 });
 test('交回全部旧物后不能继续出售断剑',()=>{
  const s=stage('corpse',1),m=mundane(s);m.corpse={truth:0,origin:c(s).continent,found:s.month,taken:true};s.inventory.push('mortal_wood','mortal_sword');choose(s,'return');assert.equal(m.corpse.closed,true);assert.equal(m.arc,null);assert.ok(!s.inventory.includes('mortal_wood'));validateRun(s);
@@ -119,8 +155,13 @@ test('闭关期间亲人实际老去，消息在出关接触后才确认',()=>{
 test('同住避难处的亲人不被组件误标成住在异地',()=>{
  const s=base(),m=mundane(s);m.residence=m.home+':refuge';person(s,'employer').location=m.residence;assert.equal(mundanePeople(s).find(p=>p.id==='employer').description,'在你现在的住处附近');
 });
-test('旧规则拒绝新凡人待选事件，新规则拒绝错配长事件存档',()=>{
- const s=createRun({seed:'旧人生',rulesVersion:10});s.pending={event:'m11_gift_3',month:0};s.journey=null;assert.throws(()=>validateRun(s));const t=stage('corpse');t.pending.event='m11_gift_3';assert.throws(()=>validateRun(t),/不对应/);
+test('旧版本的人生建不起来，新规则拒绝错配长事件存档',()=>{
+ /*
+  * ⚠ 旧版本（9/10/11）已删 ⇒ 引擎只认规则十二 ⇒ 「旧规则装不下这张卡」那一半
+  *   改成「旧版本的人生根本建不起来」；另一半（错配长事件）照旧。
+  */
+ assert.throws(()=>createRun({seed:'旧人生',rulesVersion:10}),/不支持创建此规则的人生/);
+ const t=stage('corpse');t.pending.event='m11_gift_3';assert.throws(()=>validateRun(t),/不对应/);
 });
 test('不同人生的平静期抉择次序稳定且不同，不是固定章节',()=>{
  const a=createRun({seed:'凡人世事-24'}),b=createRun({seed:'凡人世事-28'}),copy=createRun({seed:'凡人世事-24'});assert.notDeepEqual(mundane(a).lifeOrder,mundane(b).lifeOrder);assert.deepEqual(mundane(a).lifeOrder,mundane(copy).lifeOrder);
@@ -141,18 +182,36 @@ test('新决策卡选项唯一，正文可读取且不公开内部成功率',()=
  }
 });
 test('凡人线可以迟入：走到「转机」最后一段的人真的入了道',()=>{
- const {s,events}=playMortal('凡人世事-177','sell');
- assert.ok(events.includes('m11_gift_3'),'迟入的那条路要走到 m11_gift_3');
- assert.ok(s.player.realm>=1,'迟入的人最后要入了道（境界 ≥ 1）');
+ /*
+  * ⚠ 规则十二的凡人线只发五张卡 ⇒ 「迟入」那一段（`m11_gift_3`）不再自然调度
+  *   ⇒ 这里用**规则十二的引擎**直接搭出那一段的门路（与本文件其它弧段同法），
+  *   验的还是同一件事：迟入的人真的多了一重境界。
+  */
+ const s=stage('gift',3),m=mundane(s);
+ s.player.root='五行杂灵根';c(s).story10.rootStatus='present';
+ m.corpse={truth:0,found:s.month,origin:m.home,closed:true};
+ m.gift={source:'river-remains',relicFound:s.month,stage:'changed',materials:true,changed:true};
+ s.inventory.push('mortal_wood');
+ choose(s,'learn');advance(s,6);
+ assert.equal(s.player.realm,1,'迟入的人最后要入了道（境界 ≥ 1）');
+ assert.equal(c(s).rank,'迟入道的散修');
+ validateRun(s);
 });
 test('收殓之后走不到「取物出售」那一段',()=>{
- /* 五条自然人生在**收殓**走法下真的会走到 m11_corpse_0，但**永远到不了** m11_corpse_2。 */
+ /*
+  * ⚠ 规则十二的「合」是一张卡 ⇒ 收殓 / 报信 / 取物在同一次抉择里，
+  *   **没有「取物出售」那一段**（`m11_corpse_1..4` 已停用）。
+  *   五条自然人生在**收殓**走法下真的会走到 m11_corpse_0，但收殓之后**拿不到旧物**。
+  */
  for(const seed of ['凡人世事-38','凡人世事-74','凡人世事-89','凡人世事-152','凡人世事-177']){
-  const {events}=playMortal(seed,'burial');
+  const {s,events}=playMortal(seed,'burial');
   assert.ok(events.includes('m11_corpse_0'),seed+'：这条命要真的走到收殓那一段（否则下面那句是空跑）');
   assert.ok(!events.includes('m11_corpse_2'),seed+'：收殓之后不该走到「取物出售」');
+  assert.ok(!s.inventory.includes('mortal_wood'),seed+'：收殓之后不该拿到旧物');
+  assert.ok(!s.inventory.includes('mortal_sword'),seed+'：收殓之后不该拿到断铁剑');
  }
- /* 正面对照：同一个种子换个走法就会走到 corpse_2 ⇒ 上面那句不是恒真。 */
- const {events}=playMortal('凡人世事-38','farm');
- assert.ok(events.includes('m11_corpse_2'),'换个走法就该走到 corpse_2（证明上面那句真的在管事）');
+ /* 正面对照：同一个种子换个走法就会取走旧物 ⇒ 上面那句不是恒真。 */
+ const {s,events}=playMortal('凡人世事-38','farm');
+ assert.ok(events.includes('m11_corpse_0'),'正面对照也要真的走到收殓那一段');
+ assert.ok(s.inventory.includes('mortal_wood'),'换个走法就该拿到旧物（证明上面那句真的在管事）');
 });

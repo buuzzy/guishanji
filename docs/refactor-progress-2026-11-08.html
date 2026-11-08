@@ -330,9 +330,9 @@
   <section>
     <div class="sec-head">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
-      <h2>门禁现状：39 道全绿</h2>
+      <h2>门禁现状：38 道全绿</h2>
     </div>
-    <p class="sec-sub">在干净代码树上跑完，退出码 0。其中多道门禁带「反向验证」—— 故意注入坏值，必须报红才算数（<code>t9reverse</code> / <code>t10reverse</code> / <code>t11reverse</code> / <code>viz-browser</code> 等）。</p>
+    <p class="sec-sub">在干净代码树上跑完，退出码 0。其中多道门禁带「反向验证」—— 故意注入坏值，必须报红才算数（<code>t9reverse</code> / <code>t10reverse</code> / <code>t11reverse</code> 等）。</p>
     <div class="card">
       <div class="gate-group">
         <h3>规则层与内容 <span>20</span></h3>
@@ -384,13 +384,12 @@
         </div>
       </div>
       <div class="gate-group" style="margin-bottom:0">
-        <h3>仓库与工具 <span>5</span></h3>
+        <h3>仓库与工具 <span>4</span></h3>
         <div class="chips">
           <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>pixelstyle</span>
           <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>check</span>
           <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>import</span>
           <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>repohygiene</span>
-          <span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>viz-browser</span>
         </div>
       </div>
     </div>
@@ -476,8 +475,8 @@
             <div class="dec-opts">选项：A 保留不扩展 / B 一起删</div>
           </div>
           <div>
-            <div class="dec-rec"><b>A（保留、不扩展）</b>——新对话里它是最快的「看现状」入口；删了要动 3 个脚本 + 文档一整节，收益只是省 332 KB 代码。</div>
-            <div class="dec-eff">维持现状（保留、不扩展）也能继续推进。</div>
+            <div class="dec-rec"><b>B（一起删）——已决策：删除</b>（2026-11-08 执行）。面板只给我们自己看，不进小程序包；删了省一道要起浏览器的门禁。</div>
+            <div class="dec-eff">「看现状」改用 <code>scripts/play-cultivation.mjs</code> 跑一条命 + 各审计脚本看数字。</div>
           </div>
           <div class="dec-score"><div class="score-track"><div class="score-fill" style="width:82%"></div></div><span class="score-num">82</span></div>
         </div>

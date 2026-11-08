@@ -8,15 +8,14 @@
  *   · `scripts/audit-metrics.mjs` 的 `HARD_LIMIT.realmContentMin`（每境至少几种内容）；
  *   · `scripts/audit-completeness.mjs` 的 `LIMITS.realmKinds` / `lateKinds` 与 `LATE_AGE`。
  *
- * 而这两个脚本都 import 了 `node:fs` ⇒ **浏览器进不去**
- * ⇒ 开发者面板（`apps/viz/`）想用同一份数字时，只能自己抄一份
- * ⇒ 抄一份就会发霉（面板说 5、门禁说 3，谁也不报警）。
+ * 而这两个脚本都 import 了 `node:fs` ⇒ 别处想用同一份数字时，只能自己抄一份
+ * ⇒ 抄一份就会发霉（这边说 5、那边说 3，谁也不报警）。
  *
- * ⇒ 现在：数字只住在这里，两个脚本与面板**都从这里取**。
+ * ⇒ 现在：数字只住在这里，各处**都从这里取**。
  *
- * ## ⚠ 这个文件必须**浏览器可用**
+ * ## ⚠ 这个文件不许 import `node:*`
  * --------------------------
- * 不许 import `node:*`、不许碰文件系统 —— 它同时进 Node 脚本与浏览器页面。
+ * 不许碰文件系统 —— 它只是一份纯数字，谁都能 import 同一份。
  */
 
 /**

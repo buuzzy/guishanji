@@ -1029,32 +1029,12 @@
       {
         "sourceRepo": "buuzzy/1in8b",
         "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
-        "sourcePath": "scripts/lib/xianxia-bundle.mjs",
-        "sourceBytes": 19773,
-        "sourceSha256": "dddc1c7101ef83b6c9d4d2e5b60de74fd430f1a0482975acb48898db077ee43f",
-        "path": "scripts/lib/xianxia-bundle.mjs",
-        "bytes": 19773,
-        "sha256": "dddc1c7101ef83b6c9d4d2e5b60de74fd430f1a0482975acb48898db077ee43f"
-      },
-      {
-        "sourceRepo": "buuzzy/1in8b",
-        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
         "sourcePath": "scripts/lib/es2015-downlevel.mjs",
         "sourceBytes": 17005,
         "sourceSha256": "9957c501fbf6fe74f108f4e38d2aa248e1602d37c09db4f8f76243c025d4a740",
         "path": "scripts/lib/es2015-downlevel.mjs",
         "bytes": 17005,
         "sha256": "9957c501fbf6fe74f108f4e38d2aa248e1602d37c09db4f8f76243c025d4a740"
-      },
-      {
-        "sourceRepo": "buuzzy/1in8b",
-        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
-        "sourcePath": "docs/xianxia-device-checklist.md",
-        "sourceBytes": 10904,
-        "sourceSha256": "40de1002d7f850a8dfee57259230dd3568ec5efeabe8b7879b891a6f34e7b50b",
-        "path": "docs/xianxia-device-checklist.md",
-        "bytes": 10904,
-        "sha256": "40de1002d7f850a8dfee57259230dd3568ec5efeabe8b7879b891a6f34e7b50b"
       },
       {
         "sourceRepo": "buuzzy/1in8b",
@@ -1189,8 +1169,8 @@
         "sourceBytes": 11494,
         "sourceSha256": "66026f8b72b80fc179a98f3f31fe2c736ff0d8c96a74e4c8ad26cde58edd5875",
         "path": "miniprogram/subpkg/xianxia/runtime/build-manifest.json",
-        "currentBytes": 16287,
-        "currentSha256": "02f0f13b8f807a9d7913af35700829672643e3acf52b580849242f3a7f380798",
+        "currentBytes": 14100,
+        "currentSha256": "ce11457e39aa26e7449b2b6283dcdcdee5171d409858629c76f3d60ad820d381",
         "reason": "生成物：来源改为本仓库源码，并新增 upstreamOrigin 段"
       },
       {
@@ -1200,8 +1180,8 @@
         "sourceBytes": 1738614,
         "sourceSha256": "ba0720f2c21c1babe39c605739e90243d7de00db5f920bd5078704d6952fed3f",
         "path": "miniprogram/subpkg/xianxia/runtime/engine.js",
-        "currentBytes": 1562222,
-        "currentSha256": "97f62b1a84d1b6a7d11fbd99f5adbbb98a5152aa7fd5b9f04545f58a43ad38d8",
+        "currentBytes": 1079814,
+        "currentSha256": "673b157e05fe2631efaaaeeb4925a532e3a233a5075e0e6e015ec0b4fd646fe2",
         "reason": "生成物：由本仓库源码重新构建（除文件头注释外与迁移进来的那份逐字节一致，见 reference/migrated-runtime/）"
       },
       {
@@ -1233,8 +1213,8 @@
         "sourceBytes": 15897,
         "sourceSha256": "eeb8547fbd5ea65fbfdaa967b6089af28db984494b529365a86e438badcf8955",
         "path": "scripts/test-xianxia-build.mjs",
-        "currentBytes": 29349,
-        "currentSha256": "af3dba9efc8a54e2595efeba009745f502a35443ea6d7d660dbabaa69faba592",
+        "currentBytes": 28639,
+        "currentSha256": "f8e60c8e66951029183aec40d02c43ad5aed7c1075255ccdf326f585bbcf07f1",
         "reason": "新增「与迁移进来的产物逐字节一致」断言；不再依赖 1in8b 的 frozen-baseline"
       },
       {
@@ -1244,8 +1224,8 @@
         "sourceBytes": 49291,
         "sourceSha256": "69b09f587ba41e73ad2b46c3a75bb931f9434b3f25bb2862d94b51b11a7f9d87",
         "path": "scripts/test-xianxia-mp.mjs",
-        "currentBytes": 55033,
-        "currentSha256": "02fd187aa2141843dd2f4eaf96d5c933b6d9f31326bfde2dff3185297a2fd17b",
+        "currentBytes": 55969,
+        "currentSha256": "89f669251dca8fcbe4136824db3d764403e8000a35fb656cc925183dd58e164c",
         "reason": "新增首页仿真断言；路径层级按独立启动层调整"
       },
       {
@@ -1255,8 +1235,8 @@
         "sourceBytes": 13192,
         "sourceSha256": "743c93f1904127203c026f4ddd79f4a69cd38323fcacc6d86f107e7d6dc25108",
         "path": "scripts/test-xianxia-storage.mjs",
-        "currentBytes": 14040,
-        "currentSha256": "3c6264c04b9c5535168a7c44952c513cd6d9360105f633b59818cc6f3ca78beb",
+        "currentBytes": 19561,
+        "currentSha256": "a4e2d2f94c036daababf90f53b416ee70599d067b028fcaebafdbdbe55f5153b",
         "reason": "不再依赖 1in8b 的 frozen-baseline，改用本仓库自己的哈希校验"
       },
       {
@@ -1299,8 +1279,8 @@
         "sourceBytes": 61050,
         "sourceSha256": "85ec52486de95a41305565b25923d6f7c3c66700a476b5ef6c9fe297ca2dc4d1",
         "path": "docs/miniprogram-xianxia-integration.md",
-        "currentBytes": 61290,
-        "currentSha256": "1427f57e096b2d8d4c882209902a22969bf0dee030f91eb5ca765e5549f82fec",
+        "currentBytes": 62344,
+        "currentSha256": "49e7c051814e9649b305f8a0aa8aa1d687a3bf94b6ac99cb23557a7afef19320",
         "reason": "2026-11-07：给 --refresh=../xianxia-life 这条已失效的旧命令加提示（该仓库已删除，build 脚本现在只读本仓库源码）；正文其余部分保持原样"
       },
       {
@@ -1321,8 +1301,8 @@
         "sourceBytes": 40479,
         "sourceSha256": "e1c5c6ce21837c8bb0c518a23eab2362b33c8abc70fe132d77440c71b6edcaca",
         "path": "miniprogram/subpkg/xianxia/bridge/view-model.js",
-        "currentBytes": 43350,
-        "currentSha256": "5a5508d79e36de0f5d5eba09347c95be30c5cb738886504859a987366aedc402",
+        "currentBytes": 43047,
+        "currentSha256": "55b51a5addb8255d48b2fafe48fc7bff2560d5c0161f96beda6cb5ac08a51b23",
         "reason": "S5 角色域：修行本事面板加「体魄」（只增不减的能力），体质行补「力竭」提示"
       },
       {
@@ -1368,6 +1348,28 @@
         "currentBytes": 2758,
         "currentSha256": "3da342884bb0d6c1a91267dc39fed175de6131b743a1fa56faa05e22e6057fac",
         "reason": "2026-11-08 T4 雷达换轴：组件注释同步（轴的来源与顺序由桥接层给）"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "scripts/lib/xianxia-bundle.mjs",
+        "sourceBytes": 19773,
+        "sourceSha256": "dddc1c7101ef83b6c9d4d2e5b60de74fd430f1a0482975acb48898db077ee43f",
+        "path": "scripts/lib/xianxia-bundle.mjs",
+        "currentBytes": 19767,
+        "currentSha256": "4e40306468c4366c17815fa2d3fe51ebc248085b02ca49a228c132282b383e13",
+        "reason": "2026-11-08 清旧档：修正文件注释里一处乱码（源���码 → 源代码），不影响构建行为"
+      },
+      {
+        "sourceRepo": "buuzzy/1in8b",
+        "sourceCommit": "10fb833ed86b27e48718ccac94757445dccc9515",
+        "sourcePath": "docs/xianxia-device-checklist.md",
+        "sourceBytes": 10904,
+        "sourceSha256": "40de1002d7f850a8dfee57259230dd3568ec5efeabe8b7879b891a6f34e7b50b",
+        "path": "docs/xianxia-device-checklist.md",
+        "currentBytes": 11059,
+        "currentSha256": "8ccd00d00ca084d8852bc776d7397b18070ab1e0330dd5ae98f0577a49a16335",
+        "reason": "2026-11-08 清旧档：第 42 条「旧存档还在」改成「旧存档被清掉」——旧版一律拒收且清干净（清不掉就存不进新档），清单同步改了验法"
       }
     ],
     "moved": [
@@ -1400,8 +1402,8 @@
         "sourceBytes": 16102,
         "sourceSha256": "94260925745b8ac30d66a9927483862283c068daecbc8d365b6af4f11bf93421",
         "path": "miniprogram/bridge/storage.js",
-        "currentBytes": 16856,
-        "currentSha256": "174d618adf6903e88799daee90c9b61df1a9459a82fe8c664f8867191ddaa3dd",
+        "currentBytes": 22150,
+        "currentSha256": "3e603a32f5f939be51c347f43a8dfbfa3fd5efa1858128c63d50fd6afe53b907",
         "note": "换到主包（微信规矩：主包不能同步引用分包代码，分包可以引用主包）；仅补了说明性注释，代码未改"
       },
       {
@@ -1509,8 +1511,8 @@
       },
       {
         "path": "scripts/gen-source-manifest.mjs",
-        "bytes": 30492,
-        "sha256": "d2850cf88e652ef7a4f54f72564f64edc3bea133a42b847140ee10994b8dd134"
+        "bytes": 31314,
+        "sha256": "a3f3f7ecdc5b717747ce4a6d95112f308e3ba05510eaf6635c0816cc725637dc"
       },
       {
         "path": "scripts/test-xianxia-standalone.mjs",
@@ -1519,23 +1521,23 @@
       },
       {
         "path": "scripts/test-repo-hygiene.mjs",
-        "bytes": 9698,
-        "sha256": "fd90600b21e2b9eeee104b85c49181424fed407fd1dabc7ab0c2af059edad5c4"
+        "bytes": 9695,
+        "sha256": "ddd71e6afac1f689f3497a84a8c33dc959f6a0794ce3862588319ca148c2c757"
       },
       {
         "path": "scripts/measure-mp-package-size.mjs",
-        "bytes": 16182,
-        "sha256": "c5bffb82dc1c7c05a95a8f457c04295e74087aeaf46b0788e4a6819e99f37c86"
+        "bytes": 16176,
+        "sha256": "865bf623822cd00b1136c66852a85d9fcd580a0181fc11f39d589ca2ea83e21a"
       },
       {
         "path": "AGENTS.md",
-        "bytes": 38651,
-        "sha256": "58e3a920aa216008bba0b5aeeb052c7cf6b5790f389d712e6bb0120610740919"
+        "bytes": 31686,
+        "sha256": "d736e9008658d5c6f2112d2d5e58e7c806643b35dae0458e6128eb1da2c0313a"
       },
       {
         "path": "README.md",
-        "bytes": 3163,
-        "sha256": "e6f0f85e28bfe2221ad65ed6c9baea183921fc3d0310874b085f5528c35ace65"
+        "bytes": 3204,
+        "sha256": "de2732e1f03f721b18ce98add6dbc01692a1779dccf5f7908d0b096ba26b241d"
       },
       {
         "path": "docs/migration/ledger.md",
@@ -1700,12 +1702,12 @@
       {
         "path": "scripts/audit-metrics.mjs",
         "bytes": 30392,
-        "sha256": "e2320ed67e9b7155e28abda571e0e8565423a3560c36e02981e85479b0d4fd60"
+        "sha256": "9a90f6ac5ec383067dd51837bac59aa637af06f9e80932dbfae8948a98a7ca25"
       },
       {
         "path": "tests/fixtures/metrics-baseline.json",
-        "bytes": 14416,
-        "sha256": "3bf55eb554437f253ff0d8130dc726ba550b2a1d9b130059a974f7a676e9bf5f"
+        "bytes": 16374,
+        "sha256": "1f23a35c3a183653b4b000cebf8f5589e5c53da3f04c2b4d6136cac47a924d19"
       },
       {
         "path": "tests/radar.test.mjs",
@@ -1714,8 +1716,8 @@
       },
       {
         "path": "content/cultivation-findings.js",
-        "bytes": 20340,
-        "sha256": "b43a27961423fb94060cd32afda1589c6f09680fb13f4afccbe547eaec1670db"
+        "bytes": 20334,
+        "sha256": "74867dd9ae5bb7100eea042a64f9b11b8a90de8f6f73849b87be052db927a932"
       },
       {
         "path": "scripts/audit-items.mjs",
@@ -1729,13 +1731,13 @@
       },
       {
         "path": "scripts/audit-plot.mjs",
-        "bytes": 12093,
-        "sha256": "de6598fb99e00a147da5ff7c44ccdfc91e9e1db1fcdb9bc69171681cedde4bf2"
+        "bytes": 12010,
+        "sha256": "9ce8db70e97374a8552109555f7b570626ffbe7b641dbee1e2412841ed33259d"
       },
       {
         "path": "tests/plot.test.mjs",
-        "bytes": 7626,
-        "sha256": "ba05b7bbb8fa937806fd4840a3d6f06c8dbe4a471f98a944993dc18930f187ce"
+        "bytes": 8105,
+        "sha256": "d463a35e97c5c70c1aea5f581dee7500b1b73a838b70d2330d3cc8a65b8ba2e0"
       },
       {
         "path": "content/expressions/events/index.js",
@@ -1744,8 +1746,8 @@
       },
       {
         "path": "content/expressions/events/entry.js",
-        "bytes": 22479,
-        "sha256": "8b288e9dbc773325ef2c900cb09bf4dd94f8d031359bcb9a046550a307070812"
+        "bytes": 25884,
+        "sha256": "d6dc221e2843d7ed5d4fc0ada6ffdb4658be06f7769189e6c728131f5a65b621"
       },
       {
         "path": "content/expressions/events/trial.js",
@@ -1764,8 +1766,8 @@
       },
       {
         "path": "content/expressions/events/child.js",
-        "bytes": 23956,
-        "sha256": "cb25159441626a1005293fbab54de060dbeb7fe8c1dd92c1acedec00370ac672"
+        "bytes": 26061,
+        "sha256": "b486ff418e957cffde2a302d4912f2104c350b38e2807b1dd6c72d81f56af336"
       },
       {
         "path": "content/expressions/events/material.js",
@@ -1809,8 +1811,8 @@
       },
       {
         "path": "tests/fixtures/event-expressions.json",
-        "bytes": 635223,
-        "sha256": "b2e56ef6e9b844f6da398ca712dae715c392ad4f09d6fce5060feb71abbdb86d"
+        "bytes": 641296,
+        "sha256": "5d51916d4b5ca0665ecf744ced62a0b6eceaa24883d29b480d62063f535d2ea4"
       },
       {
         "path": "tests/fixtures/event-expressions-pre-rewrite.json",
@@ -1844,98 +1846,13 @@
       },
       {
         "path": "scripts/lib/decide-policy.js",
-        "bytes": 5226,
-        "sha256": "1d95545bba510c65bb832dbab4fa271f15bc55858dc46a4350e152f9f8ac37cc"
-      },
-      {
-        "path": "scripts/verify-viz-panel.mjs",
-        "bytes": 102209,
-        "sha256": "43b1aa0f19d24edf6f1c63179cc1d513238b2d378b36cc407082194f8f406724"
-      },
-      {
-        "path": "apps/viz/index.html",
-        "bytes": 3811,
-        "sha256": "acca2ece7a5a68a4adbe77d045999426eb09cc55a7ecac479ba244ddd6283ba3"
-      },
-      {
-        "path": "apps/viz/viz.js",
-        "bytes": 24670,
-        "sha256": "317b9e17d01edcfede983c15f1f06cc8c3c1fd5dc7d0008863b49a333c0f27da"
-      },
-      {
-        "path": "apps/viz/viz.css",
-        "bytes": 42095,
-        "sha256": "c5dcb27048dd7d7cd964a5ff7e685c7ad5939b555617a48ddc674c836075f8c8"
-      },
-      {
-        "path": "apps/viz/model.js",
-        "bytes": 125680,
-        "sha256": "b686219bb2762b2e9da51bf9a999397946771d714c960527bac79c861b7af718"
-      },
-      {
-        "path": "apps/viz/axis.js",
-        "bytes": 6269,
-        "sha256": "5bd473b08f5ad170be0c661f9fd04995822077e20eee6c2b1a7e37c1abb9e871"
-      },
-      {
-        "path": "apps/viz/curve.js",
-        "bytes": 4800,
-        "sha256": "e58e00c680dc1600a9b4c1ccce6123491d02421a4514ed54290cbef941180b99"
-      },
-      {
-        "path": "apps/viz/decision.js",
-        "bytes": 5010,
-        "sha256": "ff0dcfe400ee8043d4a4bae2a62b783d2b57862628ebefe7822024b0af059849"
-      },
-      {
-        "path": "apps/viz/snapshot.js",
-        "bytes": 4582,
-        "sha256": "2076c4426d99a79d6adc2ef97392a49ab2e485a2435d1cb24c5f3fc705fc4aea"
-      },
-      {
-        "path": "apps/viz/tabs.js",
-        "bytes": 2412,
-        "sha256": "c9cd9caf4674f4ebe5420860146968ee582b118593b041837f26f3223d2e2764"
-      },
-      {
-        "path": "apps/viz/items.js",
-        "bytes": 3082,
-        "sha256": "89e5e8ad5204c74c752750795c7adc5b0564bf5331c5bc68f9087c1ffb9844ca"
-      },
-      {
-        "path": "apps/viz/map.js",
-        "bytes": 5491,
-        "sha256": "938b491b2bdfb601dccc6a1d8c1388f40899538339ed23f7bcd47897d7cf3676"
-      },
-      {
-        "path": "apps/viz/world.js",
-        "bytes": 8624,
-        "sha256": "b224ecf92bd992f248d7fcdadb2b166e10ec4dfee7cd0de2d079603f9bfb3d6a"
-      },
-      {
-        "path": "apps/viz/people.js",
-        "bytes": 3416,
-        "sha256": "6c406e497c56020be999669d43de1c7d5eee6e86bd7fd29e5b98647dcbcecd42"
-      },
-      {
-        "path": "apps/viz/journal.js",
-        "bytes": 6522,
-        "sha256": "03d9f2ad638a539d5b32fe99a5ffcc844d1aab5800770f7a9e65b7dbfdf593f6"
-      },
-      {
-        "path": "apps/viz/batch.js",
-        "bytes": 8233,
-        "sha256": "b459953696c91a7124be2a6d0a728b2dbe75f340ae9fe37f3ad77bd54ddfd29c"
-      },
-      {
-        "path": "apps/viz/coverage.js",
-        "bytes": 19716,
-        "sha256": "cd3805c513e445534e18474d22ea7a02ad8f28efe343b69c2fa16901b4a95f30"
+        "bytes": 4941,
+        "sha256": "01963b9887fcf559f65884eee4206be9b51fdb97550adfd0d141413f104b2c00"
       },
       {
         "path": "scripts/t10-reverse.mjs",
-        "bytes": 14937,
-        "sha256": "29fe3f4cc32dfec808ea6957dd1aaa132310ac9e3394016514fcfe07abbfe0b1"
+        "bytes": 20058,
+        "sha256": "fd225549698f9037bda21a691d3aabf82b3ef086be38dc105399b94847e28b1b"
       },
       {
         "path": "tests/fixtures/expressions-pre-t10.json",
@@ -1944,8 +1861,8 @@
       },
       {
         "path": "scripts/lib/completeness-limits.js",
-        "bytes": 2187,
-        "sha256": "80ed6eece6925a82d8cda63e75a06c8573bb3c25f0bcf0a2cf62a4e78d1a4e4e"
+        "bytes": 2099,
+        "sha256": "f57410b2b37b73650656178f98f4cdaab9084b8c3dbd2a4e7a35ce3b54338878"
       },
       {
         "path": "docs/第二轮内容改造交付说明-2026-11-08.md",
@@ -1953,29 +1870,9 @@
         "sha256": "5717f373468ab5e679729e316467261c9f02489a9fcd31f86da32170479f0907"
       },
       {
-        "path": "apps/viz/progress.js",
-        "bytes": 5079,
-        "sha256": "581b80e7d3a9f22b99e7b9dd91acddccb9dac1b92391dabf0a17cf558b033163"
-      },
-      {
-        "path": "apps/viz/findings.js",
-        "bytes": 2790,
-        "sha256": "71b6a11a0fb5f0afa3370962862b0889210205b6e39c460a7f12318749e07c26"
-      },
-      {
-        "path": "apps/viz/md.js",
-        "bytes": 1194,
-        "sha256": "f560531f06e8e48cebcb3e338c96bcdded2958eaed93a0dafd89a13b563efe0c"
-      },
-      {
-        "path": "apps/viz/history.js",
-        "bytes": 8358,
-        "sha256": "cc85c5116a566e1a486a0c4ce5b8ee722f63fb0cbe76ae4f157b5631fd162d89"
-      },
-      {
         "path": "docs/browser-gate-coverage.md",
-        "bytes": 15635,
-        "sha256": "cdbb3847dfd1e5c03f10d2ee11e721283923e4a37f4ff5d3e99d5e0b0f0f8865"
+        "bytes": 15541,
+        "sha256": "8be16a3a49e5badce95d0adafb6e465968fcd813b11cf9e66b98e575b6c4eba4"
       },
       {
         "path": "docs/story-gap-ledger.md",
@@ -1989,8 +1886,8 @@
       },
       {
         "path": "scripts/t11-reverse.mjs",
-        "bytes": 9703,
-        "sha256": "595cb03d57ca24e3faa4225b542b1a243c567b89877f79629908238ffe044cdd"
+        "bytes": 10080,
+        "sha256": "861c18077caba167a34be60a470a6dec2afe6c408ba807db28b3646779d2c874"
       },
       {
         "path": "tests/helpers/mp-view.mjs",
@@ -2004,8 +1901,8 @@
       },
       {
         "path": "content/background-stories.js",
-        "bytes": 10563,
-        "sha256": "6ecd258cd91ab77b140155d254d6f971d043820b8e5fabd3f4fd2148d33e7a2c"
+        "bytes": 19002,
+        "sha256": "6c1d4708821b1f271cde1f5f315f9f68487828383ae65cd7c777c8bb096a8058"
       },
       {
         "path": "content/mundane-kept.js",
@@ -2024,13 +1921,13 @@
       },
       {
         "path": "scripts/audit-reach.mjs",
-        "bytes": 14875,
-        "sha256": "4a88a7a0d5fceec7e3d550c59d9ebac6e3b87f8c42d631971b995d71ca100aab"
+        "bytes": 14867,
+        "sha256": "a0b27ee715001f4b8b02faa564f705f6fb2021ae252938627008f746783339fa"
       },
       {
         "path": "tests/fixtures/reach-gaps.json",
-        "bytes": 5543,
-        "sha256": "ee6618851e27c9ac19756ff667703debfd3b47321c62e91209a30bac60abb26a"
+        "bytes": 5549,
+        "sha256": "a1300063b4105050595173f931070e073409bfe171de88d1f96b6930de4f7806"
       },
       {
         "path": "docs/chain-reach.md",
@@ -2054,13 +1951,28 @@
       },
       {
         "path": "docs/refactor-progress-2026-11-08.html",
-        "bytes": 39188,
-        "sha256": "8d2b0570e3942b5f6803b64e1c9557591f96c3912e80c0d6d8f93997b482f841"
+        "bytes": 39006,
+        "sha256": "24e88c712cbc1508e9dd7674043a45cbd57d7d66716b2373ec18ca36f6581ca2"
       },
       {
         "path": "docs/refactor-decision-2026-11-08.html",
-        "bytes": 40376,
-        "sha256": "21999a9173c6904335d33c1ef4756503e5e6eccffaf458ca04363e1a7656bbcc"
+        "bytes": 40326,
+        "sha256": "5d9df2909a004d2697dfa73735de73e1d68522045efbb0bd65954a1a509f4da3"
+      },
+      {
+        "path": "scripts/lib/rng.js",
+        "bytes": 1396,
+        "sha256": "f0799e1881759868a4df76154d81bfc36af9382ed814a2d8e2b8d6efa96bda56"
+      },
+      {
+        "path": "scripts/audit-origin-match.mjs",
+        "bytes": 10721,
+        "sha256": "fe5e8c154bebaece3a0ea69d816c5f6a61b166595494e2d770a933f0a8000b15"
+      },
+      {
+        "path": "docs/refactor-origin-2026-11-08.md",
+        "bytes": 7907,
+        "sha256": "182d77deb46ca1b22417f4d21d5d0ec28a8c3cd19def271a9c285f3c3e3b0645"
       }
     ]
   }

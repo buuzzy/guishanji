@@ -1,5 +1,5 @@
 import {ROOTS,PATHS,GEOGRAPHY} from './cultivation-world.js';
-import {canCultivate,hasMana,rootLabel,route} from '../packages/adventure/story-rules10.js';
+import {canCultivate,hasMana,rootLabel,route} from '../packages/adventure/story-shared.js';
 const c=s=>s.life.cultivation;
 const r=s=>c(s).story10;
 const choice=(id,label,hint,reply,data={})=>({id,label,hint,reply,...data});
@@ -11,7 +11,7 @@ const homeName=s=>GEOGRAPHY.find(g=>g.id===s.birth.continent).name;
 const oldFriend=s=>c(s).progression.names['阿宁']||'阿宁';
 const marks=s=>c(s).network.marks;
 
-export function installRules10(events,chains){
+export function installShared(events,chains){
  events.root_result.text=s=>'许执事在测灵簿上写下“'+rootLabel(s)+'”。'+(ROOTS[s.player.root].grade<0?'测石没有亮起，执事不肯发修炼弟子牌。外院缺人搬粮、洗药，愿供食宿，但不承诺教你引气。':' '+ROOTS[s.player.root].description+' 执事按资质分配住处和课程。');
  const root=events.root_result.choices;
  root.find(o=>o.id==='servant').reply=s=>mortal(s)?'你领到外院杂役木牌，住进粮房旁的通铺。管事教你认货签、搬药篮，丹房和练法室不向你开放。':'你领到杂役木牌，住在外院。执事让你先做杂务，授业名额还要另外争取。';

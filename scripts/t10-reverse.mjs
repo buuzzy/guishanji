@@ -228,7 +228,96 @@ try {
     }
   }
 
-  console.log('\nC · 表达域「360 条全覆盖」这条新判据');
+  console.log('\nD · 出身门禁的反向验证（2026-11-08 · 阶段一）');
+  /*
+   * ⚠ **出身门禁是新加的**（`scripts/audit-origin-match.mjs`）——
+   *   门禁必须是**真门禁**：注入一个坏值，它必须报红。
+   *   而且至少要有一道是**真改规则层源码**那道（出身过滤被写坏）
+   *   —— 数据写对了但过滤没生效，门禁一样要红。
+   */
+  const ORIGIN_GATE = ['scripts/audit-origin-match.mjs', '--count=120', '--check'];
+
+  /* ── ⑰ 出身过滤被写坏（**真改规则层源码**）──────────────────────────── */
+  {
+    const p = path.join(workdir, 'packages/adventure/cultivation.js');
+    const before = fs.readFileSync(p, 'utf8');
+    const patched = before.replace('const byOrigin=bgPool.filter(b=>b.origins.includes(origin));', 'const byOrigin=bgPool;');
+    if (patched === before) {
+      skip('反向验证 ⑰「出身过滤被写坏」（注入点找不到）');
+    } else {
+      fs.writeFileSync(p, patched);
+      const r = runScript(workdir, 'scripts/audit-origin-match.mjs', ['--count=120', '--check']);
+      fs.writeFileSync(p, before);
+      ok(r.code !== 0 && /出身与身世对不上/.test(r.out),
+        `反向验证 ⑰「出身过滤被写坏」报红（退出码 ${r.code}）`);
+      if (r.code === 0) console.error('      门禁没报红 ⇒ 这是假门禁');
+    }
+  }
+
+  /* ── ⑱ 把「没人照看」那张身世卡塞给名门大户 ─────────────────────────── */
+  {
+    const p = path.join(workdir, 'content/background-stories.js');
+    const before = fs.readFileSync(p, 'utf8');
+    const patched = before.replace("id: 'background_healer_note',\n    road: 'sect',\n    path: 'loose',\n    upbringing: 'loose',\n    origins: ['village'],",
+      "id: 'background_healer_note',\n    road: 'sect',\n    path: 'loose',\n    upbringing: 'loose',\n    origins: ['village', 'noble'],");
+    if (patched === before) {
+      skip('反向验证 ⑱「把身世卡塞给不该抽它的出身」（注入点找不到）');
+    } else {
+      fs.writeFileSync(p, patched);
+      const r = runScript(workdir, 'scripts/audit-origin-match.mjs', ['--count=120', '--check']);
+      fs.writeFileSync(p, before);
+      ok(r.code !== 0 && /没人照看/.test(r.out),
+        `反向验证 ⑱「把身世卡塞给不该抽它的出身」报红（退出码 ${r.code}）`);
+      if (r.code === 0) console.error('      门禁没报红 ⇒ 这是假门禁');
+    }
+  }
+
+  /* ── ⑲ 摘掉名门大户的专属童年卡 ─────────────────────────────────────── */
+  {
+    const p = path.join(workdir, 'content/story-network.js');
+    const before = fs.readFileSync(p, 'utf8');
+    const patched = before.replace("'child_clan','child_noble_school'", "'child_clan'");
+    if (patched === before) {
+      skip('反向验证 ⑲「摘掉专属童年卡」（注入点找不到）');
+    } else {
+      fs.writeFileSync(p, patched);
+      const r = runScript(workdir, 'scripts/audit-origin-match.mjs', ['--count=120', '--check']);
+      fs.writeFileSync(p, before);
+      ok(r.code !== 0 && /专属童年卡/.test(r.out),
+        `反向验证 ⑲「摘掉专属童年卡」报红（退出码 ${r.code}）`);
+      if (r.code === 0) console.error('      门禁没报红 ⇒ 这是假门禁');
+    }
+  }
+
+  /* ── ⑳ 表达域与规则层的说法对不上 ───────────────────────────────────── */
+  {
+    const p = path.join(workdir, 'content/expressions/events/entry.js');
+    const before = fs.readFileSync(p, 'utf8');
+    const patched = before.replace('s => MARKET_HINT[originBranch(s)],', "'山下坊市有人招收学徒。',");
+    if (patched === before) {
+      skip('反向验证 ⑳「表达域与规则层对不上」（注入点找不到）');
+    } else {
+      fs.writeFileSync(p, patched);
+      const r = runScript(workdir, 'scripts/audit-origin-match.mjs', ['--count=120', '--check']);
+      fs.writeFileSync(p, before);
+      ok(r.code !== 0 && /两边对不上|没有按三种出身分三套/.test(r.out),
+        `反向验证 ⑳「表达域与规则层对不上」报红（退出码 ${r.code}）`);
+      if (r.code === 0) console.error('      门禁没报红 ⇒ 这是假门禁');
+    }
+  }
+
+  /* ── ㉑ 正面对照：出身门禁正常 ⇒ 退出码 0 ──────────────────────────── */
+  {
+    const r = runScript(workdir, 'scripts/audit-origin-match.mjs', ['--count=120', '--check']);
+    ok(r.code === 0 && /出身与身世一条命一条命对得上/.test(r.out),
+      `反向验证 ㉑「出身门禁正常时是绿的」（退出码 ${r.code}）`);
+    if (r.code !== 0) {
+      console.error('      门禁一直报红 ⇒ 那也是假门禁');
+      console.error('      输出尾部：' + String(r.out).split('\n').slice(-6).join('\n      '));
+    }
+  }
+
+  console.log('\nE · 表达域「360 条全覆盖」这条新判据');
   const EXPR_BASELINE_REL = 'tests/fixtures/expressions.json';
 
   /* ── ⑭ 抽掉一条说法 ⇒ 「没说法」必须报红 ────────────────────────────── */

@@ -24,6 +24,7 @@
  *   ⑧ 与官方键隔离：官方全部键的原文**逐字节不变**
  *   ⑨ 只碰 `xianxia.v1.` 开头的键
  *   ⑩ 旧代回收：只保留当前代与上一代
+ *   ⑪ 旧版本存档：一律拒收 **且清干净**（否则新人生存不进去）
  *
  * 用法：node scripts/test-xianxia-storage.mjs
  */
@@ -312,6 +313,115 @@ section('旧代回收：只保留当前代与上一代');
   const unique = [...new Set(generations)];
   ok(unique.length === 2, `只剩 ${unique.join('、')} 两代`);
   ok(unique[1] === 4 && unique[0] === 3, '保留的是当前代与上一代');
+}
+
+/* ══════════════════════════════════════════════ ⑪ 旧版本存档 */
+
+section('旧版本存档：一律拒收 + 清干净（玩家能接着玩）');
+{
+  /* 造一份「第 8 版」的旧档：清单 + 一个分片。 */
+  const fake8 = fakeStorage();
+  const oldText = JSON.stringify({life: {cultivation: {rulesVersion: 8}}, month: 48});
+  const oldKey = 'xianxia.v1.life.life-old-8.1.0';
+  fake8.data.set(oldKey, oldText);
+  fake8.data.set('xianxia.v1.manifest.a', JSON.stringify({
+    revision: 3, rulesVersion: 8, activeId: 'life-old-8', updatedAt: 1700000000000,
+    lives: [{
+      id: 'life-old-8', generation: 1, bytes: hashUtil.utf8Length(oldText),
+      hash: hashUtil.sha256Hex(oldText), phase: 'life', name: '旧人', realm: 1, age: 20,
+      months: 48, rulesVersion: 8, updatedAt: 1700000000000,
+      shards: [{key: oldKey, bytes: hashUtil.utf8Length(oldText), hash: hashUtil.sha256Hex(oldText)}],
+    }],
+  }));
+
+  const store8 = storageModule.createStorage({storage: fake8.api, now: () => 1700000000000});
+  ok(store8.readLife('life-old-8') === null, '旧档读不出来（拒收）');
+  ok(store8.listLives().length === 0, '往期人生清单里没有旧档');
+  ok(!fake8.data.has('xianxia.v1.manifest.a'), '旧清单被清掉了');
+  ok(!fake8.data.has(oldKey), '旧分片被清掉了');
+
+  /*
+   * ⚠ **关键**：清干净之后，新人生必须存得进去。
+   *   （不清的话 `save()` 会因为「清单读不出来但字节还在」抛 corrupt
+   *     ⇒ 玩家新人生存不进档，白玩一场。）
+   */
+  let code = null;
+  try {
+    await store8.save(life('旧档清干净', 'life-new-8'), engine.validateRun);
+  } catch (error) {
+    code = error.code;
+  }
+  ok(code === null, `新人生存得进去（实际错误码 ${code}）`);
+  ok(!!store8.readLife('life-new-8'), '新人生读得回来');
+}
+
+/* 反向验证 ①：解析不出来的清单（真坏了）**不许**被清掉 —— 该报错，不是该删。 */
+{
+  const fakeBad = fakeStorage();
+  fakeBad.data.set('xianxia.v1.manifest.a', '不是 JSON');
+  storageModule.createStorage({storage: fakeBad.api, now: () => 1700000000000});
+  ok(fakeBad.data.get('xianxia.v1.manifest.a') === '不是 JSON', '坏掉的清单没有被清掉');
+}
+
+/* 反向验证 ②：旧清单与新清单写着**同一个人生编号**时，新清单的分片不许被连累删掉。 */
+{
+  const fakeMix = fakeStorage();
+  const cur = life('新旧同号', 'life-same-id');
+  const curText = JSON.stringify(cur);
+  const curKey = 'xianxia.v1.life.life-same-id.1.0';
+  const curShard = {key: curKey, bytes: hashUtil.utf8Length(curText), hash: hashUtil.sha256Hex(curText)};
+  fakeMix.data.set(curKey, curText);
+  fakeMix.data.set('xianxia.v1.manifest.b', JSON.stringify({
+    revision: 2, rulesVersion: 12, activeId: 'life-same-id', updatedAt: 1700000000000,
+    lives: [{
+      id: 'life-same-id', generation: 1, bytes: hashUtil.utf8Length(curText),
+      hash: hashUtil.sha256Hex(curText), phase: cur.phase, name: cur.player.name,
+      realm: cur.player.realm, age: 16, months: cur.month, rulesVersion: 12,
+      updatedAt: 1700000000000, shards: [curShard],
+    }],
+  }));
+  /* 旧清单（规则 8）也写着同一个人生编号、同一个分片键。 */
+  fakeMix.data.set('xianxia.v1.manifest.a', JSON.stringify({
+    revision: 1, rulesVersion: 8, activeId: 'life-same-id', updatedAt: 1699999999999,
+    lives: [{
+      id: 'life-same-id', generation: 1, bytes: 1, hash: 'x', phase: 'life', name: '旧',
+      realm: 1, age: 16, months: 0, rulesVersion: 8, updatedAt: 1699999999999,
+      shards: [{key: curKey, bytes: 1, hash: 'x'}],
+    }],
+  }));
+
+  const storeMix = storageModule.createStorage({storage: fakeMix.api, now: () => 1700000000000});
+  ok(fakeMix.data.has(curKey), '当前版本的分片没被旧清单连累删掉');
+  ok(storeMix.readLife('life-same-id') !== null, '当前版本的人生照样读得回来');
+  ok(!fakeMix.data.has('xianxia.v1.manifest.a'), '旧清单还是被清掉了');
+}
+
+/* 反向验证 ③：建档之后旧档才落到盘上（换设备恢复 / 导入旧档）⇒ 写之前也要清。 */
+{
+  const fakeLate = fakeStorage();
+  const storeLate = storageModule.createStorage({storage: fakeLate.api, now: () => 1700000000000});
+  const lateText = JSON.stringify({life: {cultivation: {rulesVersion: 8}}});
+  const lateKey = 'xianxia.v1.life.life-late-8.1.0';
+  fakeLate.data.set(lateKey, lateText);
+  fakeLate.data.set('xianxia.v1.manifest.a', JSON.stringify({
+    revision: 2, rulesVersion: 8, activeId: 'life-late-8', updatedAt: 1700000000000,
+    lives: [{
+      id: 'life-late-8', generation: 1, bytes: hashUtil.utf8Length(lateText),
+      hash: hashUtil.sha256Hex(lateText), phase: 'life', name: '迟到', realm: 1, age: 20,
+      months: 36, rulesVersion: 8, updatedAt: 1700000000000,
+      shards: [{key: lateKey, bytes: hashUtil.utf8Length(lateText), hash: hashUtil.sha256Hex(lateText)}],
+    }],
+  }));
+
+  let code = null;
+  try {
+    await storeLate.save(life('迟到旧档', 'life-new-late'), engine.validateRun);
+  } catch (error) {
+    code = error.code;
+  }
+  ok(code === null, `旧档后到时新人生也存得进去（实际错误码 ${code}）`);
+  ok(!fakeLate.data.has(lateKey), '迟到的旧分片也被清掉了');
+  ok(!!storeLate.readLife('life-new-late'), '新人生读得回来');
 }
 
 /* ══════════════════════════════════════════════ 汇总 */

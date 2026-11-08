@@ -41,7 +41,7 @@
  */
 import {createRun, choose, advance, validateRun, options} from '../packages/adventure/engine.js';
 import {decide} from './lib/decide-policy.js';
-import {makeRng} from '../apps/viz/batch.js';
+import {makeRng} from './lib/rng.js';
 import {ROAD_CHAINS, CULTIVATION_EVENTS} from '../content/cultivation-stories.js';
 import {readFileSync, writeFileSync} from 'node:fs';
 import {dirname, join} from 'node:path';

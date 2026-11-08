@@ -44,8 +44,12 @@ export const RUNS = [
   { seed: '序列基线-11', path: 'orthodox', conduct: 'care', ending: 'guard', school: 'sword', rebuild: 'revenge', remit: 'stone' },
 ];
 
-/** 两个规则版本：11（旧一版）与 12（当前版）。 */
-export const RULES_VERSIONS = [11, 12];
+/**
+ * 只跑当前版本（十二）。
+ *
+ * ⚠ 2026-11-08 清旧档后，旧版本不再有执行器 ⇒ 旧人生跑不动 ⇒ 基线里只留当前版本。
+ */
+export const RULES_VERSIONS = [12];
 
 /** 跑出全部序列。 */
 export function collect() {

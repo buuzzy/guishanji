@@ -316,11 +316,9 @@ function practice(run) {
   var advancement = [];
   /*
    * 主药清单（金丹 / 元婴两级才有）。
-   * ⚠ 以前只对 `rulesVersion === 8` 显示 ⇒ 当前版本（12）的玩家在手机上
-   *   根本看不到「还缺哪几样主药」，网页端却看得到 ⇒ 两端不一致。
-   * ⇒ 现在规则 8 以上都显示（与网页端 `advancementPanel` 同一口径）。
+   * ⚠ 金丹 / 元婴两级才有主药清单。
    */
-  if (cultivation.rulesVersion >= 8 && run.player.realm >= 2 && run.player.realm < 4) {
+  if (run.player.realm >= 2 && run.player.realm < 4) {
     var slots = engine.materialSlots ? engine.materialSlots(run, run.player.realm + 1) : [];
     advancement = slots.map(function (slot) {
       return {ready: !!slot[0], label: slot[1]};
@@ -470,7 +468,7 @@ function wealth(run) {
   });
   /* 上游 wealth()（life-panels.js:44-47）：月例与工钱 / 食宿与修行耗材 两行 + 那句说明。 */
   var quote = null;
-  if (cultivation && cultivation.rulesVersion >= 6 && engine.economyQuote) {
+  if (cultivation && engine.economyQuote) {
     try {
       quote = engine.economyQuote(run);
     } catch (error) {
@@ -701,7 +699,7 @@ function map(run) {
 
 /**
  * 重心选项的释义（照 HTML 端 life-panels.js 的 activityMeaning）。
- * ⚠ 这里**自己实现**而��是从 HTML 端引入：那个文件会拖进 190 KB 的像素资源，
+ * ⚠ 这里**自己实现**而不是从 HTML 端引入：那个文件会拖进 190 KB 的像素资源，
  *   而这一行文字根本用不到画面。
  */
 function activityMeaning(activity) {

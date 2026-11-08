@@ -28,12 +28,12 @@
  * 节奏域（`pace`）。它只读：
  *   · `content/cadence-table.js` —— 窗口、门槛、冲关参数（数据）；
  *   · `packages/adventure/progression.js` —— 材料槽（筑基以上要不要先备齐主药）；
- *   · `packages/adventure/story-rules10.js` —— 有没有灵根、能不能修行。
+ *   · `packages/adventure/story-shared.js` —— 有没有灵根、能不能修行。
  *
  * ⚠ 本文件进小程序包 ⇒ **不写 `?.` / `??`**（微信转译会改变作用域边界）。
  */
 import {CADENCE, progressNeeded, METHOD_MONTHS, MATERIAL_TIERS, cadenceOf} from '../../content/cadence-table.js';
-import {canCultivate} from './story-rules10.js';
+import {canCultivate} from './story-shared.js';
 import {materialSlots} from './progression.js';
 
 /**
@@ -55,7 +55,7 @@ function ageOf(state) {
 export function breakthroughDue(state) {
   const cultivation = state.life && state.life.cultivation;
   /* 只管当前版本 —— 旧规则版本（5–11）各有自己的执行器与候选池，一律照原样走。 */
-  if (!cultivation || cultivation.rulesVersion !== 12) return null;
+  if (!cultivation) return null;
 
   const player = state.player;
   if (player.realm >= 4) return null;                 /* 已是最高境，没有下一境 */

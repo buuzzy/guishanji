@@ -1,15 +1,8 @@
-import * as rules11 from './cultivation-v11.js';
 import {initialize12,begin12,complete12,practiceFactor12,validate12,trainConstitution12,department12,methodId12} from './story-rules12.js';
-import * as rules10 from './cultivation-v10.js';
 import {initializeMundane,mundaneComplete,mundaneBegin,validateMundane,mundaneSettlement} from './mundane-life.js';
-import * as rules9 from './cultivation-v9.js';
-import {initialize10,canCultivate,hasMana,choose10,mundaneDaily,introduceText,validate10,advanceEcho} from './story-rules10.js';
-import * as rules8 from './cultivation-v8.js';
+import {initialize10,canCultivate,hasMana,choose10,mundaneDaily,introduceText,validate10,advanceEcho} from './story-shared.js';
 import {initializeRevision9,revisionAction,validateRevision9} from './revision9.js';
-import * as rules7 from './cultivation-v7.js';
 import {initializeProgression,progressionAction,progressionBegin,progressionText,progressionChoice,validateProgression} from './progression.js';
-import * as previousRules from './cultivation-v5.js';
-import * as rules6 from './cultivation-v6.js';
 import {initializeNetwork,networkAction,validateNetwork,networkRate} from './story-network.js';
 import {scheduleMonth} from './scheduler.js';
 import {automaticStory,aftermathStory,storyOpportunity,familyMessage} from '../../content/cultivation-daily.js';
@@ -18,8 +11,8 @@ import {economyQuote,settleEconomy} from './cultivation-economy.js';
 import {random,hashText} from '../core/random.js';
 import {PATHS,ROOTS,ACTIVITIES,GEOGRAPHY,OFFICERS} from '../../content/cultivation-world.js';
 import {CONSTITUTION_GAIN} from '../../content/rules12-world.js';
-import {ROAD_CHAINS,CULTIVATION_EVENTS,LEGACY_CULTIVATION_EVENTS} from '../../content/cultivation-stories.js';
-import {SECT_BACKGROUNDS,MORTAL_BACKGROUNDS} from '../../content/background-stories.js';
+import {ROAD_CHAINS,CULTIVATION_EVENTS} from '../../content/cultivation-stories.js';
+import {SECT_BACKGROUNDS,MORTAL_BACKGROUNDS,originKey} from '../../content/background-stories.js';
 import {JOINT_BY_CHAIN,JOINT_DELAY_MONTHS,JOINT_CARD_IDS} from '../../content/cultivation-joints.js';
 import {allowDaily} from './gates.js';
 const copy=x=>JSON.parse(JSON.stringify(x));
@@ -57,7 +50,22 @@ export function initializeCultivation(s) {
   *   现在由这条背景决定 ⇒ 童年那一段与背景对得上。
   */
  const bgPool=ROOTS[s.player.root].grade<0?MORTAL_BACKGROUNDS:SECT_BACKGROUNDS;
- const bg=bgPool[hashText(s.seed+':background')%bgPool.length];
+ /*
+  * ⚠⚠ **先按出身过滤，再按灵根过滤**（2026-11-08 · 阶段一）。
+  * 以前只按灵根分池 ⇒ 出身**根本不参与抽卡** ⇒ 轮盘写着「名门大户」，
+  * 却抽到「战乱里被游方药师救过」（实测：名门大户只有 10% 抽到配得上的身世卡）。
+  * ⇒ 现在每条身世都写明 `origins`（`content/background-stories.js`），
+  *   出身先过滤 ⇒ **匹配率 100%**：名门大户不会再当散修孤儿。
+  * ⚠ **抽签方式一个字没改**（还是 `hashText(seed+':background')` 抽池子下标）
+  *   ⇒ 同种子的命仍然可复现，只是池子内容变了。
+  * ⚠ 池子空了（轮盘转不到的出身，如「渡口匠人」）⇒ **回退整池并喊一声**，
+  *   不许抛异常把整局卡死。
+  */
+ const origin=originKey(s);
+ const byOrigin=bgPool.filter(b=>b.origins.includes(origin));
+ if(!byOrigin.length&&typeof console!=='undefined'&&console.warn)console.warn('出身 '+origin+' 没有专属身世，回退到整池');
+ const bgPool2=byOrigin.length?byOrigin:bgPool;
+ const bg=bgPool2[hashText(s.seed+':background')%bgPool2.length];
  s.birth.background=bg.id;
  s.birth.upbringing=bg.upbringing;
  const c={format:1,rulesVersion:12,opportunities:{},dailyMemory:{},economy:{received:0,spent:0,last:null},evidence:[],activityMonths:{},activityGains:{},inquiry:null,detained:false,path:'mortal',rank:'未入门',activity:'study',rootKnown:false,progress:0,entered:null,admissionDone:false,choiceAt:192,dailyAt:12,
@@ -95,7 +103,7 @@ export function initializeCultivation(s) {
  */
 function alignChildhood(s){
  const c=s.life.cultivation;
- if(!c||c.rulesVersion!==12)return;
+ if(!c)return;
  const childhood=c.v12&&c.v12.childhood;
  if(!childhood||!childhood.worthy)return;
  const tickets=c.network&&c.network.childhood;
@@ -164,16 +172,16 @@ function revised_changeActivity(s,id) {
  return s;
 }
 function revised_cultivationIncome(s) {return economyQuote(s).net;}
-export function annualCultivationSettlement(s){return s.life?.cultivation?.rulesVersion===12?settleEconomy(s):s.life?.cultivation?.rulesVersion===11?rules11.annualCultivationSettlement(s):s.life?.cultivation?.rulesVersion===10?rules10.annualCultivationSettlement(s):s.life?.cultivation?.rulesVersion===9?rules9.annualCultivationSettlement(s):s.life?.cultivation?.rulesVersion===8?rules8.annualCultivationSettlement(s):s.life?.cultivation?.rulesVersion===7?rules7.annualCultivationSettlement(s):s.life?.cultivation?.rulesVersion===6?rules6.annualCultivationSettlement(s):null;}
+export function annualCultivationSettlement(s){return s.life?.cultivation?settleEconomy(s):null;}
 function schedule(s,event,months=0){const c=s.life.cultivation;if(!seen(s,event)&&!c.queue.some(q=>q.event===event))c.queue.push({event,due:s.month+months});}
 function record(s,cb,title,body,kind='life'){cb.log({kind,title,body,automatic:true,location:s.player.location,context:cultivationContext(s)});s.life.automaticCount++;}
 function addEvidence(s,event,choice,description,authority){
- const c=s.life.cultivation;if(c.rulesVersion<5)return;
+ const c=s.life.cultivation;
  if(c.evidence.some(e=>e.event===event&&e.choice===choice))return;
  c.evidence.push({event,choice,description:typeof description==='string'?description:'领用簿和当事人留下的指认',authority:authority||c.history.at(-1)?.path||c.path,origin:currentContinent(s),month:s.month,due:s.month+12,settled:false});
 }
 function revised_discoverableEvidence(s){
- const c=s.life.cultivation;if(c.rulesVersion<5)return c.wanted>0?{}:null;
+ const c=s.life.cultivation;
  return c.evidence.find(e=>{
   if(e.settled||s.month<(e.hiddenUntil||0))return false;
   const queue=[[e.origin]],visited=new Set([e.origin]);let hops=null;
@@ -201,7 +209,7 @@ function setPath(s,path,cb,rank){
   *   不会被任何 `requires.flags` 命中 ⇒ **旧档逐值不变**。
   * ⚠ 只对当前版本（规则十二）生效。
   */
- if(c.rulesVersion===12)cb.apply({flags:{[({orthodox:'pathSect',loose:'pathLoose',demonic:'pathDark',beast:'pathBeast',mortal:'pathMortal'})[path]||'pathMortal']:true}});
+ cb.apply({flags:{[({orthodox:'pathSect',loose:'pathLoose',demonic:'pathDark',beast:'pathBeast',mortal:'pathMortal'})[path]||'pathMortal']:true}});
  /*
   * ⚠ **入门那一串（交接文档 §3.2 的「必答串五环」）在这里排队**：
   *   测灵根 → 宗门部门 → 心法选定 → 重心（首次授业）→ 弟子修炼 → 炼气突破
@@ -223,7 +231,7 @@ function setPath(s,path,cb,rank){
  }
 }
 function revised_completeCultivationAction(s,event,choiceId,cb) {
- const c=s.life.cultivation,node=(c.rulesVersion<5&&LEGACY_CULTIVATION_EVENTS[event])||CULTIVATION_EVENTS[event],choice=node?.choices.find(o=>o.id===choiceId),op=choice?.system||{};
+ const c=s.life.cultivation,node=CULTIVATION_EVENTS[event],choice=node?.choices.find(o=>o.id===choiceId),op=choice?.system||{};
  const decision=s.decisions.find(d=>d.event===event&&d.choice===choiceId),success=decision?.success!==false;
  if(event.startsWith('m11_')){mundaneComplete(s,event,choiceId,cb);if(s.phase==='life')cb.open();return;}
  const previousPath=c.path;
@@ -236,7 +244,7 @@ function revised_completeCultivationAction(s,event,choiceId,cb) {
   *   必答卡上的两个选项走的是**同一个部门**（表达的是两种态度，不是两条岔路）。
   * ⚠ 只对当前版本（规则十二）生效。
   */
- if(c.rulesVersion===12&&op.department12&&success){c.v12.department=department12(s);}
+ if(op.department12&&success){c.v12.department=department12(s);}
  /*
   * ⚠ **入门心法（交接文档 §3.2）** —— 同样由规则层算（`methodId12`），
   *   算完**写进状态**（`c.v12.entryMethod`）⇒
@@ -245,23 +253,23 @@ function revised_completeCultivationAction(s,event,choiceId,cb) {
   * ⚠ 入口层（`cultivation.js` 是枢纽）是**唯一**同时能看见节奏域与因果域的地方
   *   ⇒ 跨域的接线放在这里，两边都不越界。
   */
- if(c.rulesVersion===12&&op.method12&&success){c.v12.entryMethod=methodId12(s);}
+ if(op.method12&&success){c.v12.entryMethod=methodId12(s);}
  /*
   * ⚠ **入门串的下一环**（§3.2）：
   *   · 心法选定那张卡答完 ⇒ 排「重心」（第一次授业）—— 以前重心卡排在最前面，
   *     心法要等 12 个月才发 ⇒ 顺序没有保证（废卡的根因）。
   *   · 部门那张卡靠选项上的 `next` 接到心法（见 `revised_cultivationAction`）。
   */
- if(c.rulesVersion===12&&event==='method_choice'&&success)schedule(s,'first_method',2);
+ if(event==='method_choice'&&success)schedule(s,'first_method',2);
  if(op.teacher&&success)c.teacher=op.teacher;
  if(op.activity){c.activity=op.activity;s.player.focus=ACTIVITIES[op.activity].skill;
   /* ⚠ **留下「你练的是哪门」的印记**（2026-11-08）—— 择路是玩家自己的第一个印记。 */
-  if(c.rulesVersion===12)cb.apply({flags:{[({sword:'focusSword',study:'focusArray',alchemy:'focusAlchemy'})[op.activity]||'focusArray']:true}});}
+  cb.apply({flags:{[({sword:'focusSword',study:'focusArray',alchemy:'focusAlchemy'})[op.activity]||'focusArray']:true}});}
  if(op.punishment){const remaining=Math.max(0,op.punishment-(choice.months||0));c.punishmentUntil=s.month+remaining;c.activity='work';record(s,cb,'师门惩戒',remaining?(c.punishmentKind==='confinement'?'严衡收走弟子牌，用禁灵符封住你的法力。思过洞的石门落下，送饭弟子只从门缝递水与冷饭。还须禁闭'+remaining+'个月，期间不得修行、领月例或外出。':'你被派去修复山道与照料受损田地，剩余'+remaining+'个月不得进入三堂听课。'):(event==='garden_accident'?'补种的药苗终于成活，许执事沿药畦逐株验过，又让药师核对缺掉的药种。六个月服役结束，你领回弟子牌，重新获得听课资格。':'最后一段山道补好，许执事验过伤员能否通行，才把弟子牌还给你。服役结束，重新获得听课资格。'),'institution');if(!remaining)delete c.punishmentKind;}
  if(op.reputation)c.reputation=clamp(c.reputation+op.reputation,-100,100);
- if(op.wanted){c.wanted=clamp(c.wanted+op.wanted,0,10);if(c.rulesVersion>=5)addEvidence(s,event,choiceId,choice.reply,previousPath);}
+ if(op.wanted){c.wanted=clamp(c.wanted+op.wanted,0,10);addEvidence(s,event,choiceId,choice.reply,previousPath);}
  if(op.offense){c.wanted=clamp(c.wanted+1,0,10);addEvidence(s,event,choiceId,op.offense,previousPath);}
- if(op.settleWanted&&(success||c.rulesVersion<5)){c.wanted=0;if(c.evidence)c.evidence.forEach(e=>e.settled=true);c.reputation=clamp(c.reputation+6,-100,100);}
+ if(op.settleWanted&&success){c.wanted=0;if(c.evidence)c.evidence.forEach(e=>e.settled=true);c.reputation=clamp(c.reputation+6,-100,100);}
  if(op.reduceWanted&&success)c.wanted=clamp(c.wanted-1,0,10);
  if(op.familyPolicy){c.familyPolicy=op.familyPolicy;if(op.familyPolicy==='sever'){s.life.family.money+=2000;s.life.family.bond=clamp(s.life.family.bond-10);}}
  if(op.familySupport){s.life.family.reserve=clamp(s.life.family.reserve-op.familySupport,0,1000);s.life.family.bond=clamp(s.life.family.bond+5);}
@@ -309,8 +317,8 @@ function revised_completeCultivationAction(s,event,choiceId,cb) {
    *   长线那三步是玩家反复做的同一类决定（认真 / 留退路 / 自己拿），
    *   ⇒ 它的印记最该被后来的旁白读到。
    */
-  if(c.rulesVersion===12)cb.apply({flags:{[({care:'conductCare',cautious:'conductCautious',selfish:'conductSelfish'})[op.conduct]||'conductCare']:true}});
-  if(op.conduct==='selfish'&&!op.concealed){c.reputation=clamp(c.reputation-8,-100,100);c.wanted=clamp(c.wanted+1,0,10);if(c.rulesVersion>=5)addEvidence(s,event,choiceId,choice.reply);}
+  cb.apply({flags:{[({care:'conductCare',cautious:'conductCautious',selfish:'conductSelfish'})[op.conduct]||'conductCare']:true}});
+  if(op.conduct==='selfish'&&!op.concealed){c.reputation=clamp(c.reputation-8,-100,100);c.wanted=clamp(c.wanted+1,0,10);addEvidence(s,event,choiceId,choice.reply);}
   if(chain.id==='sect_trial'&&op.step===1&&op.conduct==='selfish'){cb.apply({people:{trialmate:{status:'missing'}}});}
   if(chain.id==='sect_return'&&op.step===0&&op.conduct==='selfish'){c.activeChain=null;c.context=null;c.chains[chain.id].skipped=true;}
   else if(op.stopChain){c.activeChain=null;c.context=null;c.chains[chain.id].skipped=true;}
@@ -347,7 +355,6 @@ function revised_completeCultivationAction(s,event,choiceId,cb) {
  if(returnTrip){c.continent=returnTrip.location;if(returnTrip.route.length>1)c.routes.push(copy(returnTrip.route));if(op.chain==='loose_portal')cb.apply({location:returnTrip.location,home:c.chains.loose_portal.originHome});c.spot=s.player.home;}
  if(returnTrip&&op.echoTravel){cb.apply({location:returnTrip.location,home:'旧联系人药铺旁的客房'});c.spot=s.player.home;registerDwelling(s);}
  if(op.familyVisit&&s.life.family.members.some(p=>p.status==='alive')&&storyOpportunity(s,'family_home_ambush',age(s),age(s)+1,.3))schedule(s,'family_home_ambush',2);
- if(op.familyVisit&&c.rulesVersion!==12){const member=s.life.family.members.find(p=>p.status==='alive');c.familyVisited=true;const from=currentContinent(s);c.continent=s.birth.continent;cb.apply({location:'home',home:PATHS[c.path].home});c.spot=s.player.home;if(from!==s.birth.continent)c.routes.push([from,s.birth.continent]);if(member)record(s,cb,'见到家中来人',member.name+'为你开门，先问你这些年住在哪里。'+(c.network.visits?.length?'上次返乡后，旧屋仍由他们照看；你拿出旧回信，核对哪些事情已经办妥。':'你从山门或坊市带回近况，亲人拿出这些年保存的信，问清收不到回音的那段日子。')+'你们把还未办妥的事写给往来的药商，约好下次如何传话。');else{const child=c.descendants.find(p=>p.status==='alive');record(s,cb,'旧屋里已换了一代人',child?child.name+'为你打开旧院门，把长辈留下的信从箱里取出来。你们在檐下谈到天黑，家里终于知道你这些年去了哪里。':'旧院没有亲人来开门，邻人替你找到保存旧信的箱子。你坐在旧屋里读了很久，离世的人不会因为这次归来重新醒来。');}for(const p of s.life.family.members)if(p.status==='dead'&&!c.knownDeaths.includes(p.id))c.knownDeaths.push(p.id);for(const p of c.descendants)p.known=true;(c.network.visits||=[]).push({month:s.month,reserve:s.life.family.reserve});}
  if(op.familyAid){s.life.family.reserve=clamp(s.life.family.reserve+2,0,1000);s.life.family.bond=clamp(s.life.family.bond+8);}
  if(op.familyRefuse){s.life.family.bond=clamp(s.life.family.bond-15);}
  if(op.familyDispute)c.reputation=clamp(c.reputation+(op.familyDispute==='take'?-8:4),-100,100);
@@ -360,8 +367,6 @@ function revised_completeCultivationAction(s,event,choiceId,cb) {
  if(op.registeredTransfer&&success&&previousPath!==c.path){
   // Registration is known at the new teacher's address, not instant global knowledge.
   c.history.at(-1).registered=true;
-  const old=c.history.at(-2)?.path;
-  if(c.rulesVersion<9&&['orthodox','demonic'].includes(old)){c.wanted=clamp(c.wanted+1,0,10);addEvidence(s,event,choiceId,'原组织点名发现缺席，借阅簿尚未注销；新入堂登记留下了去向',old);}
  }
  if(event==='dark_sacrifice_2'&&success&&choiceId!=='selfish')setPath(s,'loose',cb);
  if(op.detain){c.detained=true;c.inquiry=null;c.context='work';}
@@ -456,7 +461,6 @@ function automaticCultivation(s,cb){const c=s.life.cultivation;if(!canCultivate(
  */
 function sceneNarration(s,cb){
  const c=s.life.cultivation;
- if(c.rulesVersion!==12)return;
  if(s.pending)return;
  const context=cultivationContext(s);
  const group=sceneGroup(s,context);
@@ -516,9 +520,9 @@ function revised_cultivationMonth(s,cb){
   const activity=s.month<c.punishmentUntil?'work':c.activity,a=ACTIVITIES[activity],restricted=['travel','valley','cavern','outer','work'].includes(context)||c.detained||c.inquiry||s.month<c.punishmentUntil&&c.punishmentKind==='confinement';
   if(!restricted){
     const before=c.progress;c.progress=canCultivate(s)?clamp(c.progress+(a.progress||1)*ROOTS[s.player.root].rate*(s.birth.era==='ebb'?.8:1)*networkRate(s)*practiceFactor12(s),0,1000):0;
-   if(c.rulesVersion>=5){c.activityMonths[activity]=(c.activityMonths[activity]||0)+1;const gains=c.activityGains[activity]||={};gains.progress=(gains.progress||0)+c.progress-before;}
-   if(s.month%6===0){const beforeSkills=s.player.skills[a.skill],prior=Object.fromEntries(['insight','courage','empathy','health','mind'].map(k=>[k,s.player[k]]));cb.apply({skills:c.rulesVersion>=5&&a.trainSkill===false?{}:{[a.skill]:.5},stats:Object.fromEntries(['insight','courage','empathy','health','mind'].filter(k=>a[k]).map(k=>[k,a[k]]))});
-    if(c.rulesVersion>=5){const gains=c.activityGains[activity];gains[a.skill]=(gains[a.skill]||0)+s.player.skills[a.skill]-beforeSkills;for(const k of Object.keys(prior))if(a[k])gains[k]=(gains[k]||0)+s.player[k]-prior[k];}
+   c.activityMonths[activity]=(c.activityMonths[activity]||0)+1;const gains=c.activityGains[activity]||={};gains.progress=(gains.progress||0)+c.progress-before;
+   if(s.month%6===0){const beforeSkills=s.player.skills[a.skill],prior=Object.fromEntries(['insight','courage','empathy','health','mind'].map(k=>[k,s.player[k]]));cb.apply({skills:a.trainSkill===false?{}:{[a.skill]:.5},stats:Object.fromEntries(['insight','courage','empathy','health','mind'].filter(k=>a[k]).map(k=>[k,a[k]]))});
+    {const gains=c.activityGains[activity];gains[a.skill]=(gains[a.skill]||0)+s.player.skills[a.skill]-beforeSkills;for(const k of Object.keys(prior))if(a[k])gains[k]=(gains[k]||0)+s.player[k]-prior[k];}
     /*
      * 体魄 —— **出力的事**才长（练剑、做工、丹术），静坐读书不长。
      * 只在当前版本（规则十二）有；旧版本照原样走（历史基线不能动）。
@@ -619,16 +623,15 @@ function revised_cultivationMonth(s,cb){
 function revised_validateCultivation(s,fail){
  const c=s.life?.cultivation;if(!c)return;
  if(c.rulesVersion!==12)fail('修行规则版本');validate12(s,fail);validateNetwork(s,fail);validateProgression(s,fail);validateRevision9(s,fail);validate10(s,fail);validateMundane(s,fail);
- if(c.rulesVersion>=5){
-  if(!c.opportunities||Array.isArray(c.opportunities)||Object.entries(c.opportunities).length>96||Object.entries(c.opportunities).some(([id,o])=>!CULTIVATION_EVENTS[id]&&!ROAD_CHAINS.some(a=>a.id===id)||typeof o.occurs!=='boolean'||!Number.isSafeInteger(o.from)||!Number.isSafeInteger(o.to)||o.from>s.month||o.to<o.from||o.to>13000))fail('故事机会窗口');
-  if(!c.dailyMemory||Array.isArray(c.dailyMemory)||Object.entries(c.dailyMemory).some(([id,a])=>!Array.isArray(a)||a.length>64||a.some(v=>!Number.isInteger(v)||v<0||v>64)))fail('日常故事记忆');
-  if(!c.economy||!['received','spent'].every(k=>Number.isFinite(c.economy[k])&&c.economy[k]>=0)||c.economy.last&&(!Number.isSafeInteger(c.economy.last.month)||c.economy.last.month>s.month||!['gross','upkeep','shortfall','balance'].every(k=>Number.isFinite(c.economy.last[k])&&c.economy.last[k]>=0)))fail('灵石收支');
-  if(c.punishmentKind!==undefined&&!['confinement','service'].includes(c.punishmentKind))fail('师门惩戒类型');
-  if(!Array.isArray(c.evidence)||c.evidence.length>64||c.evidence.some(e=>!CULTIVATION_EVENTS[e.event]||!GEOGRAPHY.some(g=>g.id===e.origin)||!PATHS[e.authority]||typeof e.description!=='string'||e.description.length>1000||!Number.isSafeInteger(e.month)||e.month>s.month||!Number.isSafeInteger(e.due)||e.due<e.month||typeof e.settled!=='boolean'||e.hiddenUntil!==undefined&&!Number.isSafeInteger(e.hiddenUntil)))fail('追查证据');
-  if(!c.activityMonths||!c.activityGains||Object.entries(c.activityMonths).some(([id,v])=>!ACTIVITIES[id]||!Number.isSafeInteger(v)||v<0||v>s.month)||Object.entries(c.activityGains).some(([id,gains])=>!ACTIVITIES[id]||!gains||Object.entries(gains).some(([k,v])=>!['progress','sword','alchemy','array','insight','courage','empathy','health','mind'].includes(k)||!Number.isFinite(v)||v<0)))fail('日常积累记录');
-  if(typeof c.detained!=='boolean'||c.inquiry!==null&&!['demonic','beast','loose'].includes(c.inquiry))fail('拜师与看管状态');
-  if(c.teacher!==undefined&&(typeof c.teacher!=='string'||c.teacher.length>20))fail('授业者');
- }
+ if(!c.opportunities||Array.isArray(c.opportunities)||Object.entries(c.opportunities).length>96||Object.entries(c.opportunities).some(([id,o])=>!CULTIVATION_EVENTS[id]&&!ROAD_CHAINS.some(a=>a.id===id)||typeof o.occurs!=='boolean'||!Number.isSafeInteger(o.from)||!Number.isSafeInteger(o.to)||o.from>s.month||o.to<o.from||o.to>13000))fail('故事机会窗口');
+ if(!c.dailyMemory||Array.isArray(c.dailyMemory)||Object.entries(c.dailyMemory).some(([id,a])=>!Array.isArray(a)||a.length>64||a.some(v=>!Number.isInteger(v)||v<0||v>64)))fail('日常故事记忆');
+ if(!c.economy||!['received','spent'].every(k=>Number.isFinite(c.economy[k])&&c.economy[k]>=0)||c.economy.last&&(!Number.isSafeInteger(c.economy.last.month)||c.economy.last.month>s.month||!['gross','upkeep','shortfall','balance'].every(k=>Number.isFinite(c.economy.last[k])&&c.economy.last[k]>=0)))fail('灵石收支');
+ if(c.punishmentKind!==undefined&&!['confinement','service'].includes(c.punishmentKind))fail('师门惩戒类型');
+ if(!Array.isArray(c.evidence)||c.evidence.length>64||c.evidence.some(e=>!CULTIVATION_EVENTS[e.event]||!GEOGRAPHY.some(g=>g.id===e.origin)||!PATHS[e.authority]||typeof e.description!=='string'||e.description.length>1000||!Number.isSafeInteger(e.month)||e.month>s.month||!Number.isSafeInteger(e.due)||e.due<e.month||typeof e.settled!=='boolean'||e.hiddenUntil!==undefined&&!Number.isSafeInteger(e.hiddenUntil)))fail('追查证据');
+ if(!c.activityMonths||!c.activityGains||Object.entries(c.activityMonths).some(([id,v])=>!ACTIVITIES[id]||!Number.isSafeInteger(v)||v<0||v>s.month)||Object.entries(c.activityGains).some(([id,gains])=>!ACTIVITIES[id]||!gains||Object.entries(gains).some(([k,v])=>!['progress','sword','alchemy','array','insight','courage','empathy','health','mind'].includes(k)||!Number.isFinite(v)||v<0)))fail('日常积累记录');
+ if(typeof c.detained!=='boolean'||c.inquiry!==null&&!['demonic','beast','loose'].includes(c.inquiry))fail('拜师与看管状态');
+ if(c.teacher!==undefined&&(typeof c.teacher!=='string'||c.teacher.length>20))fail('授业者');
+
  if(c.format!==1||!PATHS[c.path]||!ACTIVITIES[c.activity]||!ROOTS[s.player.root]||!['ordinary','demonic','beast','loose'].includes(s.birth.upbringing))fail('修行道路');
  if(!GEOGRAPHY.some(p=>p.id===c.continent))fail('实际所在大陆');
  for(const p of Object.values(s.life.properties))if(p.continent&&!GEOGRAPHY.some(g=>g.id===p.continent))fail('财产所在大陆');
@@ -712,30 +715,25 @@ export function mapView(s){
  }
  return {current,visited,unlocked};
 }
-export function currentContinent(...args){const version=args[0]?.life?.cultivation?.rulesVersion;return version===12?revised_currentContinent(...args):(version===11?rules11:version===10?rules10:version===9?rules9:version===8?rules8:version===7?rules7:version===6?rules6:previousRules).currentContinent(...args);}
-export function cultivationActionTrip(...args){const version=args[0]?.life?.cultivation?.rulesVersion;return version===12?revised_cultivationActionTrip(...args):(version===11?rules11:version===10?rules10:version===9?rules9:version===8?rules8:version===7?rules7:version===6?rules6:previousRules).cultivationActionTrip(...args);}
-export function beginCultivationAction(...args){const version=args[0]?.life?.cultivation?.rulesVersion;return version===12?revised_beginCultivationAction(...args):(version===11?rules11:version===10?rules10:version===9?rules9:version===8?rules8:version===7?rules7:version===6?rules6:previousRules).beginCultivationAction(...args);}
-export function cultivationContext(...args){const version=args[0]?.life?.cultivation?.rulesVersion;return version===12?revised_cultivationContext(...args):(version===11?rules11:version===10?rules10:version===9?rules9:version===8?rules8:version===7?rules7:version===6?rules6:previousRules).cultivationContext(...args);}
-export function cultivationActivity(...args){const version=args[0]?.life?.cultivation?.rulesVersion;return version===12?revised_cultivationActivity(...args):(version===11?rules11:version===10?rules10:version===9?rules9:version===8?rules8:version===7?rules7:version===6?rules6:previousRules).cultivationActivity(...args);}
-export function activityOptions(...args){const version=args[0]?.life?.cultivation?.rulesVersion;return version===12?revised_activityOptions(...args):(version===11?rules11:version===10?rules10:version===9?rules9:version===8?rules8:version===7?rules7:version===6?rules6:previousRules).activityOptions(...args);}
-export function changeActivity(...args){const version=args[0]?.life?.cultivation?.rulesVersion;return version===12?revised_changeActivity(...args):(version===11?rules11:version===10?rules10:version===9?rules9:version===8?rules8:version===7?rules7:version===6?rules6:previousRules).changeActivity(...args);}
-export function cultivationIncome(...args){const version=args[0]?.life?.cultivation?.rulesVersion;return version===12?revised_cultivationIncome(...args):(version===11?rules11:version===10?rules10:version===9?rules9:version===8?rules8:version===7?rules7:version===6?rules6:previousRules).cultivationIncome(...args);}
-export function discoverableEvidence(...args){const version=args[0]?.life?.cultivation?.rulesVersion;return version===12?revised_discoverableEvidence(...args):(version===11?rules11:version===10?rules10:version===9?rules9:version===8?rules8:version===7?rules7:version===6?rules6:previousRules).discoverableEvidence(...args);}
-export function completeCultivationAction(...args){const version=args[0]?.life?.cultivation?.rulesVersion;return version===12?revised_completeCultivationAction(...args):(version===11?rules11:version===10?rules10:version===9?rules9:version===8?rules8:version===7?rules7:version===6?rules6:previousRules).completeCultivationAction(...args);}
-export function routeOptions(...args){const version=args[0]?.life?.cultivation?.rulesVersion;return version===12?revised_routeOptions(...args):(version===11?rules11:version===10?rules10:version===9?rules9:version===8?rules8:version===7?rules7:version===6?rules6:previousRules).routeOptions(...args);}
-export function beginTravel(...args){const version=args[0]?.life?.cultivation?.rulesVersion;return version===12?revised_beginTravel(...args):(version===11?rules11:version===10?rules10:version===9?rules9:version===8?rules8:version===7?rules7:version===6?rules6:previousRules).beginTravel(...args);}
-export function finishTravel(...args){const version=args[0]?.life?.cultivation?.rulesVersion;return version===12?revised_finishTravel(...args):(version===11?rules11:version===10?rules10:version===9?rules9:version===8?rules8:version===7?rules7:version===6?rules6:previousRules).finishTravel(...args);}
-export function withdrawCultivation(...args){const version=args[0]?.life?.cultivation?.rulesVersion;return version===12?revised_withdrawCultivation(...args):(version===11?rules11:version===10?rules10:version===9?rules9:version===8?rules8:version===7?rules7:version===6?rules6:previousRules).withdrawCultivation(...args);}
-export function cultivationMonth(...args){const version=args[0]?.life?.cultivation?.rulesVersion;return version===12?revised_cultivationMonth(...args):(version===11?rules11:version===10?rules10:version===9?rules9:version===8?rules8:version===7?rules7:version===6?rules6:previousRules).cultivationMonth(...args);}
-export function validateCultivation(...args){const version=args[0]?.life?.cultivation?.rulesVersion;return version===12?revised_validateCultivation(...args):(version===11?rules11:version===10?rules10:version===9?rules9:version===8?rules8:version===7?rules7:version===6?rules6:previousRules).validateCultivation(...args);}
-export function cultivationText(...args){const version=args[1]?.life?.cultivation?.rulesVersion;return version===12?revised_cultivationText(...args):(version===11?rules11:version===10?rules10:version===9?rules9:version===8?rules8:version===7?rules7:version===6?rules6:previousRules).cultivationText(...args);}
+export function currentContinent(...args){return revised_currentContinent(...args);}
+export function cultivationActionTrip(...args){return revised_cultivationActionTrip(...args);}
+export function beginCultivationAction(...args){return revised_beginCultivationAction(...args);}
+export function cultivationContext(...args){return revised_cultivationContext(...args);}
+export function cultivationActivity(...args){return revised_cultivationActivity(...args);}
+export function activityOptions(...args){return revised_activityOptions(...args);}
+export function changeActivity(...args){return revised_changeActivity(...args);}
+export function cultivationIncome(...args){return revised_cultivationIncome(...args);}
+export function discoverableEvidence(...args){return revised_discoverableEvidence(...args);}
+export function completeCultivationAction(...args){return revised_completeCultivationAction(...args);}
+export function routeOptions(...args){return revised_routeOptions(...args);}
+export function beginTravel(...args){return revised_beginTravel(...args);}
+export function finishTravel(...args){return revised_finishTravel(...args);}
+export function withdrawCultivation(...args){return revised_withdrawCultivation(...args);}
+export function cultivationMonth(...args){return revised_cultivationMonth(...args);}
+export function validateCultivation(...args){return revised_validateCultivation(...args);}
+export function cultivationText(...args){return revised_cultivationText(...args);}
 
 export function cultivationDeliveryMonths(s,selected){
- if(s.life?.cultivation?.rulesVersion===11)return rules11.cultivationDeliveryMonths(s,selected);
- if(s.life?.cultivation?.rulesVersion===10)return rules10.cultivationDeliveryMonths(s,selected);
- if(s.life?.cultivation?.rulesVersion===7)return rules7.cultivationDeliveryMonths(s,selected);
- if(s.life?.cultivation?.rulesVersion===8)return rules8.cultivationDeliveryMonths(s,selected);
- if(s.life?.cultivation?.rulesVersion!==12)return 0;
  const op=selected.system||{};
  if(!op.familySend&&!op.familySupport&&!op.familyAid&&!op.familyPolicy)return 0;
  const trip=routeOptions(s).find(r=>r.id===s.birth.continent);return trip?.route?6+(trip.route.length-1)*18:0;

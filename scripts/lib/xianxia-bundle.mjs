@@ -190,7 +190,7 @@ function liveBindingViolations(ast, exportedNames, id) {
 /**
  * 单个模块：ESM → 模块体（CommonJS 风格）。
  * @param {string} id 模块 id（仓库相对路径，POSIX 分隔符）
- * @param {string} src 源���码
+ * @param {string} src 源代码
  * @param {(spec:string)=>string} resolve 相对路径 → 模块 id
  * @returns {{body:string, deps:string[]}}
  */

@@ -7,14 +7,15 @@ export const projectRoot = fileURLToPath(new URL('../', import.meta.url));
 const types = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.svg': 'image/svg+xml', '.png': 'image/png', '.webp': 'image/webp', '.ico': 'image/x-icon' };
 function within(parent, path) { const rel = relative(parent, path); return rel === '' || (rel !== '..' && !rel.startsWith('..' + sep) && !rel.startsWith(sep) && !/^[a-z]:/iu.test(rel)); }
 
-// 默认服务**开发者面板**（`apps/viz/`）——
-// 2026-11-08 清理网页端之后，本仓库**唯一能开的网页**就是这一个面板
-// （产品端是微信小程序，不在浏览器里跑）。
-// ⚠ `/apps/viz/` 是**开发者面板**（给我们自己看的，不给玩家看）；
-//   `/packages/`、`/content/` 是面板要 import 的规则层与内容层；
-//   `/scripts/lib/` 只为面板里那份「选哪个选项」的策略而放行（纯函数，无 Node 内置模块）。
+// 一个**只读静态服务**：把仓库里的源码原样端出来看（不给玩家看）。
+//
+// ⚠ 2026-11-08 开发者面板已删除 ⇒ 本仓库**没有任何网页界面**了
+//   （产品端是微信小程序，不在浏览器里跑）⇒ 根路径没有默认首页（`entry = null`）。
+//   要看某个文件就按路径访问，例如 `/packages/adventure/engine.js`。
+// ⚠ `/packages/`、`/content/` 是规则层与内容层；`/scripts/lib/` 是纯函数目录
+//   （无 Node 内置模块，浏览器也能 import）。
 //   三者都**不进小程序包**（`build-xianxia-mp.mjs` 的 `ALLOWED` 白名单里没有它们）。
-export async function startServer({ root = projectRoot, host = '127.0.0.1', port = 8866, entry = '/apps/viz/index.html', allow = ['/apps/viz/', '/scripts/lib/', '/packages/', '/content/'] } = {}) {
+export async function startServer({ root = projectRoot, host = '127.0.0.1', port = 8866, entry = null, allow = ['/scripts/lib/', '/packages/', '/content/'] } = {}) {
   const actualRoot = await realpath(root);
   if (!within(await realpath(projectRoot), actualRoot)) throw new Error('服务根目录必须位于本项目内。');
   const server = httpServer(async (request, response) => {
@@ -22,11 +23,11 @@ export async function startServer({ root = projectRoot, host = '127.0.0.1', port
       if (!['GET', 'HEAD'].includes(request.method)) { response.writeHead(405, { Allow: 'GET, HEAD' }); response.end(); return; }
       let pathname = decodeURIComponent(new URL(request.url, 'http://localhost').pathname);
       if (pathname.includes('\\') || pathname.includes('\0') || pathname.split('/').some(part => part === '..' || part.startsWith('.'))) throw new Error('Invalid path');
-      // 根入口就是开发者面板。
-      if (pathname === '/' || pathname === '/index.html') pathname = entry;
-      // 开发者面板的目录形式（/apps/viz/）→ 具体文件。
-      // ⚠ 不然它会以「没有扩展名」被判成私有路径（types 表按扩展名放行）。
-      if (pathname === '/apps/viz' || pathname === '/apps/viz/') pathname = '/apps/viz/index.html';
+      // 根路径 ⇒ 默认首页。**没有首页时（entry = null）直接 404**（不是报错）。
+      if (pathname === '/' || pathname === '/index.html') {
+        if (!entry) throw new Error('No entry');
+        pathname = entry;
+      }
       if (!allow.some(prefix => pathname.startsWith(prefix)) || !types[extname(pathname)]) throw new Error('Private path');
       const path = resolve(actualRoot, '.' + pathname);
       if (!within(actualRoot, path) || !within(actualRoot, await realpath(path)) || !(await stat(path)).isFile()) throw new Error('Invalid file');
@@ -45,6 +46,6 @@ if (process.argv[1] && resolve(process.argv[1]) === resolve(fileURLToPath(import
   const value = (name, fallback) => args.find(arg => arg.startsWith('--' + name + '='))?.slice(name.length + 3) || fallback;
   const port = Number(value('port', '8866')); if (!Number.isInteger(port) || port < 0 || port > 65535) throw new Error('端口无效。');
   const service = await startServer({ root: resolve(projectRoot, value('dir', '.')), host: value('host', '127.0.0.1'), port });
-  console.log('归山记 · 开发者面板：' + service.url + 'apps/viz/');
+  console.log('归山记 · 只读静态服务：' + service.url + '（产品端是微信小程序；本仓库没有网页界面）');
   for (const signal of ['SIGINT', 'SIGTERM']) process.on(signal, async () => { await service.close(); process.exit(0); });
 }

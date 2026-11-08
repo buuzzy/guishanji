@@ -35,30 +35,40 @@ import {PATHS,ROOTS} from './cultivation-world.js';
 import {installDecisionDetails} from './decision-details.js';
 import {installAllegianceStories} from './allegiance-stories.js';
 import {installLifeRevision} from './cultivation-revision.js';
-import {installStoryNetwork,NETWORK_EVENTS} from './story-network.js';
+import {installStoryNetwork} from './story-network.js';
 import {installProgressionEvents} from './progression-stories.js';
 import {installRevision9} from './revision9-stories.js';
-import {installRules10} from './story-rules10.js';
+import {installShared} from './story-shared.js';
 import {installMundaneEvents} from './mundane-stories.js';
 import {installRules12} from './story-rules12.js';
 import {installJointCards} from './cultivation-joints.js';
 import {CHAIN_IDS} from './chain-ids.js';
-import {BACKGROUND_STORIES} from './background-stories.js';
+import {BACKGROUND_STORIES,originBranch,MARKET_HINT,MARKET_REPLY,OTHER_PATH_HINT,OTHER_PATH_REPLY} from './background-stories.js';
 
 const c=(id,label,hint,reply,data={})=>({id,label,hint,reply,...data});
 const n=(id,title,text,choices,data={})=>({id,act:0,title,text,choices,...data});
 const pay=stones=>({cost:{stones}});
 const fate=(base=48,skill='sword',failure={stats:{health:-18}})=>({check:{base,skill,scale:.5,stat:'courage',statScale:.1,failText:'事情没有按你的打算发生。你带着伤退开，留下了无法当场解决的后果。',failure}});
+/*
+ * ⚠ **路口卡的「去坊市」选项按出身分说法**（2026-11-08 · 阶段一）。
+ * 三套说法放在叶子文件 `content/background-stories.js` ——
+ * 规则层与表达域**必须用同一份**，否则玩家读到的和门禁量的会对不上。
+ * ⚠ **只改说法，不改后果**：选项通向的路一个字没动（还是 `path:'loose'`）。
+ */
+
 export const CULTIVATION_EVENTS = {
  reception:n('reception','山门外的队伍','陆行舟是接引弟子，负责带报名者测灵根。许执事登记了你的家乡和年龄。有人带着家传信物，有人只带了一包干粮。',[
-  c('test','排队接受测灵根','测灵石会留下记录。','陆行舟让你把手放到测灵石上。', {next:'root_result'}),
-  c('leave','先去坊市谋生','山下有人招收学徒。','你离开队伍，在坊市找到了落脚的地方。',{system:{path:'loose'}}),
+  c('test','排队接受测灵根',s=>{
+   const c=s.life&&s.life.cultivation,m=c&&c.network&&c.network.marks;
+   return m&&m.noble_recommend?'测灵石上会留下记录。郡里那张名帖，许执事先收下了。':'测灵石会留下记录。';
+  },'陆行舟让你把手放到测灵石上。', {next:'root_result'}),
+  c('leave','先去坊市谋生',s=>MARKET_HINT[originBranch(s)],s=>MARKET_REPLY[originBranch(s)],{system:{path:'loose'}}),
   c('home','回家，再想别的出路','家人还在故乡等消息。','你把这次报名的经历告诉家人，暂时留在故乡。',{system:{path:'mortal'}}),
  ]),
  root_result:n('root_result','测灵石上的记录',s=>'许执事记下：'+s.player.root+'。'+ROOTS[s.player.root].description+' 长老培养的名额有限，执事也在招收照料药田的杂役。',[
   c('join','接受宗门的安排','按测灵记录和考核分配身份。','许执事给你安排了身份、住处和第一份任务。',{system:{admit:true},available:s=>ROOTS[s.player.root].grade>=0,reason:'测灵石尚未发现可按本宗功法修炼的灵根'}),
   c('servant','留下做杂役，寻找学习机会','杂役需要做工，不能随意使用丹房。','你领到杂役木牌，住在药田旁。修行课需要另外争取。',{system:{path:'orthodox',rank:'杂役'}}),
-  c('loose','去坊市找其他功法','宗门的标准并不代表所有师承。','你向游方药师打听功法，开始自己筹钱与练习。',{system:{path:'loose'}}),
+  c('loose','去坊市找其他功法',s=>OTHER_PATH_HINT[originBranch(s)],s=>OTHER_PATH_REPLY[originBranch(s)],{system:{path:'loose'}}),
   c('dark','跟随门外的黑衣修士','他自称幽灯堂接引人，没有说明全部门规。','你随黑衣修士离开正宗山门，进入幽灯堂。',{system:{path:'demonic'}}),
  ]),
  early_demonic:n('early_demonic','收养你的幽灯堂','小时候，一名幽灯堂修士把你带离战乱。他教你读字和打坐，如今要求你在堂中登记，师兄会检查你的练习。',[
@@ -260,57 +270,18 @@ for(const chain of ROAD_CHAINS) for(let step=0;step<chain.stages.length;step++) 
  }
  if(chain.id==='loose_portal'&&step===0)CULTIVATION_EVENTS[id].choices[0].effects={items:['gate_anchor']};
 }
-/* ── 九个历史版本：同一条装配链，在九个时点拍快照 ────────────────────────
+/*
+ * ⚠ **装配顺序就是内容的顺序**（2026-11-08 · 清旧档后只剩当前版本）。
  *
- * 归一前每个版本是一个独立文件、各自跑自己的装配尾巴；归一后是一条链。
- * 快照的语义必须与归一前**逐值一致**，否则旧存档会看到不一样的内容。
+ * 旧档（规则 5–11）各有自己的事件表快照与执行器；现在只留当前版本，
+ * ⇒ 这条链从头到尾只装一次，装出来的就是**唯一那张表**。
  *
- * 两类快照，语义不同，不能混用：
- *   · copy1 / copy2 —— 与旧文件里的写法逐字相同（浅层拷贝，嵌套对象仍然共享）。
- *     归一前主文件就是这么拍的，照抄即可。
- *   · stageCopy —— 深层拷贝，把「当时的值」定格下来。
- *     归一前 RULES7..RULES11 来自另外几个文件，那些文件里的表字面量各自一份，
- *     基础节点不会再被后来的装配改写；只有「装配器带来的共享节点」会跟着一起变。
- *     ⇒ 基础节点深层定格，共享节点最后换回活对象，两边就对上了。
+ * ⚠ 顺序不能改：后装的安装器会**改写**先装的节点
+ *   （决策细节 → 门派忠诚 → 生涯修订 → 人脉网络 → 长线推进 → 修订九 →
+ *     共用内容 → 俗世生活 → 规则十二 → 接头卡 → 背景故事）。
  */
-const copy1=table=>Object.fromEntries(Object.entries(table).map(([id,node])=>[id,{...node,choices:node.choices.map(c=>({...c}))}]));
-const copy2=table=>Object.fromEntries(Object.entries(table).map(([id,n])=>[id,{...n,choices:n.choices.map(c=>({...c,system:c.system?{...c.system}:undefined}))}]));
-const deepCopy=value=>{
- if(Array.isArray(value))return value.map(deepCopy);
- if(value&&typeof value==='object'&&Object.getPrototypeOf(value)===Object.prototype){const out={};for(const key of Object.keys(value))out[key]=deepCopy(value[key]);return out;}
- return value;
-};
-const stageCopy=table=>Object.fromEntries(Object.entries(table).map(([id,node])=>[id,deepCopy(node)]));
-
-/**
- * 「人脉网络」那批节点是**全版本共用同一份对象**（`installStoryNetwork` 直接把
- * `NETWORK_EVENTS` 挂进表里，没有拷贝）。
- * 后来「规则十二」就地改写它们时，共享同一份的那些版本也会跟着变 —— 归一前就是这样，
- * 这里如实保留，不趁机改变旧存档看到的内容。
- *
- * ⚠ 归一前 v7 / v8 用的是 `story-network.js`（与最终链同一份模块 ⇒ 同一份对象），
- *   v9 / v10 / v11 各用各的模块副本（`story-network-v9/-v10/-v11.js`）⇒ 各自一份，
- *   「规则十二」改不到它们。
- *   ⇒ v7 / v8 的网络节点取活对象，v9 / v10 / v11 的网络节点取当时的定格副本。
- *
- * 其余安装器（决策细节、门派忠诚、生涯修订、长线推进、修订九、规则十、俗世生活、
- * 规则十二）都是**各自新建节点**，归一前每个版本各有一份 ⇒ 快照深层拷贝即可。
- */
-const sharedNodes=new Map(Object.entries(NETWORK_EVENTS));
-
-// Existing lives retain their pending choices and action rules. New lives use
-// the reviewed decisions without redrawing births or resetting random streams.
-export const LEGACY_CULTIVATION_EVENTS=copy1(CULTIVATION_EVENTS);
 installDecisionDetails(CULTIVATION_EVENTS,ROAD_CHAINS);
 installAllegianceStories(CULTIVATION_EVENTS);
-
-/**
- * 规则 5 用的长线表只有 12 条 —— 后 4 条是「生涯修订」才加进去的。
- * 旧规则 5 的执行器必须按它自己那 12 条走：否则它会派发
- * `sect_feud_0` 这类在规则 5 的事件表里根本不存在的长线。
- * ⇒ 在「生涯修订」动手之前先把当时那份长线表留下来。
- */
-export const LEGACY_ROAD_CHAINS=ROAD_CHAINS.slice();
 
 /*
  * ⚠ **长线的二、三步登记为「豁免节拍」**（`content/cultivation-beat.js`）。
@@ -322,40 +293,25 @@ export const LEGACY_ROAD_CHAINS=ROAD_CHAINS.slice();
  *     它要受节拍管，否则密集期照样能开新线，密度降不下来。
  *
  * ⚠⚠ **登记必须放在本文件的最末尾**（不是这里）——
- *   `ROAD_CHAINS` 在这里只有 12 条，后面 `installLifeRevision` / `installRules10` /
+ *   `ROAD_CHAINS` 在这里只有 12 条，后面 `installLifeRevision` / `installShared` /
  *   `installRules12` 还会往里加线（实测最后是 16 条）。
  *   ⇒ 早登记会**漏掉后面加的那四条**（2026-11-08 实测踩到：
  *   `sect_feud` / `loose_escort` / `dark_sacrifice` / `beast_eclipse` 都没进豁免表）。
  */
 
-export const RULES5_CULTIVATION_EVENTS=copy2(CULTIVATION_EVENTS);
 installLifeRevision(CULTIVATION_EVENTS,ROAD_CHAINS);
-
-export const RULES6_CULTIVATION_EVENTS=copy2(CULTIVATION_EVENTS);
 installStoryNetwork(CULTIVATION_EVENTS);
-const stage7=stageCopy(CULTIVATION_EVENTS);
-
 installProgressionEvents(CULTIVATION_EVENTS);
-const stage8=stageCopy(CULTIVATION_EVENTS);
-
 installRevision9(CULTIVATION_EVENTS);
-const stage9=stageCopy(CULTIVATION_EVENTS);
-
-installRules10(CULTIVATION_EVENTS,ROAD_CHAINS);
-const stage10=stageCopy(CULTIVATION_EVENTS);
-
+installShared(CULTIVATION_EVENTS,ROAD_CHAINS);
 installMundaneEvents(CULTIVATION_EVENTS);
-const stage11=stageCopy(CULTIVATION_EVENTS);
 
 installRules12(CULTIVATION_EVENTS);
 
 /*
  * 接头卡 —— 「一条线走完」与「下一件事发生」之间的那张桥。
  *
- * ⚠⚠ **必须装在九个历史快照之后**（快照点见文件头的装配顺序表）：
- *   装在快照之前 ⇒ 规则五到十一的事件表也会多出这些卡
- *   ⇒ 门禁 `scripts/verify-events-fidelity.mjs`（九个历史版本逐值全等）报红。
- *   装在这里（`stage11` 之后）⇒ 只有当前版本（规则十二）拿到接头卡。
+ * ⚠ 装在**共用内容之后**（`installShared` 会删掉 `network_echo` 那张旧卡）。
  *
  * ⚠ 为什么在 voice 补齐之前：让下面那段统一给每张卡补上 `voice`，
  *   新卡就不必自己写一遍（漏一个 ⇒ 门禁 `expressions` 报红）。
@@ -365,9 +321,7 @@ installJointCards(CULTIVATION_EVENTS, ROAD_CHAINS);
 /*
  * 背景故事线表（12 条）—— **必答卡，不是岔路**。
  *
- * ⚠⚠ **必须装在九个历史快照之后**（同接头卡的理由）：
- *   装在快照之前 ⇒ 规则五到十一的事件表也会多出这 12 张卡
- *   ⇒ 门禁 `scripts/verify-events-fidelity.mjs`（九个历史版本逐值全等）报红。
+ * ⚠ 装在**共用内容之后**（同接头卡的理由）。
  *
  * 一条背景 = 一张卡 + 两个选项，**只指向一条路**：
  *   · 与修仙无缘侧（4 条）⇒ 直接走进凡人的日子（`path:'mortal'`），
@@ -393,14 +347,20 @@ installJointCards(CULTIVATION_EVENTS, ROAD_CHAINS);
  */
 for (const bg of BACKGROUND_STORIES) {
   /* 每个选项都要一份**新的**数据对象（共用同一个 `system` 会被改写串味）。 */
-  const makeData = () => bg.road === 'mortal' ? {system: {path: 'mortal'}}
-    : bg.upbringing === 'demonic' ? {system: {path: 'demonic'}}
+  /*
+   * ⚠ **按 `bg.path` 决定走哪条路**，不再看 `bg.upbringing`（2026-11-08 · 阶段一）。
+   * 以前这两件事是一件事 ⇒ 「名门大户当散修」这种身世只能借用「游方药师」那张卡，
+   * 连带把童年也过成了「没人照看」的日子（商队、照看者、院门探路）。
+   * ⇒ 现在 **路 = `path`**、**童年 = `upbringing`**，两件事分开。
+   */
+  const makeData = () => bg.path === 'mortal' ? {system: {path: 'mortal'}}
+    : bg.path === 'demonic' ? {system: {path: 'demonic'}}
     /* 妖身这条路上，`hiddenBeast` 仍然要点上：
        它挂着一条日常旁白（`content/cultivation-daily.js` 的「斗篷下的那双手」——
        妖身住在人堆里、平时收着爪牙）。旧卡 `early_beast` 的「去坊市」选项点过这个旗，
        现在妖身成了**主路**，旗不点 ⇒ 这条旁白永远不发 ⇒ 白丢一段内容。 */
-    : bg.upbringing === 'beast' ? {system: {path: 'beast'}, effects: {flags: {hiddenBeast: true}}}
-    : bg.upbringing === 'loose' ? {system: {path: 'loose'}}
+    : bg.path === 'beast' ? {system: {path: 'beast'}, effects: {flags: {hiddenBeast: true}}}
+    : bg.path === 'loose' ? {system: {path: 'loose'}}
     : {next: 'reception'};
   CULTIVATION_EVENTS[bg.id] = n(bg.id, bg.title, bg.text,
     bg.options.map(o => c(o.id, o.label, o.hint, o.reply, makeData())));
@@ -422,20 +382,6 @@ for (const bg of BACKGROUND_STORIES) {
  *   它标的是「成熟度」，不是「内容」⇒ 加它不该让历史版本的基线变红。
  */
 for(const node of Object.values(CULTIVATION_EVENTS))if(!node.voice)node.voice='inline';
-
-/** 把「人脉网络」那批共享节点换回活对象：它们在 v7 / v8 里与最终链是同一份，
- *  后来的装配对它们的改写会同时反映到那两个版本（与归一前一致）。 */
-const withShared=stage=>{const out={...stage};for(const [id,node] of sharedNodes)if(id in stage)out[id]=node;return out;};
-
-// v7 / v8：网络节点取活对象（归一前它们与最终链共用同一份「人脉网络」模块）。
-export const RULES7_CULTIVATION_EVENTS=withShared(stage7);
-export const RULES8_CULTIVATION_EVENTS=withShared(stage8);
-// v9 / v10 / v11：网络节点保持当时的定格副本（归一前它们各用各的模块副本，
-// 「规则十二」改不到它们）。
-export const RULES9_CULTIVATION_EVENTS=stage9;
-export const RULES10_CULTIVATION_EVENTS=stage10;
-export const RULES11_CULTIVATION_EVENTS=stage11;
-
 
 /*
  * ⚠ **核对：这份长线清单与 `content/chain-ids.js` 那份必须逐条对上**。

@@ -1,21 +1,37 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
-import {createRun,choose,advance,advanceToChoice,options,cloneRun,validateRun,setActivity,travelTo,leaveExpedition,upgradeRun} from './helpers/rules9-engine.mjs';
+import {createRun,choose,advance,advanceToChoice,options,cloneRun,validateRun,setActivity,travelTo,leaveExpedition,upgradeRun} from './helpers/rules12-engine.mjs';
 import {activityOptions,routeOptions,currentContinent} from '../packages/adventure/cultivation.js';
 import {ROOTS} from '../content/cultivation-world.js';
 import {ROAD_CHAINS} from '../content/cultivation-stories.js';
-import {decide,playCultivation,naturalSeed} from './helpers/rules9-play.mjs';
+import {decide,playCultivation,naturalSeed} from './helpers/rules12-play.mjs';
 import {AdventureStore,ADVENTURE_KEY} from '../packages/adventure/store.js';
 const follow=(s,id,policy={})=>{for(let i=0;i<130&&s.phase==='life';i++){if(!s.pending)advanceToChoice(s);if(s.pending?.event===id)return s;if(!s.pending)break;choose(s,decide(s,policy).id);if(policy.activity&&activityOptions(s).find(a=>a.id===policy.activity)?.enabled)setActivity(s,policy.activity);}return null;};
-const find=(id,policy={},filter=()=>true)=>{for(let i=0;i<250;i++){const s=follow(createRun({seed:'万千道途-'+i}),id,policy);if(s&&filter(s))return s;}throw Error('自然规则未到达 '+id);};
+/*
+ * ⚠ **取样窗口 250 → 800**（2026-11-08 · 阶段一：出身真正驱动剧情）。
+ * 身世卡改成按出身分池抽 ⇒ 固定种子的决策序列整体位移 ⇒ 有些卡在原来的 250 条里撞不上了。
+ * 实测「家族基础抄本」那张卡（要 clan 出身 + 散修路 + 窗口未关）在第 508 条才第一次出现。
+ * ⚠ **放宽窗口不改变任何断言**：循环仍然是「碰到第一条就返回」，
+ *   只有原来一条都找不到时才会往后多找。
+ * ⚠ 这些卡**没有失联** —— 触达门禁（200 条命 × 2 种策略）证实它们仍发得出来。
+ */
+const find=(id,policy={},filter=()=>true)=>{for(let i=0;i<800;i++){const s=follow(createRun({seed:'万千道途-'+i}),id,policy);if(s&&filter(s))return s;}throw Error('自然规则未到达 '+id);};
 const resolve=s=>{while(s.journey&&!s.journey.open&&s.phase==='life'&&!s.pending)advance(s,1);};
 class Memory{data=new Map();getItem(k){return this.data.get(k)??null;}setItem(k,v){this.data.set(k,v);}}
 test('出生自然分化且先天灵根没有因读书重抽',()=>{
  const types=new Set(),roots=new Set();for(let i=0;i<350;i++){const s=createRun({seed:'万千道途-'+i});types.add(s.birth.upbringing);roots.add(s.player.root);assert.equal(s.birth.goal,'free');validateRun(s);}assert.deepEqual([...types].sort(),['beast','demonic','loose','ordinary']);assert.equal(roots.size,Object.keys(ROOTS).length);
 });
 test('正式测灵根后录取结果与灵根等级相符，弱灵根可当杂役',()=>{
- for(const grade of [-1,0,3]){const s=find('root_result',{path:'orthodox'},s=>ROOTS[s.player.root].grade===grade);const join=options(s).find(o=>o.id==='join');assert.equal(join.enabled,grade>=0);choose(s,grade<0?'servant':'join');resolve(s);assert.equal(s.life.cultivation.rank,grade<=0?'杂役':'外门弟子');validateRun(s);}
+ /*
+  * ⚠ 规则十二：录取结果**按灵根等级定**（`cultivation.js` 的 `admit` 分支）——
+  *   五行杂灵根（grade 0）录取也是**杂役**，松骨灵根（grade 3）才是外门弟子。
+  *   未显灵根（grade -1）**根本不走这张卡** ⇒ 走「药师再替你测一次」（root_review）。
+  */
+ for(const grade of [0,3]){const s=find('root_result',{path:'orthodox'},s=>ROOTS[s.player.root].grade===grade);choose(s,'join');resolve(s);assert.equal(s.life.cultivation.rank,grade===0?'杂役':'外门弟子');validateRun(s);}
+ let review=null;for(let i=0;i<250&&!review;i++){const s=follow(createRun({seed:'万千道途-'+i}),'root_review',{path:'orthodox'});if(s&&ROOTS[s.player.root].grade===-1)review=s;}
+ assert.ok(review,'未显灵根的人走的是「药师再测一次」，不是宗门录取那张卡');
+ assert.ok(options(review).every(o=>!['join','servant'].includes(o.id)),'复核那张卡不给录取选项');
 });
 test('重心与路线查询只读；按实际月数练习，不能无限点击刷点',()=>{
  const s=find('first_method',{path:'loose'});choose(s,'array');resolve(s);const before=cloneRun(s);for(let i=0;i<20;i++){activityOptions(s);routeOptions(s);}assert.deepEqual(s,before);const root=s.player.root,skill=s.player.skills.array;setActivity(s,'study');assert.equal(s.player.skills.array,skill);advance(s,6);assert.ok(s.player.skills.array>skill);assert.equal(s.player.root,root);validateRun(s);
@@ -31,7 +47,36 @@ test('外出不弹宗门考核现场，截止后返回不能补领成绩与奖�
  const s=find('selection_1',{path:'orthodox',activity:'work'},s=>s.month<26*12&&s.player.stones>=6);choose(s,'array');const deadline=s.life.cultivation.exam.deadline,origin=currentContinent(s),target=routeOptions(s).find(p=>p.enabled);travelTo(s,target.id);resolve(s);advance(s,deadline-s.month+1);assert.ok(s.month>deadline);assert.equal(s.pending,null);assert.ok(s.life.cultivation.exam.preparation<=24);const returnRoute=routeOptions(s).find(p=>p.id===origin);assert.ok(returnRoute.enabled);travelTo(s,origin);resolve(s);assert.equal(s.pending.event,'selection_1_result');assert.equal(options(s).find(o=>o.id==='fair').enabled,false);assert.throws(()=>choose(s,'fair'));choose(s,'withdraw');assert.equal(s.life.cultivation.exam,null);validateRun(s);
 });
 test('突破需要实际闭关，独立记录在完成之月出现',()=>{
- const s=find('breakthrough_1_0',{path:'orthodox'},s=>options(s).find(o=>o.id==='try').enabled),month=s.month;choose(s,'try');assert.equal(s.player.realm,0);advance(s,11);assert.equal(s.player.realm,0);advance(s,1);assert.equal(s.month,month+12);assert.equal(s.player.realm,1);assert.ok(s.journal.some(e=>e.kind==='breakthrough'&&e.month===s.month));validateRun(s);
+ /*
+  * ⚠ 规则十二：冲关是**一次判定**（`story-rules12.js` 给它算 base/skill/insight）
+  *   ⇒ 可能失败（失败只留旧伤，不掉体力）。
+  *   ⇒ 这里验的是**机制**（闭关没满不能破境、记录出现在完成之月），
+  *     再单独找一条真的成功的命，证明这条机制会真的把人送进炼气。
+  */
+ let passed=false;
+ for(let i=0;i<250&&!passed;i++){
+  const s=follow(createRun({seed:'万千道途-'+i}),'breakthrough_1_0',{path:'orthodox'});
+  if(!s)continue;
+  const tryOption=options(s).find(o=>o.id==='try');
+  if(!tryOption||!tryOption.enabled)continue;
+  const month=s.month;
+  choose(s,'try');
+  assert.equal(s.player.realm,0,'闭关没结束不能破境');
+  advance(s,11);
+  assert.equal(s.player.realm,0,'闭关没满十二个月不能破境');
+  advance(s,1);
+  if(s.phase!=='life')continue;
+  assert.equal(s.month,month+12,'闭关整整十二个月');
+  const record=s.journal.find(e=>e.kind==='breakthrough'&&e.month===s.month);
+  if(s.player.realm===1){
+   assert.ok(record,'突破记录出现在完成之月');
+   passed=true;validateRun(s);
+  }else{
+   /* 冲关失败：只留旧伤、不掉体力（规则十二），也**没有**突破记录。 */
+   assert.equal(record,undefined,'没破境就不该有突破记录');
+  }
+ }
+ assert.ok(passed,'至少有一条人生真的冲关成功');
 });
 test('战事中止闭关会取消本次结果，继续守阵则恢复原剩余月份',()=>{
  const original=find('world_raid',{path:'loose',activity:'work'},s=>s.life.cultivation.suspended?.journey?.resolution?.event?.startsWith('breakthrough_'));
@@ -43,7 +88,12 @@ test('旅行扣实际路费，抵达前地址不变，完成路线进入地图',
  const s=find('first_method',{path:'loose'},s=>s.player.stones>=3);choose(s,'array');resolve(s);const target=routeOptions(s).find(p=>p.enabled),origin=s.player.location,stones=s.player.stones;assert.ok(target);travelTo(s,target.id);assert.equal(s.player.stones,stones-target.fee);assert.equal(s.player.location,origin);advance(s,target.months-1);assert.equal(s.player.location,origin);advance(s,1);assert.equal(currentContinent(s),target.id);assert.deepEqual(s.life.cultivation.routes.at(-1),target.route);validateRun(s);
 });
 test('探险中的日常受限；主动撤出取消后续并保留已得物品',()=>{
- const s=find('sect_trial_0',{path:'orthodox'});choose(s,'cautious');resolve(s);const inventory=[...s.inventory];assert.ok(s.life.cultivation.activeChain);assert.ok(activityOptions(s).every(a=>!a.enabled));const month=s.month;leaveExpedition(s);assert.equal(s.life.cultivation.activeChain,null);assert.deepEqual(s.inventory,inventory);assert.ok(!s.life.cultivation.queue.some(q=>q.event.startsWith('sect_trial_')));advance(s,6);assert.equal(s.month,month+6);validateRun(s);
+ /*
+  * ⚠ 规则十二：「留在谷口照看补给」（cautious）已经改成**主动退出**这条线
+  *   （`content/story-shared.js` 给它加了 `stopChain`）⇒ 走它就没有探险可撤。
+  *   ⇒ 这里走「随队进谷」（care），那条路才真的开一条探险。
+  */
+ const s=find('sect_trial_0',{path:'orthodox'});choose(s,'care');resolve(s);const inventory=[...s.inventory];assert.ok(s.life.cultivation.activeChain);assert.ok(activityOptions(s).every(a=>!a.enabled));const month=s.month;leaveExpedition(s);assert.equal(s.life.cultivation.activeChain,null);assert.deepEqual(s.inventory,inventory);assert.ok(!s.life.cultivation.queue.some(q=>q.event.startsWith('sect_trial_')));advance(s,6);assert.equal(s.month,month+6);validateRun(s);
 });
 test('跨界携带定位物，归来实际回到出发大陆；未跨界者不会被传送',()=>{
  const s=find('loose_portal_0',{path:'loose'},s=>s.life.cultivation.worldDone),origin=currentContinent(s),home=s.player.home;

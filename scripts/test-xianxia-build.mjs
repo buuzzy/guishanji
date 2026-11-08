@@ -263,17 +263,17 @@ section('迁移等价性（与从 1in8b 迁进来时的那份逐月对拍）');
     const seeds = ['松风有信', '山海-001', '云深不知处', '灯下故人书', '一剑霜寒', '归途未晚'];
     const maxMonths = 600;
 
-    /**
-     * 历史版本 —— **必须**与迁移时那份产物逐月全等。
+    /*
+     * ⚠ **「历史版本逐月对拍」这一段在 2026-11-08「清旧档」后取消了**。
      *
-     * ⚠ 为什么分成「历史版本」与「当前版本」两拨：
-     *   S1–S3 是纯重构（行为不变），那时这条门禁对**当前版本**也成立。
-     *   S4（节奏域）**有意**改了当前版本的行为（突破必发、指导卡让路、
-     *   失败代价、进度不再倒扣）⇒ 当前版本与迁移时那份产物**必然**不同。
-     *   继续拿「当前版本 == 迁移时」当门禁，等于逼着人要么别改、要么偷偷改基线。
-     *   ⇒ 牙齿挪到**真正不能动的地方**：历史版本（9/10/11）一个字节都不许变。
+     *   原因：旧版本（9/10/11）的执行器已经删掉了 ⇒ 现在这份产物**跑不出**旧版本的人生，
+     *   拿它跟迁移时那份产物对拍，得到的只会是「创建人生时抛错」这种假红。
+     *
+     *   ⇒「行为不许变」的牙齿挪到两道更直接的门禁上：
+     *     · `scripts/verify-events-fidelity.mjs` —— 当前事件表摘要逐值全等（347 张卡）。
+     *     · `scripts/verify-event-sequence.mjs` —— 12 条固定人生、366 步决策序列逐条全等。
+     *   这两道守的是**现在唯一在跑的那一版**，比守三个冻死的历史版本更贴题。
      */
-    const FROZEN_VERSIONS = [11, 10, 9];
     const CURRENT_VERSION = 12;
 
     /** 深比较（键序无关）。 */
@@ -325,24 +325,7 @@ section('迁移等价性（与从 1in8b 迁进来时的那份逐月对拍）');
       return {mismatch: null, months: comparedMonths, choices: comparedChoices};
     };
 
-    /* ① 历史版本：必须逐月全等（硬门禁）。 */
-    const frozenMismatches = [];
-    let frozenMonths = 0;
-    let frozenChoices = 0;
-    for (const version of FROZEN_VERSIONS) {
-      for (const [index, seed] of seeds.entries()) {
-        const result = compareOne(seed, version, index);
-        frozenMonths += result.months;
-        frozenChoices += result.choices;
-        if (result.mismatch) frozenMismatches.push(`规则 ${version} · ${result.mismatch}`);
-      }
-    }
-    ok(frozenMismatches.length === 0,
-      `历史版本（规则 ${FROZEN_VERSIONS.join(' / ')}）与迁移时那份产物逐月对拍：`
-      + `${seeds.length * FROZEN_VERSIONS.length} 条人生、${frozenMonths} 个月、${frozenChoices} 个决策点，行为逐值相同`
-      + (frozenMismatches.length ? `；不一致：${frozenMismatches.join('；')}` : ''));
-
-    /* ② 当前版本：差异是**有意**的，但必须登记在案（不能只存在某个人的脑子里）。 */
+    /* ① 当前版本：差异是**有意**的，但必须登记在案（不能只存在某个人的脑子里）。 */
     const currentMismatches = [];
     let currentMonths = 0;
     for (const [index, seed] of seeds.entries()) {
@@ -361,6 +344,7 @@ section('迁移等价性（与从 1in8b 迁进来时的那份逐月对拍）');
       + 'S5 起有意改过角色：寿元单一来源、新增体魄、失败不再扣体力、虚弱变临时状态）');
     console.log(`    · 当前版本与迁移时那份产物的分叉（**有意行为变更**，不判红）：`
       + (currentMismatches.length ? currentMismatches.join('；') : '本次未分叉'));
+    console.log('    · 「行为不许变」现在由 `eventsfid`（表摘要）与 `eventseq`（12 条人生 / 366 步）守');
   }
   if (fs.existsSync(MIGRATED_STYLE)) {
     const a = withoutHeader(fs.readFileSync(MIGRATED_STYLE));

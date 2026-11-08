@@ -204,5 +204,4 @@
 | `apps/preview/pixel-style.js` | 小程序包的构建输入（`build-xianxia-mp.mjs` 的 `ALLOWED`）；也是画面门禁比对调色板的基准 |
 | `apps/preview/cultivation-pixel.js`、`continent-atlas.js` | 画面锁定清单三文件之一（`vendor/xianxia-r12-art/baseline.lock.json`） |
 | `apps/preview/reference/` | 官方 1in8b 逐字节副本（`provenance.json` 有哈希）；`art.cjs` 是生成 `pixel-style.js` 的源 |
-| `apps/viz/` | 开发者面板（给我们自己看的），见交接文档 §9.1 选项 A |
 | `reference/`、`vendor/` | 官方对照源与锁定快照，历史证据 |

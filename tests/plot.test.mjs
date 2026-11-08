@@ -121,11 +121,20 @@ test('判据④：童年标记接不上线 ⇒ 报红', () => {
   assert.ok(problems.some(p => p.includes('sold_page')), '接不上的童年标记必须报红：' + JSON.stringify(problems));
 });
 
-test('判据④：旧版本的旧联系人顺序被改 ⇒ 报红', () => {
-  /* 故意把旧版本也改成「授业者在前」。 */
-  const broken = () => 'teacher';
+test('判据④：旧联系人顺序被改 ⇒ 报红', () => {
+  /*
+   * ⚠ 2026-11-08（清旧档）：这条原来测的是「**旧版本**的旧联系人顺序」——
+   *   规则 10/11 的执行器与事件表已经删干净了 ⇒ 那条断言不存在了。
+   * ⇒ 改成测**规则十二自己**的那句（「认 sold_page、授业者在前」）：
+   *   反向验证的形状不变（故意把顺序改坏 ⇒ 必须报红）。
+   */
+  const broken = s => {
+    const marks = s.life.cultivation.network.marks;
+    if (marks.sold_page || marks.old_page || marks.relic_route) return 'relic';
+    return null;
+  };
   const problems = checkMarks(broken);
-  assert.ok(problems.some(p => p.includes('旧版本')), '旧版本被动过必须报红：' + JSON.stringify(problems));
+  assert.ok(problems.some(p => p.includes('旧联系人顺序')), '旧联系人顺序被动过必须报红：' + JSON.stringify(problems));
 });
 
 test('判据④：改对了 ⇒ 不报红', () => {

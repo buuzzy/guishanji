@@ -48,6 +48,7 @@ export const CARD_STAGES = {
   'child_keeper': {stage: 'child'},
   'child_apothecary': {stage: 'child'},
   'child_clan': {stage: 'child'},
+  'child_noble_school': {stage: 'child'},
   'child_caravan': {stage: 'child'},
   'child_friend': {stage: 'child'},
   'child_relic': {stage: 'child'},
@@ -55,6 +56,7 @@ export const CARD_STAGES = {
   'child_recruit': {stage: 'child'},
   'child_teacher': {stage: 'child'},
   'child_family_vow': {stage: 'child'},
+  'child_noble_recommend': {stage: 'child'},
 
   /* ── 少年（16–29 岁）：入门那一套 ────────────────────────────────── */
   'reception': {stage: 'youth'},

@@ -7,7 +7,8 @@
  *
  * ## 守的五件事
  * ------------
- *   1. **只加在当前版本** —— 九个历史快照一张接头卡都没有 ⇒ 旧档逐字节不变。
+ *   1. **只加在当前版本** —— 旧版本（9/10/11）的事件表快照已全部删除，
+ *      只剩当前这一份 ⇒ 接头卡一张都不许少，也一张都不许多出没登记的。
  *   2. **卡 id 以线 id 开头** —— 否则被密度闸拦掉，接头卡根本发不出来。
  *   3. **旗标名合法** —— 存档校验要求旗标名匹配 `/^[a-zA-Z][a-zA-Z0-9]{0,50}$/`，
  *      带下划线 ⇒ **每次存档都被判无效**（2026-11-08 实测踩到）。
@@ -20,23 +21,19 @@
  *   · 下划线旗标 ⇒ `validateRun` 必须报红（证明第 3 条不是空跑）。
  *   · 不以线 id 开头的卡 id ⇒ `isMilestone` 不认它（证明第 2 条是真的判据）。
  *   · 无关的旗标 ⇒ 下一拍**不该**被关（证明第 5 条不是「见旗标就关」）。
+ *
+ * ⚠ **旧版本已删，本文件只测规则十二**（2026-11-08 · 清旧档）：
+ *   原来那条「九个历史快照一张接头卡都没有」整条删掉 ——
+ *   九个快照已随旧版本一起删除 ⇒ 「旧档一个字节都不动」这件事**已经无处可验**
+ *   （引擎只认 12，`validateRun` 直接拒收旧档）。剩下的守住当前表这一份。
  */
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createRun,advance,choose,options,validateRun} from '../packages/adventure/engine.js';
 import {isMilestone} from '../packages/adventure/gates.js';
-import {
-  CULTIVATION_EVENTS,LEGACY_CULTIVATION_EVENTS,RULES5_CULTIVATION_EVENTS,RULES6_CULTIVATION_EVENTS,
-  RULES7_CULTIVATION_EVENTS,RULES8_CULTIVATION_EVENTS,RULES9_CULTIVATION_EVENTS,
-  RULES10_CULTIVATION_EVENTS,RULES11_CULTIVATION_EVENTS,ROAD_CHAINS,
-} from '../content/cultivation-stories.js';
+import {CULTIVATION_EVENTS,ROAD_CHAINS} from '../content/cultivation-stories.js';
 import {JOINT_CARD_IDS,JOINT_BY_CHAIN,JOINT_NEXT_BEAT,jointFlag,nextBeat12} from '../content/cultivation-joints.js';
 
-const OLD_TABLES = {
-  LEGACY: LEGACY_CULTIVATION_EVENTS, RULES5: RULES5_CULTIVATION_EVENTS, RULES6: RULES6_CULTIVATION_EVENTS,
-  RULES7: RULES7_CULTIVATION_EVENTS, RULES8: RULES8_CULTIVATION_EVENTS, RULES9: RULES9_CULTIVATION_EVENTS,
-  RULES10: RULES10_CULTIVATION_EVENTS, RULES11: RULES11_CULTIVATION_EVENTS,
-};
 /** 存档校验对旗标名的要求（`packages/adventure/engine.js` 的 `validateRun`）。 */
 const FLAG_NAME = /^[a-zA-Z][a-zA-Z0-9]{0,50}$/u;
 
@@ -54,15 +51,15 @@ function jointState(seed = 'joint-case') {
   return s;
 }
 
-test('接头卡只加在当前版本：九个历史快照一张都没有', () => {
+test('接头卡只加在当前版本表：四十八张一张不少，也没有没登记的', () => {
   /* ⚠ 2026-11-08 阶段 3.4：七条无桥的长线也补上了 ⇒ 27 → 48 张。 */
   assert.equal(JOINT_CARD_IDS.length, 48);
   for (const id of JOINT_CARD_IDS) assert.ok(CULTIVATION_EVENTS[id], '当前版本缺卡：' + id);
-  for (const [name, table] of Object.entries(OLD_TABLES)) {
-    for (const id of JOINT_CARD_IDS) assert.equal(table[id], undefined, name + ' 的旧档里混进了接头卡：' + id);
-  }
   /* 反向验证：确实**能**在表里找到接头卡（不是「查的地方本来就是空的」）。 */
-  assert.ok(Object.keys(CULTIVATION_EVENTS).length > Object.keys(OLD_TABLES.RULES11).length);
+  assert.ok(Object.keys(CULTIVATION_EVENTS).length > JOINT_CARD_IDS.length);
+  /* 反向验证：表里也不许有**没登记**的接头卡（登记与内容必须对得上）。 */
+  const stray = Object.keys(CULTIVATION_EVENTS).filter(id => id.includes('_joint_') && !JOINT_CARD_IDS.includes(id));
+  assert.deepEqual(stray, [], '表里混进了没登记的接头卡：' + stray.join(' > '));
 });
 
 test('卡 id 以线 id 开头：密度闸认它，接头卡才发得出来', () => {
@@ -138,8 +135,9 @@ test('反向验证：无关的旗标不会把下一拍关掉（不是「见旗�
   assert.equal(option.enabled, true, '不相干的旗标把选项关掉了');
 });
 
-test('九条线的接头卡都写好了旗标，读旗标的下一拍也都存在', () => {
+test('十六条线的接头卡都写好了旗标，读旗标的下一拍也都存在', () => {
   const chainIds = new Set(ROAD_CHAINS.map(c => c.id));
+  assert.equal(Object.keys(JOINT_BY_CHAIN).length, 16, '长线表与接头卡清单的线数对不上');
   for (const chainId of Object.keys(JOINT_BY_CHAIN)) {
     assert.ok(chainIds.has(chainId), chainId + ' 不是内容层那一份线表里的线');
     const beat = JOINT_NEXT_BEAT[chainId];

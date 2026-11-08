@@ -3,7 +3,7 @@ import {REALMS} from '../../content/adventure.js';
 import {progressNeeded,breakthroughRule,gradeBonus,CADENCE,supplyUntil,qigongStage,QIGONG_STAGE_NAMES} from '../../content/cadence-table.js';
 import {BODY_TYPES,SECT_PROFILES,REGIONAL_METHODS} from '../../content/rules12-world.js';
 import {ROOTS,GEOGRAPHY} from '../../content/cultivation-world.js';
-import {canCultivate,route} from './story-rules10.js';import {breakthroughDue} from './cadence.js';
+import {canCultivate,route} from './story-shared.js';import {breakthroughDue} from './cadence.js';
 const c=s=>s.life.cultivation;
 export const active12=s=>s.life?.cultivation?.rulesVersion===12;
 export const rules12=s=>c(s).v12;

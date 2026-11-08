@@ -5,12 +5,12 @@ import {ROAD_CHAINS,CULTIVATION_EVENTS} from '../content/cultivation-stories.js'
 import {writeFile,mkdir} from 'node:fs/promises';
 /*
  * 「遇到这张卡按什么偏好选」的策略表搬到了 `scripts/lib/decide-policy.js` ——
- * 那里没有 Node 内置模块，浏览器（`apps/viz/` 开发者面板）也能 import 同一份。
- * 这里继续转发导出，既有调用方（各审计脚本、浏览器门禁、测试）一个字不用改。
+ * 那里没有 Node 内置模块，纯函数谁都能 import 同一份。
+ * 这里继续转发导出，既有调用方（各审计脚本、测试）一个字不用改。
  */
 import {decide} from './lib/decide-policy.js';
 export {decide};
-export function playCultivation({seed='新版人生',rulesVersion=11,...policy}={}){
+export function playCultivation({seed='新版人生',rulesVersion=12,...policy}={}){
  const state=createRun({seed,rulesVersion}),events=[],snapshots=[],seconds={automatic:0,reading:0};
  for(let step=0;step<160&&state.phase==='life';step++){
   while(state.phase==='life'&&!state.pending){seconds.automatic+=monthSeconds(state);advance(state,1);}

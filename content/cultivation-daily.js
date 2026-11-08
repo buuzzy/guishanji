@@ -33,7 +33,7 @@ export function storyOpportunity(s,id,start,end,chance=.62){
  const c=s.life.cultivation,now=years(s);
  if(now<start||now>end)return false;
  if(!c.opportunities[id]){
-  const occurs=c.rulesVersion===12?opportunityDraw(s,id,chance):random(s,'events')<chance;
+  const occurs=opportunityDraw(s,id,chance);
   c.opportunities[id]={occurs,from:s.month,to:(end+1-(s.birth.startAge||0))*12-1};
  }
  const o=c.opportunities[id];return o.occurs&&s.month<=o.to;
@@ -201,8 +201,6 @@ const FINDING_CHANCE=3000; /* ‰ 3000/10000 = 30% 的旁白带着东西 */
 function pickFinding(s,key){
  const pool=FINDINGS[key]||(key.startsWith('chain-')?FINDINGS.chain:key.startsWith('appointment-')?FINDINGS.appointment:null);
  if(!pool||!pool.length)return null;
- const c=s.life.cultivation;
- if(c.rulesVersion!==12)return null; /* 只改当前版本；旧档一字不变 */
  const stamp=String(s.seed)+':捡到:'+s.month+':'+key;
  const roll=hashText(stamp)%10000;
  if(roll>=FINDING_CHANCE)return null;
@@ -220,8 +218,6 @@ function pickFinding(s,key){
  */
 const WEAR_CHANCE=1800; /* ‰ 1800/10000 = 18% 的旁白是「东西坏了」 */
 function pickWear(s,key){
- const c=s.life.cultivation;
- if(c.rulesVersion!==12)return null; /* 只改当前版本；旧档一字不变 */
  const stamp=String(s.seed)+':用旧:'+s.month+':'+key;
  if(hashText(stamp)%10000>=WEAR_CHANCE)return null;
  const have=WEAR.filter(row=>s.inventory.includes(row[2]));
@@ -436,7 +432,7 @@ const AFTERMATH = [
  */
 export function aftermathStory(s) {
   const c = s.life && s.life.cultivation;
-  if (!c || c.rulesVersion !== 12) return null;   /* 只改当前版本 */
+  if (!c) return null;
   for (const row of AFTERMATH) {
     if (!s.flags[row.flag]) continue;
     if (row.when && !row.when(s)) continue;

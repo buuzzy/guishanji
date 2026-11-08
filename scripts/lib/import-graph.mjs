@@ -14,7 +14,7 @@
  *
  *   2026-11-08 实测踩到的那一条：
  *     content/adventure.js → content/items.js → content/mundane-stories.js
- *       → packages/adventure/mundane-life.js → packages/adventure/story-rules10.js
+ *       → packages/adventure/mundane-life.js → packages/adventure/story-shared.js
  *       → packages/adventure/gates.js → content/cadence-table.js → content/adventure.js
  *   ⇒ `content/cadence-table.js` 加载时读 `REALMS` ⇒ `REALMS` 是 undefined ⇒ `.map` 崩。
  *

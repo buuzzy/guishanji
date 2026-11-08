@@ -82,14 +82,9 @@ export function activityLabel(state) {
 const MUNDANE_YEAR_SECONDS = 8;
 
 export function monthSeconds(state) {
-  if(state.life?.cultivation?.rulesVersion>=8){
+  if(state.life?.cultivation){
     if(state.life?.cultivation?.mundane?.started)return MUNDANE_YEAR_SECONDS/12;
     return playbackSeconds(state);
-  }
-  if(state.life?.cultivation?.rulesVersion===7){
-    const years=age(state),c=state.life.cultivation;
-    const seconds=years<6?3:years<16?6:c.activeChain||c.network?.arc?8:state.journey?.resolution?6:years<30?8:state.player.realm<2?6:state.player.realm<3?4:3;
-    return seconds/12;
   }
   if (age(state) < 16) return 1 / 12;
   if(state.life?.cultivation){const pace=({0:6,1:6,2:4,3:2.8,4:2})[state.player.realm];return Math.min(pace,age(state)>=100?2.8:age(state)>=65?4:6)/12;}

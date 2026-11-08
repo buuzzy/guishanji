@@ -2,9 +2,9 @@ import {hashText} from '../core/random.js';
 import {GEOGRAPHY} from '../../content/cultivation-world.js';
 import {NOVEL_NAMES} from '../../content/novel-names.js';
 import {MUNDANE_KEPT} from '../../content/mundane-kept.js';
-import {canCultivate,route} from './story-rules10.js';
+import {canCultivate,route} from './story-shared.js';
 
-export const activeMundane=s=>s.life?.cultivation?.rulesVersion>=11;
+export const activeMundane=s=>!!s.life?.cultivation;
 export const mundane=s=>s.life?.cultivation?.mundane;
 const c=s=>s.life.cultivation;
 const years=s=>(s.birth.startAge||0)+Math.floor(s.month/12);
@@ -25,9 +25,9 @@ const roll=(s,key)=>hashText(s.seed+':mortal11:'+key)%100;
  * ⚠ **停用的 45 张卡一个字都没删**（正文、选项、表达域说法全在），
  *   只是不再发出去 ⇒ 放回来只要改 `content/mundane-kept.js` 一处。
  */
-const plan12=s=>c(s).rulesVersion>=12&&typeof mundane(s).step==='number'&&mundane(s).step>=0;
+const plan12=s=>typeof mundane(s).step==='number'&&mundane(s).step>=0;
 /** 凡人的收尾之年（与版本无关的那个口径抽成一处）。 */
-const endAge=s=>c(s).rulesVersion===12?Math.max(45,c(s).v12.body.natural-c(s).v12.body.loss-4):78;
+const endAge=s=>Math.max(45,c(s).v12.body.natural-c(s).v12.body.loss-4);
 const log=(s,cb,title,body,kind='life')=>{cb.log({kind,title,body,automatic:true,location:s.player.location,context:c(s).context||'home'});s.life.automaticCount++;mundane(s).lastVisible=s.month;};
 export const JOBS={yard:'外院杂役',shop:'药铺伙计',farm:'田户',carrier:'商队脚夫'};
 export function initializeMundane(s){
@@ -38,7 +38,7 @@ export function initializeMundane(s){
   spouse:null,child:null,lifeOrder:Array.from({length:12},(_,i)=>i).sort((a,b)=>hashText(s.seed+':life-card:'+a)-hashText(s.seed+':life-card:'+b)),local:{place:c(s).continent,regime:0,kind:null,until:0,tax:0,history:[]},corpse:null,gift:null,ledger:null,notes:[],assets:[],lastChoice:0,
  /* ⚠ 五张直线走到第几张了（**只有规则十二的新人生有**这个键；旧版本 / 旧档没有 ⇒ 走原来的弧制）。
     ⚠ 键是「有或没有」，不能写成 `step: undefined` —— 那会给存档多出一个空键。 */
- ...(c(s).rulesVersion>=12?{step:0}:{})};
+ ...{step:0}};
 }
 export const person=(s,id)=>mundane(s).people.find(p=>p.id===id);
 export const personName=(s,id)=>person(s,id)?.name||'当地人';

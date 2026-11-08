@@ -219,7 +219,7 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>
       <h2>删开发者面板：实施清单</h2>
     </div>
-    <p class="sec-sub">已按你的决定准备好，<b>但这一轮没执行</b>。下面是确切要动的东西。</p>
+    <p class="sec-sub">已按你的决定<b>执行完毕</b>（2026-11-08）。下面是当时动过的东西。</p>
 
     <div class="card">
       <h3 style="color:var(--warn)">① 千万别删这两个（最容易误伤）</h3>
@@ -227,19 +227,19 @@
         <li><b><code>scripts/serve.mjs</code></b> —— 名字像「起服务的」，其实它还导出 <code>projectRoot</code>，<code>check.mjs</code> / <code>build-pixel-style.mjs</code> / <code>play-adventure.mjs</code> 三个脚本都在 import 它。删了 ⇒ 构建脚本直接崩。</li>
         <li><b><code>scripts/lib/decide-policy.js</code></b> —— 「遇到这张卡按什么偏好选」的策略表，<code>audit-metrics</code> / <code>audit-completeness</code> / <code>audit-narration</code> / <code>audit-reach</code> / <code>play-cultivation</code> 都用它。删了 ⇒ 四道审计门禁全崩。</li>
       </ul>
-      <h3 style="margin-top:18px">② 真正要删的</h3>
+      <h3 style="margin-top:18px">② 真正删掉的</h3>
       <ul class="plist">
-        <li><b><code>apps/viz/</code> 整个目录</b> —— 面板本体，332 KB / 20 个文件。</li>
+        <li><b>开发者面板整个目录</b> —— 面板本体，332 KB / 20 个文件。</li>
         <li><b><code>scripts/verify-viz-panel.mjs</code></b> —— 那道浏览器门禁（54 项断言）。</li>
       </ul>
-      <h3 style="margin-top:18px">③ 要改的 8 处</h3>
+      <h3 style="margin-top:18px">③ 改掉的 8 处</h3>
       <ol class="plist">
         <li><code>scripts/run-regression.mjs</code> —— 门禁清单去掉 <code>viz-browser</code> ⇒ <b>39 道变 38 道</b>；而且它是<b>唯一那道浏览器门禁</b>，删掉后「全量 = 快组」，分组说明也要重写。</li>
         <li><code>AGENTS.md</code> —— §4.5 整节删掉、§3 门禁表里那行删掉、「快组 38 道 / 全量 39 道」这几个数字改掉。</li>
         <li><code>README.md</code> —— 第 15 行 <code>npm run dev</code> 那条指向面板。</li>
-        <li><code>docs/browser-gate-coverage.md</code> —— 第 207 行那张表里 <code>apps/viz/</code> 那一行。</li>
+        <li><code>docs/browser-gate-coverage.md</code> —— 第 207 行那张表里面板那一行。</li>
         <li><code>docs/migration/source-manifest.json</code> —— 去掉被删文件的条目。</li>
-        <li><code>scripts/gen-source-manifest.mjs</code> —— 「本轮新增」列表里去掉 <code>apps/viz/*</code> 那几条。</li>
+        <li><code>scripts/gen-source-manifest.mjs</code> —— 「本轮新增」列表里去掉面板那几条。</li>
         <li><code>docs/refactor-progress-2026-11-08.html</code> —— 决策表里「开发者面板删不删」那行改成「已决策：删除」。</li>
         <li><code>package.json</code> —— <b>不用改</b>（<code>dev</code> / <code>start</code> 指向 <code>serve.mjs</code>，而它留着）。</li>
       </ol>

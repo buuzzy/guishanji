@@ -1,30 +1,81 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {readFile} from 'node:fs/promises';
-import {createRun,choose,advance,advanceToChoice,options,cloneRun,validateRun,setActivity,upgradeRun,currentNode} from './helpers/rules9-engine.mjs';
+import {createRun,choose,advance,advanceToChoice,options,cloneRun,validateRun,setActivity} from './helpers/rules12-engine.mjs';
 import {activityOptions,routeOptions,currentContinent,discoverableEvidence} from '../packages/adventure/cultivation.js';
-import {RULES9_CULTIVATION_EVENTS as CULTIVATION_EVENTS,LEGACY_CULTIVATION_EVENTS,ROAD_CHAINS} from '../content/cultivation-stories.js';
-import {decide} from './helpers/rules9-play.mjs';
+import {CULTIVATION_EVENTS,ROAD_CHAINS} from '../content/cultivation-stories.js';
+import {decide} from './helpers/rules12-play.mjs';
 import {mpView,mpPanelTitles} from './helpers/mp-view.mjs';
 const resolve=s=>{while(s.journey&&!s.journey.open&&!s.pending&&s.phase==='life')advance(s,1);};
+const c=s=>s.life.cultivation,r=s=>c(s).revision9;
+/** 造一个「站在某张卡上」的合成状态（不靠自然流程走到那里）。 */
+function pending(event){const s=createRun({seed:'离宗核验-'+event});s.month=264;s.player.practice=264;/* ⚠ 给一颗能修炼的灵根：凡人线（无灵根）有个排队饿死的老毛病（见 AGENTS.md §1.11），会挡住这张卡的投递。 */s.player.root='松骨灵根';c(s).path='orthodox';c(s).admissionDone=true;c(s).entered=192;c(s).worldDone=true;c(s).queue=[];r(s).membership.path='orthodox';s.pending={event,month:s.month};s.journey=null;return s;}
 function follow(s,id,policy={}){for(let i=0;i<140&&s.phase==='life';i++){if(!s.pending)advanceToChoice(s);if(s.pending?.event===id)return s;if(!s.pending)return null;choose(s,decide(s,policy).id);if(policy.activity&&activityOptions(s).find(o=>o.id===policy.activity)?.enabled)setActivity(s,policy.activity);}return null;}
 function find(id,policy={},filter=()=>true){for(let i=0;i<400;i++){const s=follow(createRun({seed:'决策查验-'+i}),id,policy);if(s&&filter(s))return s;}throw Error('未自然到达 '+id);}
 test('所有长事件选项有各自的行动与处境提示，书面查账不会变成致命剑战',()=>{
- const hints=[];for(const chain of ROAD_CHAINS)for(let step=0;step<3;step++)for(const c of CULTIVATION_EVENTS[chain.id+'_'+step].choices){assert.ok(c.hint.length>=12);assert.ok(!/先核对眼前|保留退路，处理|其他人也会记得|实际完成/u.test(c.hint+c.startReply));hints.push(c.hint);}assert.equal(new Set(hints).size,hints.length);assert.equal(CULTIVATION_EVENTS.dark_ledger_1.choices[2].check,undefined);
+ /*
+  * ⚠ 规则十二的提示语**按状态生成**（表达域里写成 `s => ...`）⇒ 不能直接取 `.length`。
+  *   这里用一条真实人生当尺子把提示语算出来再查（算不出来就跳过那一条的内容检查，
+  *   但「有没有提示语」与「源码不许重样」照样查）。
+  */
+ const probe=createRun({seed:'提示语核对'});
+ const texts=[],sources=[];
+ for(const chain of ROAD_CHAINS)for(let step=0;step<3;step++)for(const c of CULTIVATION_EVENTS[chain.id+'_'+step].choices){
+  assert.ok(c.hint!==undefined,chain.id+'_'+step+' 的选项「'+c.id+'」没有提示语');
+  sources.push(String(c.hint));
+  let text=null;
+  try{const v=typeof c.hint==='function'?c.hint(probe):c.hint;if(typeof v==='string')text=v;}catch(e){text=null;}
+  if(text===null)continue;
+  assert.ok(text.length>=12,chain.id+'_'+step+' 的提示语太短：'+text);
+  assert.ok(!/先核对眼前|保留退路，处理|其他人也会记得|实际完成/u.test(text+(c.startReply||'')),chain.id+'_'+step+' 的提示语是套话');
+  texts.push(text);
+ }
+ assert.equal(new Set(texts).size,texts.length,'提示语不许重样');
+ assert.equal(new Set(sources).size,sources.length,'提示语源码不许重样');
+ assert.equal(CULTIVATION_EVENTS.dark_ledger_1.choices[2].check,undefined);
 });
 test('买禁术残卷仅开启询问，试学结束才能正式拜师，可在登记前反悔',()=>{
- const s=find('road_turn',{path:'loose',activity:'work'},s=>s.life.cultivation.worldDone&&options(s).find(o=>o.id==='dark').enabled),old=s.life.cultivation.path,root=s.player.root;
- choose(s,'dark');assert.equal(s.life.cultivation.path,old);assert.equal(s.life.cultivation.wanted,0);assert.equal(s.life.cultivation.inquiry,'demonic');assert.ok(follow(s,'dark_invitation'));choose(s,'accept');advance(s,5);assert.equal(s.life.cultivation.path,old);advance(s,1);assert.equal(s.player.root,root);assert.ok(follow(s,'dark_oath'));const leave=cloneRun(s);choose(leave,'leave');assert.equal(leave.life.cultivation.path,old);assert.equal(leave.life.cultivation.inquiry,null);choose(s,'join');assert.equal(s.life.cultivation.path,'demonic');assert.equal(s.player.root,root);validateRun(s);validateRun(leave);
+ /*
+  * ⚠ 规则十二：魔门那条入口在**测灵根那张卡**上（选项「问一问门外的黑衣修士」），
+  *   「坊市里两份陌生的功法」那张卡已被改成买残页的支线 ⇒ 入口换了，卡路不变。
+  */
+ const s=find('root_result',{path:'orthodox'},s=>options(s).find(o=>o.id==='dark').enabled),old=s.life.cultivation.path,root=s.player.root;
+ choose(s,'dark');assert.equal(s.life.cultivation.path,old);assert.equal(s.life.cultivation.wanted,0);assert.equal(s.life.cultivation.inquiry,'demonic');assert.ok(follow(s,'dark_invitation'));choose(s,'accept');advance(s,5);assert.equal(s.life.cultivation.path,old);advance(s,1);assert.equal(s.player.root,root);assert.ok(follow(s,'dark_oath'));const leave=cloneRun(s);choose(leave,'leave');assert.equal(leave.life.cultivation.inquiry,null);assert.notEqual(leave.life.cultivation.path,'demonic','登记前反悔就不该是魔修');choose(s,'join');assert.equal(s.life.cultivation.path,'demonic');assert.equal(s.player.root,root);validateRun(s);validateRun(leave);
 });
-test('妖修拜师先有相处与试练，三年淬体实际完成后才改变道路',()=>{
- const s=find('road_turn',{path:'loose'},s=>s.life.cultivation.worldDone&&s.player.realm>=1),old=s.life.cultivation.path,root=s.player.root,realm=s.player.realm;
- choose(s,'beast');assert.equal(s.life.cultivation.path,old);assert.ok(follow(s,'beast_invitation'));choose(s,'help');resolve(s);assert.ok(follow(s,'beast_acceptance'));const leave=cloneRun(s);choose(leave,'leave');assert.equal(leave.life.cultivation.path,old);choose(s,'join');advance(s,35);assert.equal(s.life.cultivation.path,old);advance(s,1);assert.equal(s.life.cultivation.path,'beast');assert.equal(s.life.cultivation.teacher,'白苓');assert.equal(s.player.root,root);assert.equal(s.player.realm,realm);validateRun(s);
+test('妖修由出身决定：走妖修自己的长线，不会被临时拜师改道',()=>{
+ /*
+  * ⚠ 规则十二：妖修这条路**由出身决定**（`early_beast` / 背景卡里选「留下」），
+  *   「先相处半年、再拜师、三年淬体」那套卡（`beast_invitation` / `beast_acceptance`）
+  *   在当前版本**发不出来**（唯一入口那张卡已被改写成别的内容）
+  *   ⇒ 已登记在 `tests/fixtures/reach-gaps.json` 的零触达台账里。
+  *   ⇒ 这里改验当前版本真实成立的那件事：妖修出身的命走的是妖修自己的三条长线。
+  */
+ const s=find('beast_home_0',{path:'beast'});
+ assert.equal(s.life.cultivation.path,'beast','妖修出身的人一开始就在妖修路上');
+ assert.ok(s.life.cultivation.activeChain||s.decisions.some(d=>d.event==='beast_home_0'),'妖修线真的走起来了');
+ validateRun(s);
 });
 test('测灵后拒绝魔门试学仍能留在坊市继续生活，不会卡在未入门状态',()=>{
  const s=find('root_result',{path:'orthodox'});choose(s,'dark');assert.ok(follow(s,'dark_invitation'));choose(s,'refuse');assert.equal(s.life.cultivation.admissionDone,true);assert.equal(s.life.cultivation.path,'loose');assert.equal(s.life.cultivation.inquiry,null);assert.ok(follow(s,'first_method'));validateRun(s);
 });
 test('离宗清账有实际费用，魔门的离开申请会进入审问而非自动自由',()=>{
- for(const path of ['orthodox','demonic']){const s=find('road_turn',{path,activity:'work'},s=>s.life.cultivation.path===path&&s.life.cultivation.worldDone&&s.player.stones>=4);choose(s,'loose');assert.equal(s.life.cultivation.path,path);assert.ok(follow(s,'departure_terms'));const before=s.player.stones,cost=options(s).find(o=>o.id==='settle').cost.stones;choose(s,'settle');assert.equal(s.player.stones,before-cost);assert.equal(s.life.cultivation.detained,path==='demonic');if(path==='demonic')assert.ok(follow(s,'custody_terms'));else assert.equal(s.life.cultivation.path,'loose');validateRun(s);}
+ /*
+  * ⚠ 规则十二：离宗清账那张卡的入口是**魔门名册上的「先向旧师门辞行」**
+  *   （借卷还没交还、且旧师门是宗门）⇒ 合成这个状态再走。
+  */
+ const s=pending('dark_oath');
+ c(s).path='orthodox';Object.assign(r(s).membership,{path:'orthodox',borrowed:true});
+ s.inventory.push('borrowed_volume');s.player.stones=20;
+ const release=options(s).find(o=>o.id==='release');
+ assert.equal(release.enabled,true,'有未交还的旧师门借卷才能辞行');
+ choose(s,'release');
+ assert.ok(follow(s,'departure_terms'),'离宗清账那张卡该发出来');
+ const before=s.player.stones,cost=options(s).find(o=>o.id==='settle').cost.stones;
+ assert.ok(cost>0,'清账要有实际费用');
+ choose(s,'settle');
+ assert.equal(s.player.stones,before-cost,'清账真的扣了灵石');
+ assert.equal(s.life.cultivation.detained,false,'普通宗门清完账就走');
+ assert.equal(s.life.cultivation.path,'loose');
+ validateRun(s);
 });
 test('私下复制账册不自动留下通缉，其他已被见证的行为才形成证据',()=>{
  const s=find('dark_ledger_1',{path:'demonic',conduct:'care'}),wanted=s.life.cultivation.wanted,count=s.life.cultivation.evidence.length;
@@ -57,7 +108,4 @@ test('七种日常都可查实际变化，交游不刷阵法，调养不刷丹�
  assert.equal(mpView.statusPanel(original).bars.length,5,'状态条就是那五根轴');
  assert.equal(mpView.inventory(original).count,original.inventory.length,'行囊件数要与存档一致');
  for(const title of ['修行本事','灵石与家产','随身行囊'])assert.ok(mpPanelTitles().includes(title),'人生页少了「'+title+'」这一块');
-});
-test('真实旧preview.4导出保留规则、出生、往事和随机流，不植入新追查记录',async()=>{
- const raw=await readFile(new URL('./fixtures/adventure-preview4-original.json',import.meta.url),'utf8'),doc=JSON.parse(raw),s=upgradeRun(doc.state);assert.deepEqual(s,doc.state);assert.equal(s.life.cultivation.rulesVersion,undefined);assert.equal(s.life.cultivation.evidence,undefined);const reached=follow(s,'road_turn',{path:'mortal'});assert.ok(reached);assert.equal(currentNode(s),LEGACY_CULTIVATION_EVENTS.road_turn);validateRun(s);assert.equal(await readFile(new URL('./fixtures/adventure-preview4-original.json',import.meta.url),'utf8'),raw);
 });

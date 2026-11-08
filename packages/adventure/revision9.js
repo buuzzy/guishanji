@@ -1,8 +1,8 @@
 import {ROOTS,GEOGRAPHY} from '../../content/cultivation-world.js';
 import {METHODS} from '../../content/story-network.js';
 import {random} from '../core/random.js';
-import {canCultivate} from './story-rules10.js';
-const enabled=s=>s.life?.cultivation?.rulesVersion>=9;
+import {canCultivate} from './story-shared.js';
+const enabled=s=>!!s.life?.cultivation;
 const state=s=>s.life.cultivation.revision9;
 const age=s=>(s.birth.startAge||0)+Math.floor(s.month/12);
 function followReachable(s,f){
@@ -101,7 +101,7 @@ export function revisionAction(s,event,id,success,cb){
  if(event==='thin_root_hunt')r.follow=null;
  /* T5 · 摄血经有了出口：它是一本**看过的书**，看过之后要么烧掉，要么带走。
   * ⚠ **只改当前版本（规则十二）** —— 旧档（5–11）的执行器一个字节都不许动。 */
- if(c.rulesVersion===12&&event==='thin_root_hunt'&&s.inventory.includes('blood_manual')){
+ if(event==='thin_root_hunt'&&s.inventory.includes('blood_manual')){
   cb.apply({remove:['blood_manual']});
   record(s,cb,'摄血经不在你手上了',id==='fight'?'你把摄血经摊在灯下照着催动，念到一半时纸页已经被血浸透。你把剩下那几页丢进火里，看着它们卷起来发黑。':id==='escape'?'你把摄血经卷起来塞进袖子。逃命时带不走别的东西 —— 这本也算一个，只是它换不来第二条命。':'你把摄血经交了出来，连同取血的器皿。登记的人一页页翻过，问你从哪一页开始学的。你说了实话。');
  }
@@ -135,7 +135,7 @@ export function revisionMonth(s,cb){
   *
   * ⚠ **只对当前版本（规则十二）生效** —— 规则 9 / 10 / 11 的执行器一个字节都不动。
   */
- const hardshipAge=c.rulesVersion===12?27:24;
+ const hardshipAge=27;
  if(canCultivate(s)&&age(s)>=hardshipAge&&age(s)<=55&&!r.hardshipChecked&&c.admissionDone&&ROOTS[s.player.root].grade<=0&&s.player.realm<=1&&!c.activeChain&&!c.inquiry&&s.month-c.entered>=60){
   /* ⚠ 闸检查**在置标记之前** —— 被拦就当这个月没这回事，下个月还会再抽一次。 */
   if(!cb.gate('thin_root_offer'))return false;

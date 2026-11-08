@@ -10,7 +10,7 @@
  *
  *   2026-11-08 实测踩到：
  *     content/adventure.js → content/items.js → content/mundane-stories.js
- *       → packages/adventure/mundane-life.js → packages/adventure/story-rules10.js
+ *       → packages/adventure/mundane-life.js → packages/adventure/story-shared.js
  *       → packages/adventure/gates.js → content/cadence-table.js → content/adventure.js
  *   网页端（原生 ESM）跑得通、小程序端崩、Node 侧门禁也看不见
  *   ⇒ 必须有一道**专门**看环的门禁。

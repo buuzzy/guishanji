@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>归山记 · 待决事项（选项 · 打分 · 推荐）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f7f5f0; --card:#ffffff; --line:#e9e3d6; --ink:#2f3237; --muted:#7c7a72;
+  --pri:#2f6f5e; --pri-soft:#e8f0ed; --acc:#c97b3f; --acc-soft:#f8efe4;
+  --warn:#b06367; --warn-soft:#f6ebeb;
+  --f-head:'DM Serif Display',Georgia,serif;
+  --f-body:'Outfit','PingFang SC','Hiragino Sans GB','Microsoft YaHei',sans-serif;
+  --f-mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);
+  font-size:14.5px;line-height:1.62;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1160px;margin:0 auto;padding:0 28px 96px}
+
+/* 顶部 */
+.top{padding:64px 0 40px;border-bottom:1px solid var(--line);margin-bottom:44px}
+.kicker{font-size:12px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase;margin-bottom:16px}
+h1{font-family:var(--f-head);font-size:46px;line-height:1.16;margin:0 0 14px;font-weight:400;letter-spacing:.01em}
+.lede{font-size:16.5px;color:#4c4f55;max-width:820px;margin:0 0 26px}
+.statrow{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:26px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+.stat .n{font-family:var(--f-mono);font-size:26px;font-weight:500;color:var(--pri);line-height:1.2}
+.stat .n.warnc{color:var(--warn)}
+.stat .l{font-size:12.5px;color:var(--muted);margin-top:5px;line-height:1.45}
+
+/* 修正提示 */
+.fixbox{background:var(--warn-soft);border:1px solid #e6d2d2;border-radius:14px;padding:22px 26px;margin-bottom:40px}
+.fixbox h3{font-family:var(--f-head);font-size:21px;margin:0 0 6px;font-weight:400;color:#8c4b4e}
+.fixbox .sub{font-size:13.5px;color:#7a5557;margin-bottom:14px}
+.fixlist{margin:0;padding:0;list-style:none}
+.fixlist li{padding:9px 0 9px 26px;position:relative;font-size:14px;border-top:1px solid #ecdcdc}
+.fixlist li:first-child{border-top:none}
+.fixlist li::before{content:'';position:absolute;left:4px;top:18px;width:7px;height:7px;border-radius:50%;background:var(--warn)}
+.fixlist b{color:#8c4b4e}
+
+/* 打分口径 */
+.meth{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px 26px;margin-bottom:46px}
+.meth h3{font-family:var(--f-head);font-size:19px;margin:0 0 10px;font-weight:400}
+.meth p{margin:0 0 12px;font-size:13.5px;color:#4c4f55}
+.dimrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.dimchip{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:7px 12px;font-size:12.5px}
+.dimchip b{font-family:var(--f-mono);color:var(--pri);font-weight:500}
+
+/* 分组 */
+.group{margin:0 0 56px}
+.grouphd{display:flex;align-items:baseline;gap:14px;padding-bottom:14px;border-bottom:2px solid var(--pri);margin-bottom:26px}
+.grouphd .gi{font-family:var(--f-mono);font-size:12px;color:var(--acc);letter-spacing:.1em}
+.grouphd h2{font-family:var(--f-head);font-size:27px;margin:0;font-weight:400}
+.grouphd .gs{font-size:13px;color:var(--muted);margin-left:auto}
+
+/* 决策卡 */
+.dec{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:28px 30px 26px;margin-bottom:22px}
+.dechd{display:flex;align-items:flex-start;gap:14px;margin-bottom:6px}
+.num{font-family:var(--f-mono);font-size:13px;color:#fff;background:var(--pri);border-radius:6px;
+  min-width:26px;height:26px;display:flex;align-items:center;justify-content:center;flex:0 0 auto;margin-top:3px}
+.dec h3{font-family:var(--f-head);font-size:23px;margin:0;font-weight:400;line-height:1.3}
+.q{font-size:14px;color:#4c4f55;margin:8px 0 0 40px}
+.ctx{font-size:13px;color:var(--muted);margin:12px 0 0 40px;padding:11px 14px;background:var(--bg);border-radius:8px;line-height:1.6}
+
+/* 选项 */
+.opts{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:20px;margin-left:40px}
+.opt{border:1px solid var(--line);border-radius:12px;padding:17px 19px;background:#fdfdfb;position:relative}
+.opt.rec{border-color:var(--pri);background:var(--pri-soft);box-shadow:0 0 0 1px var(--pri) inset}
+.opthd{display:flex;align-items:center;gap:9px;margin-bottom:9px;flex-wrap:wrap}
+.optname{font-weight:600;font-size:14.5px}
+.badge{font-size:11.5px;padding:2.5px 9px;border-radius:20px;font-weight:500;white-space:nowrap}
+.badge.recommended{background:var(--pri);color:#fff}
+.badge.ok{background:#fff;color:var(--muted);border:1px solid var(--line)}
+.badge.no{background:var(--warn-soft);color:var(--warn);border:1px solid #e6d2d2}
+.optdesc{font-size:13.5px;color:#3c4046;margin-bottom:10px;line-height:1.58}
+.datarow{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:10px}
+.dtag{font-family:var(--f-mono);font-size:11.5px;background:var(--bg);border:1px solid var(--line);
+  border-radius:6px;padding:3.5px 8px;color:#4c4f55}
+.opt.rec .dtag{background:#fff}
+.dtag.good{color:var(--pri);border-color:#cfe0da}
+.dtag.bad{color:var(--warn);border-color:#e6d2d2}
+.cost{font-size:12.5px;color:var(--muted);line-height:1.55;margin-bottom:12px}
+.cost b{color:#8a6a45;font-weight:500}
+
+/* 分数 */
+.scores{border-top:1px dashed var(--line);padding-top:11px}
+.srow{display:flex;align-items:center;gap:9px;margin-bottom:5px}
+.sname{font-size:11.5px;color:var(--muted);width:66px;flex:0 0 auto}
+.pips{display:flex;gap:3px;flex:0 0 auto}
+.pip{width:15px;height:5px;border-radius:2px;background:#e6e1d5}
+.pip.on{background:var(--pri)}
+.pip.on.mid{background:var(--acc)}
+.sn{font-family:var(--f-mono);font-size:11px;color:var(--muted);margin-left:auto}
+.total{display:flex;align-items:baseline;gap:8px;margin-top:9px;padding-top:9px;border-top:1px solid var(--line)}
+.total .lab{font-size:12px;color:var(--muted)}
+.total .val{font-family:var(--f-mono);font-size:21px;font-weight:500;color:var(--pri)}
+.total .val.mid{color:var(--acc)}
+.total .val.low{color:var(--warn)}
+.total .why{font-size:11.5px;color:var(--muted);margin-left:auto}
+
+/* 推荐条 */
+.recline{margin:20px 0 0 40px;background:var(--acc-soft);border:1px solid #ecdcC9;border-radius:10px;padding:13px 17px;font-size:13.5px;line-height:1.6}
+.recline b{color:#8a5a25;font-weight:600}
+.opt.rec + .opt .optname{}
+
+/* 结尾 */
+.tail{margin-top:56px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:30px 32px}
+.tail h3{font-family:var(--f-head);font-size:24px;margin:0 0 16px;font-weight:400}
+.tail ol{margin:0;padding-left:20px}
+.tail li{margin-bottom:11px;font-size:14px;line-height:1.62}
+.tail li b{color:var(--pri)}
+footer{margin-top:40px;padding-top:20px;border-top:1px solid var(--line);font-size:12.5px;color:var(--muted);line-height:1.6}
+
+@media (max-width:900px){
+  .statrow{grid-template-columns:repeat(2,1fr)}
+  .opts{grid-template-columns:1fr}
+  h1{font-size:34px}
+  .wrap{padding:0 18px 64px}
+  .q,.ctx,.opts,.recline{margin-left:0}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="kicker">归山记 · 剧情重构 · 第二轮</div>
+    <h1>13 件等你拍板的事</h1>
+    <p class="lede">
+      每一件都给了 2–4 个可选方案，每个方案都配了实测数字（100 条命真跑出来的，不是估的）、
+      一条「玩家会看到什么」、一条「代价」，以及五个维度的打分。<b>你只需要挑选项，不用想实现。</b>
+    </p>
+    <div class="statrow">
+      <div class="stat"><div class="n">12.8 分</div><div class="l">现状：一生只走 12.8 分钟（官方 61 分钟）</div></div>
+      <div class="stat"><div class="n warnc">2 处</div><div class="l">这次复核改掉了我上次给的两条结论</div></div>
+      <div class="stat"><div class="n">100 条</div><div class="l">每个数字背后的实跑样本</div></div>
+      <div class="stat"><div class="n">1 个函数</div><div class="l">年速方案只动 playbackSeconds，不碰规则</div></div>
+    </div>
+  </header>
+
+  <section class="fixbox">
+    <h3>先看这里：我上次给的两条结论要改</h3>
+    <div class="sub">不是翻口，是这次逐月重算发现了三件之前没量到的事。</div>
+    <ul class="fixlist">
+      <li><b>「1 年 = K ÷ 寿元上限」不够，还要第二个旋钮。</b>我上次说 K≈4800 一档到底。实跑发现元婴期 227 年、只有 12 张卡，一档到底会变成「3 分钟一张卡」。必须再加一个「95 岁后一年封顶几秒」。</li>
+      <li><b>「收寿元」和「年速公式」是打架的，不是叠加的。</b>寿元收得越低 ⇒ 一年走得越慢 ⇒ 一生反而<b>更长</b>、后期占比<b>更高</b>。元婴 575 收到 350，一生从 55 分变 59 分（更长），150 岁后占比从 42% 涨到 46%。</li>
+      <li><b>「一年 8 秒」这个说法要补一半。</b>闭关、远行、渡劫准备期间走的是另一条分支，<b>一年只走 1–5 秒</b>（普通月份是 8 秒）。这类月份占了一生约<b>六成</b>的时长。所以真正要动的不是一个数，是「普通月份怎么走」+「长途期间走多快」。</li>
+    </ul>
+  </section>
+
+  <section class="meth">
+    <h3>打分怎么算</h3>
+    <p>五个维度，每项 1–5 分（5 分最好），加权成一个总分。<b>权重是我定的</b>——「贴合你的原意」和「玩家感受」占六成，因为这是你的产品；「改动风险」和「工作量」占三成五，因为这两项直接决定我做得快不快、会不会弄坏东西；「能不能反悔」占一成，因为这一轮做完不代表不能改。</p>
+    <div class="dimrow">
+      <div class="dimchip">贴合你的原意 <b>30%</b></div>
+      <div class="dimchip">玩家感受 <b>25%</b></div>
+      <div class="dimchip">改动风险 <b>20%</b></div>
+      <div class="dimchip">工作量 <b>15%</b></div>
+      <div class="dimchip">能不能反悔 <b>10%</b></div>
+    </div>
+  </section>
+
+  <div id="list"></div>
+
+  <section class="tail">
+    <h3>你挑完之后，我会做什么</h3>
+    <ol>
+      <li><b>先回一份「选定方案对照表」</b>——把 13 个决定逐条写成「选项 + 一句话理由 + 影响哪些文件」，你确认无误我再动手。</li>
+      <li><b>按依赖顺序开工</b>：年速那一组（决定 1/2/3）只动一个播放函数，改完当场用同种子跑前后对照给你看；剧情线那一组（决定 4–8）动内容层，改完要重跑全量门禁（57 道，约 35 分钟）。</li>
+      <li><b>每一组单独交</b>，不打包。这样你随时可以说「这条不要了」，前一组的结果还留着。</li>
+      <li><b>全部改完</b>，再出一次「前后对照」：同样种子、同样操作，把改前改后的逐年发卡数、间隔秒数、一生时长并排给你看。</li>
+    </ol>
+  </section>
+
+  <footer>
+    数据来源：本机仓库实跑 100 条命（规则十二，固定种子）· 复算命令见《剧情重构讨论纪要》第 1 节。<br>
+    打分与推荐是我的判断，不是机器算的；实测数字是机器算的。仓库本轮未改动任何代码。
+  </footer>
+</div>
+
+<script>
+(function(){
+  var F="Outfit, PingFang SC, sans-serif", M="JetBrains Mono, monospace";
+  var W=[30,25,20,15,10];
+  var DIM=["贴合原意","玩家感受","改动风险","工作量","能反悔"];
+
+  var D=[
+  {g:0, n:"年速：一年该走多少真实秒",
+   q:"要让玩家「感觉得到时间在走」，一年该换多少秒？这条定了，整局的节奏就定了。",
+   ctx:"现状：普通月份一年 8 秒 ⇒ 一生 12.8 分钟（官方 61 分钟）；相邻两张卡间隔中位 11.3 秒。下面每个方案都是 100 条命逐月实跑出来的。",
+   opts:[
+    {name:"维持现状（写死 8 秒）", tag:"ok", s:[1,2,5,5,5],
+     d:"一年一闪。玩家翻卡很快，但一年里塞不下任何铺垫。",
+     data:[["一生 12.8 分","bad"],["官方 61 分的 21%","bad"],["相邻卡间隔 11.3 秒","bad"]],
+     cost:"<b>代价：</b>你第三轮说的「信息量太密、读不动」原样保留 —— 铺垫写了也没地方放。"},
+    {name:"一档到底（1年 = K ÷ 寿元上限，K=4200）", tag:"ok", s:[4,2,4,4,4],
+     d:"寿元涨 ⇒ 一年走得慢。活到元婴反而回到一年 7 秒。",
+     data:[["一生 61.3 分","good"],["对齐官方 101%","good"],["但元婴期 180 秒一张卡","bad"],["150岁后占 42%","bad"]],
+     cost:"<b>代价：</b>元婴期 227 年只有 12 张卡 ⇒ 3 分钟才出一张，画面上全是空白。"},
+    {name:"两档（前中段按寿元、95岁后封顶 3 秒）", tag:"recommended", s:[5,5,4,4,4],
+     d:"前期和中期慢下来（能放下铺垫），95 岁以后重新加速，别让元婴期空着。",
+     data:[["一生 36.0 分","good"],["官方 61 分的 59%","good"],["间隔 16/18/48/45 秒","good"],["40岁前占 29%","good"],["150岁后占 25%","good"]],
+     cost:"<b>代价：</b>比官方短一截（36 分 vs 61 分）。想要更长就把 K 提到 4800（一生 41.7 分，元婴间隔 60 秒）。"},
+    {name:"全照官方（一年 43 秒）", tag:"no", s:[3,1,4,4,4],
+     d:"完全照搬官方的刻度，一秒不差。",
+     data:[["一生 186 分（3 小时）","bad"],["元婴期一年 43 秒","bad"]],
+     cost:"<b>代价：</b>一局 3 小时，没人玩得完。官方的 43 秒是给「只活 85 岁」的人准备的，我们活 322 岁。"}
+   ],
+   rec:"选 <b>两档</b>。它是唯一同时做到「前期慢下来 + 后期不空 + 不动任何规则」的方案。K 值我留了 4200 / 4800 两个档，你选完我再定死。"},
+
+  {g:0, n:"寿元上限要不要收（元婴 575 岁）",
+   q:"我们能活到 322 岁（中位），官方只活 85 岁。是把我们的寿元砍下来，还是留着？",
+   ctx:"这次复核的关键发现：<b>收寿元会让一生更长，不是更短。</b>因为寿元越低 ⇒ 一年走得越慢（元婴 575 是一年 7 秒，收到 250 就变成 14 秒）。所以「收寿元」必须和「年速方案」一起改，单独做会更糟。",
+   opts:[
+    {name:"不收（保持元婴 575 岁）", tag:"recommended", s:[4,3,5,5,5],
+     d:"寿元照旧，靠年速方案里的「95 岁后封顶」来管后期。",
+     data:[["配两档年速 ⇒ 一生 36.0 分","good"],["150岁后占 25%","good"],["元婴期 227 年","bad"]],
+     cost:"<b>代价：</b>元婴期 227 年只有 12 张卡 ⇒ 后期内容偏少。这个缺口靠加内容补，不靠砍寿元补。"},
+    {name:"收到 300 岁（配后期封顶 2.5 秒）", tag:"ok", s:[3,4,3,3,3],
+     d:"元婴期从 227 年缩到 155 年，卡的密度上去了。",
+     data:[["一生 31.8 分","good"],["150岁后占 24.4%","good"],["元婴期 155 年","good"]],
+     cost:"<b>代价：</b>一生比推荐方案还短 4 分钟；而且必须等年速方案先定下来。"},
+    {name:"收到 250 岁（配后期封顶 2 秒）", tag:"ok", s:[3,4,3,3,3],
+     d:"再收一档，元婴期只剩 105 年。",
+     data:[["一生 30.1 分","good"],["150岁后占 21.5%","good"],["元婴期 105 年","good"]],
+     cost:"<b>代价：</b>同上一条，而且「活 250 岁」这个爽点被削掉了 —— 这是「寿元爽点」本身的事，得你定。"}
+   ],
+   rec:"选 <b>不收</b>。理由不是「寿元越多越好」，而是实测显示<b>收寿元这个动作本身在新公式下是反效果</b>。真正的缺口是元婴期内容不够，那是加内容的事。"},
+
+  {g:0, n:"凡人线（「与修仙无缘」）用哪套年速",
+   q:"走不通修仙那条命，该按什么速度过完它的一生？",
+   ctx:"凡人线现状是 7.6 分钟。如果它也跟着套用新公式（凡身一年 40.9 秒），会变成 12.9 分钟 —— 一条「你没能修仙」的路，反而比修仙路还长。",
+   opts:[
+    {name:"固定 8 秒/年（维持现状）", tag:"recommended", s:[5,4,5,5,5],
+     d:"凡人线照旧：一年 8 秒，一生 7.6 分钟。",
+     data:[["一生 7.6 分","good"],["修仙线 36 分 ⇒ 凡人线只有它的 1/5","good"]],
+     cost:"<b>代价：</b>凡人线偏短，玩家会明显感觉到「这条路内容少」。如果凡人线最后只留 3–5 张卡，这个长度刚好配。"},
+    {name:"固定 12 秒/年", tag:"ok", s:[3,3,4,4,4],
+     d:"慢一点，让凡人线也有时间说人话。",
+     data:[["一生约 10 分钟","good"]],
+     cost:"<b>代价：</b>凡人线只有 3–5 张决策卡，撑 10 分钟会显得空。"},
+    {name:"跟着新公式走（凡身 40.9 秒/年）", tag:"no", s:[2,2,4,4,4],
+     d:"和修士用同一把尺子。",
+     data:[["一生 12.9 分","bad"],["比修仙路短不了多少","bad"]],
+     cost:"<b>代价：</b>「没能修仙」这条路和「成了大道」的路一样长，主题上说不通。"}
+   ],
+   rec:"选 <b>固定 8 秒</b>。凡人线是「另一种人生」，短一点、冷一点才对；它一旦变长，玩家会以为还有大事要发生。"},
+
+  {g:1, n:"背景故事线表写几条",
+   q:"轮盘那一刻给玩家定下的「为什么去修仙」，一共要写几条？",
+   ctx:"现状：轮盘只转姓名/地点/家庭，背景是哈希随机的，70% 的命没有故事线。现有可用的素材：3 条早期线（early_demonic / early_beast / early_loose）、凡人线 15 组、旁白池约 140 条。收束规则你的原话已经定了：<b>一条背景只指向一条路</b>。",
+   opts:[
+    {name:"6 条（最小集）", tag:"ok", s:[3,3,5,5,4],
+     d:"只写 3 条「无缘」+ 3 条「入宗门」。",
+     data:[["每条命 1/6 概率遇到特殊开局","bad"],["开发量最小","good"]],
+     cost:"<b>代价：</b>玩家容易重复感 —— 玩 10 条命见到的开局不超过 6 种。"},
+    {name:"12 条（8 条入宗门 + 4 条无缘）", tag:"recommended", s:[5,4,4,4,4],
+     d:"父母病故 / 救人一命 / 捡到残卷 / 修仙世家 / 名门望族 / 宗门弃徒之子 / 战乱孤儿 / 药商学徒 …… 无缘侧 4 条。",
+     data:[["每条命 1/12 概率","good"],["现有素材可直接改造成 6 条","good"],["恰好对上「无缘 / 入宗门」二分","good"]],
+     cost:"<b>代价：</b>要新写约 6 条背景 + 收束逻辑，是内容层改动，要重跑门禁。"},
+    {name:"18 条（丰富版）", tag:"ok", s:[3,5,2,2,3],
+     d:"再加上宗门内分派、凡人出身细分等等。",
+     data:[["每条命 1/18 概率","good"],["重复感最低","good"]],
+     cost:"<b>代价：</b>工作量最大，且 18 条里有几条会写得很勉强 —— 凑数不如 12 条写实。"}
+   ],
+   rec:"选 <b>12 条</b>。8+4 的比例是按「入宗门是主线、无缘是分支」定的；再往上加，边际收益很小，边际成本很大。"},
+
+  {g:1, n:"「与修仙无缘」那条线写几段",
+   q:"没走上修仙路的这一生，要写几个段落？",
+   ctx:"现状：凡人线 50 张卡 / 15 组，一条命实际触发约 16 张，跨 48 年（中位）。你的原话是「与修仙无缘 = 结束游戏」，但它现在是一整条完整的人生。",
+   opts:[
+    {name:"3 张（起 - 承 - 结）", tag:"ok", s:[4,4,4,4,4],
+     d:"测灵落选 → 找一份活计 → 收尾。一炷香的工夫。",
+     data:[["一生 6 分钟（配 8 秒/年）","good"],["「结束游戏」的意思最清楚","good"]],
+     cost:"<b>代价：</b>和修士线一比，厚度差太远，玩家可能觉得「没玩到东西」。"},
+    {name:"5 张（推荐）", tag:"recommended", s:[5,5,4,4,4],
+     d:"起（落选，选活计）→ 承（立业）→ 转（一次意外：兵祸 / 修士过路 / 老友出事）→ 合（成家）→ 结（交代后事）。",
+     data:[["一生 8 分钟","good"],["五张分别有作用","good"],["转折那张可复用凡人线现有的 siege / visitor / corpse 组","good"]],
+     cost:"<b>代价：</b>要从 50 张里挑 5 张保留、其余停用（不删，留档）。"},
+    {name:"8 张", tag:"ok", s:[3,3,3,3,3],
+     d:"保留更多凡人生活的肌理。",
+     data:[["一生 9.6 分钟","good"]],
+     cost:"<b>代价：</b>违背你「结束游戏」的原意，而且它抢了修仙线该给的时间。"},
+    {name:"维持现状（16 张左右）", tag:"no", s:[2,2,5,2,5],
+     d:"不改。",
+     data:[["一生 7.6 分钟","good"]],
+     cost:"<b>代价：</b>和「背景线唯一收束」的新结构冲突 —— 背景指向「无缘」，玩家却还要走 48 年。"}
+   ],
+   rec:"选 <b>5 张</b>。三段太薄（玩家会觉得被踢出局），十六段太厚（和你的原意相反）。五张能同时说清「我尽力了」和「这条路到头了」。"},
+
+  {g:1, n:"后遗症怎么处理",
+   q:"一件大事过去之后，要不要让玩家再选一次？",
+   ctx:"官方用「善后卡」（事后另开一张卡再问一次）。我们上一阶段把「童年回响」的三连问改成了自动旁白。你的方案是写进人生经历，落在两者中间。",
+   opts:[
+    {name:"只写进人生经历，不问", tag:"recommended", s:[5,4,5,5,4],
+     d:"后果出现在旁白里，读者自己消化。",
+     data:[["叙述:决策 保持在 3.14:1","good"],["决策卡数量不变","good"]],
+     cost:"<b>代价：</b>玩家对后果的「体感」会弱一点 —— 旁白容易被划过去。"},
+    {name:"照官方：重要后果开一张善后卡", tag:"ok", s:[3,4,4,4,4],
+     d:"大事之后额外问一次。",
+     data:[["每命多 1–2 张卡","bad"],["后果体感最强","good"]],
+     cost:"<b>代价：</b>决策卡变多 —— 而这正是你想减的东西。"},
+    {name:"分档：只有关键后果才问", tag:"ok", s:[4,5,3,3,4],
+     d:"普通后果走旁白，改变命运的那几件走善后卡。",
+     data:[["每命多 0–1 张卡","good"],["体感与节奏兼顾","good"]],
+     cost:"<b>代价：</b>要定「关键」的判断标准，这是新的设计工作量。"}
+   ],
+   rec:"选 <b>只写进人生经历</b>。你已经用年速把「一年」拉长了，旁白终于有地方待；再往决策卡里加东西，等于把刚腾出来的空间又填回去。"},
+
+  {g:1, n:"树枝尾端接哪条新树干",
+   q:"一条长线走完，下一条长线由谁决定？",
+   ctx:"现状：16 条长线里 9 条有桥、7 条没桥（sect_return / loose_portal / dark_method / dark_pursuit / beast_form / beast_war / beast_eclipse）。而且接头卡的三种收尾（settled / pending / hidden）现在<b>不影响</b>下一条线怎么走 —— 桥是写死的。",
+   opts:[
+    {name:"由上一条线的结果决定", tag:"recommended", s:[5,5,3,3,4],
+     d:"打完「宗门内斗」才接得到「妖兽作乱」，因果连得上。",
+     data:[["7 条无桥的长线都能接上","good"],["你的树形结构真正成立","good"]],
+     cost:"<b>代价：</b>要重写桥接规则；链会变长，一命能走的树枝数下降。"},
+    {name:"随机接", tag:"ok", s:[3,3,4,4,4],
+     d:"到了尾端随机给下一条。",
+     data:[["实现最省事","good"],["重玩每局都不一样","good"]],
+     cost:"<b>代价：</b>和「选择塑造人」的主旨相反 —— 玩家做了半天决定，结果下一条是随机的。"},
+    {name:"保持写死", tag:"no", s:[1,1,5,2,5],
+     d:"不改。",
+     data:[["实现最省事","good"]],
+     cost:"<b>代价：</b>7 条长线永远接不上，那 7 条基本是死线。"}
+   ],
+   rec:"选 <b>由结果决定</b>。这是你原话里「树干 → 树枝 → 尾端进入新树干」那半句的实现方式；随机会让整棵树看起来像拼图而不是因果。"},
+
+  {g:1, n:"前期密度还要不要再降",
+   q:"0–26 岁那张卡扎堆，要不要继续压？",
+   ctx:"现状：0–26 岁中位 11 张（上一轮压过一轮，次数没降、扎堆降了三成）。逐年看：16 岁 1.27 张、17 岁 2.18 张、18 岁 0.93 张，其余年份大面积空白（87%）。",
+   opts:[
+    {name:"不降，靠年速放缓自然缓解", tag:"recommended", s:[4,4,5,5,5],
+     d:"卡片数量不动，把「一年」拉长 —— 同样多的卡，读起来不再挤。",
+     data:[["16–26 岁间隔 8 秒 → 16 秒","good"],["0–26 岁占一生时长 36% → 29%","good"]],
+     cost:"<b>代价：</b>如果玩家真觉得多，那还是多 —— 只是读得不赶了。"},
+    {name:"压到 9 张", tag:"ok", s:[3,4,3,3,4],
+     d:"再砍两成。",
+     data:[["要动「择路」和「考核」两条链的机制","bad"]],
+     cost:"<b>代价：</b>这两条链是长线骨架，砍机制等于砍剧情，代价很大。"},
+    {name:"压到 6 张", tag:"no", s:[2,3,2,2,3],
+     d:"砍到官方一半以下。",
+     data:[["要重写长线机制","bad"]],
+     cost:"<b>代价：</b>几乎等于把前期推倒重来，而且做完会发现「不够读」而不是「读不完」。"}
+   ],
+   rec:"选 <b>不降</b>。先把年速做掉再看还挤不挤 —— 大概率就不挤了；如果还挤，那时再动机制，方向会准得多。"},
+
+  {g:2, n:"那个「密度达标」的假绿灯要不要现在修",
+   q:"有一道门禁在骗我们，要不要顺手修掉？",
+   ctx:"312 张卡里有 262 张（84%）在「豁免名单」里，不受任何节奏闸管。而密度指标和三道闸<b>共用同一张豁免名单</b> ⇒ 指标说「密度达标」，其实有 84% 的卡根本没被量过。这道门禁跟内容重构毫无关系，随时可做。",
+   opts:[
+    {name:"单独修（只改门禁，不动内容）", tag:"recommended", s:[5,4,5,4,5],
+     d:"给密度指标换一把自己的尺，豁免名单只留给闸用。",
+     data:[["改 1 个脚本","good"],["与内容重构零耦合","good"],["改完密度指标才第一次说实话","good"]],
+     cost:"<b>代价：</b>换尺之后，密度指标会变成一片红 —— 那才是真话，但得准备好看见它。"},
+    {name:"跟内容重构一起做", tag:"ok", s:[3,3,4,3,4],
+     d:"等剧情改完再一起修。",
+     data:[] ,
+     cost:"<b>代价：</b>改内容的过程中没有可信指标可用，只能凭感觉调 —— 而「凭感觉」正是这四轮讨论的起因。"},
+    {name:"不修", tag:"no", s:[1,1,5,5,5],
+     d:"先放着。",
+     data:[],
+     cost:"<b>代价：</b>继续拿一个假绿灯做判断。"}
+   ],
+   rec:"选 <b>单独修</b>。而且建议<b>排在最前面</b> —— 它只要半小时，修完之后所有关于「密不密」的判断才有依据。"},
+
+  {g:2, n:"几乎没人走到的几条线要不要救",
+   q:"实跑 100 条命，有一批卡一次都没出现过。救不救？",
+   ctx:"实跑触达 184/312 = 59%。妖兽那四条几乎是死线：beast_home <b>0 次</b>、beast_form 3 次、beast_eclipse 3 次、beast_war 6 次。另有 31 张卡触发 ≤3 次。另有 2 条修仙线（dark_method 12 次、dark_pursuit 12 次）也偏少。",
+   opts:[
+    {name:"先救妖兽那四条", tag:"recommended", s:[4,5,3,4,4],
+     d:"只救整族都没走到的：beast_home / beast_form / beast_eclipse / beast_war。",
+     data:[["4 条长线 / 12 张卡","good"],["「妖兽」是修仙题材的正经一条线","good"]],
+     cost:"<b>代价：</b>要让它们能出现，得改触发条件 —— 动的是内容层。"},
+    {name:"全部救（31 张少触达的）", tag:"ok", s:[3,4,2,2,3],
+     d:"把 31 张 ≤3 次的都拉起来。",
+     data:[["31 张卡","bad"]],
+     cost:"<b>代价：</b>31 张里有一部分是本来就该少见（variation 是设计的一部分），硬拉会破坏「同一条线的不同变体」这个机制。"},
+    {name:"不救，删掉", tag:"no", s:[2,2,4,3,3],
+     d:"承认它们是废卡，清掉。",
+     data:[["仓库瘦一圈","good"]],
+     cost:"<b>代价：</b>删掉 12 张妖兽线会砍掉一条题材线；而且零触达常常是<b>触发条件写错了</b>，不是内容没用。"}
+   ],
+   rec:"选 <b>先救妖兽那四条</b>。零触达是最值得查的一类问题 —— 通常不是内容没用，是那条路根本走不进去。"},
+
+  {g:2, n:"旁白要不要加密",
+   q:"要不要按官方的比例多写旁白？",
+   ctx:"当前叙述:决策 ≈ 3.14:1，官方 ≈ 6.3:1。现有旁白池约 140 条，但全是「事后交代」—— <b>没有一条是「当时正在发生」的场景</b>。这是你第三轮说「读不懂」的另一半原因。",
+   opts:[
+    {name:"先不做", tag:"ok", s:[3,2,5,5,5],
+     d:"这一轮只动节奏和结构。",
+     data:[["0 新增","good"]],
+     cost:"<b>代价：</b>「无脑读」的体验还是差一截 —— 密度降下来了，但「像看小说」的感觉还没到。"},
+    {name:"下一期做到 5:1", tag:"ok", s:[3,4,3,3,4],
+     d:"中间档，先补一半。",
+     data:[["约需新增 60–80 条","bad"]],
+     cost:"<b>代价：</b>半途而废的比例，两头不靠。"},
+    {name:"做到 6.3:1 对齐官方", tag:"recommended", s:[4,5,2,2,4],
+     d:"一次补到位，并且新增以「当时正在发生」为主。",
+     data:[["约需新增 90–120 条","bad"],["正好补上「场景铺垫」这个洞","good"],["和年速方案配套：慢下来才有地方放","good"]],
+     cost:"<b>代价：</b>这是内容层最大的一块工作量，要单独立项、单独排期。"}
+   ],
+   rec:"选 <b>对齐官方</b>，但<b>放到最后一期</b>。前面三件事（年速、结构、旁白池）做完之后再补，否则写出来的旁白长度和节奏会对不上。"},
+
+  {g:2, n:"倍速档补不补",
+   q:"官方有 1/2/4/8/12/16 六档加快进，我们只有 1/2/4。",
+   ctx:"你第四轮的原话是「1in8b 的 1x 非常慢，玩家可以感受时间慢速或快速流程」。慢的那头我们做了（年速方案），快的那头还缺。",
+   opts:[
+    {name:"补齐 8/12/16 + 快进", tag:"recommended", s:[5,4,5,5,5],
+     d:"和官方完全一致，六个档加快进，顶栏再写「1 年 ≈ X 秒」。",
+     data:[["玩家有「跳到结局」的出口","good"],["与官方一致","good"],["只动按钮和 UI","good"]],
+     cost:"<b>代价：</b>基本没有。顶栏那行提示要新写文案。"},
+    {name:"只补 8 和 16", tag:"ok", s:[4,3,5,5,5],
+     d:"加两档就够。",
+     data:["五档"],
+     cost:"<b>代价：</b>12 档在 8 和 16 之间没位置，但其实也没什么人用。"},
+    {name:"不补", tag:"no", s:[2,1,5,5,5],
+     d:"保持三档。",
+     data:["最高 4 倍"],
+     cost:"<b>代价：</b>一生 36 分钟的人，只能用 4 倍跳 —— 想快速复盘的人得等 9 分钟。"}
+   ],
+   rec:"选 <b>补齐</b>。这是整份清单里最便宜的一件（只动按钮和顶栏），而且做完之后「36 分钟」这个数字才真的可用。"},
+
+  {g:2, n:"这一轮先做哪一步",
+   q:"13 个决定不可能一次做完，先动哪儿？",
+   ctx:"依赖关系很硬：年速那三条（1/2/3）互相关着；剧情线那五条（4–8）互相关着，而且都要重跑全量门禁；工程那几条（9–13）互相独立。",
+   opts:[
+    {name:"先做年速（决定 1+2+3）", tag:"recommended", s:[5,5,5,5,5],
+     d:"只动 playbackSeconds 一个函数 + 倍速按钮 + 顶栏提示。",
+     data:[["不动任何规则","good"],["不动任何门禁基线","good"],["当天能出前后对照","good"],["风险最小、见效最快","good"]],
+     cost:"<b>代价：</b>只是节奏变了，剧情结构还是老样子 —— 但那正是下一步要改的。"},
+    {name:"先做剧情结构（决定 4–8）", tag:"ok", s:[4,4,3,3,4],
+     d:"背景线表 + 凡人线 + 必答串 + 桥接，一起动。",
+     data:[["这一轮真正的重头","good"],["能解决「选择之间没关联」","good"]],
+     cost:"<b>代价：</b>内容层改动 ⇒ 必须重跑全量 57 道门禁（约 35 分钟），而且在年速还没改的情况下，很难判断改得对不对。"},
+    {name:"先修门禁漏洞（决定 9）", tag:"ok", s:[4,4,5,4,5],
+     d:"半小时，把假绿灯修掉。",
+     data:[["半小时","good"],["后面所有判断都有依据","good"]],
+     cost:"<b>代价：</b>密度指标会立刻变红 —— 那是真的，但它会让人一时以为自己做坏了。"},
+    {name:"一次性全做", tag:"no", s:[2,4,1,1,2],
+     d:"一口气推到底。",
+     data:[],
+     cost:"<b>代价：</b>规则层 + 内容层 + 呈现层同时动，出问题分不清是谁的锅，且中途没法回头。"}
+   ],
+   rec:"选 <b>先做年速</b>（决定 1+2+3），紧接着<b>修门禁漏洞</b>（决定 9），然后再进剧情结构那条线。"}
+  ];
+
+  var GROUPS=[
+    {i:"甲", t:"时间怎么走", s:"这三条决定整局的节奏，改动最轻、影响最大"},
+    {i:"乙", t:"剧情线怎么搭", s:"这五条决定「选择之间有没有关联」，要动内容层"},
+    {i:"丙", t:"工程与打磨", s:"这五条互相独立，随时可做"}
+  ];
+
+  function totalOf(s){
+    var t=0; for(var i=0;i<5;i++) t+=(s[i]/5)*W[i]; return t;
+  }
+  function pips(score,i){
+    var h=''; for(var k=1;k<=5;k++){
+      var cls='pip'; if(k<=score[i]) cls+=' on'; if(score[i]>=4&&k<=score[i]) cls+=' mid';
+      h+='<span class="'+cls+'"></span>';
+    }
+    return '<span class="pips">'+h+'</span>';
+  }
+  function optCard(o){
+    var badge = o.tag==='recommended' ? '<span class="badge recommended">★ 推荐</span>'
+      : o.tag==='no' ? '<span class="badge no">✗ 不建议</span>'
+      : '<span class="badge ok">可以</span>';
+    var dt = (o.data||[]).map(function(d){
+      var c = d[1]==='good'?' good':(d[1]==='bad'?' bad':'');
+      return '<span class="dtag'+c+'">'+d[0]+'</span>';
+    }).join('');
+    var rows='';
+    for(var i=0;i<5;i++){
+      rows+='<div class="srow"><span class="sname">'+DIM[i]+'</span>'+pips(o.s,i)+'<span class="sn">'+o.s[i]+'/5</span></div>';
+    }
+    var t=totalOf(o.s)/10;
+    var tv = t>=8.0?'val':(t>=6.5?'val mid':'val low');
+    return '<div class="opt'+(o.tag==='recommended'?' rec':'')+'">'
+      +'<div class="opthd"><span class="optname">'+o.name+'</span>'+badge+'</div>'
+      +'<div class="optdesc">'+o.d+'</div>'
+      +(dt?'<div class="datarow">'+dt+'</div>':'')
+      +'<div class="cost">'+o.cost+'</div>'
+      +'<div class="scores">'+rows
+      +'<div class="total"><span class="lab">总分</span><span class="'+tv+'">'+t.toFixed(1)+'</span>'
+      +'<span class="why">满分 10 分</span></div></div></div>';
+  }
+
+  var html='';
+  GROUPS.forEach(function(g){
+    html+='<section class="group"><div class="grouphd"><span class="gi">'+g.i+' 组</span><h2>'+g.t+'</h2><span class="gs">'+g.s+'</span></div>';
+    var idx=0;
+    D.forEach(function(d){
+      if(d.g!==GROUPS.indexOf(g)) return;
+      idx++;
+      var best=null;
+      d.opts.forEach(function(o){ var t=totalOf(o.s); if(!best||t>best.t) best={t:t,o:o}; });
+      html+='<article class="dec">'
+        +'<div class="dechd"><span class="num">'+idx+'</span><h3>'+d.n+'</h3></div>'
+        +'<p class="q">'+d.q+'</p>'
+        +'<div class="ctx">'+d.ctx+'</div>'
+        +'<div class="opts">'+d.opts.map(optCard).join('')+'</div>'
+        +'<div class="recline">我的建议： '+d.rec+'</div>'
+        +'</article>';
+    });
+    html+='</section>';
+  });
+  document.getElementById('list').innerHTML=html;
+})();
+</script>
+</body>
+</html>

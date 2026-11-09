@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>归山记 · 待决策（2026-11-08 调研后）</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#f7f5f0; --card:#ffffff; --line:#e9e3d6; --line-soft:#f1ece1;
+    --ink:#14171e; --ink-2:#3a4256; --muted:#7c7a72;
+    --accent:#2f6f5e; --accent-soft:rgba(47,111,94,.08); --accent-line:rgba(47,111,94,.28);
+    --warn:#c97b3f; --warn-soft:rgba(201,123,63,.10);
+    --shadow:0 2px 8px rgba(0,0,0,.04);
+    --sans:"Outfit","PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif;
+    --serif:"DM Serif Display","Songti SC","STSong",Georgia,serif;
+    --mono:"JetBrains Mono","SF Mono",Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.62;-webkit-font-smoothing:antialiased}
+  body::before,body::after{content:"";position:fixed;width:520px;height:520px;border-radius:50%;pointer-events:none;z-index:0}
+  body::before{top:-220px;right:-160px;background:radial-gradient(circle,rgba(47,111,94,.06),transparent 70%)}
+  body::after{bottom:-240px;left:-180px;background:radial-gradient(circle,rgba(201,123,63,.05),transparent 70%)}
+  .wrap{position:relative;z-index:1;max-width:1024px;margin:0 auto;padding:0 24px}
+  @media (min-width:768px){.wrap{padding:0 32px}}
+  h1,h2,h3{font-weight:400}
+  h1{font-family:var(--serif);font-size:34px;line-height:1.25;letter-spacing:-.005em;margin:0 0 14px}
+  h2{font-family:var(--serif);font-size:24px;line-height:1.3;margin:0 0 6px}
+  h3{font-size:16px;font-weight:600;margin:0 0 6px}
+  p{margin:0 0 10px}
+  code{font-family:var(--mono);font-size:.88em;background:var(--accent-soft);padding:1px 5px;border-radius:4px;color:var(--accent)}
+  .eyebrow{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:600;margin:0 0 14px}
+  .lead{font-size:16px;color:var(--ink-2);max-width:74ch;margin:0 0 8px}
+  .muted{color:var(--muted)} .small{font-size:13px}
+  section{margin-top:48px} @media (min-width:768px){section{margin-top:56px}}
+  .sec-head{display:flex;align-items:baseline;gap:10px;margin-bottom:6px}
+  .sec-head svg{width:18px;height:18px;color:var(--accent);flex:none;transform:translateY(2px)}
+  .sec-sub{color:var(--muted);font-size:13px;margin:0 0 20px;max-width:78ch}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:20px}
+
+  .hero{padding-top:64px}
+  .hero-strip{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line);border-radius:16px;background:var(--card);box-shadow:var(--shadow);overflow:hidden;margin-top:26px}
+  .hero-strip div{padding:16px 18px;border-right:1px solid var(--line-soft)}
+  .hero-strip div:last-child{border-right:0}
+  .hero-strip .k{font-family:var(--mono);font-size:22px;font-weight:500;color:var(--accent);display:block;line-height:1.2}
+  .hero-strip .k.warnish{color:var(--warn)}
+  .hero-strip .l{font-size:12px;color:var(--muted);display:block;margin-top:2px}
+  @media (max-width:700px){.hero-strip{grid-template-columns:repeat(2,1fr)}.hero-strip div:nth-child(2){border-right:0}.hero-strip div:nth-child(-n+2){border-bottom:1px solid var(--line-soft)}}
+  .notice{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--accent-line);background:var(--accent-soft);border-radius:12px;padding:12px 16px;margin-top:22px;font-size:14px;color:var(--ink-2)}
+  .notice svg{width:17px;height:17px;color:var(--accent);flex:none;margin-top:3px}
+
+  /* 已定三件事 */
+  .fixed{display:grid;gap:12px}
+  .fx{display:grid;grid-template-columns:26px 1fr;gap:0 12px;border:1px solid var(--line);border-radius:14px;background:var(--card);padding:16px 18px;box-shadow:var(--shadow)}
+  .fx-ic{width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;margin-top:2px}
+  .fx-ic svg{width:14px;height:14px}
+  .fx-ic.pend{background:var(--warn)}
+  .fx-t{font-size:15px;font-weight:600;color:var(--ink);margin-bottom:2px}
+  .fx-d{font-size:13.5px;color:var(--ink-2)}
+  .fx-s{font-size:12px;color:var(--muted);margin-top:5px}
+
+  /* 版本阶梯 */
+  .ladder{display:flex;align-items:stretch;gap:8px;flex-wrap:wrap}
+  .lbox{flex:1 1 200px;border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:#fff}
+  .lbox b{display:block;font-family:var(--mono);font-size:13.5px;color:var(--ink)}
+  .lbox span{font-size:12.5px;color:var(--muted)}
+  .lbox.now{border-color:var(--accent-line);background:var(--accent-soft)}
+  .lbox.now b{color:var(--accent)}
+  .lbox.mid{border-color:rgba(201,123,63,.45);background:var(--warn-soft)}
+  .lbox.mid b{color:var(--warn)}
+  .lsep{align-self:center;color:var(--muted);font-size:18px}
+
+  /* 列表块 */
+  .kv{display:grid;grid-template-columns:104px 1fr;row-gap:9px;column-gap:14px;margin:0;font-size:13.5px}
+  .kv dt{color:var(--muted);border-bottom:1px dashed var(--line);padding-bottom:8px}
+  .kv dd{margin:0;border-bottom:1px dashed var(--line);padding-bottom:8px;color:var(--ink-2)}
+  .kv dd b{color:var(--ink)}
+  .plist{margin:0;padding-left:20px;font-size:14px;color:var(--ink-2)}
+  .plist li{margin-bottom:7px}
+  .plist li b{color:var(--ink)}
+
+  /* 表格 */
+  table{width:100%;border-collapse:collapse;font-size:13.5px}
+  thead th{text-align:left;font-size:12px;font-weight:600;color:var(--muted);padding:0 12px 8px 0;border-bottom:1px solid var(--line);letter-spacing:.03em;vertical-align:bottom;white-space:nowrap}
+  tbody td{padding:11px 12px 11px 0;border-bottom:1px solid var(--line-soft);vertical-align:top;color:var(--ink-2)}
+  tbody tr:last-child td{border-bottom:0}
+  td.name{color:var(--ink);font-weight:600;width:26%}
+  td.rec{width:30%}
+  td.rec b{color:var(--ink)}
+  .work{font-family:var(--mono);font-size:11.5px;white-space:nowrap}
+  .w-s{color:var(--accent)} .w-m{color:var(--warn)} .w-l{color:#b06367}
+  .score{display:flex;align-items:center;gap:8px;justify-content:flex-end}
+  .score-track{flex:1;height:6px;background:var(--line-soft);border-radius:4px;overflow:hidden;min-width:40px;max-width:66px}
+  .score-fill{height:100%;background:var(--accent);border-radius:4px}
+  .score-fill.low{background:var(--warn)}
+  .score-num{font-family:var(--mono);font-size:12px;color:var(--ink-2)}
+  .tag{display:inline-block;font-size:11px;padding:1px 7px;border-radius:5px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+  .tag.yes{color:var(--accent);border-color:var(--accent-line);background:var(--accent-soft)}
+  .tag.no{color:var(--warn);border-color:rgba(201,123,63,.4);background:var(--warn-soft)}
+
+  /* 执行顺序 */
+  .steps{list-style:none;padding:0;margin:0;counter-reset:s}
+  .steps li{counter-increment:s;position:relative;padding:0 0 18px 42px}
+  .steps li::before{content:counter(s);position:absolute;left:0;top:1px;width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;font-family:var(--mono);font-size:13px;display:flex;align-items:center;justify-content:center}
+  .steps li::after{content:"";position:absolute;left:13px;top:30px;bottom:2px;width:2px;background:var(--accent);opacity:.2}
+  .steps li:last-child::after{display:none} .steps li:last-child{padding-bottom:0}
+  .steps strong{display:block;font-size:15px;color:var(--ink);margin-bottom:2px}
+  .steps span{font-size:13.5px;color:var(--ink-2)}
+  .steps .st{display:inline-block;font-family:var(--mono);font-size:11px;color:var(--muted);margin-left:8px}
+
+  .legend{display:flex;flex-wrap:wrap;gap:16px;font-size:12px;color:var(--muted);border-top:1px solid var(--line);margin-top:14px;padding-top:12px}
+  .legend b{color:var(--ink-2);font-weight:600}
+  footer{margin-top:56px;padding:20px 0 48px;border-top:1px solid var(--line);font-size:12.5px;color:var(--muted)}
+  .foot-grid{display:flex;flex-wrap:wrap;gap:8px 26px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <p class="eyebrow">归山记 · 待决策</p>
+    <h1>三件事已定，还剩这些要你拍板</h1>
+    <p class="lead">
+      这一轮只做调研，<b>仓库一个文件都没动</b>。三路 sub-agent 联网查了修仙小说的设定，
+      再加上我自己把仓库查了一遍，把「旧档是什么」「删面板要动什么」「剧情背景能怎么改」
+      都收敛成了可以直接勾的条目。
+    </p>
+    <div class="hero-strip">
+      <div><span class="k">0</span><span class="l">仓库改动文件数</span></div>
+      <div><span class="k">210</span><span class="l">核对过的来源 URL</span></div>
+      <div><span class="k">300+</span><span class="l">可直接抄进文本的名词</span></div>
+      <div><span class="k warnish">21</span><span class="l">等你拍板的条目</span></div>
+    </div>
+    <div class="notice">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+      <div>这一页写在仓库外（<code>/tmp/gsj-decision-2026-11-08.html</code>），所以<b>不用重生成来源清单、不用重跑门禁</b>。你说归档进 <code>docs/</code> 我再登记。</div>
+    </div>
+  </header>
+
+  <section>
+    <div class="sec-head">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+      <h2>已经定了的三件事</h2>
+    </div>
+    <p class="sec-sub">这三件不用你再拍板了，只需要确认我这轮的理解对不对。</p>
+    <div class="fixed">
+      <div class="fx">
+        <div class="fx-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
+        <div>
+          <div class="fx-t">按那四步的顺序推进</div>
+          <div class="fx-d">四步是：① 推 GitHub → ② 过目 12 条背景 + 凡人线 5 张 → ③ 攻「高境界突破间隔」 → ④ 最后才碰原有旁白通道。本轮把第 ②③ 步往前挪了，因为调研给出了更准的顺序（见最后一节）。</div>
+          <div class="fx-s">第 ① 步（推 GitHub）你说「可以按 4 个步骤来」＝授权了；但这一轮又说「先别动任何文件」，所以我<b>没推</b>，留到下一轮第一件事。</div>
+        </div>
+      </div>
+      <div class="fx">
+        <div class="fx-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
+        <div>
+          <div class="fx-t">删掉开发者面板</div>
+          <div class="fx-d">你的决定，我照做。但这一轮只动了嘴（见下一节的实施清单），没删任何文件 —— 因为你说「先别动任何文件」。</div>
+          <div class="fx-s">删之前有一处<b>容易误伤</b>：<code>scripts/serve.mjs</code> 和 <code>scripts/lib/decide-policy.js</code> <b>不能删</b>，别的脚本在用。</div>
+        </div>
+      </div>
+      <div class="fx">
+        <div class="fx-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
+        <div>
+          <div class="fx-t">调研修仙小说的设定</div>
+          <div class="fx-d">三路并行，各查各的：① 修炼体系（境界 / 寿元 / 突破 / 心魔天劫 / 功法 / 灵根体质）② 出身与开局背景 ③ 宗门结构 / 资源 / 劫难 / 结局。共核了 210 个来源 URL，产出三份素材库（约 300+ 条可直接抄的名词、38 种出身、24 组两难抉择、60+ 条钩子）。</div>
+          <div class="fx-s">三份原始素材在 <code>/tmp/gsj-research-1-cultivation.md</code> / <code>-2-origin.md</code> / <code>-3-sect.md</code>，每条结论都带可点开的来源。</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+      <h2>「旧档 rules 8–11」是什么</h2>
+    </div>
+    <p class="sec-sub">白话版，先说结论：它不是坏档、不是废弃代码，是**几代玩家存档各自按的老规则**。</p>
+    <div class="card">
+      <div class="ladder" style="margin-bottom:20px">
+        <div class="lbox"><b>rules 5 / 6 / 7</b><span>更早的遗留，存档里还可能存在</span></div>
+        <div class="lsep">→</div>
+        <div class="lbox mid"><b>rules 8 / 9 / 10 / 11</b><span>你问的这四版 · 中间四代规则</span></div>
+        <div class="lsep">→</div>
+        <div class="lbox now"><b>rules 12</b><span>当前版 · 2026-11-06 起</span></div>
+      </div>
+      <dl class="kv">
+        <dt>为什么有版本</dt>
+        <dd>游戏的玩法规则被大改过很多轮。<b>每一轮改完，新开的存档都会盖一个章</b>，写明「这一局是按第几版规则开的」。</dd>
+        <dt>老档怎么跑</dt>
+        <dd>读老存档时<b>必须让它按自己那一版规则继续跑</b>。不同版本里「修为怎么算」「每个月发什么卡」「宗门给多少补给」都不一样 —— 硬套新规则，存档里的进度就对不上，轻则后半生节奏错乱，重则读档直接坏掉。</dd>
+        <dt>所以仓库里</dt>
+        <dd><b>五套规则执行器并存</b>：第 8/9/10/11 版各一套，加当前第 12 版（更老的 5/6/7 也在）。仓库的规矩是：<b>只要还有存档可能用得上，这套执行器就不许删</b>。</dd>
+        <dt>六阶段动过吗</dt>
+        <dd><b>没动。</b>年速、密度、剧情结构、旁白这些改动<b>只改第 12 版</b>，8–11 版的执行器和事件表一个字节都没改。有两道门禁专守这件事：<code>eventsfid</code>（事件表逐值比对）、<code>eventseq</code>（决策序列逐步比对，实测 24 条固定人生 654 步全等）。</dd>
+        <dt>唯一按版本分开的</dt>
+        <dd><b>画面</b>：第 11 版的攻城、收殓等场景有专属画面（同一件事在不同版本下画得不一样）。</dd>
+      </dl>
+    </div>
+
+    <div class="card" style="margin-top:14px">
+      <h3>顺带回答那个挂着的决策：「旧档要不要一起套新年速」</h3>
+      <p class="small" style="color:var(--ink-2)">
+        <b>答案：它已经套上了，而且不套才奇怪。</b>
+        年速（一年播几秒）是「怎么播给你看」的设置，<b>不属于规则版本</b> —— 代码里年速那段压根不看版本号，只看年龄和境界。
+        所以老存档读进来，节奏自动就变了，但<b>游戏里的结果一个字节都不变</b>：该得什么还是什么、该遇谁还是遇谁、结局还是那个结局。
+        真正按版本分开的只有画面。
+      </p>
+      <p class="small muted" style="margin-bottom:0">
+        换句话说：<b>同一款游戏，老存档不该跑出跟新存档不一样的节奏。</b>这条我按「一起套」定了，如果你想反着来（老档保持老节奏），跟我说，那要改一处判断。
+      </p>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>
+      <h2>删开发者面板：实施清单</h2>
+    </div>
+    <p class="sec-sub">已按你的决定准备好，<b>但这一轮没执行</b>。下面是确切要动的东西。</p>
+
+    <div class="card">
+      <h3 style="color:var(--warn)">① 千万别删这两个（最容易误伤）</h3>
+      <ul class="plist">
+        <li><b><code>scripts/serve.mjs</code></b> —— 名字像「起服务的」，其实它还导出 <code>projectRoot</code>，<code>check.mjs</code> / <code>build-pixel-style.mjs</code> / <code>play-adventure.mjs</code> 三个脚本都在 import 它。删了 ⇒ 构建脚本直接崩。</li>
+        <li><b><code>scripts/lib/decide-policy.js</code></b> —— 「遇到这张卡按什么偏好选」的策略表，<code>audit-metrics</code> / <code>audit-completeness</code> / <code>audit-narration</code> / <code>audit-reach</code> / <code>play-cultivation</code> 都用它。删了 ⇒ 四道审计门禁全崩。</li>
+      </ul>
+      <h3 style="margin-top:18px">② 真正要删的</h3>
+      <ul class="plist">
+        <li><b><code>apps/viz/</code> 整个目录</b> —— 面板本体，332 KB / 20 个文件。</li>
+        <li><b><code>scripts/verify-viz-panel.mjs</code></b> —— 那道浏览器门禁（54 项断言）。</li>
+      </ul>
+      <h3 style="margin-top:18px">③ 要改的 8 处</h3>
+      <ol class="plist">
+        <li><code>scripts/run-regression.mjs</code> —— 门禁清单去掉 <code>viz-browser</code> ⇒ <b>39 道变 38 道</b>；而且它是<b>唯一那道浏览器门禁</b>，删掉后「全量 = 快组」，分组说明也要重写。</li>
+        <li><code>AGENTS.md</code> —— §4.5 整节删掉、§3 门禁表里那行删掉、「快组 38 道 / 全量 39 道」这几个数字改掉。</li>
+        <li><code>README.md</code> —— 第 15 行 <code>npm run dev</code> 那条指向面板。</li>
+        <li><code>docs/browser-gate-coverage.md</code> —— 第 207 行那张表里 <code>apps/viz/</code> 那一行。</li>
+        <li><code>docs/migration/source-manifest.json</code> —— 去掉被删文件的条目。</li>
+        <li><code>scripts/gen-source-manifest.mjs</code> —— 「本轮新增」列表里去掉 <code>apps/viz/*</code> 那几条。</li>
+        <li><code>docs/refactor-progress-2026-11-08.html</code> —— 决策表里「开发者面板删不删」那行改成「已决策：删除」。</li>
+        <li><code>package.json</code> —— <b>不用改</b>（<code>dev</code> / <code>start</code> 指向 <code>serve.mjs</code>，而它留着）。</li>
+      </ol>
+      <div class="legend">
+        <span><b>工作量</b>　改 8 处 + 删 2 处 + 跑 38 道门禁 ⇒ 半天内</span>
+        <span><b>风险</b>　低 —— 完全不碰规则层与内容层</span>
+        <span><b>会丢什么</b>　面板的 54 项断言；但那 54 项守的是「面板不许自己算规则」，面板没了就不需要守了</span>
+        <span><b>会省什么</b>　全量门禁从 39 道变 38 道，少一道要起浏览器的门禁</span>
+        <span><b>会失去什么</b>　「新对话里最快看现状」的入口 ⇒ 改用 <code>scripts/play-cultivation.mjs</code> 跑一条命 + 审计脚本看数字</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      <h2>调研带来的新决策（21 项）</h2>
+    </div>
+    <p class="sec-sub">
+      每一项都写了推荐和分。<b>推荐分 = 我有多确定推荐是对的</b>（0–100）：
+      85 以上是行业共识撑着的，70–84 是工程上稳但可以按你口味换，低于 70 的是纯内容口味。
+      <b>「工作量」</b>那一列是相对量，不是人天。
+    </p>
+
+    <h3 style="margin:26px 0 10px">A 组 · 修炼与寿命</h3>
+    <div class="card">
+      <table>
+        <thead><tr><th>事项</th><th>推荐</th><th>推荐分</th><th>工作量</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr>
+            <td class="name">加一整层「准备与辅助」内容</td>
+            <td class="rec"><b>要做</b> —— 找功法 / 备突破物 / 渡心魔 / 接宗门任务 / 入红尘历练 / 渡劫护法</td>
+            <td><div class="score"><div class="score-track"><div class="score-fill" style="width:88%"></div></div><span class="score-num">88</span></div></td>
+            <td class="work w-l">大</td>
+            <td>三份调研指向<b>同一个根因</b>：「升级」是我们唯一的推进手段。正典里境界之间还有一整层非升级的、有代价的、能失败的行动。<b>加卡解决不了这个</b>，加这一层才行。</td>
+          </tr>
+          <tr>
+            <td class="name">寿元耗尽做成独立结局分支</td>
+            <td class="rec"><b>要做</b> —— 坐化 / 兵解 / 留一线轮回，做成一张有体面的收尾卡</td>
+            <td><div class="score"><div class="score-track"><div class="score-fill" style="width:85%"></div></div><span class="score-num">85</span></div></td>
+            <td class="work w-m">中</td>
+            <td>正典里寿尽不是黑屏，是「坐化」—— 可以留遗言、可以交代后事、可以选兵解转世。直接填<b>高龄段的内容空档</b>。</td>
+          </tr>
+          <tr>
+            <td class="name">境界加「小境」称呼</td>
+            <td class="rec"><b>要做</b> —— 炼气三层 / 筑基中期 / 金丹圆满；<b>不加快境界</b></td>
+            <td><div class="score"><div class="score-track"><div class="score-fill" style="width:82%"></div></div><span class="score-num">82</span></div></td>
+            <td class="work w-s">小</td>
+            <td>五阶的名字（凡身/炼气/筑基/金丹/元婴）已经是读者一眼就懂的那一档，<b>加新境界反而稀释辨识度</b>。缺的是「还在往上爬」的感觉 —— 纯文本改动，几乎零规则成本。</td>
+          </tr>
+          <tr>
+            <td class="name">心魔针对玩家自己长出来</td>
+            <td class="rec"><b>要做</b> —— 从「你最放不下的人、最不敢面对的往事」里取材</td>
+            <td><div class="score"><div class="score-track"><div class="score-fill" style="width:76%"></div></div><span class="score-num">76</span></div></td>
+            <td class="work w-m">中</td>
+            <td>正典的心魔就是这样。而我们<b>有一整本玩家自己的人生流水和人物关系</b> ⇒ 这是我们相对小说最大的差异点。但要先确认流水数据够不够撑起一张卡。</td>
+          </tr>
+          <tr>
+            <td class="name">天劫做成「世界事件」</td>
+            <td class="rec"><b>要做</b> —— 旁人在场：可以护法、可以围观、也可以被抢</td>
+            <td><div class="score"><div class="score-track"><div class="score-fill" style="width:74%"></div></div><span class="score-num">74</span></div></td>
+            <td class="work w-m">中</td>
+            <td>天劫是正典里唯一「全世界围观」的时刻。一改就能换掉「闷头练」的孤独感 —— 而且我们的抉择卡天然带「旁人在场」的结构。</td>
+          </tr>
+          <tr>
+            <td class="name">灵根倍率（1 : 0.32）</td>
+            <td class="rec"><span class="tag no">这轮不动</span></td>
+            <td><div class="score"><div class="score-track"><div class="score-fill low" style="width:55%"></div></div><span class="score-num">55</span></div></td>
+            <td class="work w-l">大</td>
+            <td>正典是 1 : 0.2，但正典用「伪灵根也能靠机缘翻盘」来兜底。⇒ <b>建议先补内容（A 组第一项），别动数值</b>：数值一动就要重钉密度与完备度的门禁上限。</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 style="margin:26px 0 10px">B 组 · 出身与背景故事线</h3>
+    <div class="card">
+      <table>
+        <thead><tr><th>事项</th><th>推荐</th><th>推荐分</th><th>工作量</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr>
+            <td class="name">给每条背景加「谁会来找你」</td>
+            <td class="rec"><b>要做</b> —— 谁会回来、因为什么、多久以后</td>
+            <td><div class="score"><div class="score-track"><div class="score-fill" style="width:86%"></div></div><span class="score-num">86</span></div></td>
+            <td class="work w-m">中</td>
+            <td>调研里<b>最一致的发现</b>：出身真正驱动长线的不是资源，是「关系债」—— 生母、一饭之恩、收留你的高人。我们现有 12 条多数只给了「一次性因果」，缺「后续会有人上门」这个字段。加了它，「背景卡发完就没事干」这件事直接解决。</td>
+          </tr>
+          <tr>
+            <td class="name">选项提示语改成固定格式</td>
+            <td class="rec"><b>要做</b> —— 「能得到 X，但会欠下 Y」</td>
+            <td><div class="score"><div class="score-track"><div class="score-fill" style="width:84%"></div></div><span class="score-num">84</span></div></td>
+            <td class="work w-s">小</td>
+            <td>现有提示语多数只写好处（「排上了队」「名帖在手」）。改成「代价在前」，顺带把「代价」变成规则层<b>可以记账</b>的接口。</td>
+          </tr>
+          <tr>
+            <td class="name">12 张卡的选项对改造</td>
+            <td class="rec"><b>要做</b> —— 从「快 vs 慢」改成「两种价值冲突」</td>
+            <td><div class="score"><div class="score-track"><div class="score-fill" style="width:82%"></div></div><span class="score-num">82</span></div></td>
+            <td class="work w-m">中</td>
+            <td>现在的「当天就动身 vs 交代清楚再走」玩家<b>一眼能算出哪个不亏</b> ⇒ 冲突感弱。行业共识是让两个都成立的价值对撞（诚实 vs 保护、忠诚 vs 正义）。</td>
+          </tr>
+          <tr>
+            <td class="name">每条背景带一个「未解问题」</td>
+            <td class="rec"><b>要做</b> —— 我是谁 / 谁在找我 / 这枚印记是什么，且后续 12–36 个月再被提一次</td>
+            <td><div class="score"><div class="score-track"><div class="score-fill" style="width:80%"></div></div><span class="score-num">80</span></div></td>
+            <td class="work w-m">中</td>
+            <td>网文钩子讲的就是「给一个读者会追问的问题」。归山记是逐月模拟、没有「第一段」，所以用「这条背景在后面还会被提起」来代替。</td>
+          </tr>
+          <tr>
+            <td class="name">反套路设定采纳到什么程度</td>
+            <td class="rec"><b>只取两半</b> —— 「凡人技艺可换资源」+「出身自带初始事件链与权重」</td>
+            <td><div class="score"><div class="score-track"><div class="score-fill" style="width:85%"></div></div><span class="score-num">85</span></div></td>
+            <td class="work w-s">小</td>
+            <td>反套路最值得抄的不是设定，是「把困境写成规则」。但凡是靠<b>改灵根翻盘</b>的一律不采纳 —— 仓库硬规矩是「背景绝不改灵根」。</td>
+          </tr>
+          <tr>
+            <td class="name">背景故事线扩到几条</td>
+            <td class="rec"><b>12 → 20</b>（入宗门 8→14，无缘 4→6）</td>
+            <td><div class="score"><div class="score-track"><div class="score-fill" style="width:74%"></div></div><span class="score-num">74</span></div></td>
+            <td class="work w-l">大</td>
+            <td>调研给了 38 种出身可挑。但扩到 20 要重做「每条只指向一条路」的模数与内容体量。<b>这项分低，因为它取决于你想花多少工作量</b>，而不是技术上难。</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 style="margin:26px 0 10px">C 组 · 宗门、资源与结局</h3>
+    <div class="card">
+      <table>
+        <thead><tr><th>事项</th><th>推荐</th><th>推荐分</th><th>工作量</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr>
+            <td class="name">每月一次「钟响抽查」</td>
+            <td class="rec"><b>要做</b> —— 一句广播 + 一个选择（配合执法堂 / 走关系免罚 / 自己加练）</td>
+            <td><div class="score"><div class="score-track"><div class="score-fill" style="width:82%"></div></div><span class="score-num">82</span></div></td>
+            <td class="work w-s">小</td>
+            <td>成本低、频次高、戏剧感强。这是调研里最便宜的一个大改善。</td>
+          </tr>
+          <tr>
+            <td class="name">杂役拆成五种</td>
+            <td class="rec"><b>要做</b> —— 厨房 / 扫地 / 送东西 / 拔草 / 养兽</td>
+            <td><div class="score"><div class="score-track"><div class="score-fill" style="width:80%"></div></div><span class="score-num">80</span></div></td>
+            <td class="work w-s">小</td>
+            <td>已经有「做工」这个活动了，拆成五个可选项几乎零成本 —— 而「同一件事的五个版本」正是抉择卡最需要的两选项结构。</td>
+          </tr>
+          <tr>
+            <td class="name">藏经阁按权限分层</td>
+            <td class="rec"><b>要做</b> —— 18 部功法挂到权限上</td>
+            <td><div class="score"><div class="score-track"><div class="score-fill" style="width:80%"></div></div><span class="score-num">80</span></div></td>
+            <td class="work w-m">中</td>
+            <td>让「读哪一卷」本身成为一个资源决策，而不是一张静态列表。这是功法系统的天然骨架。</td>
+          </tr>
+          <tr>
+            <td class="name">结局加「死法 / 成法」标签</td>
+            <td class="rec"><b>要做</b> —— 坐化 / 尸解 / 兵解 / 剑解 / 火解 / 水解 / 寿终 / 证道 / 归寂，再加三个新格（轮回转世 / 转修散仙 / 道消）和情绪字段</td>
+            <td><div class="score"><div class="score-track"><div class="score-fill" style="width:79%"></div></div><span class="score-num">79</span></div></td>
+            <td class="work w-m">中</td>
+            <td>现有 25 格几乎都是「结果」，不是「怎么死的」。道教体系本来就给了一套现成的死法分级（坐化 / 尸解 / 兵解 / 剑解 / 火解 / 水解 / 杖解），拿来当标签不用自己编。<b>而且「飞升」不该默认最好</b> —— 做成两三个版本（一个要宗门献祭、一个要叛出、一个是骗局）立刻拉开多样性。</td>
+          </tr>
+          <tr>
+            <td class="name">宗门职务表扩到 8–10 个</td>
+            <td class="rec"><b>要做</b> —— 职级 × 部门二维</td>
+            <td><div class="score"><div class="score-track"><div class="score-fill" style="width:78%"></div></div><span class="score-num">78</span></div></td>
+            <td class="work w-m">中</td>
+            <td>现在只有 4 个人（接引 / 执事 / 执法长老 / 宗主）⇒ 玩家在宗门里没有上升轨道，只会遇到四个固定的人。顺便：四个「神秘岗位」（暗卫 / 巡察使 / 守墓人 / 守阵人）天然带信息不对称，最适合做那种「只给两个选项、不给解释」的卡。</td>
+          </tr>
+          <tr>
+            <td class="name">引入「贡献点」当第二本账</td>
+            <td class="rec"><b>要做</b> —— 灵石对外，贡献点对内</td>
+            <td><div class="score"><div class="score-track"><div class="score-fill" style="width:76%"></div></div><span class="score-num">76</span></div></td>
+            <td class="work w-l">大</td>
+            <td>两本账会自然长出「有钱但没人缘」和「有贡献点没灵石」两种很有戏的玩家状态，而且直接服务「正道 / 散修」的分野。但要动经济与存档结构。</td>
+          </tr>
+          <tr>
+            <td class="name">惩罚扩成四档</td>
+            <td class="rec"><b>要做</b> —— 罚俸 → 服役 → 禁闭 → 逐出，再加「罚俸直到补足」</td>
+            <td><div class="score"><div class="score-track"><div class="score-fill" style="width:75%"></div></div><span class="score-num">75</span></div></td>
+            <td class="work w-m">中</td>
+            <td>现在只有「禁闭 / 服役」两档。「罚俸直到补足」这个负债机制特别适合逐月推进 —— 天然产生「接下来几个月都缺钱」的连续压力。</td>
+          </tr>
+          <tr>
+            <td class="name">储物容量上限</td>
+            <td class="rec"><b>要做</b></td>
+            <td><div class="score"><div class="score-track"><div class="score-fill" style="width:70%"></div></div><span class="score-num">70</span></div></td>
+            <td class="work w-l">大</td>
+            <td>让 43 件道具的收集变成真正的取舍，而不是无限膨胀的收藏。但会改存档结构与道具门禁的判据。</td>
+          </tr>
+          <tr>
+            <td class="name">宗门大难做成一次性收束事件</td>
+            <td class="rec"><b>要做，但排最后</b></td>
+            <td><div class="score"><div class="score-track"><div class="score-fill" style="width:72%"></div></div><span class="score-num">72</span></div></td>
+            <td class="work w-l">大</td>
+            <td>灭门不该是「一张事件卡」，而该是背景事实：主角整个余生都在这件事的后果里（逃亡 / 重建 / 另立门户）。重量最大，值得单独一轮。</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card" style="margin-top:14px">
+      <h3>调研里两个「我们独有」的发现，值得单独看一眼</h3>
+      <ul class="plist">
+        <li><b>「凡身」是我们的独有资产</b> —— 正典里凡人不入流（测灵石不亮），我们有「凡身」这一阶 ⇒ 可以把它写成<b>一种带完整社会身份和寿命上限的状态</b>（88 岁上限、有族姓村籍、无门派），而不是「还没开始」。前几年内容稀薄，一半原因就是凡身段没有像修士那样的身份 / 资源 / 关系网可写。</li>
+        <li><b>「故人陆续死尽」是我们相对小说最大的表现优势</b> —— 我们有每个人物的状态与羁绊数据 ⇒ 可以在人生进程轴上给每个认识的人标一个随时间变化的记号（离世 / 坐化 / 断联），让玩家看见一条条划掉的横线。<b>小说只能靠文字硬写，我们能让它长出来。</b>而且这不需要改任何规则，纯靠表现层。</li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      <h2>结合调研，建议的执行顺序</h2>
+    </div>
+    <p class="sec-sub">你批的 4 步我保留，但把第 ②③ 步调了个位置 —— 因为调研发现「开局没别的事可做」的根因比原计划更靠前。</p>
+    <ol class="steps">
+      <li><strong>推 GitHub</strong><span class="st">第 ① 步 · 你已授权</span><span>六阶段成果 + 三个文档提交都只在本地。推之前不用再跑门禁 —— 代码树没动，跑第二遍什么都不多证明。</span></li>
+      <li><strong>删开发者面板</strong><span class="st">新增</span><span>低风险、不碰规则层；做完门禁 39 → 38，全量门禁从 8 分钟降到约 4 分钟（少一道要起浏览器的），以后也不再需要本机能起 Chrome。</span></li>
+      <li><strong>背景卡改造（B 组前五项）</strong><span class="st">你批的第 ② 步</span><span>给每条背景加「谁会来找你」、选项改成价值冲突、提示语改成「能得到 X 但会欠下 Y」、加一个未解问题。只改 <code>content/background-stories.js</code> 一个叶子文件 —— <b>这是投入产出比最高的一批</b>。</span></li>
+      <li><strong>加「准备与辅助」内容层（A 组第一项）</strong><span class="st">新增 · 工作量最大</span><span>三份调研都指向它。找功法、备突破物、渡心魔、接任务、入红尘历练 —— 六个非升级的、有代价的、能失败的行动。这才是「前几年只有升级可做」的解药。</span></li>
+      <li><strong>宗门内部有戏（C 组多数）</strong><span class="st">新增</span><span>职务扩到 8–10 个、钟响抽查、杂役五选、藏经阁权限、惩罚四档。都是「在宗门里当人」而不是「在宗门里升级」。</span></li>
+      <li><strong>寿命与结局（A 组 2–5 + C 组结局项）</strong><span class="st">新增</span><span>坐化做成独立收尾、心魔从流水取材、天劫做成世界事件、结局加死法与三个新格。填高龄段的空档。</span></li>
+      <li><strong>攻「高境界突破间隔」</strong><span class="st">你批的第 ③ 步 · 往后挪了一位</span><span>规格 ≤15 年，实测金丹 27 年、元婴 51 年才破一境 —— 玩家感知最强的已知缺口。<b>但它排在背景与「准备」之后</b>，因为背景改造同样能顺带把这条撑起来，先改背景回报更高。</span></li>
+      <li><strong>最后才碰原有旁白通道</strong><span class="st">你批的第 ④ 步</span><span>它会动整条决策序列，值得单独一次提交、单独一次基线，别跟别的混在一起。</span></li>
+    </ol>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>
+      <h2>这一页本身也要你拍板的 3 件事</h2>
+    </div>
+    <div class="card">
+      <table>
+        <thead><tr><th>事项</th><th>选项</th><th>我的推荐</th><th>推荐分</th></tr></thead>
+        <tbody>
+          <tr>
+            <td class="name">这一页放哪</td>
+            <td class="rec">留在 /tmp ／ 归档进 <code>docs/</code> ／ 不要了</td>
+            <td class="rec"><b>归档进 docs/</b> —— 但要连带登记来源清单 + 跑一遍门禁（大约多花 10 分钟）。<code>/tmp</code> 会被系统清掉。</td>
+            <td><div class="score"><div class="score-track"><div class="score-fill" style="width:72%"></div></div><span class="score-num">72</span></div></td>
+          </tr>
+          <tr>
+            <td class="name">下一轮先做哪一批</td>
+            <td class="rec">删面板 ／ 背景卡改造 ／ 加「准备与辅助」层</td>
+            <td class="rec"><b>删面板 → 背景卡改造</b> —— 面板是纯清理，一小时内了结；背景卡改造投入产出比最高，且只动一个叶子文件。</td>
+            <td><div class="score"><div class="score-track"><div class="score-fill" style="width:76%"></div></div><span class="score-num">76</span></div></td>
+          </tr>
+          <tr>
+            <td class="name">21 项里有没有你现在就否掉的</td>
+            <td class="rec">全都做 ／ 只做高分项 ／ 你挑</td>
+            <td class="rec"><b>先做 85 分以上那几项</b>（加「准备与辅助」层、寿元结局、who_comes_back、反套路取两半），它们彼此不冲突，能一次做完。</td>
+            <td><div class="score"><div class="score-track"><div class="score-fill" style="width:70%"></div></div><span class="score-num">70</span></div></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer>
+    <div class="foot-grid">
+      <span>归山记 · 待决策页（2026-11-08）</span>
+      <span>本轮仓库改动：0 个文件</span>
+      <span>调研素材：/tmp/gsj-research-1/2/3-*.md</span>
+      <span>六阶段成果仍全部只在本地，未推送 GitHub</span>
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>

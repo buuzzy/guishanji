@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>归山记 · 剧情线与年速方案</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f7f5f0; --card:#ffffff; --line:#e9e3d6; --line-soft:#f0ece2;
+  --ink:#14171e; --ink2:#3a4256; --muted:#7c7a72;
+  --primary:#2f6f5e; --primary-soft:rgba(47,111,94,.08); --primary-mid:rgba(47,111,94,.22);
+  --accent:#c97b3f; --accent-soft:rgba(201,123,63,.10);
+  --alert:#b06367; --alert-soft:rgba(176,99,103,.10);
+  --mono:'JetBrains Mono',monospace; --sans:'Outfit',sans-serif; --serif:'DM Serif Display',serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:var(--bg); color:var(--ink); font-family:var(--sans);
+  font-size:14.5px; line-height:1.62; -webkit-font-smoothing:antialiased;
+  background-image:
+    radial-gradient(900px 480px at 88% -8%, rgba(47,111,94,.05), transparent 62%),
+    radial-gradient(760px 420px at 4% 4%, rgba(201,123,63,.05), transparent 60%);
+  background-attachment:fixed;
+}
+.wrap{max-width:1040px;margin:0 auto;padding:0 24px 96px}
+section{margin-top:52px}
+h1,h2,h3{font-family:var(--serif);font-weight:400;letter-spacing:-.005em}
+h1{font-size:32px;line-height:1.22;margin-bottom:12px}
+h2{font-size:24px;line-height:1.3;margin-bottom:8px}
+h3{font-size:17px;font-family:var(--sans);font-weight:600;margin-bottom:8px}
+p{margin-bottom:10px;color:var(--ink2)}
+.lead{font-size:16px;color:var(--ink2);max-width:70ch}
+.muted{color:var(--muted)}
+.mono{font-family:var(--mono);font-size:12.5px}
+.kicker{font-family:var(--mono);font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--primary);margin-bottom:10px}
+
+.hero{padding-top:64px}
+.hero .lede{font-size:17px;line-height:1.6;color:var(--ink);max-width:62ch;margin:14px 0 0}
+.statline{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:0;margin-top:30px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.statline > div{padding:18px 22px 18px 0}
+.statline .n{font-family:var(--mono);font-size:26px;font-weight:500;color:var(--primary);line-height:1.15}
+.statline .n.warn{color:var(--alert)}
+.statline .n.amb{color:var(--accent)}
+.statline .l{font-size:12.5px;color:var(--muted);margin-top:4px;line-height:1.45}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;box-shadow:0 2px 8px rgba(0,0,0,.035)}
+.card + .card{margin-top:14px}
+.card p:last-child{margin-bottom:0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:760px){.grid2{grid-template-columns:1fr}}
+
+.bench{display:grid;grid-template-columns:180px 1fr 92px;gap:14px;align-items:center;padding:7px 0}
+.bench-track{height:16px;background:var(--line-soft);border-radius:6px;overflow:hidden}
+.bench-fill{height:100%;border-radius:6px;background:var(--primary)}
+.bench-fill.amb{background:var(--accent)}
+.bench-fill.alt{background:var(--alert)}
+.bench-val{font-family:var(--mono);font-size:12.5px;text-align:right;color:var(--ink2)}
+.bench-label{font-size:13.5px;color:var(--ink2)}
+@media(max-width:640px){.bench{grid-template-columns:126px 1fr 74px;gap:9px;font-size:12.5px}}
+
+.kv{display:grid;grid-template-columns:118px 1fr;row-gap:0;column-gap:18px;margin:0}
+.kv dt{color:var(--muted);font-size:13px;padding:9px 0;border-bottom:1px dashed var(--line)}
+.kv dd{margin:0;padding:9px 0;border-bottom:1px dashed var(--line);font-size:13.5px;color:var(--ink2)}
+
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-weight:600;color:var(--muted);font-size:12px;letter-spacing:.04em;white-space:nowrap}
+tr.hl td{background:var(--primary-soft)}
+.stars{color:var(--accent);letter-spacing:2px;font-size:13px}
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+
+figure{margin:0}
+figcaption{font-size:12.5px;color:var(--muted);margin-top:12px;line-height:1.55}
+.figbox{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;box-shadow:0 2px 8px rgba(0,0,0,.035)}
+
+.legend{display:flex;flex-wrap:wrap;gap:16px;margin-top:14px;font-size:12.5px;color:var(--ink2)}
+.legend span{display:flex;align-items:center;gap:7px}
+.sw{width:13px;height:13px;border-radius:4px;flex:none}
+.sw.fill{background:var(--primary)}
+.sw.outline{background:#fff;border:1.5px solid var(--primary)}
+.sw.amb{background:var(--accent)}
+.sw.dash{background:#fff;border:1.5px dashed var(--muted)}
+.sw.soft{background:var(--primary-soft);border:1px solid var(--primary-mid)}
+
+.timeline{list-style:none;padding:0;margin:0;position:relative}
+.timeline::before{content:"";position:absolute;left:8px;top:8px;bottom:8px;width:2px;background:var(--primary);opacity:.3}
+.timeline li{position:relative;padding:0 0 26px 34px}
+.timeline li:last-child{padding-bottom:0}
+.timeline li::before{content:"";position:absolute;left:2px;top:5px;width:14px;height:14px;border-radius:50%;background:#fff;border:2px solid var(--primary)}
+.timeline .tl-h{font-weight:600;font-size:14.5px;margin-bottom:4px}
+.timeline .tl-tag{font-family:var(--mono);font-size:11px;padding:2px 7px;border-radius:5px;background:var(--primary-soft);color:var(--primary);margin-left:8px;vertical-align:2px}
+.timeline p{font-size:13.5px;margin-bottom:4px}
+.timeline .risk{font-size:12.5px;color:var(--muted)}
+
+.ctrl{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:4px}
+.ctrl label{font-size:13px;color:var(--ink2);white-space:nowrap}
+input[type=range]{-webkit-appearance:none;appearance:none;height:4px;border-radius:2px;background:var(--line);outline:none;flex:1;min-width:180px}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--primary);cursor:pointer;border:3px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.18)}
+input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:var(--primary);cursor:pointer;border:3px solid #fff}
+.readout{display:flex;flex-wrap:wrap;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--card);margin-top:16px}
+.readout div{flex:1 1 152px;background:var(--card);padding:11px 14px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+.readout .rn{font-family:var(--mono);font-size:17px;color:var(--primary);white-space:nowrap}
+.readout .rn.amb{color:var(--accent)}
+.readout .rn.gray{color:var(--muted)}
+.readout .rl{font-size:11.5px;color:var(--muted);margin-top:2px;line-height:1.4}
+
+.callout{background:var(--accent-soft);border:1px solid rgba(201,123,63,.28);border-radius:12px;padding:16px 18px;font-size:13.5px;color:var(--ink2)}
+.callout b{color:var(--ink)}
+
+.pend{display:grid;grid-template-columns:26px 1fr;gap:12px;align-items:start;padding:13px 0;border-bottom:1px solid var(--line)}
+.pend:last-child{border-bottom:none;padding-bottom:0}
+.pend:first-child{padding-top:0}
+.pnum{width:24px;height:24px;border-radius:50%;background:var(--primary-soft);color:var(--primary);font-family:var(--mono);font-size:12px;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.pt{font-size:14px;font-weight:500;margin-bottom:3px}
+.pd{font-size:13px;color:var(--ink2);line-height:1.55}
+.pd .tag{font-family:var(--mono);font-size:11px;color:var(--muted);margin-left:6px}
+
+footer{margin-top:64px;padding-top:22px;border-top:1px solid var(--line);font-size:12.5px;color:var(--muted)}
+@media(max-width:760px){
+  .wrap{padding:0 16px 64px}
+  h1{font-size:26px} h2{font-size:20px}
+  .hero{padding-top:40px}
+  section{margin-top:40px}
+  .figbox{padding:16px}
+}
+
+.corr{background:#f6ebeb;border:1px solid #e6d2d2;border-radius:14px;padding:20px 24px;margin:36px 0 8px}
+.corr h4{font-family:var(--f-head);font-size:19px;margin:0 0 8px;font-weight:400;color:#8c4b4e}
+.corr p{margin:0 0 8px;font-size:13.5px;color:#7a5557;line-height:1.62}
+.corr p:last-child{margin-bottom:0}
+.corr b{color:#8c4b4e}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="corr">
+  <h4>这份页面上的年速数字，已被当晚的逐月复核修正</h4>
+  <p>① <b>「1 年 = K ÷ 寿元上限」一档到底不够</b>：元婴期实测 227 年只有 12 张卡，一档到底会变成 3 分钟一张卡 ⇒ 还要加一个「95 岁后一年封顶几秒」的旋钮。</p>
+  <p>② <b>「收寿元」与年速公式互斥</b>：寿元收得越低 ⇒ 一年走得越慢 ⇒ 一生反而更长、后期占比更高（实测 42.4% → 46.2% → 51.4%）。</p>
+  <p>③ <b>「一年 8 秒」只说了一半</b>：闭关、远行、渡劫准备期间走另一条分支，一年只走 1–5 秒，这类月份占一生约六成时长。</p>
+  <p>完整选项、打分与推荐见桌面《归山记 · 待决事项（选项与打分）.html》。下面这一页的数字仍可用于看「问题在哪」，但<b>具体参数请以新页面为准</b>。</p>
+</div>
+
+<header class="hero">
+  <div class="kicker">归山记 · 剧情与节奏重构方案</div>
+  <h1>让玩家像看修仙小说那样，<br>一路无脑读下去</h1>
+  <p class="lede">四轮讨论的落点：<b>问题不在决策卡太多</b>（我们 45 张，官方 56 张，同一量级），
+  <b>而在「一年」这个单位太小</b>——我们的 1 年只值 8 秒，官方 43–67 秒。
+  一年里塞不下旁白，铺垫就全被挤进决策卡，于是玩家被迫「边选边读设定」。</p>
+  <div class="statline">
+    <div>
+      <div class="n warn">8 秒</div>
+      <div class="l">我们：1 年 = 多少真实秒<br><span class="muted">官方 43–67 秒</span></div>
+    </div>
+    <div>
+      <div class="n warn">1.29 : 1</div>
+      <div class="l">叙述 : 决策<br><span class="muted">官方 6.5 : 1</span></div>
+    </div>
+    <div>
+      <div class="n warn">87%</div>
+      <div class="l">一年到头一张卡都没有的年份<br><span class="muted">官方只有 4%</span></div>
+    </div>
+    <div>
+      <div class="n amb">12.5 分</div>
+      <div class="l">一条命 309 岁的真实时长<br><span class="muted">官方 85 岁 ≈ 61 分钟</span></div>
+    </div>
+  </div>
+</header>
+
+<!-- ============ 诊断 1 ============ -->
+<section>
+  <div class="kicker">诊断 · 一</div>
+  <h2>不是「一直很密」，是「平时没事，一来就全来」</h2>
+  <p>我们的 45 张卡有 4.38 张挤在 16–18 那三年（占 0–26 岁全部卡量的 39%）。
+  其余 87% 的年份，玩家什么都不用做——然后在 17 岁那年，一年被问 2.18 次。</p>
+
+  <figure class="figbox">
+    <div id="barwrap"></div>
+    <figcaption>官方 1in8b：79% 的年份弹 1 张、20% 弹 2 张，<b>96% 的年份都有事</b>（年均 1.24 张）；我们只有 12.8%。
+    这就是「散乱」的体感来源——不是节奏慢，是节奏没铺开。</figcaption>
+  </figure>
+</section>
+
+<!-- ============ 诊断 2 ============ -->
+<section>
+  <div class="kicker">诊断 · 二</div>
+  <h2>「一年」太短 ⇒ 一年里塞不下旁白</h2>
+  <p>决策卡和旁白的<b>条数</b>我们并不比官方少多少。真正拉开差距的是<b>一年有多少秒</b>——
+  它决定了一年里能放几段文字，也就决定了「铺垫」有没有地方放。</p>
+
+  <figure class="figbox">
+    <svg viewBox="0 0 960 210" style="width:100%;height:auto" role="img" aria-label="官方与我们的时间刻度对比">
+      <text x="16" y="20" font-family="Outfit" font-size="13" font-weight="600" fill="#3a4256">同一个「一年」，两边的长度</text>
+
+      <text x="16" y="66" font-family="Outfit" font-size="13" fill="#3a4256">官方 1in8b</text>
+      <rect x="130" y="48" width="620" height="30" rx="7" fill="rgba(47,111,94,.14)" stroke="#2f6f5e" stroke-width="1.5"/>
+      <text x="762" y="68" font-family="JetBrains Mono" font-size="12.5" fill="#2f6f5e">1 年 = 43 秒</text>
+      <text x="130" y="92" font-family="Outfit" font-size="11.5" fill="#7c7a72">里面放：3 条旁白 + 1.5 张卡 ⇒ 每 9–10 秒读到一段文字</text>
+
+      <text x="16" y="136" font-family="Outfit" font-size="13" fill="#3a4256">归山记</text>
+      <rect x="130" y="118" width="115" height="30" rx="7" fill="rgba(176,99,103,.16)" stroke="#b06367" stroke-width="1.5"/>
+      <text x="257" y="138" font-family="JetBrains Mono" font-size="12.5" fill="#b06367">1 年 = 8 秒</text>
+      <text x="130" y="162" font-family="Outfit" font-size="11.5" fill="#7c7a72">里面放：0.3 条旁白 + 0.12 张卡 ⇒ 每 19 秒读到一段文字，而且 87% 的年份什么都没有</text>
+
+      <text x="16" y="196" font-family="Outfit" font-size="11.5" fill="#7c7a72">同一比例尺。我们的「一年」只有官方的 1/5.4。</text>
+    </svg>
+    <figcaption>专名密度也印证了同一件事：<b>决策卡正文 3.40 个专名/百字</b>（每 29 字一个必须认识的词），
+    <b>旁白 1.29 个/百字</b>——玩家必须先认识的设定，全压在需要他动手选的地方。</figcaption>
+  </figure>
+</section>
+
+<!-- ============ 方案 A ============ -->
+<section>
+  <div class="kicker">推荐方案 · 一</div>
+  <h2>剧情线：铺垫下沉，入门那一串改成「必答串」</h2>
+  <p>四条原则：<b>铺垫下沉</b>（世界观与处境由非决策的人生经历承担）· <b>一卡一事</b>（一件事 = 一张卡）·
+  <b>必答串</b>（入门五环必须答完，不是岔路）· <b>背景唯一收束</b>（一条背景只指向一条路）。</p>
+
+  <figure class="figbox">
+    <svg viewBox="0 0 1280 616" style="width:100%;height:auto" role="img" aria-label="剧情线结构图：轮盘、背景收束、凡人线与修仙必答串、树枝与接头卡回环">
+      <defs>
+        <marker id="ar" markerWidth="9" markerHeight="9" refX="7.5" refY="3.2" orient="auto">
+          <path d="M0,0 L0,6.4 L7.5,3.2 z" fill="#7c7a72"/>
+        </marker>
+        <marker id="arp" markerWidth="9" markerHeight="9" refX="7.5" refY="3.2" orient="auto">
+          <path d="M0,0 L0,6.4 L7.5,3.2 z" fill="#2f6f5e"/>
+        </marker>
+        <marker id="ara" markerWidth="9" markerHeight="9" refX="7.5" refY="3.2" orient="auto">
+          <path d="M0,0 L0,6.4 L7.5,3.2 z" fill="#c97b3f"/>
+        </marker>
+      </defs>
+
+      <!-- 轮盘 -->
+      <rect x="60" y="34" width="212" height="66" rx="12" fill="#fff" stroke="#e9e3d6" stroke-width="1.5"/>
+      <text x="76" y="60" font-family="Outfit" font-size="14" font-weight="600" fill="#14171e">轮盘</text>
+      <text x="76" y="80" font-family="Outfit" font-size="12" fill="#7c7a72">出身 + 背景故事线</text>
+
+      <!-- 背景线索 -->
+      <rect x="330" y="34" width="264" height="66" rx="12" fill="rgba(201,123,63,.10)" stroke="#c97b3f" stroke-width="1.6"/>
+      <text x="346" y="60" font-family="Outfit" font-size="14" font-weight="600" fill="#14171e">背景线索 · 唯一收束点</text>
+      <text x="346" y="80" font-family="Outfit" font-size="12" fill="#7c7a72">8–12 条，每条只指向一条路</text>
+      <line x1="272" y1="67" x2="326" y2="67" stroke="#7c7a72" stroke-width="1.6" marker-end="url(#ar)"/>
+
+      <!-- 分流 -->
+      <path d="M462,100 L462,132 L185,132 L185,166" fill="none" stroke="#7c7a72" stroke-width="1.6" marker-end="url(#ar)"/>
+      <path d="M462,100 L462,132 L645,132 L645,166" fill="none" stroke="#7c7a72" stroke-width="1.6" marker-end="url(#ar)"/>
+
+      <!-- 凡人线 -->
+      <rect x="70" y="170" width="230" height="64" rx="11" fill="#fff" stroke="#e9e3d6" stroke-width="1.5" stroke-dasharray="5 4"/>
+      <text x="86" y="196" font-family="Outfit" font-size="14" font-weight="600" fill="#3a4256">与修仙无缘</text>
+      <text x="86" y="216" font-family="Outfit" font-size="12" fill="#7c7a72">结束游戏（不是展开凡人一生）</text>
+
+      <line x1="185" y1="234" x2="185" y2="276" stroke="#7c7a72" stroke-width="1.6" marker-end="url(#ar)"/>
+      <rect x="70" y="280" width="230" height="64" rx="11" fill="rgba(47,111,94,.05)" stroke="#2f6f5e" stroke-width="1.4" stroke-dasharray="5 4"/>
+      <text x="86" y="306" font-family="Outfit" font-size="14" font-weight="600" fill="#3a4256">短凡人线</text>
+      <text x="86" y="326" font-family="Outfit" font-size="12" fill="#7c7a72">3–5 张卡（现为 16 张 / 48 年）</text>
+
+      <!-- 入宗门 -->
+      <rect x="530" y="170" width="230" height="64" rx="11" fill="#fff" stroke="#2f6f5e" stroke-width="1.6"/>
+      <text x="546" y="196" font-family="Outfit" font-size="14" font-weight="600" fill="#14171e">入宗门</text>
+      <text x="546" y="216" font-family="Outfit" font-size="12" fill="#7c7a72">背景直接指向此处</text>
+
+      <!-- 必答串 -->
+      <line x1="645" y1="234" x2="645" y2="272" stroke="#2f6f5e" stroke-width="1.6" marker-end="url(#arp)"/>
+      <text x="530" y="266" font-family="Outfit" font-size="11.5" font-weight="600" fill="#2f6f5e">必答串 · 五环（条件齐了必发、必须答完）</text>
+
+      <rect x="530"  y="278" width="128" height="74" rx="10" fill="#2f6f5e"/>
+      <text x="594" y="300" font-family="JetBrains Mono" font-size="11" fill="rgba(255,255,255,.72)" text-anchor="middle">①</text>
+      <text x="594" y="320" font-family="Outfit" font-size="13.5" font-weight="600" fill="#fff" text-anchor="middle">测灵根</text>
+      <text x="594" y="338" font-family="Outfit" font-size="11" fill="rgba(255,255,255,.78)" text-anchor="middle">唯一决策点</text>
+
+      <rect x="670"  y="278" width="128" height="74" rx="10" fill="#fff" stroke="#2f6f5e" stroke-width="1.6"/>
+      <text x="734" y="300" font-family="JetBrains Mono" font-size="11" fill="#2f6f5e" text-anchor="middle">②</text>
+      <text x="734" y="320" font-family="Outfit" font-size="13.5" font-weight="600" fill="#14171e" text-anchor="middle">宗门部门</text>
+      <text x="734" y="338" font-family="Outfit" font-size="11" fill="#b06367" text-anchor="middle">全新一环</text>
+
+      <rect x="810"  y="278" width="128" height="74" rx="10" fill="#fff" stroke="#2f6f5e" stroke-width="1.6"/>
+      <text x="874" y="300" font-family="JetBrains Mono" font-size="11" fill="#2f6f5e" text-anchor="middle">③</text>
+      <text x="874" y="320" font-family="Outfit" font-size="13.5" font-weight="600" fill="#14171e" text-anchor="middle">心法选定</text>
+      <text x="874" y="338" font-family="Outfit" font-size="11" fill="#b06367" text-anchor="middle">玩家现在不选</text>
+
+      <rect x="950"  y="278" width="128" height="74" rx="10" fill="rgba(47,111,94,.07)" stroke="#2f6f5e" stroke-width="1.4" stroke-dasharray="5 4"/>
+      <text x="1014" y="300" font-family="JetBrains Mono" font-size="11" fill="#2f6f5e" text-anchor="middle">④</text>
+      <text x="1014" y="320" font-family="Outfit" font-size="13.5" font-weight="600" fill="#14171e" text-anchor="middle">弟子修炼</text>
+      <text x="1014" y="338" font-family="Outfit" font-size="11" fill="#7c7a72" text-anchor="middle">以经历为主</text>
+
+      <rect x="1090" y="278" width="128" height="74" rx="10" fill="#fff" stroke="#2f6f5e" stroke-width="1.6"/>
+      <text x="1154" y="300" font-family="JetBrains Mono" font-size="11" fill="#2f6f5e" text-anchor="middle">⑤</text>
+      <text x="1154" y="320" font-family="Outfit" font-size="13.5" font-weight="600" fill="#14171e" text-anchor="middle">炼气突破</text>
+      <text x="1154" y="338" font-family="Outfit" font-size="11" fill="#7c7a72" text-anchor="middle">已有</text>
+
+      <!-- 树枝尾端 -->
+      <line x1="1154" y1="352" x2="1154" y2="396" stroke="#2f6f5e" stroke-width="1.6" marker-end="url(#arp)"/>
+      <rect x="1030" y="400" width="248" height="62" rx="11" fill="#fff" stroke="#2f6f5e" stroke-width="1.6"/>
+      <text x="1046" y="426" font-family="Outfit" font-size="14" font-weight="600" fill="#14171e">树枝尾端</text>
+      <text x="1046" y="446" font-family="Outfit" font-size="12" fill="#7c7a72">16 条长线，每条三段三选</text>
+
+      <!-- 接头卡 -->
+      <line x1="1154" y1="462" x2="1154" y2="496" stroke="#c97b3f" stroke-width="1.6" marker-end="url(#ara)"/>
+      <rect x="1030" y="500" width="248" height="62" rx="11" fill="rgba(201,123,63,.10)" stroke="#c97b3f" stroke-width="1.6"/>
+      <text x="1046" y="526" font-family="Outfit" font-size="14" font-weight="600" fill="#14171e">接头卡</text>
+      <text x="1046" y="546" font-family="Outfit" font-size="12" fill="#7c7a72">接缝：由结果决定下一条线</text>
+
+      <!-- 新树干 -->
+      <line x1="1030" y1="531" x2="920" y2="531" stroke="#c97b3f" stroke-width="1.6" marker-end="url(#ara)"/>
+      <rect x="660" y="500" width="260" height="62" rx="11" fill="#fff" stroke="#c97b3f" stroke-width="1.6" stroke-dasharray="6 4"/>
+      <text x="676" y="526" font-family="Outfit" font-size="14" font-weight="600" fill="#14171e">新树干</text>
+      <text x="676" y="546" font-family="Outfit" font-size="12" fill="#7c7a72">新宗门 / 新起点</text>
+
+      <!-- 回环：绕开左侧，走 x=482 竖线上行 -->
+      <path d="M790,500 L790,462 L482,462 L482,214 L526,214" fill="none" stroke="#c97b3f" stroke-width="1.6" stroke-dasharray="7 5" marker-end="url(#ara)"/>
+      <text x="500" y="456" font-family="Outfit" font-size="11.5" fill="#c97b3f">重新走向别的树枝 → 新一轮必答串</text>
+
+      <!-- 凡人线终止 -->
+      <line x1="185" y1="344" x2="185" y2="386" stroke="#7c7a72" stroke-width="1.6" marker-end="url(#ar)"/>
+      <rect x="70" y="390" width="230" height="60" rx="11" fill="rgba(47,111,94,.05)" stroke="#2f6f5e" stroke-width="1.5"/>
+      <text x="86" y="425" font-family="Outfit" font-size="14" font-weight="600" fill="#3a4256">结束游戏</text>
+
+      <!-- 注释：铺垫去哪了 -->
+      <rect x="40" y="478" width="264" height="128" rx="11" fill="#fff" stroke="#e9e3d6" stroke-width="1.5"/>
+      <text x="58" y="502" font-family="Outfit" font-size="13" font-weight="600" fill="#14171e">① 铺垫去哪了？</text>
+      <g font-family="Outfit" font-size="11.5" fill="#3a4256">
+        <text x="58" y="524">「听到哪儿在招弟子」</text>
+        <text x="58" y="543">「去玩 / 劳作，仙师招手」</text>
+        <text x="58" y="562">「点额头，信息涌入」</text>
+        <text x="58" y="581" fill="#2f6f5e">→ 全部写成人生经历</text>
+      </g>
+      <text x="58" y="599" font-family="Outfit" font-size="11" fill="#7c7a72">现在全挤在 reception 这张决策卡里</text>
+    </svg>
+
+    <div class="legend">
+      <span><i class="sw fill"></i>决策卡</span>
+      <span><i class="sw outline"></i>必答串的一环</span>
+      <span><i class="sw dash"></i>人生经历（非决策）</span>
+      <span><i class="sw amb"></i>收束点 / 桥</span>
+    </div>
+    <figcaption><b>关键改动</b>：现在的测灵根是 <b>4 张决策卡、13 个选项</b>（reception → root_result → first_method → network_method）。
+    改后是 <b>1 张决策卡</b>（测灵根本身），前面交给人生经历铺，后面补上「部门」「心法选定」两环。
+    <b>不删任何现有卡</b>——312 张按背景重新分配触发条件即可。</figcaption>
+  </figure>
+</section>
+
+<!-- ============ 方案 B ============ -->
+<section>
+  <div class="kicker">推荐方案 · 二</div>
+  <h2>年速：把寿元与年速重新绑起来</h2>
+  <p>官方不是「挑了一个慢的秒数」，而是 <span class="mono">1 年 = 60×60 ÷ 预期寿命</span>——
+  <b>活得短则一年过得快，且一生总时长恒定</b>。我们寿元自由涨 4.8 倍、年速却写死 8 秒，两个数脱钩了。
+  把同一个公式搬过来，寿元这个爽点不但不损失，反而变成优点。</p>
+
+  <figure class="figbox">
+    <div class="ctrl">
+      <label for="k">常数 K</label>
+      <input type="range" id="k" min="1600" max="8000" step="100" value="4800">
+      <span class="mono" id="kval" style="min-width:46px">4800</span>
+    </div>
+
+    <div id="pacewrap" style="margin-top:16px"></div>
+
+    <div class="readout">
+      <div><div class="rn" id="r-life">57 分</div><div class="rl">一生（1x）<br>官方 61 分</div></div>
+      <div><div class="rn" id="r-4">14.2 分</div><div class="rl">一生（4x）<br>官方 15.2 分</div></div>
+      <div><div class="rn" id="r-16">3.6 分</div><div class="rl">一生（16x）<br>官方 3.8 分</div></div>
+      <div><div class="rn amb" id="r-qi">40 秒</div><div class="rl">炼气期 1 年<br>现状 8 秒</div></div>
+      <div><div class="rn" id="r-yu">8.3 秒</div><div class="rl">元婴期 1 年<br>现状 8 秒</div></div>
+      <div><div class="rn gray">12.5 分</div><div class="rl">现状一生（1x）<br>全程 8 秒/年</div></div>
+    </div>
+
+    <figcaption style="margin-top:16px">寿元表：凡身 88 / 炼气 120 / 筑基 210 / 金丹 350 / 元婴 575。
+    典型一条命：炼气 16–22、筑基 22–41、金丹 41–95、元婴 95–322。
+    下限取 8 秒（现状值）而非官方的 12 秒，否则后期反而被拉慢。</figcaption>
+  </figure>
+
+  <div class="grid2" style="margin-top:14px">
+    <div class="card">
+      <h3>这个公式顺手解决了四件事</h3>
+      <div class="kv">
+        <dt>寿元爽点</dt><dd>不用砍寿元，元婴 575 岁的寿元还在</dd>
+        <dt>前期节奏</dt><dd>入门阶段一年 40 秒 ⇒ 一年里能装 5 倍的旁白，「铺垫下沉」才有地方放</dd>
+        <dt>后期节奏</dt><dd>几百年本来就该快（8.3 秒 ≈ 现状 8 秒）</dd>
+        <dt>衰老体感</dt><dd>玩家从「一年 40 秒」活到「一年 8 秒」——公式自动给的，正好是「仙」的尺度</dd>
+      </div>
+    </div>
+    <div class="card">
+      <h3>配套三件小东西</h3>
+      <div class="kv">
+        <dt>倍速档</dt><dd>官方 <span class="mono">1/2/4/8/12/16</span> + 快进；我们只有 <span class="mono">1/2/4</span> ⇒ 补齐，给「已知剧情只想看结局」的人一条捷径</dd>
+        <dt>时间提示</dt><dd>官方顶栏直接写「1 年 ≈ 43 秒」；我们没有 ⇒ 补上，玩家才知道时间的刻度</dd>
+        <dt>风险面</dt><dd><b>只改播放快慢</b>，不进任何规则、不进任何门禁基线 ⇒ 不用重跑基线</dd>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 备选 ============ -->
+<section>
+  <div class="kicker">备选方案</div>
+  <h2>五条路，取舍如下</h2>
+
+  <figure class="figbox">
+    <div style="font-size:12.5px;color:var(--muted);margin-bottom:12px">一条命 309 岁的真实时长（1 倍速）——官方 1in8b 为 61 分钟</div>
+    <div class="bench"><span class="bench-label">丙 · 收寿元</span><div class="bench-track"><div class="bench-fill" style="width:13%"></div></div><span class="bench-val">~40 分</span></div>
+    <div class="bench"><span class="bench-label">乙 · 只补倍速与提示</span><div class="bench-track"><div class="bench-fill amb" style="width:4%"></div></div><span class="bench-val">12.5 分</span></div>
+    <div class="bench"><span class="bench-label">甲 · 年速公式 ★</span><div class="bench-track"><div class="bench-fill" style="width:39%"></div></div><span class="bench-val">57 分</span></div>
+    <div class="bench"><span class="bench-label">己 · 只做内容重构</span><div class="bench-track"><div class="bench-fill amb" style="width:4%"></div></div><span class="bench-val">12.5 分</span></div>
+    <div class="bench"><span class="bench-label">丁 · 全照抄官方 43 秒</span><div class="bench-track"><div class="bench-fill alt" style="width:100%"></div></div><span class="bench-val">3.7 小时</span></div>
+  </figure>
+
+  <div class="tbl-wrap card" style="margin-top:14px">
+    <table>
+      <thead><tr><th>方案</th><th>改哪一层</th><th>风险</th><th>能解决</th><th>结论</th></tr></thead>
+      <tbody>
+        <tr class="hl">
+          <td><b>甲 · 年速公式</b><br><span class="muted">1 年 = K ÷ 寿元上限</span></td>
+          <td>呈现层<br><span class="muted">1 个函数 + 倍速 + UI</span></td>
+          <td>极低<br><span class="muted">不动基线</span></td>
+          <td>时间有重量<br>前期能放旁白</td>
+          <td><span class="stars">★★★★★</span></td>
+        </tr>
+        <tr>
+          <td><b>乙 · 只补倍速与提示</b></td>
+          <td>呈现层</td>
+          <td>极低</td>
+          <td>给玩家快/慢两端的自由</td>
+          <td><span class="stars">★★★★</span><br><span class="muted">甲的前置</span></td>
+        </tr>
+        <tr>
+          <td><b>丙 · 收寿元</b><br><span class="muted">元婴期 250 年 → 60–80 年</span></td>
+          <td>内容层<br><span class="muted">寿元表 + 全部旧档基线</span></td>
+          <td><b>高</b></td>
+          <td>后期 63% 时间只有 27% 内容的空转</td>
+          <td><span class="stars">★★★</span><br><span class="muted">单独立项</span></td>
+        </tr>
+        <tr>
+          <td><b>己 · 只做内容重构</b></td>
+          <td>内容层</td>
+          <td>中</td>
+          <td>信息量密集</td>
+          <td><span class="stars">★★</span><br><span class="muted">解决不了「一年太快」</span></td>
+        </tr>
+        <tr>
+          <td><b>丁 · 照抄官方 43 秒</b></td>
+          <td>呈现层</td>
+          <td>不可接受</td>
+          <td>—</td>
+          <td><span class="stars">★</span><br><span class="muted">一局 3.7 小时</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============ 实施顺序 ============ -->
+<section>
+  <div class="kicker">执行</div>
+  <h2>三步走，风险递增</h2>
+
+  <ol class="timeline">
+    <li>
+      <div class="tl-h">第 1 步 · 年速与倍速<span class="tl-tag">纯呈现层 · 立刻可做</span></div>
+      <p>把 <span class="mono">playbackSeconds</span> 从常数 8 秒改成 <span class="mono">1 年 = K ÷ 寿元上限</span>（K 与 95 岁后封顶值已复核，见新页面）；倍速补到 8/12/16 + 快进；顶栏加「1 年 ≈ X 秒」。</p>
+      <p class="risk">不改剧情、不动内容层、不失效任何门禁基线。做完之后，一年从 8 秒变成 40 秒（入门期），玩家才有时间读旁白。</p>
+    </li>
+    <li>
+      <div class="tl-h">第 2 步 · 铺垫下沉 + 必答串<span class="tl-tag">内容层 · 需重跑基线</span></div>
+      <p>先新写 20–30 条「场景铺垫」旁白（交代世界、交代处境、顺带把玩家引向下一个决策）；再把入门那一串改成必答串：测灵根 1 张 + 部门 1 张 + 心法 1 张。</p>
+      <p class="risk">要跑全量 57 道门禁（约 35 分钟）。注意：现有旁白池约 140 条全是「事后交代」，一条「当时正在发生」的场景铺垫都没有——这是必须新写的部分，不是搬运。</p>
+    </li>
+    <li>
+      <div class="tl-h">第 3 步 · 背景故事线表 + 收束<span class="tl-tag">内容层 · 需重跑基线</span></div>
+      <p>8–12 条背景故事线，每条只指向一条路；轮盘接上去，背景唯一收束；树枝尾端真正接进新树干（现在 <span class="mono">JOINT_NEXT_BEAT</span> 是写死的）。</p>
+      <p class="risk">背景的具体条目是素材性决定，需要拍板。现有三张带故事的卡（<span class="mono">early_demonic / early_beast / early_loose</span>）可以升格为样板。</p>
+    </li>
+    <li>
+      <div class="tl-h">并行 · 后期 151+ 那 250 年<span class="tl-tag">单独立项</span></div>
+      <p>元婴期占一生 63% 的时间却只有 27% 的内容。要么收寿元，要么补后期内容（宗门中兴、渡劫、给后人留下什么）。</p>
+      <p class="risk">这一步决定方案甲的效果上限，建议等第 1 步落地、玩家有了实感之后再定。</p>
+    </li>
+  </ol>
+</section>
+
+<!-- ============ 待决 ============ -->
+<section>
+  <div class="kicker">需要拍板</div>
+  <h2>八件等您决定的事</h2>
+
+  <div class="card">
+    <div class="pend"><div class="pnum">1</div><div><div class="pt">背景故事线表的条目与收束规则</div><div class="pd">建议 8–12 条（父母病故 / 救命之恩 / 捡到残卷 / 修仙世家 / 名门望族 / 宗门弃徒之子 / 战乱孤儿 / 药商学徒…）。<span class="tag">素材性决定，不宜代拟</span></div></div></div>
+    <div class="pend"><div class="pnum">2</div><div><div class="pt">寿元上限要不要收</div><div class="pd">元婴 575 岁（实测中位活到 322 岁）。不收则后期 63% 的时间是空的。<span class="tag">方案丙</span></div></div></div>
+    <div class="pend"><div class="pnum">3</div><div><div class="pt">「与修仙无缘」线简写成几段</div><div class="pd">现在 16 张卡跨 48 年。您的原意是「结束游戏」。<span class="tag">建议 3–5 张</span></div></div></div>
+    <div class="pend"><div class="pnum">4</div><div><div class="pt">后遗症：再问一次，还是只写进经历</div><div class="pd">官方用「善后卡」；我们上一阶段把「童年回响」三连问改成了自动旁白。您的方案落在两者之间——但这是方向性选择。<span class="tag">官方 vs 我们</span></div></div></div>
+    <div class="pend"><div class="pnum">5</div><div><div class="pt">树枝尾端接新树干：由结果决定还是随机</div><div class="pd">现在 <span class="mono">JOINT_NEXT_BEAT</span> 写死，接头卡的三种收尾不影响下一条线。</div></div></div>
+    <div class="pend"><div class="pnum">6</div><div><div class="pt">是否单独修「指标与闸共用豁免名单」的门禁漏洞</div><div class="pd">密度指标与三道闸共用同一张豁免名单 ⇒ 「密度达标」是假绿灯。<b>与内容重构完全解耦，随时可做。</b><span class="tag">建议先做</span></div></div></div>
+    <div class="pend"><div class="pnum">7</div><div><div class="pt">前期密度还要不要再降</div><div class="pd">上一轮：次数未降（0–26 中位 11→11），扎堆降三成。要到 9/6 须动「择路」与「考核」两条链的机制。</div></div></div>
+    <div class="pend"><div class="pnum">8</div><div><div class="pt">倍速档补到 8/12/16 + 快进</div><div class="pd">官方 <span class="mono">SPEEDS=[1,2,4,8,12,16]</span>。补齐后玩家才有「慢下来品味」和「跳到结局」两个出口。</div></div></div>
+  </div>
+
+  <div class="callout" style="margin-top:14px">
+    <b>一句话总结</b>：您说的所有问题——1in8b 活到 90–100 岁、1x 很慢、我们寿元一直涨、倍速很快、有的阶段时间控制差——是同一件事的五个侧面。
+    <b>官方的「一年」值 43 秒，是因为它的寿命固定；我们的「一年」只值 8 秒，是因为我们让寿元自由涨、却把年速写死了。</b>
+    该抄的是那个公式，不是那个数字。
+  </div>
+</section>
+
+<footer>
+  归山记 · 剧情线与年速方案 ｜ 数据来自 60–120 条命实跑 + 官方源码逐行核对（<span class="mono">raw/bundle.zh-hans.js</span>）｜
+  配套纪要：桌面「归山记 · 剧情重构讨论纪要（2026-11-08）.md」
+</footer>
+
+</div>
+
+<script>
+(function(){
+  var F='Outfit', M='JetBrains Mono';
+
+  /* ---------- 图 1：逐年发卡数 ---------- */
+  var DATA=[0,0,0.017,0.050,0.067,0.033,0.200,0.192,0.275,0.167,0.292,0.333,0.367,
+            0.233,0.250,0.375,1.275,2.175,0.933,0.367,0.417,0.267,0.450,0.717,0.342,0.525,0.850];
+  var OFFICIAL=1.242;
+  function drawBars(){
+    var W=960,H=330,L=56,R=24,T=64,B=56;
+    var pw=W-L-R, base=262, unit=88;
+    var n=DATA.length, pitch=pw/n, bw=pitch-6;
+    var o='';
+    o+='<text x="16" y="18" font-family="'+F+'" font-size="13" font-weight="600" fill="#3a4256">每条命每年收到的决策卡（0–26 岁，120 条命实跑）</text>';
+    o+='<text x="16" y="37" font-family="'+F+'" font-size="12" fill="#7c7a72">0–15 岁：每年 0.02–0.38 张（几乎空白）</text>';
+    [0,0.5,1.0,1.5,2.0].forEach(function(v){
+      var y=base-v*unit;
+      o+='<line x1="'+L+'" y1="'+y+'" x2="'+(W-R)+'" y2="'+y+'" stroke="#f0ece2" stroke-width="1"/>';
+      o+='<text x="'+(L-10)+'" y="'+(y+4)+'" font-family="'+M+'" font-size="11" fill="#7c7a72" text-anchor="end">'+v.toFixed(1)+'</text>';
+    });
+    // 官方参照线
+    var oy=base-OFFICIAL*unit;
+    o+='<line x1="'+L+'" y1="'+oy+'" x2="'+(W-R)+'" y2="'+oy+'" stroke="#c97b3f" stroke-width="1.5" stroke-dasharray="6 5"/>';
+    o+='<text x="'+(W-R)+'" y="'+(oy-7)+'" font-family="'+F+'" font-size="11.5" fill="#c97b3f" text-anchor="end">官方年均 '+OFFICIAL.toFixed(2)+' 张（96% 的年份都有事）</text>';
+    // 柱
+    DATA.forEach(function(v,i){
+      var x=L+pitch*i, h=v*unit, hot=(i>=16&&i<=18);
+      if(h<1)h=1;
+      var fill=hot?'#b06367':'#2f6f5e';
+      var op=hot?1:(v<0.5?0.35:0.55);
+      o+='<rect x="'+x.toFixed(1)+'" y="'+(base-h).toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+h.toFixed(1)+'" fill="'+fill+'" opacity="'+op+'"/>';
+    });
+    // x 轴
+    o+='<line x1="'+L+'" y1="'+base+'" x2="'+(W-R)+'" y2="'+base+'" stroke="#e9e3d6" stroke-width="1"/>';
+    [0,3,6,9,12,15,18,21,24,26].forEach(function(a){
+      var cx=L+pitch*a+bw/2;
+      o+='<line x1="'+cx.toFixed(1)+'" y1="'+base+'" x2="'+cx.toFixed(1)+'" y2="'+(base+4)+'" stroke="#e9e3d6" stroke-width="1"/>';
+      o+='<text x="'+cx.toFixed(1)+'" y="'+(base+18)+'" font-family="'+M+'" font-size="10.5" fill="#7c7a72" text-anchor="middle">'+a+'</text>';
+    });
+    o+='<text x="'+(W-R)+'" y="'+(base+38)+'" font-family="'+F+'" font-size="11" fill="#7c7a72" text-anchor="end">年龄（岁）</text>';
+    // 峰值标注（放在柱子上方，不压柱子）
+    var pcx=L+pitch*17+bw/2, ptop=base-DATA[17]*unit;
+    o+='<line x1="'+pcx.toFixed(1)+'" y1="'+(ptop-6).toFixed(1)+'" x2="'+pcx.toFixed(1)+'" y2="58" stroke="#b06367" stroke-width="1"/>';
+    o+='<text x="'+pcx.toFixed(1)+'" y="38" font-family="'+F+'" font-size="12.5" font-weight="600" fill="#b06367" text-anchor="middle">17 岁：2.18 张</text>';
+    o+='<text x="'+pcx.toFixed(1)+'" y="54" font-family="'+F+'" font-size="11.5" fill="#7c7a72" text-anchor="middle">16 / 17 / 18 三年塞进 4.38 张</text>';
+    o+='<text x="16" y="'+(H-8)+'" font-family="'+F+'" font-size="11.5" fill="#7c7a72">柱高 = 每条命该岁收到的卡数；淡柱为低于 0.5 的年份</text>';
+    document.getElementById('barwrap').innerHTML='<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto" role="img" aria-label="0到26岁逐年发卡数柱状图，与官方年均对照">'+o+'</svg>';
+  }
+
+  /* ---------- 图 2：年速曲线 ---------- */
+  var SEGS=[
+    {name:'童年', from:0,  to:16,  sec:5,     cap:120},
+    {name:'炼气', from:16, to:22,  cap:120},
+    {name:'筑基', from:22, to:41,  cap:214},
+    {name:'金丹', from:41, to:95,  cap:339},
+    {name:'元婴', from:95, to:322, cap:575}
+  ];
+  var FLOOR=8, CEIL=120, TOTALAGE=322;
+  function pace(K){
+    return SEGS.map(function(s){
+      var v = (s.sec!=null) ? s.sec : Math.min(CEIL, Math.max(FLOOR, K/s.cap));
+      return {name:s.name, from:s.from, to:s.to, v:v};
+    });
+  }
+  function totalOf(seg){
+    return seg.reduce(function(a,s){ return a+(s.to-s.from)*s.v; },0);
+  }
+  function drawPace(K){
+    var W=960,H=322,L=54,R=24,T=52,B=72;
+    var pw=W-L-R, ph=H-T-B;
+    var seg=pace(K), tot=totalOf(seg);
+    // 纵轴随滑块自适应：K 拉大时炼气段可能超过原来的 46 秒上限
+    var vmax=seg.reduce(function(a,sg){ return sg.v>a?sg.v:a; },0);
+    var yMax=Math.max(46, Math.ceil(vmax/10)*10);
+    var step = yMax<=50 ? 10 : (yMax<=100 ? 20 : (yMax<=200 ? 25 : 50));
+    function X(a){ return L+(a/TOTALAGE)*pw; }
+    function Y(v){ return T+ph-(v/yMax)*ph; }
+    var o='';
+    o+='<text x="16" y="18" font-family="'+F+'" font-size="13" font-weight="600" fill="#3a4256">1 年 = 多少真实秒（1 倍速）</text>';
+    var ticks=[];
+    for(var tv=0; tv<=yMax+0.001; tv+=step) ticks.push(tv);
+    ticks.forEach(function(v){
+      o+='<line x1="'+L+'" y1="'+Y(v)+'" x2="'+(W-R)+'" y2="'+Y(v)+'" stroke="#f0ece2" stroke-width="1"/>';
+      o+='<text x="'+(L-10)+'" y="'+(Y(v)+4)+'" font-family="'+M+'" font-size="11" fill="#7c7a72" text-anchor="end">'+v+'</text>';
+    });
+    o+='<text x="'+(L-10)+'" y="'+(T-12)+'" font-family="'+F+'" font-size="11" fill="#7c7a72" text-anchor="end">秒</text>';
+    // 现状线（标签放最右，避开左下的童年标签）
+    o+='<line x1="'+L+'" y1="'+Y(8)+'" x2="'+(W-R)+'" y2="'+Y(8)+'" stroke="#b06367" stroke-width="1.6" stroke-dasharray="6 5"/>';
+    o+='<text x="'+(W-R)+'" y="'+(Y(8)-8)+'" font-family="'+F+'" font-size="11.5" fill="#b06367" text-anchor="end">现状：1 年 = 8 秒（全程不变）</text>';
+    // 推荐阶梯
+    var d='';
+    seg.forEach(function(sg,i){
+      var x1=X(sg.from), x2=X(sg.to);
+      d+=(i===0?'M':'L')+x1.toFixed(1)+','+Y(sg.v).toFixed(1);
+      d+='L'+x2.toFixed(1)+','+Y(sg.v).toFixed(1);
+    });
+    o+='<path d="'+d+'" fill="none" stroke="#2f6f5e" stroke-width="2.4" stroke-linejoin="round"/>';
+    seg.forEach(function(sg){
+      var cx=(X(sg.from)+X(sg.to))/2;
+      if((sg.to-sg.from)*sg.v<50) return;
+      o+='<circle cx="'+cx.toFixed(1)+'" cy="'+Y(sg.v).toFixed(1)+'" r="4" fill="#2f6f5e"/>';
+      // 童年段太窄，标签放到点下方
+      var below = (sg.name==='童年');
+      var ly = below ? (Y(sg.v)+16) : Math.max(26, Y(sg.v)-11);
+      var anchor = below ? 'start' : 'middle';
+      var lx = below ? (X(sg.from)+6) : cx;
+      o+='<text x="'+lx.toFixed(1)+'" y="'+ly.toFixed(1)+'" font-family="'+F+'" font-size="12" font-weight="600" fill="#2f6f5e" text-anchor="'+anchor+'">'+sg.name+' '+sg.v.toFixed(1)+' 秒</text>';
+    });
+    // 底纹
+    seg.forEach(function(sg){
+      o+='<rect x="'+X(sg.from).toFixed(1)+'" y="'+(T+ph+6)+'" width="'+(X(sg.to)-X(sg.from)).toFixed(1)+'" height="4" fill="#2f6f5e" opacity=".16"/>';
+    });
+    // x 轴
+    o+='<line x1="'+L+'" y1="'+(T+ph)+'" x2="'+(W-R)+'" y2="'+(T+ph)+'" stroke="#e9e3d6" stroke-width="1"/>';
+    [0,16,22,41,95,200,322].forEach(function(a){
+      var cx=X(a);
+      o+='<line x1="'+cx.toFixed(1)+'" y1="'+(T+ph)+'" x2="'+cx.toFixed(1)+'" y2="'+(T+ph+4)+'" stroke="#e9e3d6" stroke-width="1"/>';
+      o+='<text x="'+cx.toFixed(1)+'" y="'+(T+ph+18)+'" font-family="'+M+'" font-size="11" fill="#7c7a72" text-anchor="middle">'+a+'</text>';
+    });
+    o+='<text x="'+L+'" y="'+(T+ph+36)+'" font-family="'+F+'" font-size="11" fill="#7c7a72">年龄（岁）</text>';
+    // 一生总时长条
+    var barY=T+ph+48, maxSecs=3900;
+    var w=Math.min(pw, pw*tot/maxSecs);
+    o+='<rect x="'+L+'" y="'+barY+'" width="'+w.toFixed(1)+'" height="10" rx="4" fill="#2f6f5e" opacity=".2"/>';
+    o+='<text x="'+(W-R)+'" y="'+(barY-6)+'" font-family="'+M+'" font-size="11.5" fill="#2f6f5e" text-anchor="end">一生 '+Math.round(tot)+' 秒（1x）　官方 3660 秒</text>';
+    document.getElementById('pacewrap').innerHTML='<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto" role="img" aria-label="一年等于多少秒随年龄变化的阶梯曲线">'+o+'</svg>';
+    var min=tot/60;
+    document.getElementById('r-life').textContent=min.toFixed(0)+' 分';
+    document.getElementById('r-4').textContent=(min/4).toFixed(1)+' 分';
+    document.getElementById('r-16').textContent=(min/16).toFixed(1)+' 分';
+    document.getElementById('r-qi').textContent=seg[1].v.toFixed(0)+' 秒';
+    document.getElementById('r-yu').textContent=seg[4].v.toFixed(1)+' 秒';
+  }
+
+  drawBars();
+  var slider=document.getElementById('k'), kv=document.getElementById('kval');
+  slider.addEventListener('input',function(){ kv.textContent=slider.value; drawPace(Number(slider.value)); });
+  drawPace(Number(slider.value));
+})();
+</script>
+</body>
+</html>

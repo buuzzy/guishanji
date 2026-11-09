@@ -205,8 +205,8 @@ test('接粮分支后不逼玩家解释泉水刻痕，没有袭击不显示认�
 test('采药救同伴的后续只问堵路和伤势，不讲未发生的死亡越界',()=>{
  const s=pending('sect_trial_2');rules12(s).facts.trial={entered:true,rescued:true,herbs:true,stolen:false};s.people.trialmate.status='alive';assert.match(text(s),/止血/);assert.ok(!/失踪|越过|失散/.test(text(s)));choose(s,'care');finish(s);assert.ok(!s.journal.at(-1).body.includes('失散'));
 });
-test('买残页不改师承，寻找落款与试学有独立前因',()=>{
- const s=pending('road_turn');choose(s,'book');assert.equal(c(s).path,'orthodox');advanceToChoice(s);assert.equal(s.pending.event,'r12_bazaar_follow');assert.match(text(s),/幽灯堂/);choose(s,'leave');assert.equal(c(s).path,'orthodox');
+test('road_turn 恢复四选项：不接新功法不改师承，四条岔路都在（C1）',()=>{
+ const s=pending('road_turn');assert.ok(options(s).some(o=>o.id==='keep'));assert.ok(options(s).some(o=>o.id==='dark'));assert.ok(options(s).some(o=>o.id==='loose'));assert.ok(options(s).some(o=>o.id==='beast'));choose(s,'keep');assert.equal(c(s).path,'orthodox');
 });
 test('拒绝试学后离宗不会残留商谈状态，让往后几十年无事件',()=>{
  const s=pending('departure_terms');c(s).inquiry='loose';choose(s,'secret');assert.equal(c(s).path,'loose');assert.equal(c(s).inquiry,null);validateRun(s);

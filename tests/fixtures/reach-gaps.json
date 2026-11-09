@@ -2,13 +2,12 @@
   "createdAt": "2026-11-08T08:42:52.378Z",
   "count": 200,
   "lives": 400,
-  "note": "两种策略（固定偏好 ∪ 随机探索）都走不到的卡；按族记，每族一句「为什么到不了」。新出现的零触达卡会让门禁报红 ⇒ 那就得判断是缺陷（修）还是不是缺口（登记进这里）。",
+  "note": "两种策略（固定偏好 ∪ 随机探索）都走不到的卡；按族记，每族一句「为什么到不了」。新出现的零触达卡会让门禁报红 ⇒ 那就得判断是缺陷（修）还是不是缺口（登记进这里）。 2026-11-08 章节感补强轮更新：登记「残页辨认孤儿卡」（有意孤儿）与「闭关化吞掉的日常窗口」（下一轮处理）两族；入路三卡与 breakthrough_1_3 因岔路恢复出账。",
   "groups": {
     "备主药矩阵空格": [
       "advance_material_3_1_0",
       "advance_material_3_1_0_resume",
       "advance_material_3_1_1_resume",
-      "advance_material_3_1_2_resume",
       "advance_material_3_2_0",
       "advance_material_3_2_0_resume",
       "advance_material_3_2_1_resume",
@@ -26,16 +25,12 @@
       "advance_material_4_2_2_resume"
     ],
     "其它": [
-      "beast_acceptance",
-      "beast_invitation",
       "dark_oath_return",
-      "departure_terms",
       "early_beast",
       "early_demonic",
       "early_loose"
     ],
     "突破卡变体": [
-      "breakthrough_1_3",
       "breakthrough_2_3",
       "breakthrough_3_3",
       "breakthrough_4_3"
@@ -127,7 +122,8 @@
       "r12_home_resolve_2",
       "r12_home_resolve_3",
       "r12_home_resolve_4",
-      "r12_home_resolve_5"
+      "r12_home_resolve_5",
+      "r12_direction_2"
     ],
     "宗门复仇线": [
       "sect_revenge"
@@ -137,6 +133,16 @@
       "selection_3_result",
       "selection_4",
       "selection_4_result"
+    ],
+    "残页辨认孤儿卡": [
+      "r12_bazaar_follow"
+    ],
+    "闭关化吞掉的日常窗口": [
+      "breakthrough_1_3",
+      "r12_sealed_warning"
+    ],
+    "接头卡隐藏档": [
+      "beast_eclipse_joint_hidden"
     ]
   },
   "reasons": {
@@ -144,11 +150,14 @@
     "包裹备用编号": "`parcel_missing_1..7` / `parcel_exposed_1..7` 是「同一起事故再来一次」的备用编号；一条命极少遇到两次包裹事故 ⇒ 第 2 次以后用不到",
     "备主药矩阵空格": "`advance_material_<境>_<第几次>_<第几份>` 是三维矩阵；现实里走不到的那些格子（例：第 2 次尝试的第 3 份材料）⇒ 空着",
     "旧线索兜底": "`echo_<kind>_check_resume` / `_visit_resume` 是「同一张回响卡再发一次」的兜底编号；兜底实走的是 `echo_resume_after_war`",
-    "规则十二备用编号": "`r12_home_resolve_2..5` / `r12_home_leave_2..5` 是同一张卡的第 3–6 份拷贝；`r12_direction_3..5` 是第四到第六种「方向」卡",
+    "规则十二备用编号": "`r12_home_resolve_2..5` / `r12_home_leave_2..5` 是同一张卡的第 3–6 份拷贝；`r12_direction_3..5` 是第四到第六种「方向」卡；r12_direction_2 原先可达，A1 节奏后进度更快冲关，第三次指导机会在 400 命里用不到了",
     "突破卡变体": "`breakthrough_<境>_3` 是「第三次冲关」的变体；玩家多数在前两次就过去了 ⇒ 实测极少走到（交接文档已登记为已知）",
     "宗门评议后段": "`selection_3/4` 及其 `_result`：宗门评议的第三、四轮，需要先当上掌事",
     "人脉网络支线": "`network_bottleneck` / `network_volume`：心法卡住之后的两张支线，需要特定心法与特定进度",
     "宗门复仇线": "`sect_revenge`：宗门被毁后的复仇，需要先经历宗门崩散（`sect.phase` 变 `camp`）",
-    "其它": "散卡，各有各的前置（出身/选择顺序），实测 400 条命走不到"
+    "其它": "散卡，各有各的前置（出身/选择顺序），实测 400 条命走不到",
+    "残页辨认孤儿卡": "road_turn 恢复四选项（章节感补强 C1）后，rules12 版「残页辨认」的后续卡失去入口；定义保留备查，想启用只需在 road_turn 的选项里接回 next",
+    "闭关化吞掉的日常窗口": "章节感补强（A1 节奏）与故事重写 W1 后，20–32 岁大半被闭关与同门/章节卡占住：日常池机会卡（花园事故/请教长老）、「第四次冲关」变体与「井气代价」卡在 400 命里撞不到窗口；触发条件未动，下一轮重排日常池时处理。garden_accident 在 W1 后恢复了可达，出账。；network_senior 在同门卡 12 个月间距守卫后恢复可达，出账。",
+    "接头卡隐藏档": "接头卡的隐藏/待定档只在特定前情标记下可达；road_turn 恢复四选项改道之后，两种策略 400 命都没撞上这两档（内容在，触发链在，属低频变体）"
   }
 }

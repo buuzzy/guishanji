@@ -60,7 +60,9 @@ export const CULTIVATION_EVENTS = {
  reception:n('reception','山门外的队伍','陆行舟是接引弟子，负责带报名者测灵根。许执事登记了你的家乡和年龄。有人带着家传信物，有人只带了一包干粮。',[
   c('test','排队接受测灵根',s=>{
    const c=s.life&&s.life.cultivation,m=c&&c.network&&c.network.marks;
-   return m&&m.noble_recommend?'测灵石上会留下记录。郡里那张名帖，许执事先收下了。':'测灵石会留下记录。';
+   const head=m&&m.noble_recommend?'测灵石上会留下记录。郡里那张名帖，许执事先收下了。':'测灵石会留下记录。';
+   /* 故事重写 W1（2026-11-09）：同期弟子的名字在测灵日立住——放回话里，正文限长装不下。 */
+   return head+'队伍里你记住了三个人：中段那个先问执事「测完之后呢」的少年，替人扛行李的宽背少年，还有队尾等驴的姑娘。';
   },'陆行舟让你把手放到测灵石上。', {next:'root_result'}),
   c('leave','先去坊市谋生',s=>MARKET_HINT[originBranch(s)],s=>MARKET_REPLY[originBranch(s)],{system:{path:'loose'}}),
   c('home','回家，再想别的出路','家人还在故乡等消息。','你把这次报名的经历告诉家人，暂时留在故乡。',{system:{path:'mortal'}}),
@@ -141,7 +143,7 @@ export const CULTIVATION_EVENTS = {
   c('leave','舍弃争议法器，重新搬走','已在手里的其余物品仍可带走。','你留下争议物，搬到新的住处。',{effects:{remove:['ward']},system:{reduceWanted:true,relocate:true}}),
  ]),
  system_final:n('system_final','这一生接下来往哪里走',s=>s.life.cultivation.path==='mortal'?'这些年，你靠自己的手艺与活计在此安顿下来。邻里来问你是否愿意带几个年轻人学本事；故乡留下的旧物，也该找个能妥善保管的人。你可以接下这份责任，或放下奔忙，安排往后的生活。':'多年的奔波暂时告一段落，眼前没有尚待赴约的差事。年轻修士来请你指点，旧住处也有人愿意照看。你可以留下传授本事，安排安静的余生；若修为足够，也可以最后一次迎向道劫。',[
-  c('dao','准备渡最后的道劫','雷劫已经在远处形成。','你走过道劫，留下这一生积累的传承。',{available:s=>s.player.realm>=3,reason:'尚未具备渡道劫的修为',check:{base:42,skill:'array',scale:.35,realmScale:5,failText:'道劫击碎了护身法器，你没能走出雷云。',failure:{},failEnding:'battle_lost'},ending:'dao'}),
+  c('dao','准备渡最后的道劫','雷劫已经在远处形成。','你走过道劫，留下这一生积累的传承。',{available:s=>s.player.realm>=3||(s.birth.goal==='dao'&&s.player.realm>=2),reason:'尚未具备渡道劫的修为',check:{base:42,skill:'array',scale:.35,realmScale:5,failText:'道劫击碎了护身法器，你没能走出雷云。',failure:{},failEnding:'battle_lost'},ending:'dao'}),
   c('guard','留在这里，照看后来的人','让年轻人接手能承担的事务。','你把本事交给后来的人，留下处理旧恩怨的办法。',{next:null,system:{finish:'guard'}}),
   c('quiet','交代遗物，选择安静的余生','准备好住处与遗物的去向。','你交代好遗物与牵挂，放下未尽的争夺。',{ending:'release'}),
  ]),

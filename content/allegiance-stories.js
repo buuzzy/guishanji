@@ -6,7 +6,7 @@ export function installAllegianceStories(events){
   choice('keep','不接新功法，继续自己的生活','只听坊市见闻，保留现有修炼办法。','你没有买卷，也没有答应白苓，继续原来的修炼。'),
   choice('dark','买残卷，去药铺问清来历','残卷附着领书凭据；买下后先问门规，不会立刻成为魔修。','你买下残卷，按凭据找到药铺。柜上人约你夜里详谈。',{cost:{stones:8},effects:{flags:{darkFragment:true}},next:'dark_invitation',system:{inquiry:'demonic'}}),
   choice('loose','结清组织内的借用，独自修行','先问清哪些法器和卷册属于组织；离开需要自己找收入。','你开始清点借来的物品，向管事说明离开打算。',{next:'departure_terms',system:{inquiry:'loose'}}),
-  choice('beast','跟白苓看一看族人的伤势','先去山外落脚处，了解功法与照料要求；还没有答应修炼妖身。','白苓带你去落脚处，介绍了受伤族人和所用药物。',{next:'beast_invitation',system:{inquiry:'beast'}}),
+  choice('beast','去山外落脚处，看族人伤势','先了解功法与照料要求；还没有答应修炼妖身。','白苓带你去落脚处，介绍了受伤族人和所用药物。',{next:'beast_invitation',system:{inquiry:'beast'}}),
  ]);
  events.dark_invitation=node('dark_invitation','药铺后堂的入堂条件',s=>'接引人顾魇认出残卷上的药铺印记，拿出后半卷。他说幽灯堂能教你禁术，但要先替药库看炉半年，再登记弟子牌。堂规写着：私逃者须归还卷册，掌握秘密的人还可能被抓回审问。你看见后堂地牢的钥匙挂在他腰间。'+(s.life.cultivation.path==='demonic'?'你本来就是幽灯堂的人；这次能申请的是另一处药库的功法。':'你还可以带走自己的残卷，拒绝入堂。'),[
   choice('accept','答应看炉，试学后半卷','先做半年差事。完成后还可以拒绝正式入堂，旧师承不会自动改变。','半年看炉结束，你学完试读章节，顾魇拿来了入堂名册。',{months:6,deferEffects:true,startReply:'你搬进药铺客房，开始轮值看炉；现在还没有登记为幽灯弟子。',next:'dark_oath',system:{trial:'demonic'}}),

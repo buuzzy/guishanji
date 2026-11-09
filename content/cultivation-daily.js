@@ -197,7 +197,7 @@ function pick(s,key,pool){
  *   ⇒ 改为「每月一次哈希」：同一个月的哈希固定 ⇒ 不会在同一个月里重复；
  *   跨月可能重复，但旁白的冷却闸（60 个月内不重复同标题）本来就管着这件事。
  */
-const FINDING_CHANCE=3000; /* ‰ 3000/10000 = 30% 的旁白带着东西 */
+const FINDING_CHANCE=3000; /* ‰ 3000/10000 = 30% 的旁白带着东西（2026-11-09 试过 33% 无效：拾遗池行数是产能上限，提高概率只会空转） */
 function pickFinding(s,key){
  const pool=FINDINGS[key]||(key.startsWith('chain-')?FINDINGS.chain:key.startsWith('appointment-')?FINDINGS.appointment:null);
  if(!pool||!pool.length)return null;

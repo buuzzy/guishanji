@@ -147,9 +147,10 @@ test('重要人物正文带职责，人物查询保持纯函数',()=>{
   * ⚠ **种子换过**（2026-11-08 · 阶段一）：身世卡改成按出身分池抽 ⇒
   *   固定种子的决策序列整体位移 ⇒ 原来那个种子（`echo-audit-1`）不再走到 `sect_feud_0`。
   *   重新挑了一个能走到、且正文与人物查询都对得上的种子（`echo-audit-6`）。
-  *   ⇒ 这张卡**没有失联**：触达门禁证实 `sect_feud` 这条线 36/36 全部发得出。
+  *   ⇒ 这张卡**没有失联**：触达门禁证实 `sect_feud` 这条线全部发得出。
+  *   ⚠ 章节感补强（2026-11-08）后决策序列再度位移 ⇒ 种子换成 `echo-audit-11`。
   */
- const s=reach(createRun({seed:'echo-audit-6'}),'sect_feud_0');const text=nodeText(currentNode(s),s);assert.match(text,/执法长老/);assert.match(text,/负责谈放人/);const before=cloneRun(s),people=storyPeople(s);assert.ok(people.some(p=>p.role==='执法长老'));assert.ok(people.some(p=>p.role==='外门执事'));assert.deepEqual(s,before);
+ const s=reach(createRun({seed:'echo-audit-11'}),'sect_feud_0');const text=nodeText(currentNode(s),s);assert.match(text,/执法长老/);assert.match(text,/负责谈放人/);const before=cloneRun(s),people=storyPeople(s);assert.ok(people.some(p=>p.role==='执法长老'));assert.ok(people.some(p=>p.role==='外门执事'));assert.deepEqual(s,before);
 });
 test('争水没有调查时不生成角色发现的刻痕，没有袭击不能隐瞒袭击',()=>{
  /*

@@ -23,6 +23,9 @@ function grown(seed='重心检验') {
   s.life.cultivation.rootKnown = true;
   s.life.cultivation.admissionDone = true;
   s.life.cultivation.entered = 16 * 12;
+  /* 章节感补强 A1-b（2026-11-08）：月度进度累加从「拿到心法」起算 ——
+     这批测试量的是重心加成，不是入门流程 ⇒ 直接发一份入门心法让累加生效。 */
+  s.life.cultivation.v12.entryMethod = 'clear';
   s.life.cultivation.progress = 0;
   s.life.cultivation.activity = 'study';
   s.life.cultivation.activityMonths = {study: 0, sword: 0};
@@ -118,18 +121,22 @@ test('筑基之后修行加成收回，只剩技艺还在长',()=>{
 });
 
 test('重心有后果 ⇒ 换重心会让冲关真的变慢（同一段时间，进度更少）',()=>{
-  /* 用两条真实的命比：一条常年一个重心，一条来回换。 */
+  /* 用两条真实的命比：一条常年一个重心，一条来回换。
+   * ⚠ 章节感补强后「一生终点 progress>0」不再成立——突破成功会把进度清零，
+   *   收官时正好清零的命是合法的 ⇒ 这里只要求两条命都活着跑完，比较交给下面的确定性对照。 */
   const steady=playCultivation({seed:'重心稳-0',path:'orthodox',school:'array'}).state;
   const mixer=playCultivation({seed:'重心乱-0',path:'orthodox',school:'array'}).state;
-  assert.ok(steady.life.cultivation.progress>0);
-  assert.ok(mixer.life.cultivation.progress>0);
+  assert.ok(steady.life.cultivation.activityMonths.study>0);
+  assert.ok(mixer.life.cultivation.activityMonths.study>0);
   /* 至少要把「进度真的受重心影响」这件事钉住：把进度清零重算，
    * 同一个月份、同一个灵根，专精档拿到的进度要更多。 */
   const base=grown('重心对照');
   const a=cloneRun(base),b=cloneRun(base);
   b.life.cultivation.activityMonths.study=40;
-  for(let i=0;i<12;i++)advance(a,1);
-  for(let i=0;i<12;i++)advance(b,1);
+  /* ⚠ 只比 6 个月：窗口拉到 12 个月会撞上凡身章铺垫卡的进度阈值（30% ≈ 14.4 点），
+   *   两条命都被阈值截停 ⇒ 相对速率比不出来（章节感补强 A2 实测踩到）。 */
+  for(let i=0;i<6;i++)advance(a,1);
+  for(let i=0;i<6;i++)advance(b,1);
   assert.ok(b.life.cultivation.progress>a.life.cultivation.progress);
   assert.ok(steady&&mixer);
 });

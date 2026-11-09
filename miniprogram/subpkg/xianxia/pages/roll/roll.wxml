@@ -54,6 +54,21 @@
 
         <!-- 官方 #certOdds.odds-line -->
         <view class="odds-line">{{oddsPre}}<text class="em">{{oddsShare}}</text>{{oddsPost}}</view>
+
+        <!-- 志向（2026-11-08 · C2）：四个志向影响收官与终章资格，缺省随遇而安。
+             改选会用同一个命盘重开（种子不变，出身与灵根不因志向改变）。 -->
+        <view class="goal-row">
+          <text class="lbl">志向</text>
+          <view class="goal-chips">
+            <view
+              wx:for="{{goals}}"
+              wx:key="id"
+              class="goal-chip {{goal === item.id ? 'on' : ''}}"
+              data-id="{{item.id}}"
+              bindtap="pickGoal"
+            >{{item.label}}</view>
+          </view>
+        </view>
       </view>
     </view>
 

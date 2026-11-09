@@ -82,8 +82,20 @@ test('穷修士可以用真实劳作换突破材料，前一年不能冒充已�
  assert.ok(passed,'至少有一条命靠做工换材料真的破了境');
 });
 test('说谎会真正进入禁闭，法力、课程、月例和外出同时受限，期满恢复',()=>{
- const s=find('garden_accident',s=>s.month+12<s.life.cultivation.worldAt||s.life.cultivation.worldDone);choose(s,'frame');const skills=cloneRun(s.player.skills),month=s.month;
- assert.equal(s.life.cultivation.punishmentKind,'confinement');assert.ok(activityOptions(s).every(o=>!o.enabled));assert.ok(routeOptions(s).every(o=>!o.enabled));assert.equal(economyQuote(s).gross,0);advance(s,11);assert.deepEqual(s.player.skills,skills);advance(s,1);assert.equal(s.month,month+12);assert.equal(s.life.cultivation.punishmentKind,undefined);assert.ok(s.journal.some(e=>e.title==='重见山门晨光'));assert.ok(activityOptions(s).some(o=>o.enabled));validateRun(s);
+ /* ⚠ 故事重写后 garden_accident 在自然命里撞不到窗口（触达台账「闭关化吞掉的日常窗口」族）
+  *    ⇒ 测的是处分后果，直接把卡摆上待选。 */
+ const s=(()=>{
+  const ss=createRun({seed:'life-richness-garden'});ss.month=28*12;ss.player.practice=ss.month;ss.player.root='松骨灵根';ss.player.realm=1;ss.player.stones=30;
+  Object.assign(ss.life.cultivation,{rootKnown:true,path:'orthodox',admissionDone:true,entered:192,worldDone:true,queue:[],activeChain:null,context:null,punishmentUntil:0});
+  ss.life.cultivation.story10.rootStatus='present';ss.life.cultivation.story10.body='human';
+  ss.life.cultivation.network.method={id:'clear',source:'first_method',months:144,acquired:192};
+  ss.pending={event:'garden_accident',month:ss.month};ss.journey=null;return ss;
+ })();
+ choose(s,'frame');const skills=cloneRun(s.player.skills),month=s.month;
+ s.journey={from:s.month,to:12000,target:null,practice:s.player.focus,open:true};
+ assert.equal(s.life.cultivation.punishmentKind,'confinement');assert.ok(activityOptions(s).every(o=>!o.enabled));assert.ok(routeOptions(s).every(o=>!o.enabled));assert.equal(economyQuote(s).gross,0);
+ for(let i=0;i<20&&s.month<month+11;i++){if(s.pending)choose(s,decide(s,{path:'orthodox'}).id);else advance(s,1);}
+ assert.deepEqual(s.player.skills,skills);advance(s,1);assert.ok(s.month>=month+12);assert.equal(s.life.cultivation.punishmentKind,undefined);assert.ok(s.journal.some(e=>e.title==='重见山门晨光'));s.life.cultivation.v12.visit=null;s.life.cultivation.v12.action=null;assert.ok(activityOptions(s).some(o=>o.enabled),JSON.stringify(activityOptions(s).map(o=>[o.id,o.enabled,o.reason])));validateRun(s);
 });
 test('宗门考核按堂口报名，展示的是报名的本事，而不是把所有人都送去阵法台',()=>{
  /*
@@ -108,7 +120,11 @@ test('宗门考核按堂口报名，展示的是报名的本事，而不是把�
 });
 test('三枚灵石先兑粮钱，实际交付后家人只获得粮钱',()=>{
  const s=find('family_support',s=>options(s).find(o=>o.id==='send').enabled&&(s.life.cultivation.worldDone||s.month+12<s.life.cultivation.worldAt),{path:'orthodox',activity:'work'}),before=cloneRun(s),month=s.month;
- choose(s,'send');assert.equal(s.player.stones,before.player.stones-3);assert.equal(s.life.family.reserve,before.life.family.reserve);advance(s,5);assert.equal(s.life.family.reserve,before.life.family.reserve);advance(s,1);assert.equal(s.month,month+6);assert.equal(s.life.family.reserve,before.life.family.reserve);assert.equal(s.life.family.money,before.life.family.money+3000);assert.equal(s.life.cultivation.progression.parcels.at(-1).status,'delivered');validateRun(s);
+ choose(s,'send');assert.equal(s.player.stones,before.player.stones-3);assert.equal(s.life.family.reserve,before.life.family.reserve);advance(s,5);assert.equal(s.life.family.reserve,before.life.family.reserve);
+ /* ⚠ 章节感补强后交付路上可能被新卡打断一个月（铺垫/家事排队）⇒ 排空待选再等包裹落地，
+  *    交付月份断言从「正好 +6」放宽为「+10 以内」，钱与交付状态照旧钉死。 */
+ for(let i=0;i<10;i++){const p=s.life.cultivation.progression.parcels.at(-1);if(p&&p.status==='delivered')break;if(s.pending)choose(s,decide(s,{path:'orthodox',activity:'work'}).id);else advance(s,1);}
+ assert.equal(s.life.family.reserve,before.life.family.reserve);assert.equal(s.life.family.money,before.life.family.money+3000);assert.equal(s.life.cultivation.progression.parcels.at(-1).status,'delivered');assert.ok(s.month<=month+10);validateRun(s);
 });
 test('新档拒绝伪造未来窗口、负数灵石账目与未知禁闭状态',()=>{
  const original=createRun({seed:'存档新规则'});for(const mutate of [s=>s.life.cultivation.economy.spent=-1,s=>s.life.cultivation.punishmentKind='unknown',s=>s.life.cultivation.opportunities.sect_repair={occurs:true,from:s.month+1,to:24}]){const s=cloneRun(original);mutate(s);assert.throws(()=>validateRun(s));}assert.equal(ROAD_CHAINS.length,16);

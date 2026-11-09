@@ -1,4 +1,5 @@
 import {initialize12,begin12,complete12,practiceFactor12,validate12,trainConstitution12,department12,methodId12} from './story-rules12.js';
+import {breakthroughDue} from './cadence.js';
 import {initializeMundane,mundaneComplete,mundaneBegin,validateMundane,mundaneSettlement} from './mundane-life.js';
 import {initialize10,canCultivate,hasMana,choose10,mundaneDaily,introduceText,validate10,advanceEcho} from './story-shared.js';
 import {initializeRevision9,revisionAction,validateRevision9} from './revision9.js';
@@ -473,7 +474,21 @@ function revised_completeCultivationAction(s,event,choiceId,cb) {
   if(abandoned?.startsWith('breakthrough_')){const [,tier,attempt]=abandoned.split('_');c.attempts[Number(tier)]=Math.max(c.attempts[Number(tier)],Number(attempt)+1);c.retryAt=s.month+36;record(s,cb,'闭关中止','战事迫使你放弃本次闭关。尚未完成的突破不会结算，调养后才可重新尝试。');}
   c.context=null;c.activeChain=null;delete c.suspended;
  }
- if(op.finish){if(!canCultivate(s)){cb.end('mundane_settled');return;}cb.end(({orthodox:'guardian',loose:'loose_home',demonic:'demon_oath',beast:'wild_king',mortal:'mortal_home'})[c.path]);return;}
+ if(op.finish){
+  if(!canCultivate(s)){cb.end('mundane_settled');return;}
+  /*
+   * ⚠ **志向接结局资格**（2026-11-08 · 章节感补强 C2）——
+   *   志向以前只进存档不进任何判定（protect / wander 两键全仓库无人读）。
+   *   现在收官映射按志向覆写（**只对修仙路生效**；终身凡人在上面就走了 mundane_settled）：
+   *   · 守护（realm ≥ 2）→ 守护者：立誓守护的人不问出身路数；
+   *   · 浪游 → 坊市灯火：浪游的人不留守任一山门；
+   *   · 问道 → 终章问道资格放宽（见 `content/cultivation-stories.js` 的 system_final.dao）；
+   *   · 随遇而安 → 维持按路数收官的现状。
+   */
+  const goal=s.birth.goal;
+  if(goal==='protect'&&s.player.realm>=2){cb.end('guardian');return;}
+  if(goal==='wander'){cb.end('loose_home');return;}
+  cb.end(({orthodox:'guardian',loose:'loose_home',demonic:'demon_oath',beast:'wild_king',mortal:'mortal_home'})[c.path]);return;}
  /*
   * ⚠⚠ **入门那一串要拉开**（2026-11-08 · 炼气期收束）。
   *
@@ -544,6 +559,19 @@ function automaticCultivation(s,cb){const c=s.life.cultivation;if(!canCultivate(
 function sceneNarration(s,cb){
  const c=s.life.cultivation;
  if(s.pending)return;
+ /*
+  * ⚠ **场景让位**（2026-11-09 · 故事重写 W0）—— 本月有「正事」要发生时，场景旁白跳过：
+  *   · 后续卡档有排好的事（长线步骤、家事、阶段节点卡）；
+  *   · 入门串没走完（测灵/录取/分堂/心法的制度拍子**只归决策卡讲**——
+  *     实测曾出现场景与卡同月各讲一遍「排队测灵」，玩家两年里读了三遍同一拍）；
+  *   · 冲关卡要发（突破是这一章的大事，不跟旁白挤在同一个月）。
+  * 旁白只写卡里没有的氛围——这是「场景与卡的分工」规矩的机制落点。
+  */
+ if(c.queue.some(q=>q.due<=s.month))return;
+ /* ⚠ 只拦**入门串期间**（16 岁进山到拿到心法）——童年场景（6–12 岁）不在其列，
+  *    首版把条件写成 realm 0 全程 ⇒ 童年场景 23 行全部哑掉（触达门禁当场抓到）。 */
+ if(s.player.realm===0&&age(s)>=16&&!seen(s,'first_method'))return;
+ if(breakthroughDue(s))return;
  const context=cultivationContext(s);
  const group=sceneGroup(s,context);
  if(!group)return;                                  /* 路上一段与思过期间：让原有池子讲 */
@@ -607,7 +635,20 @@ function revised_cultivationMonth(s,cb){
     *   筑基之后瓶颈是主药与完整心法，再加修行会把金丹/元婴推得太早。 */
    const tier=focusTierOf((c.activityMonths&&c.activityMonths[activity])||0);
    const focus={mult:focusProgressMult(s,tier),skillMult:tier.skillMult};
-   const before=c.progress;c.progress=canCultivate(s)?clamp(c.progress+(a.progress||1)*ROOTS[s.player.root].rate*(s.birth.era==='ebb'?.8:1)*networkRate(s)*practiceFactor12(s)*focus.mult,0,1000):0;
+   /*
+    * ⚠ **修行从得到功法/心法开始**（2026-11-08 · 章节感补强 A1-b）——
+    *   以前有灵根的人 16 岁起就照攒进度，入门前置只拦「发突破卡」不拦「攒进度」
+    *   ⇒ 「没学过任何功法的人体内已经攒了几年修为」，既不合世界观，
+    *   又让入门串一走完就够格冲关（首突破被往前推）。
+    *   现在月度累加只在**已获心法**（`c.v12.entryMethod`，method_choice 结算时写入）
+    *   或**已入道**（realm ≥ 1）之后发生；散修/幽灯/妖身三路都走 method_choice
+    *   ⇒ 拿到心法才出发的人不受影响；无灵根者进度恒 0。
+    *   ⚠ 未获心法时**只停不没收**：迟入道的命在入宗前有一份故事直接授予的
+    *     吐纳积累（mundane-life 的迟入道链），清零会让积累台账出负数
+     *     （存档校验「日常积累记录」当场报红，实测踩到）——授予留在账上，月度不涨。
+    */
+   const qualified=canCultivate(s)&&(s.player.realm>=1||c.v12.entryMethod);
+   const before=c.progress;c.progress=canCultivate(s)?clamp(c.progress+(qualified?(a.progress||1)*ROOTS[s.player.root].rate*(s.birth.era==='ebb'?.8:1)*networkRate(s)*practiceFactor12(s)*focus.mult:0),0,1000):0;
    c.activityMonths[activity]=(c.activityMonths[activity]||0)+1;const gains=c.activityGains[activity]||={};gains.progress=(gains.progress||0)+c.progress-before;
    if(s.month%6===0){const beforeSkills=s.player.skills[a.skill],prior=Object.fromEntries(['insight','courage','empathy','health','mind'].map(k=>[k,s.player[k]]));cb.apply({skills:a.trainSkill===false?{}:{[a.skill]:.5*focus.skillMult},stats:Object.fromEntries(['insight','courage','empathy','health','mind'].filter(k=>a[k]).map(k=>[k,a[k]]))});
     {const gains=c.activityGains[activity];gains[a.skill]=(gains[a.skill]||0)+s.player.skills[a.skill]-beforeSkills;for(const k of Object.keys(prior))if(a[k])gains[k]=(gains[k]||0)+s.player[k]-prior[k];}
@@ -670,7 +711,11 @@ function revised_cultivationMonth(s,cb){
  const evidence=discoverableEvidence(s);
  if(c.wanted>0&&evidence&&age(s)>=30&&!seen(s,'system_warrant'))possible.push('system_warrant');
  if(c.wanted>0&&evidence&&age(s)>=65&&seen(s,'system_warrant')&&!seen(s,'system_pursuit'))possible.push('system_pursuit');
- const tier=Math.max(1,s.player.realm);if(canCultivate(s)&&c.path!=='mortal'&&s.player.realm<3&&age(s)>=20&&s.month>=c.punishmentUntil&&!seen(s,'selection_'+tier)&&!c.exam&&(tier>1||!s.flags.learningPermit))possible.push('selection_'+tier);
+ /* 章节感补强 A1（2026-11-08）：考核候选年龄 20 → 18 ——
+  * 新节奏下 20–32 岁大半被突破闭关与指导卡占住（见 AGENTS.md §1.10），
+  * 考核候选若仍从 20 岁起算，会在窗口里几乎撞不到日常档 ⇒ 实测滑到 40 岁才首考。
+  * 入门一年后（18 岁）即有资格应考，正好落在入门串与首次指导卡之间的空窗。 */
+ const tier=Math.max(1,s.player.realm);if(canCultivate(s)&&c.path!=='mortal'&&s.player.realm<3&&age(s)>=18&&s.month>=c.punishmentUntil&&!seen(s,'selection_'+tier)&&!c.exam&&(tier>1||!s.flags.learningPermit))possible.push('selection_'+tier);
  if(routeOptions(s).find(r=>r.id===s.birth.continent)?.route&&age(s)>=40&&c.familyPolicy!=='sever'&&!seen(s,'family_dispute')&&storyOpportunity(s,'family_dispute',40,52,.35))possible.push('family_dispute');
  if(routeOptions(s).find(r=>r.id===s.birth.continent)?.route&&age(s)>=35&&c.familyPolicy!=='sever'&&s.life.family.members.some(p=>p.status==='alive')&&!seen(s,'family_support')&&storyOpportunity(s,'family_support',35,48,.7))possible.push('family_support');
  if(routeOptions(s).find(r=>r.id===s.birth.continent)?.route&&age(s)>=83&&!seen(s,'family_grave')&&c.descendants.length&&storyOpportunity(s,'family_grave',83,100,.55))possible.push('family_grave');

@@ -141,7 +141,8 @@
     "packages/adventure/story-rules12.js": "pace",
     "packages/core/random.js": "infra",
     "content/story-shared.js": "cause",
-    "packages/adventure/story-shared.js": "cause"
+    "packages/adventure/story-shared.js": "cause",
+    "content/conflict-tags.js": "cause"
   },
   "presentRoots": [
     "apps/",

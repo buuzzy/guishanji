@@ -1,0 +1,449 @@
+{
+  "createdAt": "2026-11-08T09:25:21.608Z",
+  "count": 120,
+  "metrics": {
+    "neverSeen": 173,
+    "density10": 4,
+    "density5": 3,
+    "dailyDensity10": 8,
+    "dailyDensity5": 6,
+    "totalDensity10": 13,
+    "totalDensity5": 9,
+    "cooldownRepeats": 0,
+    "realmContentMin": 6,
+    "endingMissing": 0,
+    "spanMax": 102,
+    "spanMedian": 51
+  },
+  "history": [
+    {
+      "at": "2026-11-07T03:11:56.454Z",
+      "reason": "T1 突破体系改成小说逻辑：条满 ⇒ 突破卡当月发出（规则层与界面同源、去掉岁数下限）。冷却指标 +12 是这次变更的直接后果：以前条满了也不发卡，玩家「没机会重复」；现在卡真发出来了，同一张突破卡的几次尝试（选项标题相同）落在 60 个月窗口内 ⇒ 记成 12 处重复。其余五项同时变好或持平：可达性 167→165、密度5 10→9、每境内容种数 5→6、结局覆盖 0、阶段跨度 102。棘轮从这一次重新起算。",
+      "from": {
+        "neverSeen": 167,
+        "density10": 14,
+        "density5": 10,
+        "cooldownRepeats": 2306,
+        "realmContentMin": 5,
+        "endingMissing": 0,
+        "spanMax": 102
+      },
+      "to": {
+        "neverSeen": 165,
+        "density10": 14,
+        "density5": 9,
+        "cooldownRepeats": 2318,
+        "realmContentMin": 6,
+        "endingMissing": 0,
+        "spanMax": 102
+      }
+    },
+    {
+      "at": "2026-11-07T03:35:46.868Z",
+      "reason": "T2 三道闸：密度改按『日常卡』量（人生节点不算），冷却改按『旁白 + 同一张卡』量（玩家自己的抉择记录不算重复）。实测密度 10→4、5 年 9→3、冷却 2318→0；可达性 165 与节奏对齐与基线一致（零内容损失）。",
+      "from": {
+        "neverSeen": 165,
+        "density10": 14,
+        "density5": 9,
+        "cooldownRepeats": 2318,
+        "realmContentMin": 6,
+        "endingMissing": 0,
+        "spanMax": 102
+      },
+      "to": {
+        "neverSeen": 165,
+        "density10": 4,
+        "density5": 3,
+        "cooldownRepeats": 0,
+        "realmContentMin": 6,
+        "endingMissing": 0,
+        "spanMax": 102
+      }
+    },
+    {
+      "at": "2026-11-07T04:00:26.005Z",
+      "reason": "T3 童年必然触发改造：一生固定三张童年卡（6–9/10–12/13–15），铜匣人人都有（99%），「跟药师学药」38%→15%、「渡口的少年」43%→8%、「宗门来招」43%→28%，身体检查只给先天孱弱的孩子；16 岁前平均卡数 4.6→2.79（最多 3）。可达性 165→166：**唯一变化的是 custody_terms，不是内容被删** —— 它由「旧账」卡的判定失败触发，判定带随机数，童年卡少一张 ⇒ 随机数序列位移 ⇒ 命 35/70 的判定这次通过了；已实测该卡仍可达（改选「先顺从，跟他们回去见管事」时 6/120 条命发出）。其余五项持平或变好：密度 4/3、冷却 0、结局 0、跨度 102，节奏对齐筑基段内容种数 25→26。",
+      "from": {
+        "neverSeen": 165,
+        "density10": 4,
+        "density5": 3,
+        "cooldownRepeats": 0,
+        "realmContentMin": 6,
+        "endingMissing": 0,
+        "spanMax": 102
+      },
+      "to": {
+        "neverSeen": 166,
+        "density10": 4,
+        "density5": 3,
+        "cooldownRepeats": 0,
+        "realmContentMin": 6,
+        "endingMissing": 0,
+        "spanMax": 102
+      }
+    },
+    {
+      "at": "2026-11-07T07:35:15.091Z",
+      "reason": "T10：六项指标固化成达标判据 —— 新增「每境内容种数 ≥ 5」与「突破间隔中位数」的硬底线（跨度规格目标 15 年尚未达标，先钉在今天的 51 年）",
+      "from": {
+        "neverSeen": 166,
+        "density10": 4,
+        "density5": 3,
+        "cooldownRepeats": 0,
+        "realmContentMin": 6,
+        "endingMissing": 0,
+        "spanMax": 102
+      },
+      "to": {
+        "neverSeen": 166,
+        "density10": 4,
+        "density5": 3,
+        "cooldownRepeats": 0,
+        "realmContentMin": 6,
+        "endingMissing": 0,
+        "spanMax": 102,
+        "spanMedian": 51
+      }
+    },
+    {
+      "at": "2026-11-07T11:18:57.736Z",
+      "reason": "剧情线试点：加 27 张接头卡（炼气→筑基 9 条线 × 3 种收尾）。可达性的绝对条数 166 → 173，是因为分母从 360 张涨到 387 张 —— 新增的 27 张里 20 张在这批 120 条命里发得出来（74%，比全场平均的 54% 高），发不出来的 7 张是「线走到第三步却选了另一种收尾」的少见分支（实测可达，不是死内容）。换算成比例：发霉率 46.1% → 44.7%，实际是变好的。其余五项完全不变（密度 4/3、冷却 0、每境内容种数 6、结局覆盖 0、阶段跨度 102）。棘轮从这一次重新起算。",
+      "from": {
+        "neverSeen": 166,
+        "density10": 4,
+        "density5": 3,
+        "cooldownRepeats": 0,
+        "realmContentMin": 6,
+        "endingMissing": 0,
+        "spanMax": 102,
+        "spanMedian": 51
+      },
+      "to": {
+        "neverSeen": 173,
+        "density10": 4,
+        "density5": 3,
+        "cooldownRepeats": 0,
+        "realmContentMin": 6,
+        "endingMissing": 0,
+        "spanMax": 102,
+        "spanMedian": 51
+      }
+    },
+    {
+      "at": "2026-11-07T14:31:13.495Z",
+      "reason": "炼气期收束（2026-11-08）：童年回响整串挪到 27 岁后、灵根薄支线挪到 27 岁后、入门那一串拉开成 16/17/18/19 岁、主修心法隔 12 个月；另加「印记后果旁白」（决策后不再追问，后果在自动旁白里显现）。差异已逐条审查（artifacts/storyline-audit/18-序列差异审查.mjs）：8 张卡因时序连带不再出现、4 张恢复，净 +4 发霉，登记为已知缺口。",
+      "from": {
+        "neverSeen": 173,
+        "density10": 4,
+        "density5": 3,
+        "cooldownRepeats": 0,
+        "realmContentMin": 6,
+        "endingMissing": 0,
+        "spanMax": 102,
+        "spanMedian": 51
+      },
+      "to": {
+        "neverSeen": 183,
+        "density10": 4,
+        "density5": 3,
+        "cooldownRepeats": 0,
+        "realmContentMin": 5,
+        "endingMissing": 0,
+        "spanMax": 102,
+        "spanMedian": 51
+      }
+    },
+    {
+      "at": "2026-11-07T15:09:50.786Z",
+      "reason": "炼气期重构：接头卡 + 前期密度收束 + 后果旁白（有意行为变更，见 docs/refactor-divergence.json T8）",
+      "from": {
+        "neverSeen": 183,
+        "density10": 4,
+        "density5": 3,
+        "cooldownRepeats": 0,
+        "realmContentMin": 5,
+        "endingMissing": 0,
+        "spanMax": 102,
+        "spanMedian": 51
+      },
+      "to": {
+        "neverSeen": 181,
+        "density10": 4,
+        "density5": 3,
+        "cooldownRepeats": 0,
+        "realmContentMin": 5,
+        "endingMissing": 0,
+        "spanMax": 102,
+        "spanMedian": 51
+      }
+    },
+    {
+      "at": "2026-11-07T15:22:32.909Z",
+      "reason": "炼气期重构（接头卡 + 内容挪动 + 后果旁白；节拍闸已撤，见 docs/refactor-divergence.json T8）",
+      "from": {
+        "neverSeen": 181,
+        "density10": 4,
+        "density5": 3,
+        "cooldownRepeats": 0,
+        "realmContentMin": 5,
+        "endingMissing": 0,
+        "spanMax": 102,
+        "spanMedian": 51
+      },
+      "to": {
+        "neverSeen": 175,
+        "density10": 4,
+        "density5": 3,
+        "cooldownRepeats": 0,
+        "realmContentMin": 5,
+        "endingMissing": 0,
+        "spanMax": 102,
+        "spanMedian": 51
+      }
+    },
+    {
+      "at": "2026-11-07T15:29:01.070Z",
+      "reason": "炼气期重构收尾：后果旁白改为独立通道（不再顶掉当月拾遗旁白），随机流回到与 HEAD 一致",
+      "from": {
+        "neverSeen": 175,
+        "density10": 4,
+        "density5": 3,
+        "cooldownRepeats": 0,
+        "realmContentMin": 5,
+        "endingMissing": 0,
+        "spanMax": 102,
+        "spanMedian": 51
+      },
+      "to": {
+        "neverSeen": 175,
+        "density10": 4,
+        "density5": 3,
+        "cooldownRepeats": 0,
+        "realmContentMin": 5,
+        "endingMissing": 0,
+        "spanMax": 102,
+        "spanMedian": 51
+      }
+    },
+    {
+      "at": "2026-11-08T02:49:49.761Z",
+      "reason": "阶段 2：修「密度指标假绿灯」。豁免名单拆成「结构性 / 日常」两类（规则层 classifyCard），闸的豁免范围一个字没变。新增四个键：dailyDensity10/5（日常口径 P90 = 7/7）与 totalDensity10/5（全卡口径 P90 = 13/9）—— 以前只量「非豁免卡」（最挤 10 年 4 张）⇒ 永远绿；玩家真正常遇到的是全卡口径 15 张。旧口径的 8 个键数值全部不变（neverSeen 175、density10 4、density5 3、冷却 0、每境 5、结局 0、跨度 102/51）⇒ 零内容变化，只是多报了两把尺。全卡口径 5 年的硬底线钉在 9（实测 P90 = 9，交接文档写的目标 8 尚未达标 ⇒ 按 spanMedian 的先例先钉在今天的值，缺口登记在完备度台账里）。",
+      "from": {
+        "neverSeen": 175,
+        "density10": 4,
+        "density5": 3,
+        "cooldownRepeats": 0,
+        "realmContentMin": 5,
+        "endingMissing": 0,
+        "spanMax": 102,
+        "spanMedian": 51
+      },
+      "to": {
+        "neverSeen": 175,
+        "density10": 4,
+        "density5": 3,
+        "dailyDensity10": 7,
+        "dailyDensity5": 7,
+        "totalDensity10": 13,
+        "totalDensity5": 9,
+        "cooldownRepeats": 0,
+        "realmContentMin": 5,
+        "endingMissing": 0,
+        "spanMax": 102,
+        "spanMedian": 51
+      }
+    },
+    {
+      "at": "2026-11-08T03:06:45.388Z",
+      "reason": "阶段 3.1：背景故事线表 12 条（8 入宗门 + 4 与修仙无缘）。每条命在开局多发一张**背景卡**（必答，不是岔路）⇒「与修仙无缘」那 4 条路的十年窗口里日常决定 4 → 5 张 ⇒ 日常口径 P90 7 → 8（上限跟着挪，是有意多出来的一张：背景故事本身）。入宗门侧不开局加卡（背景卡接的就是测灵根，原来的排队卡不再进链 ⇒ 铺垫下沉到旁白）。其余六项：可达性 175 → 177（新增 12 张背景卡，8 条各有 1/8 概率、3 条遇不到；旧的 early_demonic/early_beast/early_loose 三张不再自动发出 —— 卡没删，还在表里，旧档仍走它们）、冷却 0、每境内容 5、结局 0、跨度 102/51、全卡口径 13/9 不变。",
+      "from": {
+        "neverSeen": 175,
+        "density10": 4,
+        "density5": 3,
+        "dailyDensity10": 7,
+        "dailyDensity5": 7,
+        "totalDensity10": 13,
+        "totalDensity5": 9,
+        "cooldownRepeats": 0,
+        "realmContentMin": 5,
+        "endingMissing": 0,
+        "spanMax": 102,
+        "spanMedian": 51
+      },
+      "to": {
+        "neverSeen": 177,
+        "density10": 5,
+        "density5": 3,
+        "dailyDensity10": 8,
+        "dailyDensity5": 7,
+        "totalDensity10": 13,
+        "totalDensity5": 9,
+        "cooldownRepeats": 0,
+        "realmContentMin": 6,
+        "endingMissing": 0,
+        "spanMax": 102,
+        "spanMedian": 51
+      }
+    },
+    {
+      "at": "2026-11-08T03:23:01.160Z",
+      "reason": "阶段 3.1：背景故事线表（每条命多 1 张背景卡 ⇒ 日常口径密度 P90 由 7 升到 8，规格上限随之从 7 挪到 8）+ 修「心法未定就发冲关卡」的废卡老 bug（7/40 条命踩到 ⇒ 0/40）⇒ 炼气踏入年龄中位数 22 → 21 岁，阶段跨度中位数 51 → 51（未达标，已登记缺口）",
+      "from": {
+        "neverSeen": 177,
+        "density10": 5,
+        "density5": 3,
+        "dailyDensity10": 8,
+        "dailyDensity5": 7,
+        "totalDensity10": 13,
+        "totalDensity5": 9,
+        "cooldownRepeats": 0,
+        "realmContentMin": 6,
+        "endingMissing": 0,
+        "spanMax": 102,
+        "spanMedian": 51
+      },
+      "to": {
+        "neverSeen": 174,
+        "density10": 5,
+        "density5": 3,
+        "dailyDensity10": 8,
+        "dailyDensity5": 6,
+        "totalDensity10": 12,
+        "totalDensity5": 9,
+        "cooldownRepeats": 0,
+        "realmContentMin": 6,
+        "endingMissing": 0,
+        "spanMax": 102,
+        "spanMedian": 51
+      }
+    },
+    {
+      "at": "2026-11-08T04:17:14.986Z",
+      "reason": "阶段 3（剧情结构）：新增 12 张背景卡 + 2 张入门环卡（宗门部门 / 心法选定）+ 21 张接头卡（七条无桥长线补桥）；凡人线按交接文档 §3.3 精简到五张（其余 45 张停用不删，停用清单住在 content/mundane-kept.js，不计入「发霉」）。",
+      "from": {
+        "neverSeen": 174,
+        "density10": 5,
+        "density5": 3,
+        "dailyDensity10": 8,
+        "dailyDensity5": 6,
+        "totalDensity10": 12,
+        "totalDensity5": 9,
+        "cooldownRepeats": 0,
+        "realmContentMin": 6,
+        "endingMissing": 0,
+        "spanMax": 102,
+        "spanMedian": 51
+      },
+      "to": {
+        "neverSeen": 170,
+        "density10": 4,
+        "density5": 3,
+        "dailyDensity10": 7,
+        "dailyDensity5": 6,
+        "totalDensity10": 12,
+        "totalDensity5": 9,
+        "cooldownRepeats": 0,
+        "realmContentMin": 6,
+        "endingMissing": 0,
+        "spanMax": 102,
+        "spanMedian": 51
+      }
+    },
+    {
+      "at": "2026-11-08T04:45:55.366Z",
+      "reason": "阶段 4：接头卡不再被队列过滤误删（dark_sacrifice 24 次走完只发 1 次接头卡 ⇒ 修后发 20 次）⇒ 可达性 170→168；急讯打断行动的白名单改成结构校验（修掉一处崩游戏）",
+      "from": {
+        "neverSeen": 170,
+        "density10": 4,
+        "density5": 3,
+        "dailyDensity10": 7,
+        "dailyDensity5": 6,
+        "totalDensity10": 12,
+        "totalDensity5": 9,
+        "cooldownRepeats": 0,
+        "realmContentMin": 6,
+        "endingMissing": 0,
+        "spanMax": 102,
+        "spanMedian": 51
+      },
+      "to": {
+        "neverSeen": 168,
+        "density10": 4,
+        "density5": 3,
+        "dailyDensity10": 7,
+        "dailyDensity5": 6,
+        "totalDensity10": 12,
+        "totalDensity5": 9,
+        "cooldownRepeats": 0,
+        "realmContentMin": 6,
+        "endingMissing": 0,
+        "spanMax": 102,
+        "spanMedian": 51
+      }
+    },
+    {
+      "at": "2026-11-08T08:42:36.425Z",
+      "reason": "阶段一 · 出身真正驱动剧情（2026-11-08）：身世卡改为**按出身分池**抽（名门/世家不再抽到「游方药师/幽灯堂/老猿」），并给名门/世家补了专属童年卡。⚠ **一生该发的卡一张没多**（童年仍每段 1 张、身世仍 1 张）⇒ 密度的结构没变。⚠ 本基线此前的 168 是**并行任务未提交改动之前**的数（那一批改动把可达性从 168 降到 138，未同步重算基线）；本次从 138 → 143：多出来的 5 张全是**妖身路径的接头卡**（beast_form/beast_war/beast_eclipse）与 1 张封印提醒 —— 妖身现在只有山村药农能走（120 条命里妖身命约 10 条 → 4 条）⇒ 这批卡在这批样本里没撞上，**不是内容被删**：触达门禁（400 条命 × 2 策略）证实它们仍发得出来（16 条长线全部 100%「有机会必发出」，真零触达仍 115 张）。全卡口径 10 年密度 12 → 13，**等于硬底线 13（未超限）**，同一批原因：散修/魔道/妖身三条只对山村药农开放，路径构成变了。其余五项完全不变（密度 4/3、日常 7/6、冷却 0、每境 6、结局 0、跨度 102/51）。",
+      "from": {
+        "neverSeen": 168,
+        "density10": 4,
+        "density5": 3,
+        "dailyDensity10": 7,
+        "dailyDensity5": 6,
+        "totalDensity10": 12,
+        "totalDensity5": 9,
+        "cooldownRepeats": 0,
+        "realmContentMin": 6,
+        "endingMissing": 0,
+        "spanMax": 102,
+        "spanMedian": 51
+      },
+      "to": {
+        "neverSeen": 173,
+        "density10": 4,
+        "density5": 3,
+        "dailyDensity10": 7,
+        "dailyDensity5": 6,
+        "totalDensity10": 13,
+        "totalDensity5": 9,
+        "cooldownRepeats": 0,
+        "realmContentMin": 6,
+        "endingMissing": 0,
+        "spanMax": 102,
+        "spanMedian": 51
+      }
+    },
+    {
+      "at": "2026-11-08T09:25:21.608Z",
+      "reason": "修缺陷 A（凡人线队列饿死：packages/adventure/mundane-life.js 的凡人线不再被队列卡住）⇒ 真正走凡人线的命现在能一路走到收尾卡（45–51 岁拿到 system_final，结局 mortal_home），十年窗口里的日常决定从 7 张变成 8 张 ⇒ dailyDensity10 7 → 8。这是**有意多出来的一张**（凡人线终于走完了，不是内容变挤）⇒ 硬底线本来就是 8（scripts/audit-metrics.mjs 的 HARD_LIMIT.dailyDensity10），这里只重生成棘轮基线。其余各项持平：neverSeen 173、密度 4/3、日常 5 年 6、全卡 13/9、冷却 0、结局 0、跨度 102、节奏对齐 6。重心加成（熟手 ×1.10 / 专精 ×1.20，修行那一半只管到筑基之前）实测对指标零影响：把加成全关掉重跑，dailyDensity10 仍是 8、neverSeen 172。",
+      "from": {
+        "neverSeen": 173,
+        "density10": 4,
+        "density5": 3,
+        "dailyDensity10": 7,
+        "dailyDensity5": 6,
+        "totalDensity10": 13,
+        "totalDensity5": 9,
+        "cooldownRepeats": 0,
+        "realmContentMin": 6,
+        "endingMissing": 0,
+        "spanMax": 102,
+        "spanMedian": 51
+      },
+      "to": {
+        "neverSeen": 173,
+        "density10": 4,
+        "density5": 3,
+        "dailyDensity10": 8,
+        "dailyDensity5": 6,
+        "totalDensity10": 13,
+        "totalDensity5": 9,
+        "cooldownRepeats": 0,
+        "realmContentMin": 6,
+        "endingMissing": 0,
+        "spanMax": 102,
+        "spanMedian": 51
+      }
+    }
+  ]
+}

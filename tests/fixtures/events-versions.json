@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-11-08T08:41:44.755Z",
+  "generatedAt": "2026-11-09T03:03:52.006Z",
   "tool": "verify-events-fidelity",
   "versions": {
     "CULTIVATION_EVENTS": {
-      "count": 352,
-      "digest": "3edb546862a00a80",
+      "count": 362,
+      "digest": "c21c1df23307079f",
       "ids": [
         "advance_material_3_0_0",
         "advance_material_3_0_0_resume",
@@ -300,8 +300,18 @@
         "r12_home_resolve_5",
         "r12_late_doubt",
         "r12_patron",
+        "r12_peer_first",
+        "r12_peer_letter",
+        "r12_peer_shiweng",
+        "r12_peer_xiaoman",
+        "r12_qi_adventure",
+        "r12_qi_practice_0",
+        "r12_qi_practice_1",
         "r12_sealed_warning",
         "r12_sect_clue",
+        "r12_stage_1",
+        "r12_stage_2",
+        "r12_stage_3",
         "reception",
         "road_turn",
         "root_result",

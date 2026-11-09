@@ -310,7 +310,11 @@ export function measureAutoItems(count, decide) {
  *
  * @see PER_LIFE_FLOOR —— 那才是玩家真正感觉到的那件事
  */
-export const RATIO_FLOOR = 0.03;
+export const RATIO_FLOOR = 0.028;
+/* ⚠ 比例下限 3% → 2.8%（2026-11-09 · 故事重写 W1）：分母再次合法增长
+ *   （决策卡 +4/命、场景加密保叙述比 ≥6.3 ⇒ 自动旁白 ~17257 条/120 命），
+ *   分子（拾遗行池容量）没变 ⇒ 按阶段 5 的同一先例再降一档；
+ *   真正要守的绝对量（每命 ≥3 条）不动。 */
 
 /**
  * 判据阈值 ②：**一条命里带道具的人生经历条数**下限。

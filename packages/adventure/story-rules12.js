@@ -200,9 +200,25 @@ export function choice12(s,choice,event){
     *   失败代价也按境界分档（留得住「还能再冲一次」）。
     */
    const base=rule.base+(lastChance?15:0);
-   o.check={...(o.check||{}),base:base+gradeBonus(grade)-r.body.damage-older+(tier===2&&pill?16:0)+constitution12(s)*.25,
+   /*
+    * 章节感补强 A4（2026-11-08）：炼气章的收获在筑基冲关兑现——
+    *   洞府残图（qi_cave_map）+6：残图上画的就是这一带的阵基，冲关时心里有底；
+    *   百年灵草（qi_herb）+3：药性养过经脉，冲关时稳一些。
+    * 两件都是**加分不是门票**（与筑基丹同一待遇），不进 cost；
+    * 冲过这一关（离开炼气章）时由突破清算收走（engine.js 的 stageRealm 清算）。
+    */
+   const caveBonus=tier===2&&s.inventory.includes('qi_cave_map')?6:0;
+   /* 药材档互斥：小满的药材包与百年灵草同档（各 +3），不叠加。 */
+   const herbBonus=tier===2&&(s.inventory.includes('qi_herb')||s.inventory.includes('xiaoman_herbs'))?3:0;
+   let tierFail='药力散尽，真气却没能凝稳。你吐出一口血，护脉者把你扶出石室；这次冲关没有成功。';
+   if(tier===1)tierFail='灵气几次散出经脉，胸口疼得无法继续。看护者叫你停下，先休养再试；这次没有炼出稳定法力。';
+   /* 故事重写 W1（2026-11-09）：失败不孤独——按卡二的选择点名石瓮。 */
+   const p12=rules12(s).facts.peer||{};
+   if(tier===1&&s.inventory.includes('shiweng_pot'))tierFail+='石门外，石瓮的灯还亮着。';
+   else if(tier===1&&p12.shiwengJoke)tierFail+='篮底那张字条，你出关才看见。';
+   o.check={...(o.check||{}),base:base+gradeBonus(grade)-r.body.damage-older+(tier===2&&pill?16:0)+caveBonus+herbBonus+constitution12(s)*.25,
     skill:o.check?.skill||'array',scale:rule.scale,stat:'insight',statScale:rule.statScale,
-    failText:tier===1?'灵气几次散出经脉，胸口疼得无法继续。看护者叫你停下，先休养再试；这次没有炼出稳定法力。':'药力散尽，真气却没能凝稳。你吐出一口血，护脉者把你扶出石室；这次冲关没有成功。',
+    failText:tierFail,
     failure:{stats:{mind:-4}}};
    /*
     * ⚠ 失败**不再扣体力**。
@@ -265,6 +281,37 @@ export function complete12(s,event,choice,success,cb){
  if(op.return12&&r.visit){const v=r.visit;c(s).continent=v.origin;s.player.location=v.location;s.player.home=v.home;c(s).spot=v.home;log(s,cb,'回到离开时的住处','你沿原先约定的路回来，把行囊放进'+v.home+'。家事已经交代清楚，出发时托人代管的东西也逐件领回。','people');r.visit=null;r.visits++;c(s).context=null;}
  if(op.stay12){r.visit=null;r.visits++;c(s).path='mortal';c(s).rank='家中长辈';c(s).context=null;}
  if(op.plan12){r.action=null;c(s).context=null;r.practice.next=s.month+36;}
+ /* 故事重写 W1（2026-11-09）：同期弟子三人的后果落账。
+  * · 标记全部记在 r.facts.peer（askedWhy/rival/shiwengJoke/xiaomanSent/xiaomanKept/xiaomanAsked），
+  *   卡四正文与突破失败文案按标记分叉；validate12 对 r.facts 只验对象形态，新键合法。
+  * · race 的加练：当月进度加二点（凡身章口径，见卡稿 v3 第十一节）。
+  * · 陶罐（收下卡二选项一者）：闭关出关时心境+3，由出关旁白兑现——
+  *   不加冲关分，避免与洞府残图、百年灵草叠加。 */
+ if(op.peer12){
+  const p=r.facts.peer=r.facts.peer||{};
+  if(op.peer12==='ask')p.askedWhy=true;
+  if(op.peer12==='race'){p.rival=true;c(s).progress=Math.min(1000,c(s).progress+2);}
+  if(op.peer12==='joke')p.shiwengJoke=true;
+  if(op.peer12==='send'){p.xiaomanSent=true;p.xiaomanAt=s.month;}
+  if(op.peer12==='keep'){p.xiaomanKept=true;p.xiaomanAt=s.month;}
+  if(op.peer12==='asked'){p.xiaomanAsked=true;p.xiaomanAt=s.month;}
+ }
+ if(op.plan12==='retreat'&&s.inventory.includes('shiweng_pot')&&success){
+  cb.apply({stats:{mind:3}});
+  log(s,cb,'出关那天','陶罐里的水没有断过。你把石门外收到的字条一张张抚平，夹进了卷册。','life');
+ }
+ /* 章节感补强 A2（2026-11-08）：凡身章铺垫卡的后果。
+  * · rebuild（散功重修）：折损两成本章修为，换往后行气走得稳——
+  *   这是「代价看得见」的冲突标签 cost 卡，损失要真的落账。
+  *   ⚠ 折损要**同步从积累台账（activityGains）按比例扣掉**：
+  *     台账记的是「修为从哪来」，散功是「修为散掉」；只减进度不减台账，
+  *     下个月的积累增量就成了负数，存档校验（日常积累记录）当场报红（实测踩到）。
+  * · push 失败的养伤由 failure.stats 结算，这里不再重复扣。 */
+ if(op.qi12==='rebuild'){
+  const after=Math.round(c(s).progress*0.8),loss=c(s).progress-after;c(s).progress=after;
+  const g=c(s).activityGains,tot=Object.values(g).reduce((n,x)=>n+(x.progress||0),0);
+  if(loss>0&&tot>0)for(const k of Object.keys(g))g[k].progress=Math.max(0,Math.round((g[k].progress||0)-loss*(g[k].progress||0)/tot));
+ }
  if(/^r12_direction_[0-5]$/.test(event)){if(!r.practice.offered.includes(event))r.practice.offered.push(event);}
  if(op.patron12){r.patron.noticed=true;if(op.patron12==='leave'){c(s).path='loose';c(s).rank='独立修士';s.player.home=c(s).spot='坊市药铺旁的租屋';}}
  if(op.clue12){r.clue.checked=true;if(op.clue12==='accept'&&success){setMethod(s,sectProfile(s).source,event,cb);r.clue.accepted=true;r.clue.lossAt=s.month+60;}if(op.clue12==='report')log(s,cb,'旧井的抄本送出了山门','你把见到的刻文交给过路阵师。长老暂时封起旧井，门内少了一处灵气来源，没人敢保证下一批耗材。','world');}
@@ -310,6 +357,37 @@ export function month12(s,cb){
   if(r.childhood.kind==='fever'){r.body.illness=true;cb.apply({stats:{health:-18}});cb.arrive('r12_child_fever');}
   else cb.arrive('r12_child_body');return true;
  }
+ /*
+  * ⚠ **章节感补强 A3（2026-11-08）**：炼气阶段节点卡 —— 跨段从一条旁白升级为一张卡。
+  *
+  * ## 为什么放在 r.action 早退**之前**
+  * --------------------------------
+  * 闭关/远行那几年进度照涨（闭关还涨得快），跨段多半发生在闭关中段——
+  * 放在自由段 ⇒ 全部跨段被吞到出关才补发，四五张卡挤在同一个月（旧病的变体）。
+  * 放在这里 ⇒ 闭关途中也能发（这三张是结构性卡，闸不拦；
+  * pending 只是暂停行程，闭关的时日一点不损失）。
+  *
+  * ## 一跃跨两段怎么办
+  * ------------------
+  * 出关时进度从 42 跳到 100 的命是存在的 ⇒ `r.practice.stage` 只前进一格，
+  * 每月发一张：先「真气成线」，下个月「护身第一课」，再下个月「圆满与瓶颈」——
+  * 三个节点按顺序各占一个月，不并成一句旁白。
+  * ⚠ `r.practice.stage` 的语义从「当前段」改为「**已发卡到的段**」——
+  *   `validate12` 的 ≤3 校验口径不变；突破成功时归零（`complete12`），进新章重新起算。
+  */
+ if(s.player.realm===1&&canCultivate(s)&&!s.pending){
+  const stage=qigongStage(c(s).progress);
+  if(stage>r.practice.stage){
+    /* ⚠ 跨段卡走**队列**（`cc.queue` ⇒ `arriveRaw`），不走当场 `arrive`——
+     * 闭关/家事这类长途修行是带**延迟结算**的旅程（deferredEffects），
+     * 当场发卡会把旅程顶掉 ⇒ 结算丢失、流程卡死（实测 r12_home_resolve 被二次发出的根因）。
+     * 队列由调度档在安全的月份送达（`cultivation.js` 的后续卡档 + 存档校验认它）。 */
+    const stageId='r12_stage_'+(r.practice.stage+1);
+    if(!done(s,stageId)&&!cc.queue.some(q=>q.event===stageId)){
+      cc.queue.push({event:stageId,due:s.month});r.practice.stage++;
+    }
+  }
+ }
  if(r.visit){if(open&&r.visit.arrived&&s.month>=r.visit.due){
    const visitId=(r.visit.resolved?'r12_home_leave':'r12_home_resolve')+(r.visit.index?'_'+r.visit.index:'');
    cb.arrive(visitId);
@@ -339,6 +417,42 @@ export function month12(s,cb){
  if(cc.queue.some(q=>q.due<=s.month))return false;
  if(s.player.realm===0&&age(s)>=r.body.natural-12&&!done(s,'r12_late_doubt')){
   cb.arrive('r12_late_doubt');return true;}
+ /*
+  * ⚠ **章节感补强 A2（2026-11-08）**：凡身章铺垫卡与炼气章奇遇卡的确定性排期。
+  *
+  * ## 口径
+  * ----
+  *   · 按本章进度比例发：凡身章 30% / 70%（`progressNeeded(1)`），
+  *     炼气章 38%（`progressNeeded(2)`）—— 每一档同时满足「进度到了」与「没发过」；
+  *   · **不进候选池、不调随机延迟、不消耗随机数** ⇒ 抽签序列不被这套卡扰动；
+  *   · 当月卡位被占 ⇒ `arrive` 发不出去 ⇒ 没置标记 ⇒ 下个月再来（顺延语义）；
+  *   · 闭关/远行期间 month12 在上面 `r.action` 段就返回了 ⇒ 自然推迟到出关；
+  *   · 这三张已按前缀登记进闸的**结构性豁免**（`gates.js`：一生至多一次，
+  *     是章节节点不是日常），密度闸不拦。
+  *   · 快根骨者可能在 20 岁领指导卡之前就攒够 70% ⇒ 铺垫卡先发，节奏正好；
+  *     慢根骨者若出关时进度已够冲关，冲关卡先行 ⇒ 铺垫卡让路（不是每个慢命都见得到，可接受）。
+  */
+ if(s.player.realm===0&&!done(s,'r12_qi_practice_0')&&cc.progress>=Math.round(progressNeeded(1)*0.3)){
+  cb.arrive('r12_qi_practice_0');return true;}
+ if(s.player.realm===0&&!done(s,'r12_qi_practice_1')&&cc.progress>=Math.round(progressNeeded(1)*0.7)){
+  cb.arrive('r12_qi_practice_1');return true;}
+ if(s.player.realm===1&&!done(s,'r12_qi_adventure')&&cc.progress>=Math.round(progressNeeded(2)*0.38)){
+  cb.arrive('r12_qi_adventure');return true;}
+ /*
+  * ⚠ **故事重写 W1（2026-11-09）**：同期弟子三人，确定性排期（口径与 A2 一致）。
+  *   触发一律看**当前**是否在宗门（path==='orthodox'）；卡一落在凡身章后段
+  *   （岑野固定 18 岁入道，玩家未入道时才发）；卡三卡四按本章进度四成半/八成半，
+  *   与阶段卡（两成半/五成/七成半）和洞府卡（三成八）错开，避免节拍拥挤。
+  *   这四张已按前缀 r12_peer_ 登记进闸的结构性豁免。
+  */
+ if(s.player.realm===0&&cc.path==='orthodox'&&canCultivate(s)&&cc.v12.entryMethod&&age(s)>=18&&!done(s,'r12_peer_first')){
+  cb.arrive('r12_peer_first');return true;}
+ if(s.player.realm===0&&cc.path==='orthodox'&&canCultivate(s)&&!done(s,'r12_peer_shiweng')&&!done(s,'r12_direction_0')&&cc.progress>=Math.round(progressNeeded(1)*0.15)){
+  cb.arrive('r12_peer_shiweng');return true;}
+ if(s.player.realm===1&&cc.path==='orthodox'&&canCultivate(s)&&!done(s,'r12_peer_xiaoman')&&cc.progress>=Math.round(progressNeeded(2)*0.45)){
+  cb.arrive('r12_peer_xiaoman');return true;}
+ if(s.player.realm===1&&cc.path==='orthodox'&&canCultivate(s)&&!done(s,'r12_peer_letter')&&done(s,'r12_peer_xiaoman')&&s.month>=((r.facts.peer&&r.facts.peer.xiaomanAt)||0)+12&&cc.progress>=Math.round(progressNeeded(2)*0.85)){
+  cb.arrive('r12_peer_letter');return true;}
  if(cc.path==='orthodox'&&!r.clue.checked&&age(s)>=38&&(cc.rank==='内门弟子'||s.flags.learningPermit)&&roll(s,'secret')<1200){
   /* ⚠ 闸检查**在置标记之前** —— 被拦就当这个月没这回事，下个月还会再抽一次。 */
   if(!cb.gate('r12_sect_clue'))return false;
@@ -379,7 +493,7 @@ export function month12(s,cb){
  if(s.player.realm<=1&&!ready&&!cooling&&!due&&yearsLeft*12>=retreatMonths&&cc.network.method&&s.month>=r.practice.next&&s.month-(s.decisions.at(-1)?.month||0)>=24){
   if(index<6){cb.arrive('r12_direction_'+index);return true;}
  }
- if(s.player.realm===1){const stage=qigongStage(cc.progress);if(stage>r.practice.stage){r.practice.stage=stage;log(s,cb,'修到了'+stage12(s),'你把真气沿已练熟的经脉运转，过去总会散开的那一段终于接稳。'+(stage===3?'教习让你停下强行加快周天，筑基所需的丹药与护脉准备还没有因此齐全。':'教习让你用这一段稳定的真气练护身，新的口诀仍要慢慢学。'),'cultivation');}}
+ /* 跨段节点卡已移到 month12 前段（r.action 早退之前）——闭关途中也能逐月逐张发。 */
  return false;
 }
 export function validate12(s,fail){

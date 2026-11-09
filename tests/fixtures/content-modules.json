@@ -90,7 +90,8 @@
   "ITEMS": {
     "foundation_pill": {
       "name": "筑基丹",
-      "detail": "冲关时保护经脉，须实际得到并在闭关中用去；不能保证筑基成功。"
+      "detail": "冲关时保护经脉，须实际得到并在闭关中用去；不能保证筑基成功。",
+      "stageRealm": 1
     },
     "return_chart": {
       "name": "归山阵图",
@@ -174,39 +175,48 @@
     },
     "condensation_book": {
       "name": "凝丹真解",
-      "detail": "经护法核过的凝丹篇章。"
+      "detail": "经护法核过的凝丹篇章。",
+      "stageRealm": 2
     },
     "beast_core": {
       "name": "完整妖兽内丹",
-      "detail": "经辨认、可用于凝丹的内丹。"
+      "detail": "经辨认、可用于凝丹的内丹。",
+      "stageRealm": 2
     },
     "false_core": {
       "name": "驳杂假丹",
-      "detail": "灵力不纯，可代替内丹，但凝丹更难。"
+      "detail": "灵力不纯，可代替内丹，但凝丹更难。",
+      "stageRealm": 2
     },
     "golden_pill": {
       "name": "定元凝丹丸",
-      "detail": "炼成的凝丹辅药。"
+      "detail": "炼成的凝丹辅药。",
+      "stageRealm": 2
     },
     "rough_pill": {
       "name": "杂质凝丹丸",
-      "detail": "火候有误，药力不稳。"
+      "detail": "火候有误，药力不稳。",
+      "stageRealm": 2
     },
     "soul_book": {
       "name": "育婴真解",
-      "detail": "记录神魂与元婴相合的法门。"
+      "detail": "记录神魂与元婴相合的法门。",
+      "stageRealm": 3
     },
     "soul_flower": {
       "name": "养魂莲",
-      "detail": "孕育元婴所需的灵药。"
+      "detail": "孕育元婴所需的灵药。",
+      "stageRealm": 3
     },
     "nascent_pill": {
       "name": "护婴丹",
-      "detail": "护住孕婴时脆弱的神魂。"
+      "detail": "护住孕婴时脆弱的神魂。",
+      "stageRealm": 3
     },
     "rough_nascent": {
       "name": "驳杂护婴丹",
-      "detail": "火候不足的护婴辅药。"
+      "detail": "火候不足的护婴辅药。",
+      "stageRealm": 3
     },
     "tribulation_array": {
       "name": "避劫阵盘",
@@ -259,6 +269,26 @@
     "mortal_charm": {
       "name": "护路纸符",
       "detail": "受助修士封存一缕灵力，并教你撕开纸符的用法。只能在确实遇到追查时用一次，不会教会你施法。"
+    },
+    "qi_cave_map": {
+      "name": "洞府残图",
+      "detail": "半张手绘的阵基图，画的是这附近一片谷地。筑基冲关时心里更有底；入筑基之后，图上的东西就与你无关了。",
+      "stageRealm": 1
+    },
+    "qi_herb": {
+      "name": "百年灵草",
+      "detail": "废弃药圃里起出的一株百年分的灵草。药性养过经脉，筑基冲关时稳一些；放久了药力会随境界推移散逸。",
+      "stageRealm": 1
+    },
+    "shiweng_pot": {
+      "name": "石瓮的陶罐",
+      "detail": "石瓮塞给你的旧陶罐，闭关时接水省得开门。出关时心境踏实些——它不算冲关的把握，算有人替你操着心。",
+      "stageRealm": 1
+    },
+    "xiaoman_herbs": {
+      "name": "小满的药材包",
+      "detail": "小满下山前塞给你的药材，养过经脉。筑基冲关时稳一些；与百年灵草同一档，不叠加。",
+      "stageRealm": 1
     }
   },
   "LEGACY_CONTENT_REVISION": "return-to-the-mountains-01",

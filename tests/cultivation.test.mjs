@@ -9,6 +9,20 @@ import {decide,playCultivation,naturalSeed} from './helpers/rules12-play.mjs';
 import {AdventureStore,ADVENTURE_KEY} from '../packages/adventure/store.js';
 const follow=(s,id,policy={})=>{for(let i=0;i<130&&s.phase==='life';i++){if(!s.pending)advanceToChoice(s);if(s.pending?.event===id)return s;if(!s.pending)break;choose(s,decide(s,policy).id);if(policy.activity&&activityOptions(s).find(a=>a.id===policy.activity)?.enabled)setActivity(s,policy.activity);}return null;};
 /*
+ * ⚠ **章节感补强后 garden_accident 不再走自然扫**（2026-11-08）：
+ *   新节奏把 20–36 岁的大半给了突破闭关与指导卡 ⇒ 日常池的这张机会卡
+ *   在自然命里撞不到窗口（触达台账「闭关化吞掉的日常窗口」族，登记在案）。
+ *   这两条测试量的是**处分与作证的后果**，不是可达性 ⇒ 直接把卡摆上待选。
+ */
+const pendingCard=(event,{years=28}={})=>{
+  const s=createRun({seed:'cultivation-case-'+event});
+  s.month=years*12;s.player.practice=s.month;s.player.root='松骨灵根';s.player.realm=1;s.player.stones=30;
+  Object.assign(s.life.cultivation,{rootKnown:true,path:'orthodox',admissionDone:true,entered:192,worldDone:true,queue:[],activeChain:null,context:null,punishmentUntil:0});
+  s.life.cultivation.story10.rootStatus='present';s.life.cultivation.story10.body='human';
+  s.life.cultivation.network.method={id:'clear',source:'first_method',months:144,acquired:192};s.life.cultivation.network.methods=[{...s.life.cultivation.network.method}];
+  s.pending={event,month:s.month};s.journey=null;return s;
+};
+/*
  * ⚠ **取样窗口 250 → 800**（2026-11-08 · 阶段一：出身真正驱动剧情）。
  * 身世卡改成按出身分池抽 ⇒ 固定种子的决策序列整体位移 ⇒ 有些卡在原来的 250 条里撞不上了。
  * 实测「家族基础抄本」那张卡（要 clan 出身 + 散修路 + 窗口未关）在第 508 条才第一次出现。
@@ -37,14 +51,27 @@ test('重心与路线查询只读；按实际月数练习，不能无限点击�
  const s=find('first_method',{path:'loose'});choose(s,'array');resolve(s);const before=cloneRun(s);for(let i=0;i<20;i++){activityOptions(s);routeOptions(s);}assert.deepEqual(s,before);const root=s.player.root,skill=s.player.skills.array;setActivity(s,'study');assert.equal(s.player.skills.array,skill);advance(s,6);assert.ok(s.player.skills.array>skill);assert.equal(s.player.root,root);validateRun(s);
 });
 test('药田事故有实际处分，造假之后不能直接参加专业活动',()=>{
- const s=find('garden_accident',{path:'orthodox'});choose(s,'frame');assert.equal(s.life.cultivation.punishmentUntil,s.month+12);assert.equal(s.life.cultivation.activity,'work');assert.equal(activityOptions(s).find(a=>a.id==='sword').enabled,false);assert.throws(()=>setActivity(s,'sword'));validateRun(s);
+  const s=pendingCard('garden_accident');choose(s,'frame');assert.equal(s.life.cultivation.punishmentUntil,s.month+12);assert.equal(s.life.cultivation.activity,'work');assert.equal(activityOptions(s).find(a=>a.id==='sword').enabled,false);assert.throws(()=>setActivity(s,'sword'));validateRun(s);
 });
 test('目击者如实作证不承担他人点火的赔偿或禁闭',()=>{
- const s=find('garden_accident',{path:'orthodox'}),month=s.month,stones=s.player.stones,activity=s.life.cultivation.activity;
- choose(s,'honest');assert.equal(s.month,month);assert.equal(s.player.stones,stones);assert.equal(s.life.cultivation.activity,activity);assert.equal(s.life.cultivation.punishmentUntil,0);assert.ok(activityOptions(s).some(a=>a.enabled));assert.ok(!s.flags.unpaidGarden);validateRun(s);
+  const s=pendingCard('garden_accident'),month=s.month,stones=s.player.stones,activity=s.life.cultivation.activity;
+  choose(s,'honest');assert.equal(s.month,month);assert.equal(s.player.stones,stones);assert.equal(s.life.cultivation.activity,activity);assert.equal(s.life.cultivation.punishmentUntil,0);assert.ok(activityOptions(s).some(a=>a.enabled));assert.ok(!s.flags.unpaidGarden);validateRun(s);
 });
 test('外出不弹宗门考核现场，截止后返回不能补领成绩与奖励',()=>{
- const s=find('selection_1',{path:'orthodox',activity:'work'},s=>s.month<26*12&&s.player.stones>=6);choose(s,'array');const deadline=s.life.cultivation.exam.deadline,origin=currentContinent(s),target=routeOptions(s).find(p=>p.enabled);travelTo(s,target.id);resolve(s);advance(s,deadline-s.month+1);assert.ok(s.month>deadline);assert.equal(s.pending,null);assert.ok(s.life.cultivation.exam.preparation<=24);const returnRoute=routeOptions(s).find(p=>p.id===origin);assert.ok(returnRoute.enabled);travelTo(s,origin);resolve(s);assert.equal(s.pending.event,'selection_1_result');assert.equal(options(s).find(o=>o.id==='fair').enabled,false);assert.throws(()=>choose(s,'fair'));choose(s,'withdraw');assert.equal(s.life.cultivation.exam,null);validateRun(s);
+ const s=find('selection_1',{path:'orthodox',activity:'work'},s=>s.month<26*12&&s.player.stones>=14);choose(s,'array');const deadline=s.life.cultivation.exam.deadline,origin=currentContinent(s),target=routeOptions(s).find(p=>p.enabled);travelTo(s,target.id);resolve(s);
+ /* ⚠ 故事重写 W1 后赶路途中有同门/章节卡待选 ⇒ 排空待选推进到截止之后，再断言「已过截止」。
+  *    排空时避开多年计划与花钱项：指导卡选「维持现状」（闭关 4 年会把回程拖没），小满卡选送行（免费）。 */
+ const drainPolicyOverride={r12_peer_xiaoman:'send'};
+ for(let i=0;i<80&&s.month<=deadline&&s.phase==='life';i++){
+  if(s.pending){
+   const ev=s.pending.event;
+   if(/^r12_direction_\d$/.test(ev)){choose(s,'continue');continue;}
+   if(drainPolicyOverride[ev]){choose(s,drainPolicyOverride[ev]);continue;}
+   choose(s,decide(s,{path:'orthodox',activity:'work'}).id);continue;
+  }
+  advance(s,1);
+ }
+ assert.ok(s.month>deadline);assert.equal(s.pending,null);assert.ok(s.life.cultivation.exam.preparation<=24);const returnRoute=routeOptions(s).find(p=>p.id===origin);assert.ok(returnRoute.enabled);travelTo(s,origin);resolve(s);assert.equal(s.pending.event,'selection_1_result');assert.equal(options(s).find(o=>o.id==='fair').enabled,false);assert.throws(()=>choose(s,'fair'));choose(s,'withdraw');assert.equal(s.life.cultivation.exam,null);validateRun(s);
 });
 test('突破需要实际闭关，独立记录在完成之月出现',()=>{
  /*

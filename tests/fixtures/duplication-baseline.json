@@ -1,0 +1,15 @@
+{
+  "generatedAt": "2026-11-08T23:20:36.540Z",
+  "tool": "audit-duplication",
+  "lives": 120,
+  "fragLength": 10,
+  "median": 1,
+  "mean": 1.5,
+  "history": [
+    {
+      "at": "2026-11-08T23:20:36.541Z",
+      "median": 1,
+      "note": "W0 基建：门禁首跑钉现状值（故事重写前）。让位机制已上线，实测应已略降"
+    }
+  ]
+}

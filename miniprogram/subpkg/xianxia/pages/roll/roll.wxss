@@ -12,3 +12,28 @@
   display: block;
   width: 100%;
 }
+
+/* 志向四选一（2026-11-08 · C2）——登记卡内的一行芯片选择。 */
+.goal-row {
+  margin-top: 16rpx;
+  padding-top: 16rpx;
+  border-top: 1rpx solid var(--line, rgba(0, 0, 0, 0.08));
+}
+.goal-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  margin-top: 10rpx;
+}
+.goal-chip {
+  padding: 8rpx 24rpx;
+  border-radius: 999rpx;
+  border: 1rpx solid var(--line, rgba(0, 0, 0, 0.12));
+  font-size: 24rpx;
+  color: var(--ink-2, inherit);
+}
+.goal-chip.on {
+  border-color: var(--accent, rgb(15, 110, 104));
+  color: var(--accent, rgb(15, 110, 104));
+  font-weight: 600;
+}

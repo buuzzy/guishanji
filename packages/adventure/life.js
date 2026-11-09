@@ -83,7 +83,11 @@ const MUNDANE_YEAR_SECONDS = 8;
 
 export function monthSeconds(state) {
   if(state.life?.cultivation){
-    if(state.life?.cultivation?.mundane?.started)return MUNDANE_YEAR_SECONDS/12;
+    /* 故事重写 W1 修正（2026-11-09）：凡人快速档只对**还没入门**的岁月生效——
+     *   迟入道的命（mundane.started 保持 true）一旦 admissionDone（入宗门、领差事），
+     *   就该按修士公式走（凡身 30 秒/年），否则整个宗门人生都以凡速播放
+     *   （实测：network_ward 一年 8 秒 ≠ 45 秒）。 */
+    if(state.life?.cultivation?.mundane?.started&&!state.life.cultivation.admissionDone)return MUNDANE_YEAR_SECONDS/12;
     return playbackSeconds(state);
   }
   if (age(state) < 16) return 1 / 12;

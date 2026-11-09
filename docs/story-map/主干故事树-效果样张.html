@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>归山记 · 主干故事树 · 效果样张（A/B/C 三段）</title>
+<style>
+  :root{
+    --bg:#f6f7f9; --panel:#ffffff; --ink:#1c2330; --sub:#5b6472; --line:#dde3ea;
+    --blue:#2f6fbf; --blue-soft:#e8f0fa; --blue-deep:#1c4e8e;
+    --gain:#1d7a46; --gain-bg:#e6f4ec; --lose:#b0432f; --lose-bg:#fbeae6;
+    --mark:#7a5aa8; --mark-bg:#f1ecf8; --realm:#8a5a16; --realm-bg:#fdf3e3;
+    --check:#33636f; --check-bg:#e8f1f3; --gate:#8a8f98; --gate-bg:#eef0f2;
+  }
+  *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 "PingFang SC","Microsoft YaHei",sans-serif}
+  header{position:sticky;top:0;z-index:5;background:var(--panel);border-bottom:1px solid var(--line);padding:13px 22px 9px}
+  h1{margin:0 0 5px;font-size:19px}
+  .sub{color:var(--sub);font-size:12.5px;margin-bottom:9px}
+  .filters{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+  .pill{border:1px solid var(--line);background:#fff;border-radius:999px;padding:3px 12px;font-size:13px;cursor:pointer}
+  .pill.on{background:var(--blue);border-color:var(--blue);color:#fff}
+  .sep{width:1px;height:18px;background:var(--line);margin:0 6px}
+  main{max-width:1000px;margin:0 auto;padding:16px 20px 80px}
+  .legend{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 14px;font-size:12px}
+  .b{display:inline-block;border-radius:5px;padding:1px 7px;margin:1px 3px 1px 0;font-size:11.5px;white-space:nowrap}
+  .b.gain{background:var(--gain-bg);color:var(--gain)} .b.lose{background:var(--lose-bg);color:var(--lose)}
+  .b.mark{background:var(--mark-bg);color:var(--mark)} .b.realm{background:var(--realm-bg);color:var(--realm)}
+  .b.check{background:var(--check-bg);color:var(--check)}
+  .tree{list-style:none;margin:0;padding:0}
+  .tree ul{list-style:none;margin:0;padding-left:26px;position:relative}
+  .tree ul::before{content:'';position:absolute;left:9px;top:0;bottom:0;border-left:1.5px solid var(--line)}
+  .tree li{position:relative;padding:3px 0}
+  .tree li::before{content:'';position:absolute;left:-17px;top:17px;width:17px;height:1.5px;background:var(--line)}
+  .nrow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:5px 10px;background:var(--panel);border:1px solid var(--line);border-radius:9px}
+  .nrow.leaf{background:transparent;border:1px dashed var(--line);border-radius:8px;padding:4px 10px}
+  .nrow.trunk{background:var(--blue-deep);border:none;color:#fff}
+  .nrow.trunk .title{font-size:15.5px;font-weight:bold}
+  .nrow.trunk .goal{width:100%;font-size:12.5px;color:#cfe0f4;font-weight:normal;padding-top:2px}
+  .code{font:12px/1 ui-monospace,Menlo,monospace;background:var(--blue-soft);color:var(--blue-deep);border-radius:5px;padding:3px 7px;white-space:nowrap}
+  .nrow.leaf .code{background:var(--gate-bg);color:var(--gate)}
+  .title{font-size:14px;cursor:pointer}
+  .kind{font-size:11px;border-radius:999px;padding:1px 8px;white-space:nowrap}
+  .when{color:var(--sub);font-size:12px;flex-basis:100%;padding-left:2px}
+  .toggle{cursor:pointer;user-select:none;color:var(--blue);font-size:12px;border:1px solid var(--blue-soft);border-radius:5px;padding:1px 7px;background:#fff}
+  .children{display:none}
+  .children.open{display:block}
+  .converge{margin:14px 0 14px 34px;color:var(--blue-deep);font-size:13.5px;display:flex;align-items:center;gap:10px}
+  .converge .dot{width:12px;height:12px;border-radius:50%;background:var(--blue);box-shadow:0 0 0 4px var(--blue-soft);flex:none}
+  .drawer{position:fixed;top:0;right:-520px;width:500px;max-width:94vw;height:100vh;background:var(--panel);border-left:1px solid var(--line);box-shadow:-8px 0 30px rgba(28,35,48,.12);transition:right .22s;z-index:20;display:flex;flex-direction:column}
+  .drawer.open{right:0}
+  .drawer .head{padding:16px 20px;border-bottom:1px solid var(--line)}
+  .drawer .head h3{margin:0 0 4px;font-size:17px}
+  .drawer .head .trg{color:var(--sub);font-size:13px}
+  .drawer .body{overflow-y:auto;padding:14px 20px 40px;flex:1}
+  .drawer .text{font-size:14px;margin:0 0 16px;padding:10px 12px;background:var(--blue-soft);border-radius:8px}
+  .choice{border:1px solid var(--line);border-radius:9px;padding:10px 13px;margin-bottom:12px}
+  .choice h4{margin:0 0 3px;font-size:14px}
+  .choice .hint{color:var(--sub);font-size:12.5px;margin-bottom:4px}
+  .choice .reply{font-size:12.5px;color:var(--ink);margin-bottom:4px}
+  .mask{position:fixed;inset:0;background:rgba(20,26,36,.25);z-index:15;display:none}
+  .mask.on{display:block}
+  .note{background:#fdf6e8;border:1px solid #ecd9a8;border-radius:10px;padding:10px 14px;margin:14px 0;font-size:13px;color:#6b5a2e}
+</style>
+</head>
+<body>
+<header>
+  <h1>归山记 · 主干故事树 · 效果样张</h1>
+  <div class="sub">这是你要的「单主干流式」效果样张：主干 = 章节，A.1/A.2 = 决策点，A.1.1/A.1.2 = 选项叶子，章末收束进下一章。只铺了 A / B / C 三段真实内容，够你判断这个形态行不行。点标题看全文，点「+」展开。</div>
+  <div class="filters">
+    <span class="pill on" onclick="alert('样张只有三段，过滤在正式版生效')">全路线</span>
+    <span class="sep"></span>
+    <span class="pill" onclick="alert('样张只有三段，过滤在正式版生效')">按章节过滤</span>
+  </div>
+</header>
+<main>
+  <div class="note">样张说明：数据是真实事件表里抄出来的正文与徽章，交互逻辑与正式版一致。你确认形态后，我再改生成器铺全量（49 卡 + 12 长线），到时候不改这份样张。</div>
+  <div class="legend">
+    <span class="b gain">获得</span><span class="b lose">失去 / 花费</span><span class="b mark">标记与伏笔</span>
+    <span class="b realm">境界相关</span><span class="b check">判定</span>
+    <b style="color:var(--sub);font-weight:normal;margin-left:10px">触发方式：</b>
+    <span class="b" style="background:var(--blue-soft);color:var(--blue-deep)">固定顺序</span>
+    <span class="b" style="background:#f1ecf8;color:#7a5aa8">窗口池选</span>
+    <span class="b" style="background:#fdf3e3;color:#8a5a16">进度阈值</span>
+    <span class="b" style="background:var(--gate-bg);color:var(--gate)">条件触发</span>
+  </div>
+  <ul class="tree" id="tree"></ul>
+</main>
+<div class="mask" id="mask"></div>
+<aside class="drawer" id="drawer"><div class="head" id="dHead"></div><div class="body" id="dBody"></div></aside>
+<script>
+/* 三段真实样张数据（正文与徽章取自引擎事件表） */
+const DATA=[
+ {code:'A',title:'序章 · 出身与童年（0–12 岁）',goal:'三个童年窗口依次到来；窗口内部按出身筛池、随机流抽一张。一生只有两三张童年卡——树里列的是全部候选。',children:[
+  {code:'A.1',title:'6–9 岁窗口 · 8 选 1',kind:'pool',when:'按出身筛出一池，随机流抽签定哪张、窗口内哪个月到',children:[
+   {code:'A.1.1',title:'「去村塾读书」（child_school 候选 · 寻常人家）',kind:'choice',hint:'每天须帮先生扫院、抄书，家里的活由其他人多承担。',reply:'你每天先扫净学堂，再坐到最后一排。先生教你认契书上的字，也记住了你的名字。',badges:[{t:'gain',s:'悟性 +4'},{t:'mark',s:'印记：letters（识字由头）'}]},
+   {code:'A.1.2',title:'「留下跟药师学辨药」（child_apothecary 候选 · 平民人家）',kind:'choice',hint:'家人同意后住在铺里，从认叶、洗药与包扎学起。',reply:'余衡让你先记住叶背的绒毛，每次配药都再核对一遍。',badges:[{t:'gain',s:'丹术 +3'},{t:'mark',s:'印记：herbs（余衡回响线）'}]},
+   {code:'A.1.3',title:'「族学分下第一批练习护符」（child_clan 候选 · 世家专属）',kind:'choice',hint:'护符不够每人一枚，堂兄提出与你共用。',reply:'你们在院中轮流调息，堂兄替你守住不被打断的半个时辰。',badges:[{t:'gain',s:'同理心 +3'},{t:'mark',s:'印记：clan_ally（堂兄线）'}]},
+  ]},
+  {code:'A.2',title:'旧屋梁上落下一只铜匣',kind:'milestone',when:'10–12 岁 · 人人有这一张（铜匣线的钩子）',children:[
+   {code:'A.2.1',title:'「留下口诀，请识字的人解释」',kind:'choice',hint:'先辨来历，不照着陌生口诀运气。',reply:'先生只认出几个吐纳用字，劝你收好等真正的修士辨认。铜匣留在家中，你记住图上的渡口。',badges:[{t:'mark',s:'印记：old_page（铜匣回响线）'}]},
+   {code:'A.2.2',title:'「交给家人换粮」',kind:'choice',hint:'眼前能改善家中生计，旧页会随货商离开。',reply:'家人换回两袋粮，货商拿走铜匣。后来你只记得纸上的一处火候图。',badges:[{t:'gain',s:'同理心 +2'}]},
+   {code:'A.2.3',title:'「请修器匠记下宗门印记」',kind:'choice',hint:'让匠人拓印，不把铜匣交给陌生货商。',reply:'匠人留下拓印，告诉你若要追查，先找旧渡口的船户。',badges:[{t:'gain',s:'悟性 +2'},{t:'mark',s:'印记：relic_route（铜匣回响线）'}]},
+  ]},
+ ]},
+ {code:'B',title:'少年 · 上山由头（13–15 岁）',goal:'最后一个童年窗口：要有「读过书 / 学过药」这类由头才进池；没有由头 ⇒ 这几年没人来找你，格子留空。',children:[
+  {code:'B.1',title:'13–15 岁窗口 · 4 选 1（有由头才进池）',kind:'pool',when:'宗门来招 / 授业者要走 / 族里举荐 / 郡中名帖——池随出身与由头收窄',children:[
+   {code:'B.1.1',title:'「问清测灵与上山需要什么」（child_recruit · 接引弟子在镇口停了三天）',kind:'choice',hint:'留下故乡地址，准备识字与基础步法。',reply:'陆行舟给你招募日期，告诉你带干粮、身份证明和一身能走山路的衣服。他记下了这个问得仔细的孩子。',badges:[{t:'gain',s:'悟性 +2'},{t:'mark',s:'印记：recruit_contact（萧战/陆行舟 16 岁还记得你）'}]},
+   {code:'B.1.2',title:'「留下基础笔记，继续练习」（child_teacher · 授业者要走）',kind:'choice',hint:'保留完整的入门口诀，不自行补写缺失章节。',reply:'授业者逐句核过笔记，圈出不能急练的部分。你留下册子，约定日后通过商队问他的去处。',badges:[{t:'gain',s:'悟性 +3'},{t:'mark',s:'印记：teacher_notes'}]},
+  ]},
+  {code:'B.2',title:'（这一格留空的情形）',kind:'conditional',when:'收养 / 渡口 / 商户等出身没有由头 ⇒ 这几年没人来找你——正式版会给每种出身补一张收尾卡（W2a）',children:[]},
+ ]},
+ {code:'C',title:'入门串 · 一次定终身（16–18 岁）',goal:'真·固定顺序：上一张答完隔固定月数发下一张，测灵只在这条链上讲一次。',children:[
+  {code:'C.1',title:'山门外的队伍',kind:'sequence',when:'16 岁 · 入门串第一步',children:[
+   {code:'C.1.1',title:'「排队接受测灵根」',kind:'choice',hint:'测灵石上会留下记录。',reply:'队伍里你记住了三个人：中段那个先问执事「测完之后呢」的少年，替人扛行李的宽背少年，还有队尾等驴的姑娘。',badges:[{t:'mark',s:'伏笔：岑野 / 石瓮 / 小满 三人登场'}]},
+  ]},
+  {code:'C.2',title:'测灵石上的记录',kind:'sequence',when:'C.1 答完 +12 个月 · 测灵判决',children:[
+   {code:'C.2.1',title:'「接受宗门的安排」',kind:'choice',hint:'按测灵记录和考核分配身份。',reply:'许执事核过测灵记录，发给你外门弟子的身份与住处。',badges:[{t:'realm',s:'入门 · 路线定为主干'}]},
+   {code:'C.2.2',title:'「听取幽灯堂招收弟子的条件」',kind:'choice',hint:'顾魇能教测灵石不收的禁术，但要先见堂规；现在还没有拜师。',reply:'顾魇带你到药铺，拿出试读卷与堂规，让你先问清条件。',badges:[{t:'path',s:'转向「魔修（幽灯堂）」'},{t:'mark',s:'印记：darkFragment'}]},
+   {code:'C.2.3',title:'「回家，再想别的出路」',kind:'choice',hint:'家人还在故乡等你消息。',reply:'你把这次报名的经历告诉家人，暂时留在故乡。',badges:[{t:'path',s:'转向「凡俗」'}]},
+  ]},
+  {code:'C.3',title:'分到哪一处的差事',kind:'sequence',when:'C.2 答完 +2 个月',children:[
+   {code:'C.3.1',title:'「先接下手上的活」',kind:'choice',hint:'从最笨的活学起。',reply:'你领了差事，从最笨的活学起。',badges:[]},
+  ]},
+  {code:'C.4',title:'授业者给你定下第一门心法',kind:'sequence',when:'其后',children:[
+   {code:'C.4.1',title:'「照着教，先把第一段练熟」',kind:'choice',hint:'先练吐纳与护身，其余的等授业再说。',reply:'你把心法的第一段抄进册子，从吐纳开始练。',badges:[]},
+  ]},
+  {code:'C.5',title:'第一次授业',kind:'sequence',when:'其后 · 重心在此定下',children:[
+   {code:'C.5.1',title:'「先学剑术」',kind:'choice',hint:'教习先让你握木剑，练站姿和收势。',reply:'你每天到院中练基本身法，心法须另向授业者学。',badges:[]},
+  ]},
+ ]},
+];
+function kindSpan(kind){
+  const st={sequence:['var(--blue-soft)','var(--blue-deep)','固定顺序'],pool:['#f1ecf8','#7a5aa8','窗口池选'],milestone:['#e6f4ec','#1d7a46','里程碑自动发'],conditional:['var(--gate-bg)','var(--gate)','条件触发'],choice:null}[kind];
+  if(!st)return null;
+  const s=document.createElement('span');s.className='kind';s.style.background=st[0];s.style.color=st[1];s.textContent=st[2];return s;
+}
+function badgeBar(list){const w=document.createElement('span');w.style.display='inline';for(const x of list){const s=document.createElement('span');s.className='b '+x.t;s.textContent=x.s;w.appendChild(s);}return w;}
+function leaf(nd){
+  const li=document.createElement('li');
+  const row=document.createElement('div');row.className='nrow leaf';
+  const code=document.createElement('span');code.className='code';code.textContent=nd.code;row.appendChild(code);
+  const title=document.createElement('span');title.className='title';title.textContent=nd.title;row.appendChild(title);
+  if(nd.hint){const h=document.createElement('span');h.style.cssText='color:var(--sub);font-size:12px';h.textContent=nd.hint;row.appendChild(h);}
+  if(nd.badges&&nd.badges.length)row.appendChild(badgeBar(nd.badges));
+  li.appendChild(row);return li;
+}
+function node(nd){
+  const li=document.createElement('li');
+  const row=document.createElement('div');row.className='nrow';
+  const code=document.createElement('span');code.className='code';code.textContent=nd.code;row.appendChild(code);
+  const title=document.createElement('span');title.className='title';title.textContent=nd.title;
+  title.onclick=()=>openDrawer(nd);row.appendChild(title);
+  const ks=kindSpan(nd.kind);if(ks)row.appendChild(ks);
+  const kids=nd.children||[];
+  if(kids.length){const t=document.createElement('span');t.className='toggle';t.textContent='+';t.onclick=e=>{e.stopPropagation();const c=li.querySelector(':scope > .children');c.classList.toggle('open');t.textContent=c.classList.contains('open')?'−':'+';};row.appendChild(t);}
+  if(nd.when){const w=document.createElement('div');w.className='when';w.textContent=nd.when;row.appendChild(w);}
+  li.appendChild(row);
+  const wrap=document.createElement('div');wrap.className='children';
+  for(const c of kids)wrap.appendChild(c.kind==='choice'?leaf(c):node(c));
+  li.appendChild(wrap);
+  return li;
+}
+const rootTree=document.getElementById('tree');
+DATA.forEach((ch,i)=>{
+  const li=document.createElement('li');
+  const row=document.createElement('div');row.className='nrow trunk';
+  const code=document.createElement('span');code.className='code';code.style.cssText='background:rgba(255,255,255,.2);color:#fff';code.textContent=ch.code;row.appendChild(code);
+  const title=document.createElement('span');title.className='title';title.textContent=ch.title;row.appendChild(title);
+  const kids=document.createElement('div');kids.className='children open';
+  for(const c of ch.children)kids.appendChild(node(c));
+  row.appendChild(kids);row.appendChild(document.createElement('div'));
+  const goal=document.createElement('div');goal.className='goal';goal.textContent=ch.goal;row.appendChild(goal);
+  li.appendChild(row);li.appendChild(kids);
+  rootTree.appendChild(li);
+  if(i<DATA.length-1){
+    const cv=document.createElement('li');
+    cv.innerHTML='<div class="converge"><span class="dot"></span>收束 —— 全部支线汇入 <b>'+DATA[i+1].code+' · '+DATA[i+1].title.split(' ·')[0]+'</b></div>';
+    rootTree.appendChild(cv);
+  }
+});
+function openDrawer(nd){
+  document.getElementById('dHead').innerHTML='<h3>'+nd.title+'</h3><div class="trg">'+(nd.when||'')+'</div>';
+  const b=document.getElementById('dBody');
+  let h='<div class="text">'+(nd.text||nd.reply||'（样张未带全文）')+'</div>';
+  const choices=nd.children&&nd.children[0]&&nd.children[0].kind==='choice'?nd.children:[];
+  for(const c of choices){
+    const d=document.createElement('div');d.className='choice';
+    let x='<h4>'+c.title+'</h4>';
+    if(c.hint)x+='<div class="hint">'+c.hint+'</div>';
+    if(c.reply)x+='<div class="reply">'+c.reply+'</div>';
+    if(c.badges)x+='<div class="badgebar">'+c.badges.map(y=>'<span class="b '+y.t+'">'+y.s+'</span>').join('')+'</div>';
+    d.innerHTML=x;h+=d.outerHTML;
+  }
+  b.innerHTML=h;
+}
+document.getElementById('mask').onclick=()=>{document.getElementById('drawer').classList.remove('open');document.getElementById('mask').classList.remove('on');};
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){document.getElementById('drawer').classList.remove('open');document.getElementById('mask').classList.remove('on');}});
+</script>
+</body>
+</html>

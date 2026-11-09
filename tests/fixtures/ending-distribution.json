@@ -1,0 +1,103 @@
+{
+  "createdAt": "2026-11-08T15:35:51.813Z",
+  "count": 400,
+  "oldAgeShare": 2.8,
+  "endings": {
+    "guardian": 84,
+    "loose_home": 106,
+    "wild_king": 8,
+    "mundane_family": 41,
+    "battle_lost": 58,
+    "childhood_illness": 6,
+    "dao": 32,
+    "mundane_settled": 9,
+    "old_age": 11,
+    "mortal_home": 40,
+    "demon_oath": 5
+  },
+  "byGoal": {
+    "free": {
+      "guardian": 17,
+      "loose_home": 24,
+      "wild_king": 3,
+      "mundane_family": 16,
+      "old_age": 2,
+      "battle_lost": 16,
+      "mortal_home": 11,
+      "dao": 4,
+      "demon_oath": 3,
+      "mundane_settled": 2,
+      "childhood_illness": 2
+    },
+    "dao": {
+      "guardian": 21,
+      "loose_home": 22,
+      "battle_lost": 12,
+      "dao": 12,
+      "mundane_settled": 2,
+      "wild_king": 5,
+      "mortal_home": 16,
+      "mundane_family": 5,
+      "demon_oath": 2,
+      "childhood_illness": 2,
+      "old_age": 1
+    },
+    "protect": {
+      "battle_lost": 14,
+      "mundane_family": 9,
+      "childhood_illness": 1,
+      "guardian": 46,
+      "dao": 8,
+      "mortal_home": 13,
+      "mundane_settled": 3,
+      "old_age": 6
+    },
+    "wander": {
+      "dao": 8,
+      "loose_home": 60,
+      "mundane_family": 11,
+      "battle_lost": 16,
+      "mundane_settled": 2,
+      "old_age": 2,
+      "childhood_illness": 1
+    }
+  },
+  "history": [
+    {
+      "at": "2026-11-08T15:35:51.813Z",
+      "reason": "考核年龄修正后复核（志向轮换口径）",
+      "from": {
+        "oldAgeShare": 2.3,
+        "endings": {
+          "guardian": 75,
+          "loose_home": 91,
+          "wild_king": 14,
+          "mundane_family": 41,
+          "battle_lost": 60,
+          "childhood_illness": 6,
+          "dao": 30,
+          "mortal_home": 54,
+          "mundane_settled": 9,
+          "old_age": 9,
+          "demon_oath": 11
+        }
+      },
+      "to": {
+        "oldAgeShare": 2.8,
+        "endings": {
+          "guardian": 84,
+          "loose_home": 106,
+          "wild_king": 8,
+          "mundane_family": 41,
+          "battle_lost": 58,
+          "childhood_illness": 6,
+          "dao": 32,
+          "mundane_settled": 9,
+          "old_age": 11,
+          "mortal_home": 40,
+          "demon_oath": 5
+        }
+      }
+    }
+  ]
+}

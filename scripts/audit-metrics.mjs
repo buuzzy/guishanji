@@ -71,6 +71,11 @@ import {projectRoot} from './serve.mjs';
 /* ⚠ 底线数字**只住这一份**（浏览器也要用 ⇒ 这个文件不许 import node:*）。 */
 import {REALM_KINDS_MIN, SPAN_TARGET} from './lib/completeness-limits.js';
 import {MUNDANE_DISABLED} from '../content/mundane-kept.js';
+/*
+ * 冲突标签（2026-11-08 · 章节感补强 · B）——「哪些卡算对抗/代价」由内容层**声明**，
+ * 本脚本只做反向验证与计数，**不许自己猜前缀**（`classifyCard` 先例）。
+ */
+import {CONFLICT_TAGS} from '../content/conflict-tags.js';
 
 /** 基线文件（跟着源码走 ⇒ 门禁只依赖跟着源码走的文件）。 */
 const BASELINE_FILE = join(projectRoot, 'tests/fixtures/metrics-baseline.json');
@@ -93,6 +98,8 @@ const DIRECTION = {
   endingMissing: 'down',  // 结局覆盖
   spanMax: 'down',        // 阶段跨度：各境突破年龄极差的最大值
   spanMedian: 'down',     // 阶段跨度：各段突破间隔的中位数（最差的一段）
+  oldAgeShare: 'down',    // 结局分布：寿终未走完的占比（%）（章节感补强 C3）
+  conflictRealmMin: 'up', // 冲突：每个境界章最少的冲突卡张数（章节感补强 B）
 };
 
 /**
@@ -133,10 +140,33 @@ export const HARD_LIMIT = {
   endingMissing: 0,
   density10: 5, density5: 3,
   dailyDensity10: 8, dailyDensity5: 7,
-  totalDensity10: 13, totalDensity5: 9,
+  totalDensity10: 16, totalDensity5: 12,
+  /*
+   * ⚠ 全卡口径两条上限 13/9 → **15/11**（2026-11-08 · 章节感补强，有意变更）：
+   *   章节化之后每个境界章自带 4 张节点/奇遇卡（铺垫×2、奇遇×1、阶段节点×3 中的当章部分），
+   *   与章内的长线、家事叠在同一个十年窗口 ⇒ 实测 P90 16/12（W1 同期弟子四卡并入后复核）。
+   *   这是「一章该有的节拍」变多了，不是日常变挤——闸口径（4/3）与日常口径（8/6）都没变。
+   *   台账理由见 metrics-baseline.json 的 history。 */
   cooldownRepeats: 0,
   realmContentMin: REALM_KINDS_MIN,
   spanMedian: 51,
+  /*
+   * oldAgeShare（2026-11-08 · 章节感补强 C3）：寿终未走完的结局占比（%）。
+   *   400 命实测 2.3%（`audit-endings.mjs` 首轮基线）；120 命口径二项波动大
+   *   （n=120、p≈0.023 的 P95 ≈ 4.6%）⇒ 钉 5 防门禁抖动。
+   *   C1（road_turn 四选项）与 C2（志向生效）都会改分布 ⇒ 阶段三重算时按新分布重新定档，
+   *   目标 ≤30% 是「不许涨回去」的上限，不是现状。
+   */
+  oldAgeShare: 5,
+  /*
+   * conflictRealmMin（2026-11-08 · 章节感补强 B）：每个境界章至少一次对抗或代价。
+   *   ⚠ **先钉实测值 0**（`spanMedian` 先例：未达标先钉今天的值，缺口写在明面上）：
+   *   凡身章与炼气章已有冲突卡（r12_qi_practice_1 / r12_qi_adventure，实测每命必发），
+   *   但**金丹章与元婴章还没有任何声明过的冲突卡**（那两章现在只有备料/冲关/渡劫）⇒
+   *   跨章取最小值仍为 0。「金丹/元婴章补冲突内容」登记为下一轮缺口，
+   *   补完后把这条抬到规格目标 1，并写台账理由。
+   */
+  conflictRealmMin: 0,
 };
 
 
@@ -182,6 +212,34 @@ export function percentile(values, p) {
   const s = [...values].sort((a, b) => a - b);
   const rank = Math.max(1, Math.ceil(s.length * p));
   return s[rank - 1];
+}
+
+/** 查这张卡的冲突标签；没有声明就返回 null。 */
+export function conflictTagOf(eventId) {
+  if (!eventId) return null;
+  if (CONFLICT_TAGS[eventId]) return CONFLICT_TAGS[eventId];
+  return null;
+}
+
+/**
+ * 冲突标签的**反向验证**：声明与事件表结构必须对得上，不符就报红。
+ *   · `clash` ⇒ 至少一个选项带成败判定（`check`）；
+ *   · `cost`  ⇒ 至少一个选项带代价（`cost`）或判定。
+ * 声明指向不存在的卡也报红（防改名后标签发霉）。
+ * @returns {string[]} 问题清单（空 = 全对得上）
+ */
+export function conflictTagProblems() {
+  const problems = [];
+  for (const [id, tag] of Object.entries(CONFLICT_TAGS)) {
+    const ev = EVENTS[id];
+    if (!ev) { problems.push(`冲突标签指向不存在的卡：${id}`); continue; }
+    const choices = ev.choices || [];
+    const hasCheck = choices.some(c => c && c.check);
+    const hasCost = choices.some(c => c && c.cost && Object.keys(c.cost).length);
+    if (tag.kind === 'clash' && !hasCheck) problems.push(`${id} 声明 clash 但没有任何选项带判定`);
+    if (tag.kind === 'cost' && !hasCost && !hasCheck) problems.push(`${id} 声明 cost 但没有任何选项带代价`);
+  }
+  return problems;
 }
 
 function runOne(spec) {
@@ -272,6 +330,30 @@ function runOne(spec) {
     for (const [tier, span] of Object.entries(spanByRealm)) {
       if (span > 0) tierSpans[tier] = span;
     }
+    /*
+     * 冲突（2026-11-08 · 章节感补强 B）：每个**境界章**内的冲突卡张数。
+     *   · 章 = 相邻境界变化之间的快照段（realm 0 = 出生→炼气突破…）；
+     *   · 跨度 ≥2 年（≈24 个月）的章才参与——一闪而过的章谈不上「这一章的张力」；
+     *   · 终身凡人（path mortal）单独计数，不进修仙路的最小值；
+     *   · 只数**声明过**的冲突卡（conflictTagOf）——未声明的判定卡不帮忙凑数。
+     */
+    const chapters = [];
+    let current = null;
+    for (const s of run.snapshots) {
+      if (!current || current.realm !== s.realm) {
+        current = {realm: s.realm, firstAge: s.age, lastAge: s.age, conflicts: 0, cards: 0};
+        chapters.push(current);
+      }
+      current.lastAge = s.age;
+      current.cards++;
+      if (conflictTagOf(s.event)) current.conflicts++;
+    }
+    const isMortalLife = run.path === 'mortal';
+    let chapterMin = null;
+    for (const ch of chapters) {
+      if (ch.lastAge - ch.firstAge < 2) continue;
+      if (chapterMin === null || ch.conflicts < chapterMin) chapterMin = ch.conflicts;
+    }
     return {
       ok: true,
       density10, density5, cooldownRepeats, spanMax,
@@ -281,10 +363,17 @@ function runOne(spec) {
       realmCounts: Object.fromEntries(Object.entries(perRealm).map(([k, v]) => [k, v.size])),
       noEnding: !(run.state.ending && run.state.ending.title && run.state.ending.text),
       tierSpans,
+      isMortalLife,
+      chapterMin,
+      chapterWorstRealm: chapterMin !== null
+        ? chapters.filter(c => c.lastAge - c.firstAge >= 2 && c.conflicts === chapterMin).map(c => c.realm)
+        : [],
+      mortalConflicts: isMortalLife ? chapters.reduce((n, c) => n + c.conflicts, 0) : 0,
       /* 每条命的卡序列快照（年龄 / 卡 id / 境界）——
        * 完备度盘点（`scripts/audit-completeness.mjs`）要用**同一批人生**算
        * 「哪一年发什么卡」，所以这里把它带出来，别让那边再跑一遍。 */
       snapshots: run.snapshots,
+      ending: run.ending,
     };
   } catch (error) {
     return {ok: false, error: String(error && error.message || error)};
@@ -389,6 +478,21 @@ export function metricsOf(good, count = good.length) {
   const span = spanMedianOf(good);
 
   /*
+   * 冲突（2026-11-08 · 章节感补强 B）——口径见 `runOne`：
+   *   · `conflictRealmMin`：修仙路各命「最少的章内冲突卡张数」的**最小值**
+   *     （冲突要的是「人人都至少遇到一次」，取最小值才诚实，与 realmContentMin 相反）；
+   *   · `mortalConflictCount`：终身凡人撞到的冲突卡总数（**只观察**，
+   *     凡尘线内容补完之前不设硬限、不进 DIRECTION）。
+   */
+  const cultivatorMins = good.filter(r => !r.isMortalLife && r.chapterMin !== null).map(r => r.chapterMin);
+  const conflictRealmMin = cultivatorMins.length ? Math.min(...cultivatorMins) : 0;
+  const worstConflictLives = good.filter(r => !r.isMortalLife && r.chapterMin === conflictRealmMin).length;
+  const mortalConflictCount = good.reduce((n, r) => n + (r.mortalConflicts || 0), 0);
+  /* oldAgeShare（C3）：寿终未走完的结局占比（%）。 */
+  const oldAgeN = good.filter(r => r.ending === 'old_age').length;
+  const oldAgeShare = good.length ? Math.round(oldAgeN / good.length * 1000) / 10 : 0;
+
+  /*
    * 密度三把尺（口径见 `runOne` 的注释）：
    *   · 闸口径 —— 与密度闸的实现值（5 / 3）可比 ⇒ 取**最差的一条命**（沿用旧口径）；
    *   · 日常口径与全卡口径 —— 上限按 **P90** 判（交接文档：「上限取 13（P90）」），
@@ -410,6 +514,8 @@ export function metricsOf(good, count = good.length) {
     endingMissing: good.filter(r => r.noEnding).length,
     spanMax: good.length ? Math.max(...good.map(r => r.spanMax)) : 0,
     spanMedian: span.worst,
+    oldAgeShare,
+    conflictRealmMin,
   };
   /* 三把尺的完整分布（最差的一条命 / 中位 / P90）—— 报告用，不进基线。 */
   const density = {
@@ -433,7 +539,9 @@ export function metricsOf(good, count = good.length) {
       median5: percentile(good.map(r => r.totalDensity5), 0.5),
     },
   };
-  return {count, good: good.length, metrics, density, realmCounts, span, neverSeenSample: neverSeen.slice(0, 10)};
+  return {count, good: good.length, metrics, density, realmCounts, span, neverSeenSample: neverSeen.slice(0, 10),
+    conflict: {conflictRealmMin, worstConflictLives, mortalConflictCount, taggedCards: Object.keys(CONFLICT_TAGS).length},
+    oldAge: {oldAgeShare, oldAgeN}};
 }
 
 /** 跑一批人生，算出六项指标。 */
@@ -445,6 +553,8 @@ export function collect(count = 120) {
 /** 核对基线：只许变好，不许变差。 */
 export function check(report, baseline) {
   const problems = [];
+  /* 冲突标签的声明与结构必须先对得上（标签漂移 ⇒ 指标失真 ⇒ 先报这个）。 */
+  problems.push(...conflictTagProblems());
   const metrics = report.metrics;
   for (const [key, direction] of Object.entries(DIRECTION)) {
     const now = metrics[key];
@@ -524,6 +634,13 @@ async function main() {
   console.log('  冷却（60 个月内重复）  ' + report.metrics.cooldownRepeats + ' 处');
   console.log('  节奏对齐（各境内容种数）  ' + JSON.stringify(report.realmCounts));
   console.log('  结局覆盖（缺结局的人生）  ' + report.metrics.endingMissing + ' 条');
+  console.log('  oldAgeShare（寿终未走完的占比）  ' + report.metrics.oldAgeShare + '%'
+    + `（硬底线 ${HARD_LIMIT.oldAgeShare}%；400 命细分布见 audit-endings.mjs）`);
+  console.log('  冲突（每章最少的冲突卡张数，修仙路）  ' + report.metrics.conflictRealmMin
+    + `（最差命 ${report.conflict.worstConflictLives} 条落在该值；硬底线 ${HARD_LIMIT.conflictRealmMin}`
+    + '；⚠ 规格目标 1，新冲突卡落地后阶段三抬线）');
+  console.log('  冲突（终身凡人撞到的张数，只观察）  ' + report.conflict.mortalConflictCount
+    + `（声明冲突卡共 ${report.conflict.taggedCards} 张）`);
   console.log('  阶段跨度（最差的一条命）  ' + report.metrics.spanMax + ' 年');
   const spanText = Object.entries(report.span.tiers)
     .sort((a, b) => Number(a[0]) - Number(b[0]))

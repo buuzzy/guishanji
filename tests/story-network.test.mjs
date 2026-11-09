@@ -78,13 +78,22 @@ test('凡人家庭没有索取修炼资源的选项，作证也不会被挂赔�
  /* 规则十二里「请族中誊抄家传基础笔记」对**非修仙世家**是 `visible:false`
   * （`content/story-rules12.js`）⇒ 凡人家里**根本看不到**这个选项，
   * 比「看得到但选不了」更严一档，断言照此写。 */
- const s=find('family_support',s=>s.birth.family==='common');
+ /* ⚠ 章节感补强后这两张日常池卡在自然命里撞不到窗口（触达台账「闭关化吞掉的日常窗口」族）
+  *    ⇒ 测试量的是**选项可见性与后果**，直接把卡摆上待选，不再依赖自然到达。 */
+ const mk=(event,over={})=>{const s=createRun({seed:'network-case-'+event});s.month=38*12;s.player.practice=s.month;s.player.root='松骨灵根';s.player.realm=1;s.player.stones=30;
+  Object.assign(s.life.cultivation,{rootKnown:true,path:'orthodox',admissionDone:true,entered:192,worldDone:true,queue:[],activeChain:null,context:null,punishmentUntil:0,familyPolicy:'keep',mail:null});
+  s.life.cultivation.story10.rootStatus='present';s.life.cultivation.story10.body='human';
+  s.life.cultivation.network.method={id:'clear',source:'first_method',months:144,acquired:192};s.life.cultivation.network.methods=[{...s.life.cultivation.network.method}];
+  s.birth.family='common';s.life.family.members.forEach(m=>{m.status='alive';});
+  Object.assign(s,over);
+  s.pending={event,month:s.month};s.journey=null;return s;};
+ const s=mk('family_support');
  assert.equal(options(s).some(o=>o.id==='supplies'),false);
  assert.equal(options(s).some(o=>o.id==='notes'),false,'凡人家里没有可讨要的家族传承');
  /* 规则十二把这段正文改成「家里没有能助你修炼的丹药」⇒ 正则按新措辞写，
   * 但断言的**性质**不变：凡人家里供不出修炼资源。 */
  assert.match(nodeText(currentNode(s),s),/没有能助你修炼|没有供修炼|没有.*灵石|旧衣/);
- const garden=find('garden_accident');choose(garden,'silent');assert.equal(garden.flags.unpaidGarden,undefined);assert.equal(garden.life.cultivation.wanted,0);validateRun(garden);
+ const garden=mk('garden_accident');choose(garden,'silent');assert.equal(garden.flags.unpaidGarden,undefined);assert.equal(garden.life.cultivation.wanted,0);validateRun(garden);
 });
 test('不同人生的童年与邀请组合不同',()=>{
  const patterns=new Set();for(let i=0;i<80;i++){const s=playCultivation({seed:'万千道途-'+i,path:['orthodox','loose','demonic','beast'][i%4],method:i%3===0?'ember':'clear',childhood:i%2?'bold':'care'}).state;patterns.add(s.decisions.filter(d=>d.event.startsWith('child_')||d.event.startsWith('network_')||d.event.startsWith('echo_')).map(d=>d.event+'/'+d.choice).join('|'));validateRun(s);}assert.ok(patterns.size>30);

@@ -99,7 +99,11 @@ function log(state, entry) {
 
 export function createRun({ seed = '松风有信', id = 'life-' + hashText(seed).toString(36), name, origin, sex, goal = 'free', classic = false, rulesVersion = 12 } = {}) {
   if (typeof seed !== 'string' || !seed.trim() || seed.length > 80) throw new Error('机缘种子需要一至八十个字。');
-  const config = birthConfiguration(seed.trim(), { name, origin, sex, goal:classic?goal:'free',classic });
+  /* 志向透传（2026-11-08 · 章节感补强 C2）：以前非经典档一律强制 'free'，
+   * 志向成了只进存档的标签。现在透传给出生配置——
+   * ⚠ 不传 goal 的调用方（全部审计与门禁）拿默认 'free' ⇒ 行为与基线不变；
+   *   传了 goal 的命才走志向的结局资格（cultivation.js 的收官映射与终章问道资格）。 */
+  const config = birthConfiguration(seed.trim(), { name, origin, sex, goal,classic });
   name = config.name; origin = config.origin; sex = config.sex;
   if (typeof name !== 'string' || !name.trim() || [...name.trim()].length > 12) throw new Error('名字需要一至十二个字。');
   if (!Object.hasOwn(ORIGINS, origin) || !['F', 'M'].includes(sex)) throw new Error('出身或外观无效。');
@@ -320,6 +324,26 @@ function applyEffects(state, input) {
     /* 换境界 ⇒ 寿元变了 ⇒ 登记卡上写的岁数也得跟着变。 */
     if(actual){state.life.cultivation.lifespanLimit=lifespan12(state);}
     if(state.life) { state.life.lastBreakthrough=state.month; log(state,breakthroughRecord(from,effect.realm,state.month,state.life.cultivation?.rulesVersion,actual?{from:oldLimit,to:lifespan12(state)}:null)); }
+    /*
+     * ⚠ **突破清算上一章**（2026-11-08 · 章节感补强 A4）——「境界划分章节，突破结算过去」。
+     *
+     * `stageRealm: n` 的道具属于第 n 境的章；突破进入第 n+1 及更高的境界 ⇒ 本章收束，旧物清点。
+     * 时序安全性：
+     *   · 冲关用的主药/辅药在 `cost.items` 里**先扣**（choose 的判定之前）⇒ 这里清的是残留；
+     *   · 重试冲关期间仍在本章（effect.realm ≤ stageRealm）⇒ 绝不误删重试要用的材料；
+     *   · 只清修仙线（凡俗线没有境界章的概念）。
+     * 旁白走 `log()` 唯一入口、`automatic:true` ⇒ 受 60 个月冷却闸管，**零随机调用**。
+     */
+    if (state.life?.cultivation) {
+      const cleared = state.inventory.filter(id => ITEMS[id] && ITEMS[id].stageRealm !== undefined && effect.realm > ITEMS[id].stageRealm);
+      if (cleared.length) {
+        state.inventory = state.inventory.filter(id => !cleared.includes(id));
+        for (const id of cleared) changes.push('失去' + ITEMS[id].name);
+        log(state, {kind:'life', automatic:true, context:'breakthrough', location:state.player.location,
+          title:'旧物清点',
+          body:'境界更移，你把行囊摊开重新收拾。' + cleared.map(id => ITEMS[id].name).join('、') + (cleared.length > 1 ? '这些东西随着旧日的修行一并收起——这一章的路已经走完，往后的路上用不上它们了。' : '这样东西随着旧日的修行一并收起——这一章的路已经走完，往后的路上用不上它了。')});
+      }
+    }
   }
   if (effect.location) state.player.location = effect.location;
   if (effect.home) state.player.home = effect.home;

@@ -76,7 +76,8 @@ function newLife(opts) {
   opts = opts || {};
   var seed = opts.seed || newSeed();
   var id = opts.id || newId();
-  run = engine.createRun({seed: seed, id: id});
+  /* 志向（2026-11-08 · C2）：建号时可选 free/dao/protect/wander，缺省 'free'。 */
+  run = engine.createRun({seed: seed, id: id, goal: opts.goal || 'free'});
   notify('new');
   return run;
 }

@@ -10,8 +10,14 @@ import {writeFile,mkdir} from 'node:fs/promises';
  */
 import {decide} from './lib/decide-policy.js';
 export {decide};
-export function playCultivation({seed='新版人生',rulesVersion=12,...policy}={}){
- const state=createRun({seed,rulesVersion}),events=[],snapshots=[],seconds={automatic:0,reading:0};
+export function playCultivation({seed='新版人生',rulesVersion=12,goal,...policy}={}){
+ /*
+  * 志向透传（2026-11-08 · 章节感补强）——
+  *   以前 createRun 收了 goal 也在非经典档强制 'free'（engine.js），所以传不传没差别；
+  *   志向生效（C2）之后，审计需要按命轮换志向来量「四个志向对结局分布的影响」。
+  *   ⚠ 不传 goal ⇒ createRun 默认 'free' ⇒ 现有全部调用方（各审计、门禁）行为不变。
+  */
+ const state=createRun({seed,rulesVersion,goal}),events=[],snapshots=[],seconds={automatic:0,reading:0};
  for(let step=0;step<160&&state.phase==='life';step++){
   while(state.phase==='life'&&!state.pending){seconds.automatic+=monthSeconds(state);advance(state,1);}
   if(!state.pending)break;

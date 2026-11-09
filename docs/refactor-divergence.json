@@ -258,6 +258,20 @@
         "packages/adventure/story-network-v9.js": "removed",
         "packages/adventure/story-rules10.js": "removed"
       }
+    },
+    {
+      "id": "S13",
+      "title": "章节感补强：境界划分章节，突破结算过去",
+      "why": "2026-11-08 用户拍板的体验轮（详见 AGENTS.md §1.10）：A1 炼气门槛 48 点且进度从拿到心法起算、A2 铺垫卡×2+奇遇卡×1、A3 炼气阶段节点卡×3、A4 突破清算（stageRealm）、C1 road_turn 恢复四选项、C2 志向接结局资格。本条登记本轮改写的迁移快照文件。（⚠ 本台账只登记迁移快照清单内的文件；快照外的新文件与后续改动由其它门禁与 AGENTS.md §1.10 负责。）；W1 补登记 cultivation-daily.js（叙述加密与场景节奏调整）",
+      "files": {
+        "content/allegiance-stories.js": "changed",
+        "content/cultivation-stories.js": "changed",
+        "content/story-rules12.js": "changed",
+        "packages/adventure/cultivation.js": "changed",
+        "packages/adventure/engine.js": "changed",
+        "packages/adventure/story-rules12.js": "changed",
+        "content/cultivation-daily.js": "changed"
+      }
     }
   ],
   "currentVersion": {

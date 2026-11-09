@@ -22,6 +22,15 @@ var guilloche = require('../../art/guilloche.js');
 var theme = require('../../../../bridge/theme.js');
 var safeArea = require('../../../../bridge/safe-area.js');
 
+/* 志向四选一（2026-11-08 · C2）——与引擎 LIFE_GOALS 一致的四个键。
+ * 缺省「随遇而安」＝不改变任何行为（与志向生效之前的存档同一口径）。 */
+var GOALS = [
+  {id: 'free', label: '随遇而安'},
+  {id: 'dao', label: '问道'},
+  {id: 'protect', label: '守护'},
+  {id: 'wander', label: '浪游'},
+];
+
 Page({
   data: {
     theme: 'theme-light',
@@ -41,6 +50,9 @@ Page({
     regNo: '',
     version: 0,
     saving: false,
+    goals: GOALS,
+    goal: 'free',
+    certSeed: '',
   },
 
   onLoad: function () {
@@ -62,10 +74,10 @@ Page({
     this.stopRoll();
   },
 
-  /** 抽一次（转盘 + 登记卡）。 */
-  startRoll: function () {
+  /** 抽一次（转盘 + 登记卡）。keepSeed = 沿用当前命盘（改选志向时用，种子不变）。 */
+  startRoll: function (keepSeed) {
     this.stopRoll();
-    session.newLife();
+    session.newLife({goal: this.data.goal, seed: keepSeed ? this.data.certSeed : undefined});
     var run = session.run;
     var seed = run.seed;
     this.setData({
@@ -120,6 +132,7 @@ Page({
       oddsPost: cert.oddsPost,
       regNo: cert.regNo,
       version: this.data.version + 1,
+      certSeed: session.run.seed,
     }, function () {
       /* 雕版底纹要等视图层渲染完才有尺寸。
        * ⚠ setData 回调里的 `this` 在真机上不保证指向页面实例 ⇒ 闭包捕获。 */
@@ -171,5 +184,17 @@ Page({
   /** 再抽一次。 */
   again: function () {
     this.startRoll();
+  },
+
+  /**
+   * 改选志向（2026-11-08 · C2）——用**同一个命盘**重开：
+   * 志向不消耗任何出生随机数、不改变出身/灵根/家人，只影响收官与终章资格
+   * ⇒ 换志向 = 同一段人生换一个人生方向，不必重抽。
+   */
+  pickGoal: function (event) {
+    var id = event.currentTarget.dataset.id;
+    if (!id || id === this.data.goal) return;
+    this.setData({goal: id});
+    this.startRoll(true);
   },
 });
